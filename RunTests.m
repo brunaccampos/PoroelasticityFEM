@@ -23,11 +23,11 @@ curDir = pwd;
 DirFolder = 'Test Files';
 
 % Directory for VTK file
-% VTKFolder ='C:\Users\bu_ca\OneDrive\Documents\Doutorado UWaterloo\Research\Poroelasticity codes\PorousMedia\Results\';
-VTKFolder ='C:\Users\bccampos\OneDrive\Documents\Doutorado UWaterloo\Research\Matlab Codes\PorousMedia_v5\Results\';
+% VTKFolder ='C:\Users\bu_ca\OneDrive\Documents\Doutorado UWaterloo\Research\Poroelasticity codes\PorousMedia_v6\Results\';
+VTKFolder ='C:\Users\bccampos\OneDrive\Documents\Doutorado UWaterloo\Research\Matlab Codes\PorousMedia_v6\Results\';
 
 % output VTK file
-plot2vtk = 0;
+plot2vtk = 1;
 % export Matlab images
 saveGraphs_on = 0;
 % output progress messages
@@ -44,7 +44,7 @@ addpath(genpath(FuncDir));
 addpath(genpath(ConfigDir));
 
 % number of tests
-ntests = 5;
+ntests = 10;
 % initialize test summary
 testpasssummary = zeros(ntests,1);
     
@@ -61,16 +61,38 @@ run('Test Files/RunT2_PatchTestB')
 % Pass Condition: FEA solution displacements, stresses, and strains are exact
 run('Test Files/RunT3_PatchTestC')
 
-%% Test 4: Manufactured Solution - Q4 element convergence
+%% Test 4: patch test D
+% Pass Condition: FEA solution displacements, stresses, and strains are exact
+run('Test Files/RunT4_PatchTestD')
+
+%% Test 5: patch test E
+% Pass Condition: FEA solution displacements, stresses, and strains are exact
+run('Test Files/RunT5_PatchTestE')
+
+%% Test 6: patch test F
+% Pass Condition: FEA solution displacements, stresses, and strains are exact
+% run('Test Files/RunT6_PatchTestF')
+
+%% Test 7: Manufactured Solution - Q4 element convergence
 %   Pass condition: L2-norm converges at a rate of at least h^2
 %                    e-norm converges at a rate of at least h
-run('Test Files/RunT4_ManSolQ4')
+run('Test Files/RunT7_ManSolQ4')
 
-%% Test 5: Manufactured Solution - Q9 element convergence
+%% Test 8: Manufactured Solution - Q9 element convergence
 %   Pass condition: L2-norm converges at a rate of at least h^3
 %                    e-norm converges at a rate of at least h^2
-run('Test Files/RunT5_ManSolQ9')
-        
+run('Test Files/RunT8_ManSolQ9')
+
+%% Test 9: Manufactured Solution - L2 element convergence
+%   Pass condition: L2-norm converges at a rate of at least h^2
+%                    e-norm converges at a rate of at least h
+run('Test Files/RunT9_ManSolL2')
+
+%% Test 10: Manufactured Solution - L3 element convergence
+%   Pass condition: L2-norm converges at a rate of at least h^3
+%                    e-norm converges at a rate of at least h^2
+run('Test Files/RunT10_ManSolL3')
+
 %% Summarize test results
 fprintf('\n\n%10s%10s', 'Test', 'Status')
 fprintf('\n----------------------------------------------')

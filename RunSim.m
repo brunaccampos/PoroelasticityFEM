@@ -7,7 +7,8 @@
 % ------------------------------------------------------------------------
 % Reference: https://github.com/GCMLab
 % ------------------------------------------------------------------------
-% Version 5 (July 2022): 1D Spanos quasi static model
+% Version 6 (07/26/22): update porosity field for time and spatial
+% variation
 
 %% Clear variables and initialize code
 clearvars
@@ -23,18 +24,92 @@ curDir = pwd;
 % Config files folder
 DirFolder = 'Config Files';
 % Config file to run
+% -------------------- 1D steady/transient column consolidation
 % File = 'Column1D_Steady_Korsawe';
 File = 'Column1D_Steady_Boone';
+% File = 'Column1D_Steady_Quiroga';
+% File = 'Column1D_Steady_Sandstone';
+% File = 'Column1D_Steady_Zheng';
+% File = 'Column1D_Steady_Ferronato';
+
+% -------------------- 1D dynamic column consolidation
 % File = 'Column1D_Dynamic_Komijani';
 % File = 'Column1D_Dynamic_Zienck';
+% File = 'Column1D_Dynamic_Diebels';
+
+% -------------------- 1D dynamic velocity impact
+% File = 'VelocityImpact1D_Idesman';
+% File = 'VelocityImpact1D_Dynamic_Komijani';
+
+% -------------------- 1D harmonic oscillation
+% File = 'Harmonic1D';
+
+% -------------------- 1D tests
+% File = 'Column1D_Steady_Korsawe_fixedP';
+% File = 'HeatConduction_1D_Steady';
+% File = 'ManufacturedSolutionL3';
+% File = 'ManufacturedSolutionL2_v1';
+% File = 'ManufacturedSolutionL2_v2';
+
+% -------------------- 2D tests
+% File = 'Column2D_Steady_Korsawe_fixedP';
+% File = 'Column2D_Steady_Test_fixedP';
+% File = 'Column2D_Steady_Test_fixedU';
+
+% -------------------- 2D steady/transient column consolidation
+% File = 'Column2D_Steady_Korsawe';
+% File = 'Column2D_Steady_Boone';
+% File = 'Column2D_Steady_Zheng';
+% File = 'Column2D_Steady_Ferronato';
+
+% -------------------- 2D dynamic column consolidation
 % File = 'Column2D_Dynamic_Komijani';
+% File = 'Column2D_Dynamic_Komijani_T3T6';
+% File = 'Plate_Dynamic_Komijani';
+
+% -------------------- 2D injection wells
+% File = 'InjectionWells2D_15x15';
+% File = 'InjectionWells2D_1layer_Saeed';
+% File = 'InjectionWellPoint_Dynamic_Komijani';
+% File = 'PlatePointInjection_Dynamic_Komijani';
+
+% -------------------- 2D footing
+% File = 'Footing2D_Korsawe';
+% File = 'Footing2D_Diebels';
+
+% -------------------- 2D dynamic velocity impact
+% File = 'VelocityImpact2D_Dynamic_Komijani';
+
+% -------------------- 2D tests: elasticity
+% File = 'PlateWithHole_Elasticity';
+% File = 'PlateWithHole_HeatTransfer';
+% File = 'DamQ9Example';
+% File = 'Beam_Dynamic';
+% File = 'Beam_Dynamic_v2';
+% File = 'PlateWithHole_Elasticity_Stress';
+% File = 'ManufacturedSolutionQ4';
+% File = 'PatchTestC';
+% File = 'Plate2D_KirschTest';
+
+% -------------------- 2D tests: diffusion
+% File = 'PlateWithHole_Diffusion';
+% File = 'PlateWithHole_Diffusion_Transient';
+% File = 'PlateDiffusionSteady';
+% File = 'PlateDiffusionSteadyT3';
+% File = 'PlateDiffusionDynamic';
+% File = 'PlateDiffusionDynamic_Point';
+% File = 'HeatConduction1D_Dynamic';
+% File = 'HeatConduction2D';
+% File = 'HeatConduction2D_T3';
+% File = 'HeatConduction2D_TempBC';
+% File = 'HeatConduction2D_PointFluxBC';
 
 % Directory for VTK file
-% VTKFolder ='C:\Users\bu_ca\OneDrive\Documents\Doutorado UWaterloo\Research\Matlab Codes\PorousMedia\Results\';
-VTKFolder ='C:\Users\bccampos\OneDrive\Documents\Doutorado UWaterloo\Research\Matlab Codes\PorousMedia_v5\Results\';
+VTKFolder ='C:\Users\bu_ca\OneDrive\Documents\Doutorado UWaterloo\Research\Matlab Codes\PorousMedia_v6\Results\';
+% VTKFolder ='C:\Users\bccampos\OneDrive\Documents\Doutorado UWaterloo\Research\Matlab Codes\PorousMedia_v6\Results\';
 
 % output VTK file
-plot2vtk = 0;
+plot2vtk = 1;
 % output CSV file
 plot2csv_on = 0;
 % export Matlab images
@@ -78,7 +153,7 @@ end
 
 % run and time the simulation
 start_time = toc;
-run('Functions/main');
+run('Functions/main_v4');
 end_time = toc;
 
 disp(['run time: ' num2str(end_time - start_time)])
