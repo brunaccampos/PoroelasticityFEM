@@ -1,5 +1,5 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Steady_Korsawe(config_dir, progress_on)
-% Column Consolidation 1D simulation
+function [Material, MeshU, MeshP, MeshN, BC, Control] = InjectionWellPoint_Dynamic_Komijani(config_dir, progress_on)
+% 2D simulation of hydraulic dilation stimulation of SADG well pair
 % Configuration File
 % Based on Korsawe (2006) model
 % ------------------------------------------------------------------------
@@ -11,45 +11,36 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Steady_Korsawe(
 % - fluid and solid grains are incompressible
 % - porosity is constant in space and varies over time
 % ------------------------------------------------------------------------
-% column top at x=0, column bottom at x=L
-% ------------------------------------------------------------------------
 
 %% Poroelasticity model
 % 1 - Biot theory
 % 0 - Spanos theory (additional porosity equation)
 Control.Biotmodel = 1;
 
-%% Material properties - Korsawe (2006)
-% elasticity modulus [GPa]
-Material.E = 3e-5;
+%% Material properties - Komijani (2019b)
+% shear modulus [GPa]
+Material.G = 12;
 % Poisson's ratio
-Material.nu = 0.2;
+Material.nu = 0.15;
+% elasticity modulus [GPa]
+Material.E = 2 * Material.G * (1 + Material.nu);
 % intrinsic permeability [m2]
-Material.k = 1e-10;
+Material.k = 9.869233e-16;
 % dynamic viscosity [GPa s]
 Material.mu = 1e-12;
 % porous media permeability [m2/GPa s]
 Material.kf = Material.k/Material.mu;
 % Biot's coefficient
-Material.alpha = 1;
+Material.alpha = 0.64;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
-% porosity
-Material.n = 0.3;
+Material.Minv = 1/29.3;
+
+% lumped mass matrix - 0: false, 1: true
+Material.lumpedMass = 0;
 
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
 Material.constLaw = 'PlaneStrain';
-
-%% Spanos material parameters
-% porosity effective pressure coefficient (Spanos, 1989)
-% n = 0; % lower limit
-n = 1; % return to Biot
-% n = Material.Ks/Material.Kf; % upper limit
- 
-% porosity equation coefficients
-Material.deltaF = 0;
-Material.deltaS = Material.alpha - Material.n;
 
 %% Mesh parameters
 if progress_on
@@ -59,29 +50,26 @@ end
 % mesh type
 % 'Manual': 1D mesh
 % 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Manual';
+MeshType = 'Gmsh';
 
 switch MeshType
     case 'Manual'
         % number of space dimensions
         nsd = 1;
         % number of elements
-        ne = 100;
+        ne = 10;
         % column size [m]
-        L = 1;
+        L = 10;
         %%%% solid displacement field
         typeU = 'L3';
-        fieldU = 'u';
-        MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
+        MeshU = Build1DMesh(nsd, ne, L, typeU);
         %%%% fluid pressure field
         typeP = 'L2';
-        fieldP = 'p';
-        MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
+        MeshP = Build1DMesh(nsd, ne, L, typeP);
         %%%% porosity field
         if ~Control.Biotmodel
             typeN = 'L2';
-            fieldN = 'n';
-            MeshN = Build1DMesh(nsd, ne, L, typeN, fieldN);
+            MeshN = Build1DMesh(nsd, ne, L, typeN);
         else
             MeshN = [];
         end
@@ -91,87 +79,74 @@ switch MeshType
         nsd = 2;
         %%%% displacement field
         fieldU = 'u';
-        meshFileNameU = 'Column2DQ9.msh';
+        meshFileNameU = 'Mesh Files\Injection20x20 (2)Q9.msh';
         MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
         %%%% pressure field
         fieldP = 'p';
-        meshFileNameP = 'Column2DQ4.msh';
+        meshFileNameP = 'Mesh Files\Injection20x20 (2)Q4.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
         if ~Control.Biotmodel
             fieldN = 'n';
-            meshFileNameN = 'Column2DQ4.msh';
+            meshFileNameN = 'Mesh Files\Injection20x20 (2)Q4.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
         else
             MeshN = [];
         end
 end
 
-%% Find nodes for prescribed BCs
-% find top and bottom nodes for displacement field
-BC.top_node_u = find(MeshU.coords == min(MeshU.coords));
-BC.bottom_node_u = find(MeshU.coords == max(MeshU.coords));
-
-% find top and bottom nodes for pressure field
-BC.top_node_p = find(MeshP.coords == min(MeshP.coords));
-BC.bottom_node_p = find(MeshP.coords == max(MeshP.coords));
-
 %% Initial conditions
 % displacement
 BC.initU = [];
 
 % pressure
-BC.initP = [];
+p0 = 0; % [GPa]
+BC.initP = p0 * ones(MeshP.nDOF,1);
 
 %% Dirichlet BCs - solid
-% displacement u=0 at the bottom
-BC.fixed_u = (BC.bottom_node_u);
+% displacement u=0 at boundaries
+BC.fixed_u = [MeshU.bottom_dofy; MeshU.top_dofy; MeshU.left_dofx; MeshU.right_dofx];
+% fixed DOF values
 BC.fixed_u_value = zeros(length(BC.fixed_u),1);
-% free displacement nodes
+% free nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
-%   pressure p=0 at the top
-BC.fixed_p = (BC.top_node_p);
+% fixed DOFs
+BC.fixed_p = [MeshP.top_dof; MeshP.bottom_dof; MeshP.left_dof; MeshP.right_dof];
+% fixed DOF values
 BC.fixed_p_value = zeros(length(BC.fixed_p),1);
-% free pressure nodes
+% free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
-% point load [GN]
-BC.pointLoadValue = -1e-6;
-BC.pointLoadNodes = BC.top_node_u;
-BC.pointLoad = zeros(MeshU.nDOF,1);
-BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
-
-% distributed load [GN/m2]
+% prescribed traction [GN/m2]
 BC.tractionNodes = [];
+
+% point loads [GN]
+BC.pointLoad = zeros(MeshU.nDOF,1);
+BC.pointLoadNodes = [9; 10];
+BC.pointLoad(BC.pointLoadNodes(1)) = 40e-3; % horizontal in situ stress
+BC.pointLoad(BC.pointLoadNodes(2)) = 80e-3; % vertical in situ stress
 
 % body force [GN/m3]
 BC.b = @(x)[];  
 
 %% Neumann BCs - fluid
-% point flux [m/s]
-BC.pointFluxValue = 0;
-BC.pointFluxNodes = BC.bottom_node_p;
-BC.pointFlux = zeros(MeshP.nDOF,1);
-BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
-
 % distributed flux [m3/s]
 BC.fluxNodes = [];
+
+% point flux [m/s]
+BC.pointFluxValue = -8e-4;
+BC.pointFluxNodes = 5;
+BC.pointFlux = zeros(MeshP.nDOF,1);
+BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
 
 % flux source [m3/s/m3]
 BC.s = @(x)[]; 
 
-%% Porosity BCs
-if ~Control.Biotmodel
-    BC.fixed_n = [];
-    BC.free_n = setdiff(MeshN.DOF, BC.fixed_n);
-    BC.fixed_n_value = zeros(length(BC.fixed_n),1);
-end
-
 %% Quadrature order
-Control.nqU = 3;
+Control.nqU = 2;
 Control.nqP = 2;
 
 %% Problem type
@@ -180,18 +155,23 @@ Control.nqP = 2;
 Control.steady = 1;
 
 %% Solution parameters
-Control.dt = 1e-2;  % time step
-Control.tend = 10;   % final simulation time
+Control.dt = 1;  % time step [s]
+Control.tend = 100;   % final simulation time [s]
 
-Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
-
-Control.plotu = round(length(MeshU.coords)/2);
-Control.plotp = round(length(MeshP.coords)/2);
+% non uniform mesh
+Control.plotu = 5*2; % dof y of node 354 (x = 60m, y = 25m)
+Control.plotp = 5; % dof of node 209 (x = 60m, y = 25m)
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
-Control.plotansol = 1; % 1 = true; 0 = false
+Control.plotansol = 0; % 1 = true; 0 = false
 
 % solve in the frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
+
+%% Time discretization parameters
+% Newmark method
+Control.beta = 0.7;
+Control.gamma = 0.7;
+Control.theta = 0.7;
 
 end

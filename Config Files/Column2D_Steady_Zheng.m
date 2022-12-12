@@ -1,14 +1,15 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Column2D_Dynamic_Komijani(config_dir, progress_on)
-% Column Consolidation 2D simulation
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Column2D_Steady_Zheng(config_dir, progress_on)
+% Column Consolidation 1D simulation
 % Configuration File
-% Based on Zienkiewicz (1982) model
+% Based on Korsawe (2006) model
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
-% - only solid acceleration is considered (undrained condition; no motions
-% of the fluid relative to the solid skeleton can occur)
-% - solid grains and fluid are incompressible
+% - no acceleration terms for solid or fluid
+% - solid velocity is neglected
+% - fluid and solid grains are incompressible
+% - porosity is constant in space and varies over time
 % ------------------------------------------------------------------------
 % column top at x=L, column bottom at x=0
 % ------------------------------------------------------------------------
@@ -18,42 +19,36 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Column2D_Dynamic_Komijan
 % 0 - Spanos theory (additional porosity equation)
 Control.Biotmodel = 1;
 
-%% Material properties - Komijani (2019)
+%% Material properties - Berea Sandstone (Zheng, 2003)
 % elasticity modulus [GPa]
-Material.E = 14.516e-3;
+Material.E = 14.4;
 % Poisson's ratio
-Material.nu = 0.3;
-% porous media permeability [m2/GPa s]
-Material.kf = 1.0194e3;
+Material.nu = 0.2;
+% intrinsic permeability [m2]
+Material.k = 2e-13;
 % dynamic viscosity [GPa s]
 Material.mu = 1e-12;
-% intrinsic permeability [m2]
-Material.k = Material.kf * Material.mu;
-% fluid bulk modulus [GPa]
-Material.Kf = 2.1;
-% solid bulk modulus [GPa]
-Material.Ks = 1e11;
-% material porosity
-Material.n = 0.3;
+% porous media permeability [m2/GPa s]
+Material.kf = Material.k/Material.mu;
 % Biot's coefficient
-Material.alpha = 1;
-% fluid density [10^9 kg/m3]
-Material.rho_f = 1000e-9;
-% solid density [10^9 kg/m3]
-Material.rho_s = 2000e-9;
-% average density of the medium
-Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
+Material.alpha = 0.79;
+% fluid bulk modulus [GPa]
+Material.Kf = 3.3;
+% solid bulk modulus [GPa]
+Material.Ks = 36;
+% material porosity
+Material.n = 0.2;
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
 % fluid bulk viscosity [GPa s]
 Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
 
+% lumped mass matrix - 0: false, 1: true
+Material.lumpedMass = 0;
+
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
 Material.constLaw = 'PlaneStrain';
-
-% lumped mass matrix - 0: false, 1: true
-Material.lumpedMass = 0;
 
 %% Spanos material parameters
 % porosity effective pressure coefficient (Spanos, 1989)
@@ -65,9 +60,8 @@ n = 1; % return to Biot
 Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks; 
 Mstar = 1/Mstarinv;
 
-% porosity equation coefficients
 Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
-Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
+Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar /Material.Kf;
 
 %% Mesh parameters
 if progress_on
@@ -86,7 +80,7 @@ switch MeshType
         % number of elements
         ne = 10;
         % column size [m]
-        L = 10;
+        L = 3;
         %%%% solid displacement field
         typeU = 'L3';
         MeshU = Build1DMesh(nsd, ne, L, typeU);
@@ -106,16 +100,16 @@ switch MeshType
         nsd = 2;
         %%%% displacement field
         fieldU = 'u';
-        meshFileNameU = 'Mesh Files\Column2DQ9.msh';
+        meshFileNameU = 'Mesh Files\Plate_Zheng_Q9.msh';
         MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
         %%%% pressure field
         fieldP = 'p';
-        meshFileNameP = 'Mesh Files\Column2DQ4.msh';
+        meshFileNameP = 'Mesh Files\Plate_Zheng_Q4.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
         if ~Control.Biotmodel
             fieldN = 'n';
-            meshFileNameN = 'Mesh Files\Column2DQ4.msh';
+            meshFileNameN = 'Mesh Files\Plate_Zheng_Q4.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
         else
             MeshN = [];
@@ -149,7 +143,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 % traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
 BC.tractionInterp = 0;
 % prescribed traction [GN/m2]
-BC.traction = -3000e-9;
+BC.traction = -4e-3;
 BC.tractionNodes = MeshU.top_nodes;
 Force = BC.traction * max(MeshU.coords(:,1))/((length(MeshU.top_nodes) - 1)/2);
 BC.tractionForce = zeros(length(BC.tractionNodes),2);
@@ -177,12 +171,12 @@ BC.pointLoad = [];
 BC.b = @(x)[];  
 
 %% Neumann BCs - fluid
-% distributed flux [m3/s]
+% distributed flux [m/s]
 % impervious at bottom, left, and right
 BC.fluxNodes = [MeshP.left_dof; MeshP.right_dof; MeshP.bottom_dof];
 BC.fluxValue = zeros(length(BC.fluxNodes),1);
 
-% point flux [m/s]
+% point flux [m3/s]
 BC.pointFlux = [];
 
 % flux source [m3/s/m3]
@@ -196,32 +190,27 @@ if ~Control.Biotmodel
 end
 
 %% Quadrature order
-Control.nqU = 3;
-Control.nqP = 3;
+Control.nqU = 2;
+Control.nqP = 2;
 
 %% Problem type
 % 1 = quasi-steady/transient problem (no acceleration and pressure change)
 % 0 = dynamic problem (acceleration/intertia terms included)
-Control.steady = 0;
+Control.steady = 1;
 
 %% Solution parameters
 Control.dt = 1e-2;  % time step
 Control.tend = 10;   % final simulation time
 
-Control.plotu = 184; % dof y of node 92 (x = 0.05m, y = 5m)
-Control.plotp = 52; % dof of node 52 (x = 0.05m, y = 5m)
+Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
+
+Control.plotu = 388; % dof y of node 194 (x = 1.11m, y = 1.58m)
+Control.plotp = 138; % dof of node 138 (x = 1.11m, y = 1.58m)
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false
 
 % solve in the frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
-
-%% Time discretization parameters
-% Newmark method
-Control.beta = 0.7;
-Control.gamma = 0.7;
-Control.theta = 0.7;
-Control.lambda = 0.7;
 
 end

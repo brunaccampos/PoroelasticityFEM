@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Column2D_Dynamic_Komijani(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Column2D_Dynamic_Komijani_T3T6(config_dir, progress_on)
 % Column Consolidation 2D simulation
 % Configuration File
 % Based on Zienkiewicz (1982) model
@@ -45,8 +45,6 @@ Material.rho_s = 2000e-9;
 Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
-% fluid bulk viscosity [GPa s]
-Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
 
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
@@ -54,20 +52,6 @@ Material.constLaw = 'PlaneStrain';
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;
-
-%% Spanos material parameters
-% porosity effective pressure coefficient (Spanos, 1989)
-% n = 0; % lower limit
-n = 1; % return to Biot
-% n = Material.Ks/Material.Kf; % upper limit
-
-% modified storage coefficient (Muller, 2019)
-Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks; 
-Mstar = 1/Mstarinv;
-
-% porosity equation coefficients
-Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
-Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
 
 %% Mesh parameters
 if progress_on
@@ -106,28 +90,21 @@ switch MeshType
         nsd = 2;
         %%%% displacement field
         fieldU = 'u';
-        meshFileNameU = 'Mesh Files\Column2DQ9.msh';
+        meshFileNameU = 'Mesh Files\Column2DT6.msh';
         MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
         %%%% pressure field
         fieldP = 'p';
-        meshFileNameP = 'Mesh Files\Column2DQ4.msh';
+        meshFileNameP = 'Mesh Files\Column2DT3.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
         if ~Control.Biotmodel
             fieldN = 'n';
-            meshFileNameN = 'Mesh Files\Column2DQ4.msh';
+            meshFileNameN = 'Mesh Files\Column2DT3.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
         else
             MeshN = [];
         end
 end
-
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
 
 %% Dirichlet BCs - solid
 % displacement u=0 at bottom (y), left (x), and right (x)
@@ -177,27 +154,20 @@ BC.pointLoad = [];
 BC.b = @(x)[];  
 
 %% Neumann BCs - fluid
-% distributed flux [m3/s]
+% distributed flux [m/s]
 % impervious at bottom, left, and right
 BC.fluxNodes = [MeshP.left_dof; MeshP.right_dof; MeshP.bottom_dof];
 BC.fluxValue = zeros(length(BC.fluxNodes),1);
 
-% point flux [m/s]
+% point flux [m3/s]
 BC.pointFlux = [];
 
 % flux source [m3/s/m3]
 BC.s = @(x)[]; 
 
-%% Porosity BCs
-if ~Control.Biotmodel
-    BC.fixed_n = [];
-    BC.free_n = setdiff(MeshN.DOF, BC.fixed_n);
-    BC.fixed_n_value = zeros(length(BC.fixed_n),1);
-end
-
 %% Quadrature order
-Control.nqU = 3;
-Control.nqP = 3;
+Control.nqU = 2;
+Control.nqP = 2;
 
 %% Problem type
 % 1 = quasi-steady/transient problem (no acceleration and pressure change)
@@ -207,9 +177,14 @@ Control.steady = 0;
 %% Solution parameters
 Control.dt = 1e-2;  % time step
 Control.tend = 10;   % final simulation time
+Control.tol = 1e-3; % tolerance for NR method
+Control.max_it = 100; % maximum of iterations
 
-Control.plotu = 184; % dof y of node 92 (x = 0.05m, y = 5m)
-Control.plotp = 52; % dof of node 52 (x = 0.05m, y = 5m)
+Control.plotu = 200; % dof y of node 100 (x = 0.05m, y = 5m)
+Control.plotp = 56; % dof of node 56 (x = 0.05m, y = 5m)
+
+% Control.plotu = 32; % dof y of node 16 (x = 0.1m, y = 5m)
+% Control.plotp = 14; % dof of node 14 (x = 0.1m, y = 5m)
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false
@@ -222,6 +197,5 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 Control.beta = 0.7;
 Control.gamma = 0.7;
 Control.theta = 0.7;
-Control.lambda = 0.7;
 
 end
