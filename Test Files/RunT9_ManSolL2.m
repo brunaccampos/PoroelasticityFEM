@@ -1,0 +1,79 @@
+% ------------------------------------------------------------------------
+% Runs unit Test 9 - L2 manufactured solution convergence as a part of RunTests
+% ------------------------------------------------------------------------
+% Calculates the convergence rates of a uniform L2 mesh using a
+% manufactured solution in which
+% ux = x^5 - x^4
+% ------------------------------------------------------------------------
+% Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
+% ------------------------------------------------------------------------
+
+% Create test VTK folder
+if plot2vtk
+    vtk_dir = fullfile(VTKFolder,'\Test9');
+    if ~isfolder(vtk_dir)
+        mkdir(vtk_dir)
+    end
+end
+% test runs 3 meshes, only finest mesh will be saved
+
+fprintf('\n\n Test 9: Manufactured Solution - L2 elements\n')
+
+%% Step 1 - Run Simulation
+config_name = 'ManufacturedSolutionL2_m1';
+% Run coarse mesh
+meshfilename = '';
+mainTests
+% store variables coarse mesh
+d_coarse = Solution.u;
+stress_coarse = stress;
+strain_coarse = strain;
+Mesh_coarse = MeshU;
+
+config_name = 'ManufacturedSolutionL2_m2';
+% Run fine mesh
+meshfilename = '';
+mainTests
+% store variables fine mesh
+d_fine = Solution.u;
+stress_fine = stress;
+strain_fine = strain;
+Mesh_fine = MeshU;
+
+config_name = 'ManufacturedSolutionL2_m3';
+% Run finer mesh
+meshfilename = '';
+mainTests
+% store variables finer mesh
+d_finer = Solution.u;
+stress_finer = stress;
+strain_finer = strain;
+Mesh_finer = MeshU;
+
+%% Step 2 - Check results
+[m_L2, m_e] = ManufacturedSolution1D_check(d_coarse, d_fine, d_finer, ...
+    stress_coarse, stress_fine, stress_finer, strain_coarse, strain_fine, ...
+    strain_finer, Mesh_coarse, Mesh_fine, Mesh_finer, Material, Control, Quad);
+
+fprintf('\nL2 L2-norm converges at a rate of %.2f',m_L2)
+fprintf('\nL2  e-norm converges at a rate of %.2f',m_e)
+
+convergence_tolerance = 0.05;
+if m_L2 >= (2 - convergence_tolerance) && m_e >= (1 - convergence_tolerance)
+    test_pass = 1;
+else
+    test_pass = 0;
+end
+
+%% Step 3 - Output results
+if test_pass
+    fprintf('\nPASS\n')
+else
+    fprintf('\n\nFAIL\n')
+end
+testpasssummary(9) = test_pass;
+
+%% Step 4 - Cleanup
+clearvars -except  curDir  ConfigDir ...
+    ntests testpasssummary...
+    plot2vtk VTKFolder progress_on

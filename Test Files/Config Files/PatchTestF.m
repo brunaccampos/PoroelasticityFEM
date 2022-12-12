@@ -1,0 +1,176 @@
+function [Material, MeshU, MeshP, MeshN, BC, Control] = PatchTestF(config_dir, progress_on, meshfilename)
+% ------------------------------------------------------------------------
+% Patch Test C is performed with node 1 fully restrained and nodes 4 and 8
+% restrained only in the x -direction. Nodal fluxes are applied to nodes 2,
+% 3, and 6 in accordance with the values generated through the boundary
+% fluxes. The error between the FEA and exact solutions is then calculated. 
+% The FEA approximate solution should be exact.
+% ------------------------------------------------------------------------
+% Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
+% ------------------------------------------------------------------------
+
+%% Poroelasticity
+% elasticity modulus [Pa]
+Material.E = 0;
+% Poisson's ratio
+Material.nu = 0;
+% 1/Q (related to storage coefficient)
+Material.Minv = 0;
+% Biot's coefficient
+Material.alpha = 0;
+% poroelasticity model
+Control.Biotmodel = 1;
+% in situ stress field [GPa]
+BC.S0 = [];
+% initial displacement
+BC.initU = [];
+% initial pressure
+BC.initP = [];
+
+% constititive law - 'PlaneStress' or 'PlaneStrain'
+Material.constLaw = 'PlaneStress';
+
+% lumped mass matrix - 0: false, 1: true
+Material.lumpedMass = 0;
+
+%% Material properties
+% diffusivity coefficient [m2/s]
+Material.kf = 0.139e-4;
+
+%% Mesh parameters
+if progress_on
+    disp([num2str(toc),': Building Mesh...']);
+end
+
+% mesh type
+% 'Manual': 1D mesh
+% 'Gmsh': 2D mesh, input file from GMSH
+MeshType = 'Gmsh';
+
+switch MeshType
+    case 'Manual'
+        % number of space dimensions
+        nsd = 1;
+        % number of elements
+        ne = 10;
+        % column size [m]
+        L = 1;
+        %%%% solid displacement field
+        typeU = 'L3';
+        MeshU = Build1DMesh(nsd, ne, L, typeU);
+        %%%% fluid pressure field
+        typeP = 'L2';
+        MeshP = Build1DMesh(nsd, ne, L, typeP);
+        %%%% porosity field
+        if ~Control.Biotmodel
+            typeN = 'L2';
+            MeshN = Build1DMesh(nsd, ne, L, typeN);
+        else
+            MeshN = [];
+        end
+    case 'Gmsh'
+        % Version 2 ASCII
+        % number of space dimensions
+        nsd = 2;
+        %%%% displacement field
+        fieldU = 'u';
+        meshFileNameU = 'Mesh Files\PatchTest.msh';
+        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+        %%%% pressure field
+        fieldP = 'p';
+        meshFileNameP = 'Mesh Files\PatchTest.msh';
+        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+        %%%% porosity field
+        if ~Control.Biotmodel
+            fieldN = 'n';
+            meshFileNameN = 'Mesh Files\PatchTest.msh';
+            MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
+        else
+            MeshN = [];
+        end
+end
+
+% flux [m/s] (same in both directions)
+BC.flux = 1;
+
+%% Dirichlet BCs - solid
+% prescribed displacement
+BC.fixed_u = 1:MeshU.nDOF;
+BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+% free displacement nodes
+BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
+
+%% Dirichlet BCs - fluid
+% pressure according to exact solution
+BC.p = @(x) -1/Material.kf * BC.flux * (x(:,1) + x(:,2));
+% fixed nodes
+BC.fixed_p = unique([MeshP.left_nodes; MeshP.bottom_nodes]);
+% prescribed pressure
+BC.fixed_p_value = BC.p(MeshP.coords(BC.fixed_p, :));
+% free pressure nodes
+BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
+
+%% Neumann BCs - solid
+% point load [N]
+BC.pointLoadValue = 0;
+BC.pointLoadNodes = 1:MeshU.nDOF;
+BC.pointLoad = zeros(MeshU.nDOF,1);
+BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
+
+% traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
+BC.tractionInterp = 0;
+
+% distributed load [N/m]
+BC.tractionNodes = [];
+
+% body force
+BC.b = @(x)[];
+
+%% Neumann BCs - fluid
+toprightnode = MeshP.right_nodes(MeshP.coords(MeshP.right_nodes,2) == max(MeshP.coords(:,2)));
+index_right = MeshP.right_nodes ~= toprightnode;
+index_top   = MeshP.top_nodes   ~= toprightnode;
+BC.fluxNodes = [MeshP.right_nodes(index_right);  MeshP.top_nodes(index_top); toprightnode];
+
+% prescribed flux
+Fright = BC.flux *  max(MeshP.coords(:,2))/length(MeshP.right_nodes);
+Ftop = BC.flux * max(MeshP.coords(:,1))/length(MeshP.top_nodes);
+
+% Fright = BC.flux * max(MeshP.coords(:,2))/(length(MeshP.right_nodes) - 1);
+% Ftop   = BC.flux * max(MeshP.coords(:,1))/(length(MeshP.top_nodes)   - 1);
+% BC.fluxValue = [Fright*ones(size(MeshP.right_nodes(index_right))), zeros(size(MeshP.right_nodes(index_right))); % right side nodes
+%     zeros(size(MeshP.top_nodes(index_top))), Ftop*ones(size(MeshP.top_nodes(index_top))); % top side nodes
+%     Fright*1/2, Ftop*1/2]; % top right node
+BC.fluxValue = [Fright*ones(size(MeshP.right_nodes(index_right)))+ zeros(size(MeshP.right_nodes(index_right))); % right side nodes
+    zeros(size(MeshP.top_nodes(index_top)))+ Ftop*ones(size(MeshP.top_nodes(index_top))); % top side nodes
+    Fright+ Ftop]; % top right node
+
+% find the nodes in the top left and bottom right corners
+% botrightnode = find(MeshP.coords(BC.fluxNodes,2) == min(MeshP.coords(:,2)));
+% topleftnode  = find(MeshP.coords(BC.fluxNodes,1) == min(MeshP.coords(:,1)));
+% 
+% BC.fluxValue(botrightnode,1) = BC.fluxValue(botrightnode,1)/2;
+% BC.fluxValue(topleftnode,1) = BC.fluxValue(topleftnode,1)/2;
+
+% point flux [m/s]
+BC.pointFlux = [];
+
+% flux source
+BC.s = @(x)[]; 
+
+%% Quadrature order
+Control.nqU = 2;
+Control.nqP = 2;
+
+%% Problem type
+% 1 = quasi-steady/transient problem (no acceleration and pressure change)
+% 0 = dynamic problem (acceleration/intertia terms included)
+Control.steady = 1;
+
+%% Solution parameters
+Control.dt = 1;  % time step
+Control.step = 1; % total simulation time
+
+Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
+
+end
