@@ -1,8 +1,8 @@
-function [Material, Mesh, BC, Control] = ColumnConsolidation1D_Steady()
+function [Material, MeshU, MeshP, BC, Control] = ColumnConsolidation1D_Steady(config_dir, progress_on)
 % Column Consolidation 1D simulation
-
+% Configuration File
 % Based on Korsawe (2006) model
-
+%
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
@@ -27,26 +27,59 @@ Material.alpha = 1;
 % 1/Q (related to storage coefficient)
 Material.Q = 0; 
 
-%% Mesh parameters - uniform 1D mesh
+%% Mesh parameters
+if progress_on
+    disp([num2str(toc),': Building Mesh...']);
+end
 
-% number of elements
-ne = 10;
+% mesh type
+% 'Manual': 1D mesh
+% 'Gmsh': 2D mesh, input file from GMSH
+MeshType = 'Manual';
 
-% column size [m]
-L = 1;
+switch MeshType
+    case 'Manual'
+        % number of space dimensions
+        nsd = 1;
+        % number of elements
+        ne = 10;
+        % column size [m]
+        L = 1;
 
-% build mesh
-Mesh = BuildMesh(ne, L);
+        % solid displacement field
+        typeU = 'L3';
+        MeshU = Build1DMesh(nsd, ne, L, typeU);
+
+        % fluid pressure field
+        typeP = 'L2';
+        MeshP = Build1DMesh(nsd, ne, L, typeP);
+    case 'Gmsh'
+        % Version 2 ASCII
+        % number of space dimensions
+        nsd = 2;
+
+        % field
+        fieldU = 'u';
+        % build mesh displacement field
+        meshFileNameU = 'Column2DQ9.msh';
+        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+        
+        % field 
+        fieldP = 'p';
+        % build mesh pressure field
+        meshFileNameP = 'Column2DQ4.msh';
+        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+end
 
 %% Boundary conditions
 
 % find top and bottom nodes for displacement field
-BC.top_node_u = find(Mesh.coords_u == min(Mesh.coords_u));
-BC.bottom_node_u = find(Mesh.coords_u == max(Mesh.coords_u));
+BC.top_node_u = find(MeshU.coords == min(MeshU.coords));
+BC.bottom_node_u = find(MeshU.coords == max(MeshU.coords));
 
 % find top and bottom nodes for pressure field
-BC.top_node_p = find(Mesh.coords_p == min(Mesh.coords_p));
-BC.bottom_node_p = find(Mesh.coords_p == max(Mesh.coords_p));
+BC.top_node_p = find(MeshP.coords == min(MeshP.coords));
+BC.bottom_node_p = find(MeshP.coords == max(MeshP.coords));
 
 % fixed nodes
 %   displacement u=0 at the bottom
@@ -57,33 +90,37 @@ BC.fixed_p = (BC.top_node_p);
 BC.fixed_fp = (BC.bottom_node_p);
 
 % free nodes
-BC.free_u = setdiff(Mesh.dof_u, BC.fixed_u);
-BC.free_p = setdiff(Mesh.dof_p, BC.fixed_p);
-BC.free_fp = setdiff(Mesh.dof_p, BC.fixed_fp);
+BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
+BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
+BC.free_fp = setdiff(MeshP.DOF, BC.fixed_fp);
 
 %% Dirichlet BCs
 BC.fixed_u_value = zeros(length(BC.fixed_u),1);
 BC.fixed_p_value = zeros(length(BC.fixed_p),1);
 
 %% Neumann BCs
-% applied traction [N]
-BC.traction = 1e3;
+% point load [N]
+BC.pointLoadValue = 300;
+BC.pointLoadNodes = BC.top_node_u;
+BC.pointLoad = zeros(MeshU.nDOF,1);
+BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
 
-BC.fext = zeros(Mesh.ndof_u, 1);
-BC.fext(1,1) = BC.traction;
+% distributed load [N/m]
+BC.tractionNodes = [];
 
 %% Quadrature order
 Control.nq = 2;
 
 %% Problem type
-% 1 = steady state problem
-% 0 = transient problem
+% 1 = steady state problem (no solid velocity, acceleration, and pressure
+% change)
+% 0 = transient problem (velocity and acceleration included)
 Control.steady = 1;
 
 %% Solution parameters
 Control.dt = 1;  % time step
 Control.tend = 10;   % final simulation time
-Control.plotu = round(length(Mesh.coords_u)/2);
-Control.plotp = round(length(Mesh.coords_p)/2);
+Control.plotu = round(length(MeshU.coords)/2);
+Control.plotp = round(length(MeshP.coords)/2);
 
 end

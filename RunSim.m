@@ -1,11 +1,13 @@
 % Porous Media Simulation
-% Bruna Campos
+% ------------------------------------------------------------------------
+% Created by Bruna Campos
+% bccampos@uwaterloo.ca
+% Department of Civil Engineering, University of Waterloo
 % January 2022
-%
-% Run Simulation
+% ------------------------------------------------------------------------
 % Reference: https://github.com/GCMLab
-%
-% Version 3: attempt to solve in the frequency domain
+% ------------------------------------------------------------------------
+% Version 4 (July 2022): adapting code for 2D problems
 
 %% Clear variables and initialize code
 clearvars
@@ -21,18 +23,19 @@ curDir = pwd;
 % Config files folder
 DirFolder = 'Config Files';
 % Config file to run
-File = 'ColumnConsolidation1D_Steady';
+% File = 'ColumnConsolidation1D_Steady';
 % File = 'ColumnConsolidation1D_Dynamic';
+File = 'ColumnConsolidation2D_Dynamic';
 
 % Directory for VTK file
 VTKFolder ='C:\Users\bu_ca\OneDrive\Documents\Doutorado UWaterloo\Research\Poroelasticity codes\PorousMedia\Results\';
 
 % output VTK file
-plot2vtk = 0;
-
+plot2vtk = 1;
 % output CSV file
 plot2csv_on = 0;
-
+% export Matlab images
+saveGraphs_on = 0;
 % output progress messages
 progress_on = 1;
 
@@ -55,7 +58,8 @@ clearvars -except VTKDir ConfigFile...
     curDir FuncDir  ConfigDir ...
     file codeSubmitTime ...
     exit_when_done print_log ...
-    plot2vtk progress_on plot2csv_on
+    plot2vtk progress_on plot2csv_on ...
+    saveGraphs_on
 
 clearvars -global
 

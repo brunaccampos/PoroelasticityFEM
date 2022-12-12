@@ -1,15 +1,17 @@
 % Porous Media Simulation
-% Bruna Campos
+% ------------------------------------------------------------------------
+% Created by Bruna Campos
+% bccampos@uwaterloo.ca
+% Department of Civil Engineering, University of Waterloo
 % January 2022
-%
-% Main Function
-% Adapted from: https://github.com/GCMLab (Acknowledgements: Matin Parchei
-% Esfahani)
+% ------------------------------------------------------------------------
+% Reference: https://github.com/GCMLab
+% ------------------------------------------------------------------------
 
 %% Delete past files
 if plot2vtk || plot2csv_on
     if progress_on
-        fprintf('%.2f: Deleting old vtk files...\n', toc);
+        fprintf('%.2f: Deleting old vtk and csv files...\n', toc);
     end
     sol = fullfile(vtk_dir, '*');
     delete(sol)
@@ -19,10 +21,10 @@ end
 if progress_on
     fprintf('%.2f: Reading config file...\n', toc);
 end
-[Material, Mesh, BC, Control] = feval(config_name);
+[Material, MeshU, MeshP, BC, Control] = feval(config_name, ConfigDir, progress_on);
 
 %% Quadrature points
-Quad = GlobalQuad(Control);
+Quad = GlobalQuad(MeshU, Control);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
@@ -30,28 +32,33 @@ disp([num2str(toc),': Assembling System Matrices...']);
 % choice of quasi-steady or transient case
 if Control.steady
     % quasi-steady case
-    [Kuu, Kup, Kpp, S] = ComputeSystemMatrices_Steady(Material, Mesh, Control, Quad);
+    [Kuu, Kup, Kpp, S] = ComputeSystemMatrices_Steady(Material, MeshU, MeshP, Control, Quad);
 else
     % transient case (mass matrices computed)
-    [Kuu, Kup, Kpp, M, Mhat, S] = ComputeSystemMatrices_Dynamic(Material, Mesh, Control, Quad);
+    [Kuu, Kup, Kpp, M, Mhat, S] = ComputeSystemMatrices_Dynamic(Material, MeshU, MeshP, Control, Quad);
 end
 
+% load vectors
+[fu,fp] = ComputeSystemLoads(BC, MeshU, MeshP);
+
 %% Initialize iteration variables
-Iteration.u_old = zeros(Mesh.ndof_u, 1);
-Iteration.p_old = zeros(Mesh.ndof_p,1);
+nsd = MeshU.nsd; % number of spatial directions
+
+Iteration.u_old = zeros(MeshU.nDOF, 1);
+Iteration.p_old = zeros(MeshP.nDOF, 1);
 
 if ~Control.steady
-    Iteration.udot_old = zeros(Mesh.ndof_u,1);
-    Iteration.u2dot_old = zeros(Mesh.ndof_u,1);
-    Iteration.pdot_old = zeros(Mesh.ndof_p,1);
+    Iteration.udot_old = zeros(MeshU.nDOF, 1);
+    Iteration.u2dot_old = zeros(MeshU.nDOF, 1);
+    Iteration.pdot_old = zeros(MeshP.nDOF, 1);
 end
 
 % arrays for plot in time
 Plot.time = (0:Control.dt:Control.tend);
-Plot.p = zeros(1, length(Plot.time)); % fluid pressure
-Plot.pan = zeros(1, length(Plot.time)); % analytic fluid pressure (quasi-steady case)
-Plot.u = zeros(1, length(Plot.time)); % solid displacement
-Plot.udot = zeros(1, length(Plot.time)); % solid velocity
+Plot.p = zeros(length(Plot.time), 1); % fluid pressure
+Plot.pan = zeros(length(Plot.time), 1); % analytic fluid pressure (quasi-steady case)
+Plot.u = zeros(length(Plot.time), 1); % solid displacement
+Plot.udot = zeros(length(Plot.time), 1); % solid velocity
 
 %% Solution parameters
 Control.t = 0;  % initial simulation time
@@ -59,25 +66,22 @@ Control.step = 1; % step counter
 
 %% Solve system
 while Control.t < Control.tend
-
     fprintf('\n Step %d \n', Control.step);
 
     % linear solver
     if Control.steady
-        % analytical solution
-        [~, p_an, u_an] = getAnalyticResult (Material, Mesh, BC, Control);
-        Plot.p_an = p_an;
-        Plot.u_an = u_an;
-        Plot.pan(Control.step+1) = p_an(1, Control.plotp);
-        
+        if MeshU.nsd == 1
+            % analytical solution for 1D case
+            [~, p_an, u_an] = getAnalyticResult (Material, MeshU, MeshP, BC, Control);
+            Plot.p_an = p_an;
+            Plot.u_an = u_an;
+            Plot.pan(Control.step+1) = p_an(Control.plotp, 1);
+        end
         % quasi-steady case
-        [u,udot, p, pdot,~] = SolverSteady(Kuu, Kup, Kpp, S, Mesh, BC, Control, Iteration);
+        [u,udot, p, pdot,~] = SolverSteady(Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration);
     else
         % transient case
-        [u, udot, u2dot, p, pdot, ~] = SolverDynamic(Kuu, Kup, Kpp, M, Mhat, S, Mesh, BC, Control, Iteration);
-
-        % TEST
-%         [u, udot, u2dot, p, pdot, ~] = SolverFrequency(Kuu, Kup, Kpp, M, Mhat, S, Mesh, BC, Control, Iteration);
+        [u, udot, u2dot, p, pdot, ~] = SolverDynamic(Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Control, Iteration);
     end
 
     % store variables over time
@@ -88,6 +92,11 @@ while Control.t < Control.tend
         Plot.u(Control.step+1) = u(Control.plotu, 1);
         % plot velocity vs time
         Plot.udot(Control.step+1) = udot(Control.plotu, 1);
+    end
+
+    % post processing: export VTK file
+    if plot2vtk
+        PostProcessing(u, udot, u2dot, p, Material, MeshU, MeshP, Control, Quad, BC, config_name, vtk_dir);
     end
 
     % update variables
@@ -108,7 +117,7 @@ end
 %% Post processing
 
 % plot figures
-postprocessor(Mesh, Control, Plot, u, p);
+PlotGraphs(MeshU, MeshP, Control, Plot, u, p, saveGraphs_on);
 
 % export CSV file
 if plot2csv_on

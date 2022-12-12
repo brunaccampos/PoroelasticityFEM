@@ -1,5 +1,5 @@
-function [Material, MeshU, MeshP, BC, Control] = ColumnConsolidation1D_Dynamic(config_dir, progress_on)
-% Column Consolidation 1D simulation
+function [Material, MeshU, MeshP, BC, Control] = ColumnConsolidation2D_Dynamic(config_dir, progress_on)
+% Column Consolidation 2D simulation
 % Configuration File
 % Based on Zienkiewicz (1982) model
 %
@@ -47,7 +47,7 @@ end
 % mesh type
 % 'Manual': 1D mesh
 % 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Manual';
+MeshType = 'Gmsh';
 
 switch MeshType
     case 'Manual'
@@ -61,7 +61,7 @@ switch MeshType
         % solid displacement field
         typeU = 'L3';
         MeshU = Build1DMesh(nsd, ne, L, typeU);
-
+        
         % fluid pressure field
         typeP = 'L2';
         MeshP = Build1DMesh(nsd, ne, L, typeP);
@@ -75,7 +75,7 @@ switch MeshType
         % build mesh displacement field
         meshFileNameU = 'Column2DQ9.msh';
         MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        
+
         % field 
         fieldP = 'p';
         % build mesh pressure field
@@ -83,42 +83,50 @@ switch MeshType
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
 end
 
-%% Boundary conditions
+%% Dirichlet BCs
+% displacement u=0 at bottom (y), left (x), and right (x)
+BC.fixed_u = [MeshU.left_dofx; MeshU.right_dofx; MeshU.bottom_dofy];
+% pressure p=0 at top
+BC.fixed_p = [MeshP.top_dof];
 
-% find top and bottom nodes for displacement field
-BC.top_node_u = find(MeshU.coords == min(MeshU.coords));
-BC.bottom_node_u = find(MeshU.coords == max(MeshU.coords));
-
-% find top and bottom nodes for pressure field
-BC.top_node_p = find(MeshP.coords == min(MeshP.coords));
-BC.bottom_node_p = find(MeshP.coords == max(MeshP.coords));
-
-% fixed nodes
-%   displacement u=0 at the bottom
-%   pressure p=0 at the top
-%   no pressure gradient fp=0 at the bottom
-BC.fixed_u = (BC.bottom_node_u);
-BC.fixed_p = (BC.top_node_p);
-BC.fixed_fp = (BC.bottom_node_p);
+% fixed DOF values
+BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_p_value = zeros(length(BC.fixed_p),1);
 
 % free nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
-BC.free_fp = setdiff(MeshP.DOF, BC.fixed_fp);
-
-%% Dirichlet BCs
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
 
 %% Neumann BCs
-% point traction [N]
-BC.pointLoadValue = 3000;
-BC.pointLoadNodes = BC.top_node_u;
-BC.pointLoad = zeros(MeshU.nDOF,1);
-BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
+% point loads
+BC.pointLoad = [];
 
-% distributed traction [N/m]
-BC.tractionNodes = [];
+% impervious at bottom, left, and right
+BC.fixed_fp = [MeshP.left_dof; MeshP.right_dof; MeshP.bottom_dof];
+% free nodes
+BC.free_fp = setdiff(MeshP.DOF, BC.fixed_fp);
+
+% prescribed traction
+BC.traction = 3000; % magnitute [N/m^2]
+BC.tractionNodes = MeshU.top_nodes;
+Force = BC.traction * max(MeshU.coords(:,1))/((length(MeshU.top_nodes) - 1)/2);
+BC.tractionForce = zeros(length(BC.tractionNodes),2);
+
+% Q9 elements for displacement field
+for n = 1:length(BC.tractionForce)
+    if any(BC.tractionNodes(n) == MeshU.conn(:,1:4),'all') % then node is a corner node
+        BC.tractionForce(n,:) = [0, Force/3];
+    else % then node is a midside node
+        BC.tractionForce(n,:) = [0, Force*2/3];
+    end
+end
+
+% find the nodes in the top left and right corners
+lefttopnode = find(MeshU.coords(BC.tractionNodes,1) == min(MeshU.coords(:,1)));
+righttopnode  = find(MeshU.coords(BC.tractionNodes,1) == max(MeshU.coords(:,1)));
+
+BC.tractionForce(lefttopnode,2) = BC.tractionForce(lefttopnode,2)/2;
+BC.tractionForce(righttopnode,2) = BC.tractionForce(righttopnode,2)/2;
 
 %% Quadrature order
 Control.nq = 2;
@@ -130,13 +138,13 @@ Control.nq = 2;
 Control.steady = 0;
 
 %% Solution parameters
-Control.dt = 5e-2;  % time step
+Control.dt = 1e-2;  % time step
 Control.tend = 10;   % final simulation time
 Control.tol = 1e-3; % tolerance for NR method
 Control.max_it = 100; % maximum of iterations
 
-Control.plotu = find(MeshU.coords == 5); % x = 6m
-Control.plotp = find(MeshP.coords == 5); % x = 6m
+Control.plotu = 184; % dof y of node 92 (x = 0.05m, y = 5m)
+Control.plotp = 52; % dof of node 52 (x = 0.05m, y = 5m)
 
 %% Time discretization parameters
 % Newmark method
