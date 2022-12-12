@@ -2,6 +2,7 @@ function [Kuu, Kup, Kpp, S] = ComputeSystemMatrices_Steady(Material, MeshU, Mesh
 % Compute System Matrices for 1D quasi-steady simulation
 % Input parameters: Material, Mesh, Control, Quad
 % Output matrices: Kuu, Kup, Kpp, S
+% ------------------------------------------------------------------------
 
 ne = MeshU.ne; % number of elements
 nq = Control.nq^MeshU.nsd; % total number of integration points
@@ -19,8 +20,8 @@ colp = zeros(ne*MeshP.nDOFe^2,1);
 
 Kup = zeros(MeshU.nDOF,MeshP.nDOF);
 Kuuvec = zeros(ne*MeshU.nDOFe^2,1);
-Kppvec = zeros (ne*MeshP.nDOFe^2,1);
-Svec = zeros (ne*MeshP.nDOFe^2,1);
+Kppvec = zeros(ne*MeshP.nDOFe^2,1);
+Svec = zeros(ne*MeshP.nDOFe^2,1);
 
 % DOF counter
 count_u = 1;
@@ -78,7 +79,7 @@ for e = 1:ne
         % assemble local matrices
         Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Jdet * Quad.w(ip,1);
         Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Jdet * Quad.w(ip,1);
-        S_e = S_e + Material.Q * (NpVoigt.') * NpVoigt * Jdet * Quad.w(ip,1);
+        S_e = S_e + Material.Qinv * (NpVoigt.') * NpVoigt * Jdet * Quad.w(ip,1);
 
         if MeshU.nsd == 2
             m = [1; 1; 0]; % mapping vector for plane stress

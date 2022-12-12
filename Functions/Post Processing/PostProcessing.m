@@ -12,7 +12,7 @@ step = Control.step; % time step number
 nsd = MeshU.nsd; % number of spatial dimensions
 
 %% Compute solid stress
-[strainU, stressU] = ComputeSolidStress(Material, MeshU, Control, Quad, u);
+[strainU, stressU] = ComputeSolidStress(Material, MeshU, u);
 
 % fixed DOFs displacement
 fixedU = zeros(MeshU.nDOF,1);

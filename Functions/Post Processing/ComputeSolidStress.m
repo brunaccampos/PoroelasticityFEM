@@ -1,19 +1,27 @@
-function [strainU, stressU] = ComputeSolidStress(Material, Mesh, Control, Quad, u)
+function [strainU, stressU] = ComputeSolidStress(Material, Mesh, u)
 % Compute strain and stress in the elements of displacement field
-
+% ------------------------------------------------------------------------
 % Reference: https://github.com/GCMLab (Acknowledgements: Matin Parchei
 % Esfahani)
+% ------------------------------------------------------------------------
 
 %% Initialize variables
 nn = Mesh.nn; % total number of nodes
 ne = Mesh.ne; % number of elements
 nne = Mesh.nne; % number of nodes per element
-% nq = Control.nq^Mesh.nsd; % total number of integration points
 C = getConstitutiveMatrix(Material, Mesh); % constitutive matrix
 
-strainU = zeros(nn,3); % strain matrix
-stressU = zeros(nn,3); % stress matrix
-count = zeros(nn,1);
+% dimension of strain/stress matrix
+switch Mesh.nsd
+    case 1
+        dim = 1;
+    case 2
+        dim = 3;
+end
+
+strainU = zeros(nn,dim); % strain matrix
+stressU = zeros(nn,dim); % stress matrix
+count = zeros(nn,dim);
 
 %% Loop over elements
 for e = 1:ne
@@ -27,6 +35,9 @@ for e = 1:ne
     % element nodal displacements
     ue = u(dofe);
     
+    % element matrices
+    strain_e = zeros(nne, dim);
+    stress_e = zeros(nne, dim);
     % loop over element nodes
     for n = 1:nne
         % node parent coordinates
@@ -40,21 +51,19 @@ for e = 1:ne
         % changing to Voigt form
         B = getBVoigt(Mesh,B);
         % strain
-        strainU(conne(n),:) = strainU(conne(n),:) + (B*ue).';
+        strain_e(n,:) = (B*ue).';
         % stress
-        stressU(conne(n),:) = stressU(conne(n),:) + (C*strainU(conne(n),:).').';
-        
-        count(conne(n)) = count(conne(n)) + 1;
+        stress_e(n,:) = (C*strain_e(n,:).').';
     end
+    
+    % add to global matrices
+    strainU(conne,:) = strainU(conne,:) + strain_e;
+    stressU(conne,:) = stressU(conne,:) + stress_e;
+    count(conne,:) = count(conne,:) + 1;
 end
 
 % average over nodes
-strainU(:,1) = strainU(:,1)./count;
-strainU(:,2) = strainU(:,2)./count;
-strainU(:,3) = strainU(:,3)./count;
-
-stressU(:,1) = stressU(:,1)./count;
-stressU(:,2) = stressU(:,2)./count;
-stressU(:,3) = stressU(:,3)./count;
+strainU = strainU./count;
+stressU = stressU./count;
 
 end

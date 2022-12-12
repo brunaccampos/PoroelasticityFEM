@@ -105,7 +105,7 @@ switch Mesh.nsd
                 Mesh.ydofs = 2:2:Mesh.nDOF;
                 Mesh.zdofs = [];
 
-            case 'p'
+            case {'p', 'n'}
                 % Nodes and dofs on the left face of the domain
                 % (left and right are defined along the x-direction)
                 Mesh.left_nodes = find(Mesh.coords(:,1)==min(Mesh.coords(:,1)));

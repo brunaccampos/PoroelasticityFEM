@@ -1,22 +1,28 @@
-function [u, udot, p, pdot, rE] = SolverSteady(Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration)
+function [u, udot, p, pdot, fE, qE] = SolverSteady(Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration)
 % Solve linear system for quasi-steady case
 % Input parameters: coupled matrices, BC, Control, Iteration
 % Outputs:
 %   u: solid displacement
 %   udot: solid velocity
 %   p: fluid pressure
+% ------------------------------------------------------------------------
 
 %% Iteration data
-u_old = Iteration.u_old;
-p_old = Iteration.p_old;
-
+if ~isempty(Iteration)
+    u_old = Iteration.u_old;
+    p_old = Iteration.p_old;
+else
+    u_old = zeros(length(Kuu),1);
+    p_old = zeros(length(Kpp),1);
+end
 % time step
 dt = Control.dt;
 
 %% Matrix partitioning
 % matrices time discretization
-Kpu = (Kup.')*dt;
+Kpu = (Kup.')./dt;
 Kpp = Kpp + S./dt;
+Kup = -Kup;
 
 % matrix partitioning
 Kuu_EE = Kuu(BC.fixed_u, BC.fixed_u);
@@ -40,17 +46,17 @@ Kpp_FE = Kpp(BC.free_p, BC.fixed_p);
 Kpp_FF = Kpp(BC.free_p, BC.free_p);
 
 % matrices reassemble
-KEE = [Kuu_EE, -Kup_EE;
+KEE = [Kuu_EE, Kup_EE;
     Kpu_EE, Kpp_EE];
-KEF = [Kuu_EF, -Kup_EF;
+KEF = [Kuu_EF, Kup_EF;
     Kpu_EF, Kpp_EF];
-KFE = [Kuu_FE, -Kup_FE;
+KFE = [Kuu_FE, Kup_FE;
     Kpu_FE, Kpp_FE];
-KFF = [Kuu_FF, -Kup_FF;
+KFF = [Kuu_FF, Kup_FF;
     Kpu_FF, Kpp_FF];
 
 % auxiliar terms for external forces vector
-fpbar = fp + (Kup.')*u_old/dt + S*p_old/dt;
+fpbar = fp + (-Kup.')*u_old./dt + S*p_old./dt;
 
 % partitioning vectors
 fuF = fu(BC.free_u);
@@ -70,8 +76,15 @@ dF = KFF\(fF - KFE *dE);
 rE = KEE*dE + KEF*dF;
 
 %% Store variables
+% unknown displacement
 uF = dF(1:length(BC.free_u),1);
+% unknown pressure
 pF = dF(length(BC.free_u)+1 : length(BC.free_u) + length(BC.free_p),1);
+
+% force reactions
+fE = rE(1:length(BC.fixed_u),1);
+%flux reactions
+qE = rE(length(BC.fixed_u)+1 : end,1);
 
 u(BC.fixed_u, 1) = uE;
 u(BC.free_u, 1) = uF;
@@ -79,6 +92,7 @@ p(BC.fixed_p, 1) = pE;
 p(BC.free_p, 1) = pF;
 
 %% Gradients
-udot = (u - u_old)/dt;
-pdot = (p - p_old)/dt;
+udot = (u - u_old)./dt;
+pdot = (p - p_old)./dt;
+
 end

@@ -1,4 +1,4 @@
-function [u, udot, u2dot, p, pdot, rE] = SolverDynamic(Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Control, Iteration)
+function [u, udot, u2dot, p, pdot, fE, qE] = SolverDynamic(Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Control, Iteration)
 % Solve linear system for dynamic case
 % Input parameters: coupled matrices, BC, Control, Iteration
 % Outputs:
@@ -160,6 +160,11 @@ xEu = x(1:length(BC.fixed_u));
 xEp = x(length(BC.fixed_u)+1 : length(BC.fixed_u)+length(BC.fixed_p));
 xFu = x(length(BC.fixed_u)+length(BC.fixed_p)+1 : length(BC.fixed_u)+length(BC.fixed_p)+length(BC.free_u));
 xFp = x(length(BC.fixed_u)+length(BC.fixed_p)+length(BC.free_u)+1 : end);
+
+% force reactions
+fE = rE(1:length(BC.fixed_u),1);
+%flux reactions
+qE = rE(length(BC.fixed_u)+1 : end,1);
 
 u(BC.fixed_u, 1) = xEu;
 u(BC.free_u, 1) = xFu;

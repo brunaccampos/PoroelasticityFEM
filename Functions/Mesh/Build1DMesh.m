@@ -12,7 +12,7 @@ Mesh.nsd = nsd; % number of spatial dimensions
 Mesh.type = type;
 
 switch type
-    % pressure
+    % pressure, porosity
     case 'L2'
         % number of nodes per element
         Mesh.nne = 2;

@@ -84,7 +84,7 @@ for e = 1:ne
         Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Jdet * Quad.w(ip,1);
         Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Jdet * Quad.w(ip,1);
         M_e = M_e + Material.rho * (NuVoigt.') * NuVoigt * Jdet * Quad.w(ip,1);
-        S_e = S_e + Material.Q * (NpVoigt.') * NpVoigt * Jdet * Quad.w(ip,1);
+        S_e = S_e + Material.Qinv * (NpVoigt.') * NpVoigt * Jdet * Quad.w(ip,1);
 
         if MeshU.nsd == 2
             m = [1; 1; 0]; % mapping vector for plane stress

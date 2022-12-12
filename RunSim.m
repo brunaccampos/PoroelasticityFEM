@@ -7,7 +7,7 @@
 % ------------------------------------------------------------------------
 % Reference: https://github.com/GCMLab
 % ------------------------------------------------------------------------
-% Version 4 (July 2022): adapting code for 2D problems
+% Version 5 (July 2022): 1D Spanos quasi static model
 
 %% Clear variables and initialize code
 clearvars
@@ -23,15 +23,18 @@ curDir = pwd;
 % Config files folder
 DirFolder = 'Config Files';
 % Config file to run
-% File = 'ColumnConsolidation1D_Steady';
-% File = 'ColumnConsolidation1D_Dynamic';
-File = 'ColumnConsolidation2D_Dynamic';
+% File = 'Column1D_Steady_Korsawe';
+File = 'Column1D_Steady_Boone';
+% File = 'Column1D_Dynamic_Komijani';
+% File = 'Column1D_Dynamic_Zienck';
+% File = 'Column2D_Dynamic_Komijani';
 
 % Directory for VTK file
-VTKFolder ='C:\Users\bu_ca\OneDrive\Documents\Doutorado UWaterloo\Research\Poroelasticity codes\PorousMedia\Results\';
+% VTKFolder ='C:\Users\bu_ca\OneDrive\Documents\Doutorado UWaterloo\Research\Matlab Codes\PorousMedia\Results\';
+VTKFolder ='C:\Users\bccampos\OneDrive\Documents\Doutorado UWaterloo\Research\Matlab Codes\PorousMedia_v5\Results\';
 
 % output VTK file
-plot2vtk = 1;
+plot2vtk = 0;
 % output CSV file
 plot2csv_on = 0;
 % export Matlab images

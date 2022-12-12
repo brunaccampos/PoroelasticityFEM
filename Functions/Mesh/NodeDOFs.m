@@ -35,7 +35,7 @@ switch Mesh.field
             Mesh.DOF(:,sd) = (sd : Mesh.nsd : (Mesh.nDOF-(Mesh.nsd-sd)))';
         end
 
-    case 'p'
+    case {'p', 'n'}
         Mesh.nDOFe = Mesh.nne;         % number of DOF per element
         Mesh.nDOF = Mesh.nn;           % total number of DOF
         Mesh.DOF = (1:Mesh.nDOF).';
