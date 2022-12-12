@@ -1,4 +1,4 @@
-function plot2csv (config_name, vtk_dir, Plot)
+function Plot2csv (config_name, vtk_dir, Plot)
 
 % file name
 filename = fullfile(vtk_dir, [config_name '.xls']);

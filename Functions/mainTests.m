@@ -21,24 +21,31 @@ end
 if progress_on
     fprintf('%.2f: Reading config file...\n', toc);
 end
-[Material, MeshU, MeshP, BC, Control] = feval(config_name, ConfigDir, progress_on, meshfilename);
+[Material, MeshU, MeshP, MeshN, BC, Control] = feval(config_name, ConfigDir, progress_on, meshfilename);
 
 %% Quadrature points
 Quad = GlobalQuad(MeshU, Control);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
-[Kuu, Kup, Kpp, S] = ComputeSystemMatrices_Steady(Material, MeshU, MeshP, Control, Quad);
+[Kuu, Kup, Kpp, S] = ComputeSystemMatrices_Transient(Material, MeshU, MeshP, Quad);
 
 %% Assemble system load vectors
-[fu,fp] = ComputeSystemLoads(BC, MeshU, MeshP, Control, Quad);
+[fu,fp,~] = ComputeSystemLoads(BC, MeshU, MeshP, [], Control, Quad);
 
 %% Initialize iteration variables
 nsd = MeshU.nsd; % number of spatial directions
 
 %% Solve system
-[u,~, p, ~,fE, ~] = SolverSteady(Kuu, Kup, Kpp, S, fu, fp, BC, Control, []);
-fu(BC.fixed_u) = fE;
+Solution = SolverTransient_v4(Kuu, Kup, Kpp, S, fu, fp, BC, Control, []);
+fu(BC.fixed_u) = Solution.fE;
+fp(BC.fixed_p) = Solution.qE;
 
 %% Compute strains and stresses
-[strain, stress] = ComputeSolidStress(Material, MeshU, u);
+[strain, stress] = ComputeSolidStress(Material, MeshU, Solution.u);
+[flux] = ComputeFluidFlux(Material, MeshP, Solution.p);
+
+% post processing: export VTK file
+if plot2vtk
+    PostProcessing(Solution, Material, MeshU, MeshP, [], Control, BC, config_name, vtk_dir);
+end

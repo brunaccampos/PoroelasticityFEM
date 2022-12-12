@@ -10,7 +10,7 @@ switch nsd
     case 1
         Bvoigt = B;
     case 2
-        if Mesh.field == 'p'
+        if Mesh.field == 'p' || Mesh.field == 'n'
             Bvoigt = B;
         else
             Bvoigt = zeros(3, Mesh.nsd*Mesh.nne);

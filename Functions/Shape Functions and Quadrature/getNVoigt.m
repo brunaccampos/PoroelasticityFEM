@@ -10,7 +10,7 @@ switch nsd
     case 1
         Nvoigt = N;
     case 2
-        if Mesh.field == 'p'
+        if Mesh.field == 'p' || Mesh.field == 'n'
             Nvoigt = N;
         else
             n = size(N,2);

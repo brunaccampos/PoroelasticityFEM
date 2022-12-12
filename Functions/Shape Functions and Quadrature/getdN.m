@@ -23,6 +23,34 @@ switch type
         dN(1,1) = 0.5*(2*Quad.p(ip) - 1);
         dN(1,2) = -2*Quad.p(ip);
         dN(1,3) = 0.5*(2*Quad.p(ip) + 1);
+    case 'T3'
+        % 2D linear element
+        % csi derivatives
+        dN(1,1) = -1;
+        dN(1,2) = 1;
+        dN(1,3) = 0;
+        % eta derivatives
+        dN(2,1) = -1;
+        dN(2,2) = 0;
+        dN(2,3) = 1;
+    case 'T6'
+        % 2D quadratic element
+        csi = Quad.p(:,1);
+        eta = Quad.p(:,2);
+        % csi derivatives
+        dN(1,1) = -3 + 4 * eta(ip) + 4 * csi(ip);
+        dN(1,2) = 4 * csi(ip) - 1;
+        dN(1,3) = 0;
+        dN(1,4) = 4 - 8 * csi(ip) - 4 * eta(ip);
+        dN(1,5) = 4 * eta(ip);
+        dN(1,6) = -4 * eta(ip);
+        % eta derivatives
+        dN(2,1) = -3 + 4 * csi(ip) + 4 * eta(ip);
+        dN(2,2) = 0;
+        dN(2,3) = 4 * eta(ip) - 1;
+        dN(2,4) = -4 * csi(ip);
+        dN(2,5) = 4 * csi(ip);
+        dN(2,6) = 4 - 4 * csi(ip) - 8 * eta(ip);
     case 'Q4'
         % 2D linear element
         csi = Quad.p(:,1);

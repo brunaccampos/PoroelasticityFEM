@@ -1,10 +1,13 @@
-function [Kuu, Kup, Kpp, M, Mhat, S] = ComputeSystemMatrices_Dynamic(Material, MeshU, MeshP, Control, Quad)
+function [Kuu, Kup, Kpp, M, Mhat, S] = ComputeSystemMatrices_Dynamic(Material, MeshU, MeshP, Quad)
+% ------------------------------------------------------------------------
 % Compute System Matrices for 1D dynamic simulation
+% ------------------------------------------------------------------------
 % Input parameters: Material, Mesh, Control, Quad
 % Output matrices: Kuu, Kup, Kpp, M, Mhat, S
+% ------------------------------------------------------------------------
 
 ne = MeshU.ne; % number of elements
-nq = Control.nq^MeshU.nsd; % total number of integration points
+nq = Quad.nq; % total number of integration points
 
 % constitutive matrix
 C = getConstitutiveMatrix(Material, MeshU);
@@ -17,15 +20,19 @@ colu = zeros(ne*MeshU.nDOFe^2,1);
 rowp = zeros(ne*MeshP.nDOFe^2,1);
 colp = zeros(ne*MeshP.nDOFe^2,1);
 
-Kup = zeros(MeshU.nDOF,MeshP.nDOF);
+rowup = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
+colup = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
+
 Kuuvec = zeros(ne*MeshU.nDOFe^2,1);
 Kppvec = zeros(ne*MeshP.nDOFe^2,1);
 Mvec = zeros(ne*MeshU.nDOFe^2,1);
 Svec = zeros(ne*MeshP.nDOFe^2,1);
+Kupvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
 
 % DOF counter
 count_u = 1;
 count_p = 1;
+count_up = 1;
 
 %% Coupled matrices
 for e = 1:ne
@@ -84,7 +91,7 @@ for e = 1:ne
         Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Jdet * Quad.w(ip,1);
         Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Jdet * Quad.w(ip,1);
         M_e = M_e + Material.rho * (NuVoigt.') * NuVoigt * Jdet * Quad.w(ip,1);
-        S_e = S_e + Material.Qinv * (NpVoigt.') * NpVoigt * Jdet * Quad.w(ip,1);
+        S_e = S_e + Material.Minv * (NpVoigt.') * NpVoigt * Jdet * Quad.w(ip,1);
 
         if MeshU.nsd == 2
             m = [1; 1; 0]; % mapping vector for plane stress
@@ -94,14 +101,25 @@ for e = 1:ne
         end
     end
     
+    % lumped element mass matrix
+    if Material.lumpedMass
+        M_eDiag = zeros(MeshU.nDOFe, MeshU.nDOFe);
+        for k = 1:MeshU.nDOFe
+            M_eDiag(k,k) = sum(M_e(k,:));
+        end
+        M_e = M_eDiag;
+    end
+    
     % vectorized matrices
     count_u = count_u + MeshU.nDOFe^2;
     count_p = count_p + MeshP.nDOFe^2;
-
+    count_up = count_up + MeshU.nDOFe*MeshP.nDOFe;
+    
     Kuu_e = reshape(Kuu_e, [MeshU.nDOFe^2,1]);
     Kpp_e = reshape(Kpp_e, [MeshP.nDOFe^2,1]);
     M_e = reshape(M_e, [MeshU.nDOFe^2,1]);
     S_e = reshape(S_e, [MeshP.nDOFe^2,1]);
+    Kup_e = reshape(Kup_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
 
     rowmatrix_u = dofu_e*ones(1,MeshU.nDOFe);
     rowu_e = reshape(rowmatrix_u, [MeshU.nDOFe^2,1]);
@@ -110,33 +128,32 @@ for e = 1:ne
     rowmatrix_p = dofp_e*ones(1,MeshP.nDOFe);
     rowp_e = reshape(rowmatrix_p, [MeshP.nDOFe^2,1]);
     colp_e = reshape(rowmatrix_p', [MeshP.nDOFe^2,1]);
+    
+    rowup_e = reshape(dofu_e*ones(1,MeshP.nDOFe),[MeshU.nDOFe*MeshP.nDOFe,1]);
+    colup_e = reshape(ones(MeshU.nDOFe,1)*dofp_e.',[MeshU.nDOFe*MeshP.nDOFe,1]);
 
     Kuuvec(count_u-MeshU.nDOFe^2:count_u-1) = Kuu_e;
     Kppvec(count_p-MeshP.nDOFe^2:count_p-1) = Kpp_e;
     Mvec(count_u-MeshU.nDOFe^2:count_u-1) = M_e;
     Svec(count_p-MeshP.nDOFe^2:count_p-1) = S_e;
-
+    Kupvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Kup_e;
+    
     rowu(count_u-MeshU.nDOFe^2:count_u-1) = rowu_e;
     colu(count_u-MeshU.nDOFe^2:count_u-1) = colu_e;
 
     rowp(count_p-MeshP.nDOFe^2:count_p-1) = rowp_e;
     colp(count_p-MeshP.nDOFe^2:count_p-1) = colp_e;
 
-    % gather matrices
-    Lu = getGatherMatrix(MeshU.nDOFe, MeshU.nDOF, e);
-    Lp = getGatherMatrix(MeshP.nDOFe, MeshP.nDOF, e);
-
-    % assemble Kup
-    Kup = Kup + (Lu.') * Kup_e * Lp;
+    rowup(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = rowup_e;
+    colup(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = colup_e;
 end
 
 % sparse matrices
 Kuu = sparse(rowu, colu, Kuuvec, MeshU.nDOF, MeshU.nDOF);
-Kup = sparse(Kup);
 Kpp = sparse(rowp, colp, Kppvec, MeshP.nDOF, MeshP.nDOF);
 M = sparse(rowu, colu, Mvec, MeshU.nDOF, MeshU.nDOF);
 S = sparse(rowp, colp, Svec, MeshP.nDOF, MeshP.nDOF);
-
+Kup = sparse(rowup, colup, Kupvec, MeshU.nDOF, MeshP.nDOF);
 Mhat = (Material.rho_f*Material.kf) * (Kup.');
 
 end

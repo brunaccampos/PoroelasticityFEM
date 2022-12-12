@@ -1,9 +1,9 @@
-function [sigma_an, p_an, u_an] = getAnalyticResult (Material, MeshU, MeshP, BC, Control)
+function [sigma_an, p_an, u_an] = getAnalyticResult(Material, MeshU, MeshP, BC, Control)
 % Analytical solution for column consolidation
 
 % dimensionless coordinates
-xd_u = MeshU.coords./MeshU.L;
-xd_p = MeshP.coords./MeshP.L;
+xd_u = (MeshU.coords./MeshU.L);
+xd_p = (MeshP.coords./MeshP.L);
 
 % additional material parameters
 G = Material.E/(2*(1+Material.nu)); % shear modulus [Pa]

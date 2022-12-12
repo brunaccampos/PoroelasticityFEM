@@ -48,6 +48,20 @@ switch type
         elseif node_num == 3
             xi_node = [0,1];
         end
+    case 'T6'
+        if node_num == 1
+            xi_node = [0,0];
+        elseif node_num == 2
+            xi_node = [1,0];
+        elseif node_num == 3
+            xi_node = [0,1];
+        elseif node_num == 4
+            xi_node = [0.5,0];
+        elseif node_num == 5
+            xi_node = [0,0.5];
+        elseif node_num == 6
+            xi_node = [0.5,0.5];
+        end
     case 'Q4'
         if node_num == 1
             xi_node = [-1 -1];

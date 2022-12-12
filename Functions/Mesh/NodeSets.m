@@ -64,7 +64,7 @@ switch Mesh.nsd
         Mesh.right_dof = Mesh.DOF(Mesh.right_nodes);
 
         Mesh.xdofs = 1:Mesh.nDOF;
-        Mesh.ydofs = [];
+        Mesh.ydofs = zeros(length(Mesh.xdofs),1);
         Mesh.zdofs = [];
 
     case 2

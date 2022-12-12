@@ -1,4 +1,4 @@
-function [fu,fp] = ComputeSystemLoads(BC, MeshU, MeshP, Control, Quad)
+function [fu,fp,fn] = ComputeSystemLoads(BC, MeshU, MeshP, MeshN, Control, Quad)
 % Compute system load force vectors
 % ------------------------------------------------------------------------
 %   Input
@@ -7,18 +7,34 @@ function [fu,fp] = ComputeSystemLoads(BC, MeshU, MeshP, Control, Quad)
 %       BC.tractionNodes: nodes where traction is applied
 %       BC.tractionForce: magnitude of applied traction
 %       BC.pointLoad: point loads applied
+%       BC.b: body forces
+%
+%       BC.fluxNodes: nodes where flux is applied
+%       BC.fluxValue: magnitude of applied flux
+%       BC.pointFlux: point fluxes applied
+%       BC.s: flux sources
 % ------------------------------------------------------------------------
 %   Output
 % ------------------------------------------------------------------------
-%   fu: global load vector for displacement field
-%   fp: global load vector for pressure field (zero vector so far)
+%   fu: global traction vector for displacement field
+%   fp: global flux vector for pressure field
 % ------------------------------------------------------------------------
 % Adapted from: https://github.com/GCMLab (Acknowledgements: Chris Ladubec)
 % ------------------------------------------------------------------------
 
 ne = MeshU.ne; % number of elements
-nq = Control.nq^MeshU.nsd; % total number of integration points
+nq = Quad.nq; % total number of integration points
 
+% global vectors
+fu = zeros(MeshU.nDOF, 1);
+fp = zeros(MeshP.nDOF, 1);
+if ~Control.Biotmodel
+    fn = zeros(MeshN.nDOF, 1);
+else
+    fn = [];
+end
+
+%% Traction vector
 % veryfing if there are applied loads
 if ~isempty(BC.tractionNodes)
     % traction nodes
@@ -31,11 +47,6 @@ else
     tractionNodes = [];
 end
 
-%% Initialize global matrices
-fu = zeros(MeshU.nDOF, 1);
-fp = zeros(MeshP.nDOF, 1);
-
-%% Load force vector displacement field
 % loop over elements
 for e = 1:ne
     % element connectivity
@@ -71,6 +82,25 @@ for e = 1:ne
         end
     end
     
+    % loop over IPs if there are in situ stresses
+%     if ~isempty(BC.S0)
+%         for ip = 1:nq
+%             % N matrices
+%             N = getN(MeshU, Quad, ip);
+%             % N derivatives
+%             dN = getdN(MeshU, Quad, ip);
+%             % change to Voigt form
+%             NVoigt = getNVoigt(MeshU, N);
+%             % Jacobian matrix
+%             J = dN*gcoords;
+%             % Jacobian determinant
+%             Jdet = det(J);
+%             
+%             % in situ stress
+%             fb_e = fb_e - NVoigt.' * BC.S0 * Jdet * Quad.w(ip,1);
+%         end
+%     end
+    
     % loop over traction forces
     for j = 1:length(tractionNodes)
         % check if traction is applied to current element
@@ -83,17 +113,115 @@ for e = 1:ne
             [N,~] = lagrange_basis(MeshU, coord);
             Nvoigt = getNVoigt(MeshU, N');
             % element load vector
-            fu_e = fu_e + Nvoigt.' * tractionForce(j,:)';
+            if ~BC.tractionInterp
+                fu_e = fu_e + Nvoigt.' * tractionForce(j,:)';
+            else
+                tractionForce_e = tractionForce(connu_e,:);
+                tractionForce_eVec = zeros(MeshU.nne*2,1);
+                tractionForce_eVec(1:2:end) = tractionForce_e(:,1);
+                tractionForce_eVec(2:2:end) = tractionForce_e(:,2);
+                fu_e = fu_e + Nvoigt.' * Nvoigt * tractionForce_eVec;
+            end
             % update counting
             count(j) = 1;
         end
     end
 
+%     if Control.t <= 1
+%         fu_e = fu_e*Control.t;
+%     end
     % assemble global load vector
     fu(dofe) = fu(dofe) + fu_e + fb_e;
 end
 
+% if Control.t <= 1
+%     BC.pointLoad = BC.pointLoad*Control.t;
+% end
+    
+% BC.pointLoad = BC.pointLoadValue * (1 - cos(75*Control.t));
+
 % adding point loads
 if ~isempty(BC.pointLoad)
     fu = fu + BC.pointLoad;
+end
+
+%% Flux vector
+% veryfing if there are applied fluxed
+if ~isempty(BC.fluxNodes)
+    % traction nodes
+    fluxNodes = BC.fluxNodes;
+    % traction values
+    fluxValue = BC.fluxValue;
+    % counter
+    count = zeros(size(fluxNodes));
+else
+    fluxNodes = [];
+end
+
+% loop over elements
+for e = 1:ne
+    % element connectivity
+    connp_e = MeshP.conn(e,:);
+    % global coordinates
+    gcoords = MeshP.coords(connp_e,:);
+    % element DOFs
+    dofe = MeshP.DOF(connp_e,:);
+    dofe = reshape(dofe', MeshP.nDOFe,[]);
+    % element flux matrix
+    fp_e = zeros(MeshP.nDOFe,1);
+    % element flux source matrix
+    fs_e = zeros(MeshP.nDOFe,1);
+
+    % loop over IPs if there are flux sources
+    if ~strcmp(func2str(BC.s),'@(x)[]')
+        for ip = 1:nq
+            % N matrices
+            N = getN(MeshP, Quad, ip);
+            % N derivatives
+            dN = getdN(MeshP, Quad, ip);
+            % change to Voigt form
+            NVoigt = getNVoigt(MeshP, N);
+            % quadrature point in phyisical coordinates
+            ipcoords = gcoords' * N.';
+            % Jacobian matrix
+            J = dN*gcoords;
+            % Jacobian determinant
+            Jdet = det(J);
+            
+            % flux source
+            fs_e = fs_e + NVoigt.' * BC.s(ipcoords) * Jdet * Quad.w(ip,1);
+        end
+    end
+    
+    % loop over flux values
+    for j = 1:length(fluxNodes)
+        % check if flux is applied to current element
+        if ~isempty(find(connp_e == fluxNodes(j),1)) && count(j) == 0
+            % current node
+            node = find(connp_e == fluxNodes(j),1);
+            % node parent coordinates
+            coord = getParentCoords(node, MeshP.type);
+            % node shape functions
+            [N,~] = lagrange_basis(MeshP, coord);
+            Nvoigt = getNVoigt(MeshP, N');
+            % element load vector
+            fp_e = fp_e - Nvoigt.' * fluxValue(j,:)';
+            % update counting
+            count(j) = 1;
+        end
+    end
+
+    % assemble global flux vector
+    fp(dofe) = fp(dofe) + fp_e + fs_e;
+end
+
+% if Control.t <= 100*1e-4
+%     BC.pointFlux = BC.pointFlux*Control.t/(100*1e-4);
+% end
+
+% adding point loads
+if ~isempty(BC.pointFlux)
+    fp = fp - BC.pointFlux;
+end
+    
 end
