@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, BC, Control] = ManufacturedSolutionQ4(config_dir, progress_on, meshfilename)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionQ9(config_dir, progress_on, meshfilename)
 % ------------------------------------------------------------------------
 % Test 4 calculates the convergence rates of a uniform Q4 mesh using a
 % manufactured solution in which
@@ -13,15 +13,23 @@ function [Material, MeshU, MeshP, BC, Control] = ManufacturedSolutionQ4(config_d
 % porous media permeability [m2/Pa s]
 Material.kf = 0;
 % 1/Q (related to storage coefficient)
-Material.Qinv = 0;
+Material.Minv = 0;
 % Biot's coefficient
 Material.alpha = 0;
+% poroelasticity model
+Control.Biotmodel = 1;
 
 %% Material properties
 % elasticity modulus [Pa]
 Material.E = 2230;
 % Poisson's ratio
 Material.nu = 0.3;
+
+% constititive law - 'PlaneStress' or 'PlaneStrain'
+Material.constLaw = 'PlaneStress';
+
+% lumped mass matrix - 0: false, 1: true
+Material.lumpedMass = 0;
 
 %% Mesh parameters
 if progress_on
@@ -65,33 +73,38 @@ switch MeshType
         % build mesh pressure field
         meshFileNameP = meshfilename;
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+        
+        MeshN = [];
 end
 
-%% Dirichlet BCs
+%% Dirichlet BCs - solid
 BC.ux = @(x) x(:,1).^5 + x(:,1).*x(:,2).^3 - x(:,2).^6;
 BC.uy = @(x) x(:,1).^5 + x(:,1).*x(:,2).^3 - x(:,2).^6;
-
 % column vector of prescribed displacement dof
 BC.fixed_u_dof1 = MeshU.left_dof;
 BC.fixed_u_dof2 = MeshU.right_dof;
 BC.fixed_u_dof3 = MeshU.bottom_dof;
 BC.fixed_u_dof4 = MeshU.top_dof;
 BC.fixed_u = unique([BC.fixed_u_dof1; BC.fixed_u_dof2; BC.fixed_u_dof3; BC.fixed_u_dof4]);
-
 % prescribed displacement
 BC.fixed_u_value = zeros(length(BC.fixed_u),1);
 BC.fixed_u_value(1:2:end) = BC.ux([MeshU.coords(BC.fixed_u(2:2:end)/2,1),MeshU.coords(BC.fixed_u(2:2:end)/2,2)]);
 BC.fixed_u_value(2:2:end) = BC.uy([MeshU.coords(BC.fixed_u(2:2:end)/2,1),MeshU.coords(BC.fixed_u(2:2:end)/2,2)]);
+% free displacement nodes
+BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
+%% Dirichlet BCs - fluid
 % prescribed pressure
 BC.fixed_p = 1:MeshP.nDOF;
 BC.fixed_p_value = zeros(length(BC.fixed_p),1);
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+% free pressure nodes
+BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
-%% Neumann BCs
+%% Neumann BCs - solid
+% traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
+BC.tractionInterp = 0;
 % column vector of prescribed traction nodes
 BC.tractionNodes = MeshU.right_nodes;
-
 % prescribed traction [t1x t1y;t2x t2y;...] [N]
 Fnode = 1/(length(BC.tractionNodes) - 1);
 BC.tractionForce = Fnode*[zeros(size(BC.tractionNodes)), zeros(size(BC.tractionNodes))];
@@ -110,30 +123,36 @@ BC.tractionForce = Fnode*[zeros(size(BC.tractionNodes)), zeros(size(BC.tractionN
 E = Material.E;
 nu = Material.nu;
 
+% body force
 BC.b = @(x)[-E / (1-nu^2)  * ( 20*x(1).^3 + 3*nu*x(2).^2              + (1-nu)/2*( 6*x(1).*x(2) - 30*x(2).^4 + 3*x(2).^2));
     -E / (1-nu^2)  * ( (1-nu)/2*( 3*x(2).^2  + 20*x(1).^3)    + 3*nu*x(2).^2 + 6*x(1).*x(2) - 30*x(2).^4 )];
-
-% prescribed flux
-BC.fixed_fp = 1:MeshP.nDOF;
-
-% free nodes
-BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
-BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
-BC.free_fp = setdiff(MeshP.DOF, BC.fixed_fp);
 
 % point load [N]
 BC.pointLoad = [];
 
+%% Neumann BCs - fluid
+% point flux [m/s]
+BC.pointFlux = [];
+
+% distributed flux [m/s]
+BC.fluxNodes = [];
+
+% flux source
+BC.s = @(x)[]; 
+
 %% Quadrature order
-Control.nq = 4;
+Control.nqU = 4;
+Control.nqP = 4;
 
 %% Problem type
-% 1 = quasi-steady state problem (no solid velocity, acceleration, and pressure
-% change)
-% 0 = transient problem (velocity and acceleration included)
+% 1 = quasi-steady/transient problem (no acceleration and pressure change)
+% 0 = dynamic problem (acceleration/intertia terms included)
 Control.steady = 1;
 
 %% Solution parameters
 Control.dt = 1;  % time step
+Control.step = 1; % total simulation time
+
+Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
 end

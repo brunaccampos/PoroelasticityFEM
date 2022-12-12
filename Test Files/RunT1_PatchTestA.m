@@ -25,7 +25,7 @@ meshfilename = 'Mesh Files\PatchTest.msh';
 mainTests
 
 %% Step 2 - Check results
-[disp_er, stress_er, reaction_er] = PatchTest_check(u, stress, fu, MeshU, BC, Material);
+[disp_er, stress_er, reaction_er] = PatchTest_check(Solution.u, stress, fu, MeshU, BC, Material);
 
 fprintf('\nQ4-patch test A: Displacement error is %.2f',disp_er)
 fprintf('\nQ4-patch test A: Stress error is %.2f',stress_er)

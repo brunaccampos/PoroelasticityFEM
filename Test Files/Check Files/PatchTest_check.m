@@ -37,6 +37,7 @@ d_exact = zeros(2*Mesh.nn,1);
 d_exact(1:2:end) = (1-Material.nu)*BC.traction/Material.E.*x;
 d_exact(2:2:end) = (1-Material.nu)*BC.traction/Material.E.*y;
 stress_exact = [sigma*ones(1,Mesh.nn); sigma*ones(1,Mesh.nn); zeros(1,Mesh.nn)];
+% stress_exact = [zeros(1,Mesh.nn); zeros(1,Mesh.nn); zeros(1,Mesh.nn)];
 
 % Calculate the error
 disp_er = norm(d - d_exact);
