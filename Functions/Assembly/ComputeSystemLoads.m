@@ -1,4 +1,4 @@
-function [fu,fp,fn] = ComputeSystemLoads(BC, MeshU, MeshP, MeshN, Control, Quad)
+function [fu,fp,fn] = ComputeSystemLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP)
 % Compute system load force vectors
 % ------------------------------------------------------------------------
 %   Input
@@ -22,8 +22,13 @@ function [fu,fp,fn] = ComputeSystemLoads(BC, MeshU, MeshP, MeshN, Control, Quad)
 % Adapted from: https://github.com/GCMLab (Acknowledgements: Chris Ladubec)
 % ------------------------------------------------------------------------
 
+% ------------------------------------------------------------------------
+% version 2: different number of IPs for u-p fields
+% ------------------------------------------------------------------------
+
 ne = MeshU.ne; % number of elements
-nq = Quad.nq; % total number of integration points
+nqU = QuadU.nq; % total number of integration points
+nqP = QuadP.nq;
 
 % global vectors
 fu = zeros(MeshU.nDOF, 1);
@@ -63,11 +68,11 @@ for e = 1:ne
 
     % loop over IPs if there are body forces
     if ~strcmp(func2str(BC.b),'@(x)[]')
-        for ip = 1:nq
+        for ip = 1:nqU
             % N matrices
-            N = getN(MeshU, Quad, ip);
+            N = getN(MeshU, QuadU, ip);
             % N derivatives
-            dN = getdN(MeshU, Quad, ip);
+            dN = getdN(MeshU, QuadU, ip);
             % change to Voigt form
             NVoigt = getNVoigt(MeshU, N);
             % quadrature point in phyisical coordinates
@@ -78,28 +83,9 @@ for e = 1:ne
             Jdet = det(J);
             
             % body force
-            fb_e = fb_e + NVoigt.' * BC.b(ipcoords) * Jdet * Quad.w(ip,1);
+            fb_e = fb_e + NVoigt.' * BC.b(ipcoords) * Jdet * QuadU.w(ip,1);
         end
     end
-    
-    % loop over IPs if there are in situ stresses
-%     if ~isempty(BC.S0)
-%         for ip = 1:nq
-%             % N matrices
-%             N = getN(MeshU, Quad, ip);
-%             % N derivatives
-%             dN = getdN(MeshU, Quad, ip);
-%             % change to Voigt form
-%             NVoigt = getNVoigt(MeshU, N);
-%             % Jacobian matrix
-%             J = dN*gcoords;
-%             % Jacobian determinant
-%             Jdet = det(J);
-%             
-%             % in situ stress
-%             fb_e = fb_e - NVoigt.' * BC.S0 * Jdet * Quad.w(ip,1);
-%         end
-%     end
     
     % loop over traction forces
     for j = 1:length(tractionNodes)
@@ -174,11 +160,11 @@ for e = 1:ne
 
     % loop over IPs if there are flux sources
     if ~strcmp(func2str(BC.s),'@(x)[]')
-        for ip = 1:nq
+        for ip = 1:nqP
             % N matrices
-            N = getN(MeshP, Quad, ip);
+            N = getN(MeshP, QuadP, ip);
             % N derivatives
-            dN = getdN(MeshP, Quad, ip);
+            dN = getdN(MeshP, QuadP, ip);
             % change to Voigt form
             NVoigt = getNVoigt(MeshP, N);
             % quadrature point in phyisical coordinates
@@ -189,7 +175,7 @@ for e = 1:ne
             Jdet = det(J);
             
             % flux source
-            fs_e = fs_e + NVoigt.' * BC.s(ipcoords) * Jdet * Quad.w(ip,1);
+            fs_e = fs_e + NVoigt.' * BC.s(ipcoords) * Jdet * QuadP.w(ip,1);
         end
     end
     
