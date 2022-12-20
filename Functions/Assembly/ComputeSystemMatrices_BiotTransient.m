@@ -1,4 +1,4 @@
-function [Kuu, Kup, Kpp, S] = ComputeSystemMatrices_Transient_v4(Material, MeshU, MeshP, QuadU, QuadP)
+function [Kuu, Kup, Kpp, S] = ComputeSystemMatrices_BiotTransient(Material, MeshU, MeshP, QuadU, QuadP)
 % Compute System Matrices for 1D quasi-steady simulation
 % Input parameters: Material, Mesh, Control, Quad
 % Output matrices: Kuu, Kup, Kpp, S

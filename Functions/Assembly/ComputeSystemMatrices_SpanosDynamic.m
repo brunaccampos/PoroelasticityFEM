@@ -1,9 +1,10 @@
-function [Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Aun, Bun] = ComputeSystemMatrices_Transient_v2(Material, MeshU, MeshP, MeshN,Quad)
-% Compute System Matrices for 1D quasi-steady simulation
-% Input parameters: Material, Mesh, Control, Quad
-% Output matrices: Kuu, Kup, Kpp, S
+function [Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeSystemMatrices_SpanosDynamic(Material, MeshU, MeshP, MeshN, Quad)
 % ------------------------------------------------------------------------
-% version 2: include matrices for Spanos formulation
+% Compute System Matrices for 1D dynamic simulation
+% ------------------------------------------------------------------------
+% Input parameters: Material, Mesh, Control, Quad
+% ------------------------------------------------------------------------
+% version 3: correcting matrices for Spanos formulation
 % ------------------------------------------------------------------------
 
 ne = MeshU.ne; % number of elements
@@ -49,11 +50,13 @@ Svec = zeros (ne*MeshP.nDOFe^2,1);
 Knnvec = zeros (ne*MeshN.nDOFe^2,1);
 Kupvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
 Kpuvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
-Aunvec = zeros(ne*MeshU.nDOFe*MeshN.nDOFe,1);
-Bunvec = zeros(ne*MeshU.nDOFe*MeshN.nDOFe,1);
 Knuvec = zeros(ne*MeshU.nDOFe*MeshN.nDOFe,1);
 Kpnvec = zeros(ne*MeshP.nDOFe*MeshN.nDOFe,1);
 Knpvec = zeros(ne*MeshP.nDOFe*MeshN.nDOFe,1);
+% mass matrices
+Muuvec = zeros(ne*MeshU.nDOFe^2,1);
+Mpuvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
+Mnuvec = zeros(ne*MeshU.nDOFe*MeshN.nDOFe,1);
 
 % DOF counter
 count_u = 1;
@@ -88,16 +91,17 @@ for e = 1:ne
 
     % initialize local matrices
     Kuu_e = zeros(MeshU.nDOFe, MeshU.nDOFe);
-    Kpp_e = zeros (MeshP.nDOFe, MeshP.nDOFe);
-    S_e = zeros (MeshP.nDOFe, MeshP.nDOFe);
-    Knn_e = zeros (MeshN.nDOFe, MeshN.nDOFe);
+    Kpp_e = zeros(MeshP.nDOFe, MeshP.nDOFe);
+    S_e = zeros(MeshP.nDOFe, MeshP.nDOFe);
+    Knn_e = zeros(MeshN.nDOFe, MeshN.nDOFe);
     Kup_e = zeros(MeshU.nDOFe,MeshP.nDOFe);
-    Kpu_e = zeros (MeshP.nDOFe, MeshU.nDOFe);
-    Kpn_e = zeros (MeshP.nDOFe, MeshN.nDOFe);
-    Knp_e = zeros (MeshN.nDOFe, MeshP.nDOFe);
-    Knu_e = zeros (MeshN.nDOFe, MeshU.nDOFe);
-    Aun_e = zeros (MeshU.nDOFe, MeshN.nDOFe);
-    Bun_e = zeros (MeshU.nDOFe, MeshN.nDOFe);
+    Kpu_e = zeros(MeshP.nDOFe, MeshU.nDOFe);
+    Kpn_e = zeros(MeshP.nDOFe, MeshN.nDOFe);
+    Knp_e = zeros(MeshN.nDOFe, MeshP.nDOFe);
+    Knu_e = zeros(MeshN.nDOFe, MeshU.nDOFe);
+    Muu_e = zeros(MeshU.nDOFe, MeshU.nDOFe);
+    Mpu_e = zeros(MeshP.nDOFe, MeshU.nDOFe);
+    Mnu_e = zeros(MeshN.nDOFe, MeshU.nDOFe);
     
     % loop over integration points
     for ip = 1:nq
@@ -137,37 +141,26 @@ for e = 1:ne
         Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Jdet * Quad.w(ip,1);
         Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Jdet * Quad.w(ip,1);
         S_e = S_e + (Material.n / Material.Kf) * (NpVoigt.') * NpVoigt * Jdet * Quad.w(ip,1);
-        Knn_e = Knn_e + (NnVoigt.') * NnVoigt * Jdet * Quad.w(ip,1) - (Material.deltaF * Material.xif * Material.kf)/(Material.n^2) * (BnVoigt.') * BnVoigt * Jdet * Quad.w(ip,1);
+        Knn_e = Knn_e + (NnVoigt.') * NnVoigt * Jdet * Quad.w(ip,1);
+        Muu_e = Muu_e + Material.rho * (NuVoigt.') * NuVoigt * Jdet * Quad.w(ip,1);
         
         % assemble local square matrices p-n
-        Kpn_e = Kpn_e + (NpVoigt.') * NnVoigt  * Jdet * Quad.w(ip,1) - (Material.xif * Material.kf / Material.n) * (BpVoigt.') * BnVoigt * Jdet * Quad.w(ip,1);
+        Kpn_e = Kpn_e + (NpVoigt.') * NnVoigt  * Jdet * Quad.w(ip,1);
         Knp_e = Knp_e + Material.deltaF * Material.kf / Material.n * (BnVoigt.') * BpVoigt * Jdet * Quad.w(ip,1);
                 
-        % assemble local non square matries
-%         Bun_e = Bun_e + Material.xif * (NuVoigt.') * BnVoigt * Jdet * Quad.w(ip,1);
-%         Aun_e = Aun_e + Material.Ks * (NuVoigt.') * BnVoigt * Jdet * Quad.w(ip,1);
-
         if MeshU.nsd == 2
             m = [1; 1; 0]; % mapping vector for plane stress
             Kup_e = Kup_e + Material.alpha * (BuVoigt.') * m * NpVoigt * Jdet * Quad.w(ip,1);
-%             Kup_e = Kup_e + Material.alpha * (BuVoigt.') * m * NpVoigt * Jdet * Quad.w(ip,1) - ...
-%                 Material.alphaSUPG * Material.h * Material.alpha / 2 * (BuVoigt.') * [1,0; 0,1; 0,0] * BpVoigt * Jdet * Quad.w(ip,1);
             Kpu_e = Kpu_e + Material.n * (NpVoigt.') * (m.') * BuVoigt * Jdet * Quad.w(ip,1);
             Knu_e = Knu_e + (Material.deltaF - Material.deltaS) * (NnVoigt.') * (m.') * BuVoigt  * Jdet * Quad.w(ip,1);
-%             Bun_e = Bun_e + Material.xif * (NuVoigt.') * BnVoigt * Jdet * Quad.w(ip,1) + ...
-%                 Material.alphaSUPG * Material.h * Material.xif / 2 * (BuVoigt.') * [1,0; 0,1; 0,0] * BnVoigt * Jdet * Quad.w(ip,1);
-%             Aun_e = Aun_e + Material.Ks * (NuVoigt.') * BnVoigt * Jdet * Quad.w(ip,1) - ...
-%                 Material.alphaSUPG * Material.h * Material.Ks / 2 * (BuVoigt.') * [1,0; 0,1; 0,0] * BnVoigt * Jdet * Quad.w(ip,1);
+            Mpu_e = Mpu_e + Material.rho_f * Material.kf * (NpVoigt.') * (m.') * BuVoigt * Jdet * Quad.w(ip,1);
+            Mnu_e = Mnu_e + Material.deltaF * Material.rho_f * Material.kf / Material.n * (NnVoigt.') * (m.') * BuVoigt * Jdet * Quad.w(ip,1);
         else
-%             Kup_e = Kup_e + Material.alpha * (BuVoigt.') * NpVoigt * Jdet * Quad.w(ip,1);
-            Kup_e = Kup_e + Material.alpha * (BuVoigt.') * NpVoigt * Jdet * Quad.w(ip,1) - ...
-                Material.alphaSUPG * Material.h * Material.alpha / 2 * (BuVoigt.') * BpVoigt * Jdet * Quad.w(ip,1);
+            Kup_e = Kup_e + Material.alpha * (BuVoigt.') * NpVoigt * Jdet * Quad.w(ip,1);
             Kpu_e = Kpu_e + Material.n * (NpVoigt.') * BuVoigt * Jdet * Quad.w(ip,1);
             Knu_e = Knu_e + (Material.deltaF - Material.deltaS) * (NnVoigt.') * BuVoigt  * Jdet * Quad.w(ip,1);
-            Bun_e = Bun_e + Material.xif * (NuVoigt.') * BnVoigt * Jdet * Quad.w(ip,1) + ...
-                Material.alphaSUPG * Material.h * Material.xif / 2 * (BuVoigt.')  * BnVoigt * Jdet * Quad.w(ip,1);
-            Aun_e = Aun_e + Material.Ks * (NuVoigt.') * BnVoigt * Jdet * Quad.w(ip,1) - ...
-                Material.alphaSUPG * Material.h * Material.Ks / 2 * (BuVoigt.') * BnVoigt * Jdet * Quad.w(ip,1);
+            Mpu_e = Mpu_e + Material.rho_f * Material.kf * (NpVoigt.') * BuVoigt * Jdet * Quad.w(ip,1);
+            Mnu_e = Mnu_e + Material.deltaF * Material.rho_f * Material.kf / Material.n * (NnVoigt.') * BuVoigt * Jdet * Quad.w(ip,1);
         end
     end
 
@@ -186,10 +179,11 @@ for e = 1:ne
     Kup_e = reshape(Kup_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
     Kpu_e = reshape(Kpu_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
     Knu_e = reshape(Knu_e, [MeshU.nDOFe*MeshN.nDOFe,1]);
-    Aun_e = reshape(Aun_e, [MeshU.nDOFe*MeshN.nDOFe,1]);
-    Bun_e = reshape(Bun_e, [MeshU.nDOFe*MeshN.nDOFe,1]);
     Knp_e = reshape(Knp_e, [MeshP.nDOFe*MeshN.nDOFe,1]);
     Kpn_e = reshape(Kpn_e, [MeshP.nDOFe*MeshN.nDOFe,1]);
+    Muu_e = reshape(Muu_e, [MeshU.nDOFe^2,1]);
+    Mpu_e = reshape(Mpu_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
+    Mnu_e = reshape(Mnu_e, [MeshU.nDOFe*MeshN.nDOFe,1]);
     
     % u-u
     rowmatrix_u = dofu_e*ones(1,MeshU.nDOFe);
@@ -229,10 +223,11 @@ for e = 1:ne
     Kupvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Kup_e;
     Kpuvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Kpu_e;
     Knuvec(count_un-MeshU.nDOFe*MeshN.nDOFe:count_un-1) = Knu_e;
-    Aunvec(count_un-MeshU.nDOFe*MeshN.nDOFe:count_un-1) = Aun_e;
-    Bunvec(count_un-MeshU.nDOFe*MeshN.nDOFe:count_un-1) = Bun_e;
     Knpvec(count_pn-MeshP.nDOFe*MeshN.nDOFe:count_pn-1) = Knp_e;
     Kpnvec(count_pn-MeshP.nDOFe*MeshN.nDOFe:count_pn-1) = Kpn_e;
+    Muuvec(count_u-MeshU.nDOFe^2:count_u-1) = Muu_e;
+    Mpuvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Mpu_e;
+    Mnuvec(count_un-MeshU.nDOFe*MeshN.nDOFe:count_un-1) = Mnu_e;
 
     % u-u
     rowu(count_u-MeshU.nDOFe^2:count_u-1) = rowu_e;
@@ -271,9 +266,11 @@ Knn = sparse(rown, coln, Knnvec, MeshN.nDOF, MeshN.nDOF);
 Kup = sparse(rowup, colup, Kupvec, MeshU.nDOF, MeshP.nDOF);
 Kpu = sparse(rowpu, colpu, Kpuvec, MeshP.nDOF, MeshU.nDOF);
 Knu = sparse(rownu, colnu, Knuvec, MeshN.nDOF, MeshU.nDOF);
-Aun = sparse(rowun, colun, Aunvec, MeshU.nDOF, MeshN.nDOF);
-Bun = sparse(rowun, colun, Bunvec, MeshU.nDOF, MeshN.nDOF);
 Knp = sparse(rownp, colnp, Knpvec, MeshN.nDOF, MeshP.nDOF);
 Kpn = sparse(rowpn, colpn, Kpnvec, MeshP.nDOF, MeshN.nDOF);
+Muu = sparse(rowu, colu, Muuvec, MeshU.nDOF, MeshU.nDOF);
+Mpu = sparse(rowpu, colpu, Mpuvec, MeshP.nDOF, MeshU.nDOF);
+Mnu = sparse(rownu, colnu, Mnuvec, MeshN.nDOF, MeshU.nDOF);
+Kun = sparse(MeshU.nDOF, MeshN.nDOF);
 
 end
