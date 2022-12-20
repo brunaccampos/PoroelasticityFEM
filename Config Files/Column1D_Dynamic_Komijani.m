@@ -189,8 +189,8 @@ if ~Control.Biotmodel
 end
 
 %% Quadrature order
-Control.nqU = 2;
-Control.nqP = 2;
+Control.nqU = 3;
+Control.nqP = 3;
 
 %% Problem type
 % 1 = quasi-steady/transient problem (no acceleration and pressure change)
@@ -199,7 +199,7 @@ Control.steady = 0;
 
 %% Solution parameters
 Control.dt = 1e-2;  % time step
-Control.tend = 1;   % final simulation time
+Control.tend = 10;   % final simulation time
 
 Control.plotu = find(MeshU.coords == 5); % x = 5m
 Control.plotp = find(MeshP.coords == 5); % x = 5m
