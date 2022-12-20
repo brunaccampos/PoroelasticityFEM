@@ -1,5 +1,8 @@
-function [sigma_an, p_an, u_an] = getAnalyticResult(Material, MeshU, MeshP, BC, Control)
+function [sigma_an, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control)
+% ------------------------------------------------------------------------
 % Analytical solution for column consolidation
+% Valid for incompressible solid and fluid materials
+% ------------------------------------------------------------------------
 
 % dimensionless coordinates
 xd_u = (MeshU.coords./MeshU.L);
