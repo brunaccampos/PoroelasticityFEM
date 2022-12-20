@@ -137,8 +137,8 @@ for i = 1:length(MeshP.top_nodes)
 end
 
 %% Dirichlet BCs - solid
-% displacement u=0 at bottom (x/y), left (x), and right (x)
-BC.fixed_u = [MeshU.left_dofx; MeshU.right_dofx; MeshU.bottom_dofx; MeshU.bottom_dofy];
+% displacement u=0 at bottom (y), left (x), and right (x)
+BC.fixed_u = [MeshU.left_dofx; MeshU.right_dofx; MeshU.bottom_dofy];
 % fixed DOF values
 BC.fixed_u_value = zeros(length(BC.fixed_u),1);
 % free nodes
@@ -214,7 +214,7 @@ Control.steady = 1;
 
 %% Solution parameters
 Control.dt = 1e-2;  % time step
-Control.tend = 20;   % final simulation time
+Control.tend = 10;   % final simulation time
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
