@@ -47,9 +47,9 @@ File = 'Column1D_Dynamic_Komijani';
 % -------------------- 1D tests
 % File = 'Column1D_Steady_Korsawe_fixedP';
 % File = 'HeatConduction_1D_Steady';
-% File = 'ManufacturedSolutionL3';
-% File = 'ManufacturedSolutionL2_v1';
-% File = 'ManufacturedSolutionL2_v2';
+% File = 'ManufacturedSolutionL3_v1';
+% File = 'ManufacturedSolutionL3_v2';
+% File = 'ManufacturedSolutionL3_v3';
 
 % -------------------- 2D tests
 % File = 'Column2D_Steady_Korsawe_fixedP';
@@ -115,7 +115,7 @@ plot2csv_on = 0;
 % export Matlab images
 saveGraphs_on = 0;
 % export Matlab files
-saveMatData_on = 1;
+saveMatData_on = 0;
 % output progress messages
 progress_on = 1;
 
