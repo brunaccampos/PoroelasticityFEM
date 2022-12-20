@@ -26,14 +26,14 @@ DirFolder = 'Config Files';
 % Config file to run
 % -------------------- 1D steady/transient column consolidation
 % File = 'Column1D_Steady_Korsawe';
-File = 'Column1D_Steady_Boone';
+% File = 'Column1D_Steady_Boone';
 % File = 'Column1D_Steady_Quiroga';
 % File = 'Column1D_Steady_Sandstone';
 % File = 'Column1D_Steady_Zheng';
 % File = 'Column1D_Steady_Ferronato';
 
 % -------------------- 1D dynamic column consolidation
-% File = 'Column1D_Dynamic_Komijani';
+File = 'Column1D_Dynamic_Komijani';
 % File = 'Column1D_Dynamic_Zienck';
 % File = 'Column1D_Dynamic_Diebels';
 
@@ -114,6 +114,8 @@ plot2vtk = 1;
 plot2csv_on = 0;
 % export Matlab images
 saveGraphs_on = 0;
+% export Matlab files
+saveMatData_on = 1;
 % output progress messages
 progress_on = 1;
 
@@ -137,7 +139,7 @@ clearvars -except VTKDir ConfigFile...
     file codeSubmitTime ...
     exit_when_done print_log ...
     plot2vtk progress_on plot2csv_on ...
-    saveGraphs_on
+    saveGraphs_on saveMatData_on
 
 clearvars -global
 
@@ -153,7 +155,7 @@ end
 
 % run and time the simulation
 start_time = toc;
-run('Functions/main_v4');
+run('Functions/Main/main');
 end_time = toc;
 
 disp(['run time: ' num2str(end_time - start_time)])
