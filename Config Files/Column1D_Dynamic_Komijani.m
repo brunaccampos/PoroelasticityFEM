@@ -86,14 +86,17 @@ switch MeshType
         L = 10;
         %%%% solid displacement field
         typeU = 'L3';
-        MeshU = Build1DMesh(nsd, ne, L, typeU);
+        fieldU = 'u';
+        MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
         %%%% fluid pressure field
         typeP = 'L2';
-        MeshP = Build1DMesh(nsd, ne, L, typeP);
+        fieldP = 'p';
+        MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
         %%%% porosity field
         if ~Control.Biotmodel
             typeN = 'L2';
-            MeshN = Build1DMesh(nsd, ne, L, typeN);
+            fieldN = 'n';
+            MeshN = Build1DMesh(nsd, ne, L, typeN, fieldN);
         else
             MeshN = [];
         end
@@ -196,7 +199,7 @@ Control.steady = 0;
 
 %% Solution parameters
 Control.dt = 1e-2;  % time step
-Control.tend = 10;   % final simulation time
+Control.tend = 1;   % final simulation time
 
 Control.plotu = find(MeshU.coords == 5); % x = 5m
 Control.plotp = find(MeshP.coords == 5); % x = 5m
