@@ -67,7 +67,7 @@ if plot2csv_on
 end
 
 % store results for error computation
-if saveMatData_on
+if saveMatData_on && Control.plotansol
     u = Solution.u;
     p = Solution.p;
     q = ComputeFluidFlux(Material, MeshP, p);
