@@ -140,14 +140,14 @@ BC.initP = [];
 
 %% Dirichlet BCs - solid
 % displacement u=0 at the bottom
-BC.fixed_u = (BC.top_node_u);
+BC.fixed_u = (BC.bottom_node_u);
 BC.fixed_u_value = zeros(length(BC.fixed_u),1);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
 %   pressure p=0 at the top
-BC.fixed_p = (BC.bottom_node_p);
+BC.fixed_p = (BC.top_node_p);
 BC.fixed_p_value = zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
@@ -155,7 +155,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 %% Neumann BCs - solid
 % point load [GN]
 BC.pointLoadValue = 1e-5;
-BC.pointLoadNodes = BC.bottom_node_u;
+BC.pointLoadNodes = BC.top_node_u;
 BC.pointLoad = zeros(MeshU.nDOF,1);
 BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
 
