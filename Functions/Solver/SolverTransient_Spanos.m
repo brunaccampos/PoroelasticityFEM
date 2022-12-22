@@ -1,4 +1,4 @@
-function [Solution] = SolverTransient_v5(Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration)
+function [Solution] = SolverTransient_Spanos(Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration)
 % ------------------------------------------------------------------------
 % Solve linear system for quasi-steady case 
 % ------------------------------------------------------------------------
@@ -9,7 +9,7 @@ function [Solution] = SolverTransient_v5(Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, K
 %   udot: solid velocity
 %   p: fluid pressure
 % ------------------------------------------------------------------------
-% version 5: correcting matrices for Spanos model
+% version 6: changing time discretization to beta method
 % ------------------------------------------------------------------------
 
 %% Iteration data
@@ -17,29 +17,41 @@ if ~isempty(Iteration)
     u_old = Iteration.u_old;
     p_old = Iteration.p_old;
     n_old = Iteration.n_old;
+    fu_old = Iteration.fu_old;
+    fp_old = Iteration.fp_old;
 else
     u_old = zeros(length(Kuu),1);
     p_old = zeros(length(Kpp),1);
     n_old = zeros(length(Knn),1);
+    fu_old = zeros(length(Kuu),1);
+    fp_old = zeros(length(Kpp),1);
 end
 % time step
 dt = Control.dt;
 
+% beta parameter
+beta = Control.beta;
+
 %% Matrix partitioning
 % matrices time discretization
-Kpubar = Kpu./dt;
-Kppbar = Kpp + S./dt;
-Kupbar = -Kup;
-Kpnbar = Kpn./dt;
-Knubar = Knu./dt;
-Knnbar = Knn./dt;
+Kuubar = beta * dt * Kuu;
+Kupbar = -beta * dt * Kup;
 Kunbar = Kun;
 
+Kpubar = Kpu;
+Kppbar = beta * dt * Kpp + S;
+Kpnbar = Kpn;
+
+Knubar = Knu;
+Knpbar = beta * dt * Knp;
+Knnbar = Knn;
+
+
 % matrix partitioning
-Kuu_EE = Kuu(BC.fixed_u, BC.fixed_u);
-Kuu_EF = Kuu(BC.fixed_u, BC.free_u);
-Kuu_FE = Kuu(BC.free_u, BC.fixed_u);
-Kuu_FF = Kuu(BC.free_u, BC.free_u);
+Kuu_EE = Kuubar(BC.fixed_u, BC.fixed_u);
+Kuu_EF = Kuubar(BC.fixed_u, BC.free_u);
+Kuu_FE = Kuubar(BC.free_u, BC.fixed_u);
+Kuu_FF = Kuubar(BC.free_u, BC.free_u);
 
 Kup_EE = Kupbar(BC.fixed_u, BC.fixed_p);
 Kup_EF = Kupbar(BC.fixed_u, BC.free_p);
@@ -71,10 +83,10 @@ Knu_EF = Knubar(BC.fixed_n, BC.free_u);
 Knu_FE = Knubar(BC.free_n, BC.fixed_u);
 Knu_FF = Knubar(BC.free_n, BC.free_u);
 
-Knp_EE = Knp(BC.fixed_n, BC.fixed_p);
-Knp_EF = Knp(BC.fixed_n, BC.free_p);
-Knp_FE = Knp(BC.free_n, BC.fixed_p);
-Knp_FF = Knp(BC.free_n, BC.free_p);
+Knp_EE = Knpbar(BC.fixed_n, BC.fixed_p);
+Knp_EF = Knpbar(BC.fixed_n, BC.free_p);
+Knp_FE = Knpbar(BC.free_n, BC.fixed_p);
+Knp_FF = Knpbar(BC.free_n, BC.free_p);
 
 Knn_EE = Knnbar(BC.fixed_n, BC.fixed_n);
 Knn_EF = Knnbar(BC.fixed_n, BC.free_n);
@@ -96,15 +108,17 @@ KFF = [Kuu_FF, Kup_FF, Kun_FF;
     Knu_FF, Knp_FF, Knn_FF];
 
 % auxiliar terms for external forces vector
-fpbar = -fp + Kpu*u_old./dt + S*p_old./dt + Kpn*n_old./dt;
-fnbar = fn + Knu*u_old./dt + Knn*n_old./dt;
+fubar = -dt * (1-beta) * Kuu * u_old + dt * (1-beta) * Kup * p_old + dt * (1-beta) * fu_old + dt * beta * fu;
+fpbar = Kpu * u_old + (S - dt * (1-beta) * Kpp) * p_old + Kpn * n_old + dt * (1-beta) * fp_old + dt * beta * fp;
+fnbar = Knu * u_old - dt * (1-beta) * Knp * p_old + Knn * n_old;
+
 
 % partitioning vectors
-fuF = fu(BC.free_u);
+fuF = fubar(BC.free_u);
 fpF = fpbar(BC.free_p);
 fnF = fnbar(BC.free_n);
 
-fuE = fu(BC.fixed_u);
+fuE = fubar(BC.fixed_u);
 fpE = fpbar(BC.fixed_p);
 fnE = fnbar(BC.fixed_n);
 
@@ -141,9 +155,9 @@ n(BC.fixed_n, 1) = nE;
 n(BC.free_n, 1) = nF;
 
 %% Gradients
-udot = (u - u_old)/dt;
-pdot = (p - p_old)/dt;
-ndot = (n - n_old)/dt;
+udot = (u - u_old)./(beta*dt);
+pdot = (p - p_old)./(beta*dt);
+ndot = (n - n_old)./(beta*dt);
 
 %% Store variables
 Solution.u = u;

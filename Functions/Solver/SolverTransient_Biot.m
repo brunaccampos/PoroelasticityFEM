@@ -1,4 +1,4 @@
-function [Solution] = SolverTransient_v4(Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration)
+function [Solution] = SolverTransient_Biot(Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration)
 % ------------------------------------------------------------------------
 % Solve linear system for quasi-steady case
 % ------------------------------------------------------------------------
