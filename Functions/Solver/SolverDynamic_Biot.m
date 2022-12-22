@@ -107,21 +107,7 @@ fF = [fuF; fpF];
 
 %% Solve linear system
 % solve for displacement and pressure
-
-% ------------------------------------------------------------------------
-% -------- Test 1: direct method
 dF = KFF\(fF - KFE *dE);
-
-% -------- Test 8: ILU decomposition + bicgstabl, default ilutp
-% A = KFF;
-% % cond(full(A))
-% b = fF - KFE*dE;
-% b = sparse(b);
-% setup = struct('type','ilutp');
-% [L,U] = ilu(A,setup);
-% dF = bicgstabl(A,b,[],[], L, U);
-
-% ------------------------------------------------------------------------
 
 % solve for reactions
 rE = KEE*dE + KEF*dF - fE;
