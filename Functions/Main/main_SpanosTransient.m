@@ -65,7 +65,7 @@ while Control.t < Control.tend
     end
 
     % linear solver
-    [Solution] = SolverTransient_v5(Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration);
+    [Solution] = SolverTransient_Spanos(Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration);
         
     % update external forces vectors
     fu(BC.fixed_u) = Solution.fE;

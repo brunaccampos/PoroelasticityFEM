@@ -64,7 +64,7 @@ while Control.t < Control.tend
     end
 
     % linear solver
-    [Solution] = SolverTransient_v4(Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration);
+    [Solution] = SolverTransient_Biot(Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration);
     
     % solution in the frequency domain
     if Control.freqDomain
