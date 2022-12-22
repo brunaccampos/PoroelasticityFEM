@@ -1,4 +1,4 @@
-function [Solution] = SolverDynamic_v6(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration)
+function [Solution] = SolverDynamic_Spanos(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration)
 % ------------------------------------------------------------------------
 % Solve linear system for dynamic case
 % Input parameters: coupled matrices, BC, Control, Iteration

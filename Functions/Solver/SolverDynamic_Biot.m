@@ -1,4 +1,4 @@
-function [Solution] = SolverDynamic_v4(Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Control, Iteration)
+function [Solution] = SolverDynamic_Biot(Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Control, Iteration)
 % ------------------------------------------------------------------------
 % Solve linear system for dynamic case
 % Input parameters: coupled matrices, BC, Control, Iteration

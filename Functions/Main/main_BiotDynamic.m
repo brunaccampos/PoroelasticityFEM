@@ -45,7 +45,7 @@ while Control.t < Control.tend
     fprintf('\n Step %d \n', Control.step);
 
     % linear solver
-    [Solution] = SolverDynamic_v4(Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Control, Iteration);
+    [Solution] = SolverDynamic_Biot(Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Control, Iteration);
 
     % solution in the frequency domain
     if Control.freqDomain
