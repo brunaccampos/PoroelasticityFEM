@@ -47,7 +47,7 @@ while Control.t < Control.tend
     fprintf('\n Step %d \n', Control.step);
 
     % linear solver
-    [Solution] = SolverDynamic_Biot(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration);
+    [Solution] = SolverDynamic_Spanos(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration);
 
     % update external forces vectors
     fu(BC.fixed_u) = Solution.fE;
