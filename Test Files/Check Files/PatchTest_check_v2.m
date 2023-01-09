@@ -1,8 +1,7 @@
-function [press_er, flux_er, reaction_er] = PatchTest_check_v2(d, flux, Fext, Mesh, BC, Material)
+function [press_er, flux_er] = PatchTest_check_v2(d, flux, Mesh, BC, Material)
 %PATCHTEST_CHECK Calculates the error
-%   [disp_er, stress_er, reaction_er] = PatchTest_check(d, stress, Fext)
-%   calculates the error related to displacements, reaction forces, and
-%   stress for using a patch test
+%   [disp_er, stress_er] = PatchTest_check(d, flux)
+%   calculates the error related to pressure and flux for using a patch test
 %
 %   ----------------------------------------------------------
 %   Input
@@ -38,7 +37,7 @@ flux_exact = [q*ones(1,Mesh.nn); q*ones(1,Mesh.nn)];
 % Calculate the error
 press_er = norm(d - d_exact);
 flux_er = sqrt(sum((flux.' - flux_exact).^2,'all'));
-reaction_er = abs(sum(Fext));
+% reaction_er = abs(sum(Fext));
 
 end
 

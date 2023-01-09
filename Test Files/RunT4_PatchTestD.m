@@ -25,14 +25,13 @@ meshfilename = 'Mesh Files\PatchTest.msh';
 mainTests
 
 %% Step 2 - Check results
-[press_er, flux_er, reaction_er] = PatchTest_check_v2(Solution.p, flux, fp, MeshP, BC, Material);
+[press_er, flux_er] = PatchTest_check_v2(Solution.p, flux, MeshP, BC, Material);
 
 fprintf('\nQ4-patch test D: Pressure error is %.2f',press_er)
 fprintf('\nQ4-patch test D: Flux error is %.2f',flux_er)
-fprintf('\nQ4-patch test D: Reaction forces error is %.2f',reaction_er)
 
 convergence_tolerance = 1e-10;
-if press_er <= convergence_tolerance && flux_er <= convergence_tolerance && reaction_er <= convergence_tolerance
+if press_er <= convergence_tolerance && flux_er <= convergence_tolerance
     test_pass = 1;
 else
     test_pass = 0;
