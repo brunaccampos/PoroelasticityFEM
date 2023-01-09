@@ -133,24 +133,19 @@ index_top   = MeshP.top_nodes   ~= toprightnode;
 BC.fluxNodes = [MeshP.right_nodes(index_right);  MeshP.top_nodes(index_top); toprightnode];
 
 % prescribed flux
-Fright = BC.flux *  max(MeshP.coords(:,2))/length(MeshP.right_nodes);
-Ftop = BC.flux * max(MeshP.coords(:,1))/length(MeshP.top_nodes);
+Fright = BC.flux *  max(MeshP.coords(:,2))/(length(MeshP.right_nodes)-1);
+Ftop = BC.flux * max(MeshP.coords(:,1))/(length(MeshP.top_nodes)-1);
 
-% Fright = BC.flux * max(MeshP.coords(:,2))/(length(MeshP.right_nodes) - 1);
-% Ftop   = BC.flux * max(MeshP.coords(:,1))/(length(MeshP.top_nodes)   - 1);
-% BC.fluxValue = [Fright*ones(size(MeshP.right_nodes(index_right))), zeros(size(MeshP.right_nodes(index_right))); % right side nodes
-%     zeros(size(MeshP.top_nodes(index_top))), Ftop*ones(size(MeshP.top_nodes(index_top))); % top side nodes
-%     Fright*1/2, Ftop*1/2]; % top right node
-BC.fluxValue = [Fright*ones(size(MeshP.right_nodes(index_right)))+ zeros(size(MeshP.right_nodes(index_right))); % right side nodes
-    zeros(size(MeshP.top_nodes(index_top)))+ Ftop*ones(size(MeshP.top_nodes(index_top))); % top side nodes
-    Fright+ Ftop]; % top right node
+BC.fluxValue = [Fright*ones(size(MeshP.right_nodes(index_right))); % right side nodes
+    Ftop*ones(size(MeshP.top_nodes(index_top))); % top side nodes
+    Fright/2 + Ftop/2]; % top right node
 
 % find the nodes in the top left and bottom right corners
-% botrightnode = find(MeshP.coords(BC.fluxNodes,2) == min(MeshP.coords(:,2)));
-% topleftnode  = find(MeshP.coords(BC.fluxNodes,1) == min(MeshP.coords(:,1)));
-% 
-% BC.fluxValue(botrightnode,1) = BC.fluxValue(botrightnode,1)/2;
-% BC.fluxValue(topleftnode,1) = BC.fluxValue(topleftnode,1)/2;
+botrightnode = find(MeshP.coords(BC.fluxNodes,2) == min(MeshP.coords(:,2)));
+topleftnode  = find(MeshP.coords(BC.fluxNodes,1) == min(MeshP.coords(:,1)));
+
+BC.fluxValue(botrightnode,1) = BC.fluxValue(botrightnode,1)/2;
+BC.fluxValue(topleftnode,1) = BC.fluxValue(topleftnode,1)/2;
 
 % point flux [m/s]
 BC.pointFlux = [];
