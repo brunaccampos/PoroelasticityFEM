@@ -1,4 +1,4 @@
-function [Kuu, Kup, Kpp, M, Mhat, S] = ComputeSystemMatrices_BiotDynamic(Material, MeshU, MeshP, Quad)
+function [Kuu, Kup, Kpp, M, Mhat, S] = ComputeSystemMatrices_BiotDynamic(Material, MeshU, MeshP, QuadU, QuadP)
 % ------------------------------------------------------------------------
 % Compute System Matrices for 1D dynamic simulation
 % ------------------------------------------------------------------------
@@ -7,7 +7,8 @@ function [Kuu, Kup, Kpp, M, Mhat, S] = ComputeSystemMatrices_BiotDynamic(Materia
 % ------------------------------------------------------------------------
 
 ne = MeshU.ne; % number of elements
-nq = Quad.nq; % total number of integration points
+nqU = QuadU.nq; % total number of integration points
+nqP = QuadP.nq;
 
 % constitutive matrix
 C = getConstitutiveMatrix(Material, MeshU);
@@ -59,16 +60,46 @@ for e = 1:ne
     M_e = zeros(MeshU.nDOFe, MeshU.nDOFe);
     S_e = zeros(MeshP.nDOFe, MeshP.nDOFe);
 
-    % loop over integration points
-    for ip = 1:nq
+    % loop over integration points - Displacement
+    for ip = 1:nqU
 
         % N matrices
-        Nu = getN(MeshU, Quad, ip);
-        Np = getN(MeshP, Quad, ip);
+        Nu = getN(MeshU, QuadU, ip);
+        Np = getN(MeshP, QuadU, ip);
 
         % N derivatives
-        dNu = getdN(MeshU, Quad, ip);
-        dNp = getdN(MeshP, Quad, ip);
+        dNu = getdN(MeshU, QuadU, ip);
+        dNp = getdN(MeshP, QuadU, ip);
+
+        % Jacobian matrix
+        Ju = dNu*gcoordsU;
+        Jp = dNp*gcoordsP;
+        % Jacobian determinant
+        Jdet = det(Jp);
+
+        % B matrices
+        Bu = Ju\dNu;
+
+        % changing matrices to Voigt form
+        NuVoigt = getNVoigt(MeshU, Nu);
+        NpVoigt = getNVoigt(MeshP, Np);
+        BuVoigt = getBVoigt(MeshU, Bu);
+
+        % assemble local matrices
+        Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Jdet * QuadU.w(ip,1);
+        M_e = M_e + Material.rho * (NuVoigt.') * NuVoigt * Jdet * QuadU.w(ip,1);
+        S_e = S_e + Material.Minv * (NpVoigt.') * NpVoigt * Jdet * QuadU.w(ip,1);
+    end
+ 
+    % loop over integration points - Displacement
+    for ip = 1:nqP
+
+        % N matrices
+        Np = getN(MeshP, QuadP, ip);
+
+        % N derivatives
+        dNu = getdN(MeshU, QuadP, ip);
+        dNp = getdN(MeshP, QuadP, ip);
 
         % Jacobian matrix
         Ju = dNu*gcoordsU;
@@ -81,26 +112,22 @@ for e = 1:ne
         Bp = Jp\dNp;
 
         % changing matrices to Voigt form
-        NuVoigt = getNVoigt(MeshU, Nu);
         NpVoigt = getNVoigt(MeshP, Np);
         BuVoigt = getBVoigt(MeshU, Bu);
         BpVoigt = getBVoigt(MeshP, Bp);
 
 
         % assemble local matrices
-        Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Jdet * Quad.w(ip,1);
-        Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Jdet * Quad.w(ip,1);
-        M_e = M_e + Material.rho * (NuVoigt.') * NuVoigt * Jdet * Quad.w(ip,1);
-        S_e = S_e + Material.Minv * (NpVoigt.') * NpVoigt * Jdet * Quad.w(ip,1);
+        Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Jdet * QuadP.w(ip,1);
 
         if MeshU.nsd == 2
             m = [1; 1; 0]; % mapping vector for plane stress
-            Kup_e = Kup_e + Material.alpha * (BuVoigt.') * m * NpVoigt * Jdet * Quad.w(ip,1);
+            Kup_e = Kup_e + Material.alpha * (BuVoigt.') * m * NpVoigt * Jdet * QuadP.w(ip,1);
         else
-            Kup_e = Kup_e + Material.alpha * (BuVoigt.') * NpVoigt * Jdet * Quad.w(ip,1);
+            Kup_e = Kup_e + Material.alpha * (BuVoigt.') * NpVoigt * Jdet * QuadP.w(ip,1);
         end
     end
-    
+
     % lumped element mass matrix
     if Material.lumpedMass
         M_eDiag = zeros(MeshU.nDOFe, MeshU.nDOFe);

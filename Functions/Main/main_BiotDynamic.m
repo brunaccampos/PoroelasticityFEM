@@ -9,7 +9,7 @@ disp([num2str(toc),': Model: Biot dynamic case']);
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
 
-[Kuu, Kup, Kpp, M, Mhat, S] = ComputeSystemMatrices_BiotDynamic(Material, MeshU, MeshP, QuadU);
+[Kuu, Kup, Kpp, M, Mhat, S] = ComputeSystemMatrices_BiotDynamic(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Assemble system load vectors
 [fu,fp,fn] = ComputeSystemLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
