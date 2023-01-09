@@ -128,15 +128,7 @@ BC.tractionNodes = [];
 BC.b = @(x)[];
 
 %% Neumann BCs - fluid
-BC.fluxNodes = MeshP.right_nodes;
-Flux = 1/(length(BC.fluxNodes) - 1);
-BC.fluxValue = Flux*zeros(size(BC.fluxNodes));
-% find the nodes in the top right and bottom right corners
-toprightnode = find(MeshP.coords(BC.fluxNodes,2) == max(MeshP.coords(:,2)));
-botrightnode = find(MeshP.coords(BC.fluxNodes,2) == min(MeshP.coords(:,2)));
-
-BC.fluxValue(toprightnode,1) = BC.fluxValue(toprightnode,1)/2;
-BC.fluxValue(botrightnode,1) = BC.fluxValue(botrightnode,1)/2;
+BC.fluxNodes = [];
 
 % point flux [m/s]
 BC.pointFlux = [];
