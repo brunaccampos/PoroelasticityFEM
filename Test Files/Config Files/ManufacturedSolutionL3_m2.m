@@ -21,6 +21,8 @@ Control.Biotmodel = 1;
 Material.E = 2230;
 % Poisson's ratio
 Material.nu = 0.3;
+% constititive law - 'PlaneStress' or 'PlaneStrain'
+Material.constLaw = 'PlaneStress';
 
 %% Mesh parameters
 if progress_on
