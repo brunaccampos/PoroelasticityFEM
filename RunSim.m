@@ -105,8 +105,8 @@ File = 'Column1D_Dynamic_Komijani';
 % File = 'HeatConduction2D_PointFluxBC';
 
 % Directory for VTK file
-VTKFolder ='C:\Users\bu_ca\OneDrive\Documents\Doutorado UWaterloo\Research\Matlab Codes\PorousMedia_v6\Results\';
-% VTKFolder ='C:\Users\bccampos\OneDrive\Documents\Doutorado UWaterloo\Research\Matlab Codes\PorousMedia_v6\Results\';
+% VTKFolder ='C:\Users\bu_ca\Downloads\PoroelasticityFEM\Results';
+VTKFolder ='C:\Users\bccampos\Downloads\PoroelasticityFEM\Results';
 
 % output VTK file
 plot2vtk = 1;
