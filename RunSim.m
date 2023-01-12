@@ -85,8 +85,6 @@ File = 'Column1D_Dynamic_Komijani';
 % File = 'Beam_Dynamic';
 % File = 'Beam_Dynamic_v2';
 % File = 'PlateWithHole_Elasticity_Stress';
-% File = 'ManufacturedSolutionQ4';
-% File = 'PatchTestC';
 % File = 'Plate2D_KirschTest';
 
 % -------------------- 2D tests: diffusion
