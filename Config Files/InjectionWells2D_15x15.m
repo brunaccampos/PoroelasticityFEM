@@ -48,15 +48,15 @@ Material.constLaw = 'PlaneStrain';
 
 %% Injection data
 % water density [kg/m3]
-Material.rhof = 1000;
+Material.rhof = 1000e-9;
 % overburden density [kg/m3]
-Material.rho_Top = 2300;
+Material.rho_Top = 2300e-9;
 % gravitational acceleration [m/s2]
 Material.g = 9.81;
 % depth of the domain [m]
 depth = 400;
 % hydrostatic pressure [GPa]
-p0 = Material.rhof * Material.g * depth * 1e-9;
+p0 = Material.rhof * Material.g * depth;
 
 %% Spanos material parameters
 % porosity effective pressure coefficient (Spanos, 1989)
