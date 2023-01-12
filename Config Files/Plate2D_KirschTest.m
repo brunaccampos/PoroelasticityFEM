@@ -126,7 +126,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 % prescribed traction [GN/m2]
 BC.tractionNodes = [];
 
-% prescribed traction
+% prescribed traction [GPa]
 BC.traction = 10e-3;
 % traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
 BC.tractionInterp = 1;
@@ -177,7 +177,6 @@ end
 BC.pointLoad = [];
 
 % body force [GN/m3]
-% BC.b = @(x)[-10e-3; -10e-3];  
 BC.b = @(x)[];
 
 %% Neumann BCs - fluid
