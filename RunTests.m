@@ -71,7 +71,7 @@ run('Test Files/RunT5_PatchTestE')
 
 %% Test 6: patch test F
 % Pass Condition: FEA solution displacements, stresses, and strains are exact
-% run('Test Files/RunT6_PatchTestF')
+run('Test Files/RunT6_PatchTestF')
 
 %% Test 7: Manufactured Solution - Q4 element convergence
 %   Pass condition: L2-norm converges at a rate of at least h^2
