@@ -1,4 +1,4 @@
-function [m_L2, m_e] = ManufacturedSolution1D_check(d1, d2, d3, s1, s2, s3, e1, e2, e3, Mesh1, Mesh2, Mesh3, Material, Control, Quad)
+function [m_L2, m_e] = ManufacturedSolution1D_check(d1, d2, d3, s1, s2, s3, e1, e2, e3, Mesh1, Mesh2, Mesh3, Material, Control, Quad, BC)
 %MANUFACTUREDSOLUTION_CHECK Calculates the convergence rates
 %   [m_L2, m_e] = ManufacturedSolution_check(d1, d2, d3, s1, s2, s3, Mesh1,
 %   Mesh2, Mesh3) calculates the rates of convergence of the L2 error norm
@@ -29,7 +29,6 @@ plot_on = 1; % turn plots on/off - debugging tool
 
 % material parameters
 E = Material.E;
-nu = Material.nu;
 % quadrature data
 nq = Control.nqU^Mesh1.nsd; % total number of integration points
 
@@ -61,12 +60,9 @@ for sim = 1:3
     % Mesh size
     h(sim) = max(Mesh.coords)/Mesh.ne;
     
-    % Calculate exact solutions
-    x = Mesh.coords;
-    
-    d_exact = @(x) x.^5 - x.^4;
-    e_exact = 5*x.^4 - 4*x.^3;
-    s_exact = E*e_exact;
+    % Calculate exact solutions    
+    d_exact = BC.ux;
+    e_exact = BC.dudx;
 
     % Calculate error norms
     eL2_num = 0;
@@ -93,7 +89,6 @@ for sim = 1:3
             % approximated displacement at quadrature point
             uxh_p = N*d(Mesh.xdofs(conn_e));
             % exact displacement at quadrature point
-%             uxe_p = N*d_exact(Mesh.xdofs(conn_e));
             uxe_p = d_exact(N*Mesh.coords(conn_e));
             % L2 norm
             eL2_num = eL2_num + (uxh_p - uxe_p) * (uxh_p - uxe_p) * Quad.w(ip,1) * Jdet;
@@ -103,8 +98,8 @@ for sim = 1:3
             ehp = (e(conn_e,:).') * N';
             shp = (s(conn_e,:).') * N';
             % exact stress and strain
-            eep = (e_exact(conn_e,:).') * N';
-            sep = (s_exact(conn_e,:).') * N';
+            eep = e_exact(Mesh.coords(conn_e).'*N');
+            sep = E*e_exact(Mesh.coords(conn_e).'*N');
             % e norm
             eEN_num = eEN_num + (ehp-eep)'*(shp - sep) * Quad.w(ip,1) * Jdet;
             eEN_den = eEN_den + eep'*sep * Quad.w(ip,1) * Jdet;
