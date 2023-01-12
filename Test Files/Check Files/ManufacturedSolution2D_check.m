@@ -143,23 +143,23 @@ m_e = pEN(1);
 
 %% Step 2 - Calculate the slope of each curve
 if plot_on
-    figure(1);
+    figure;
     loglog(h,eL2,'o', 'LineWidth', 1.5);
     hold on;
     loglog(h,exp(pL2(2))*h.^pL2(1), 'k', 'LineWidth', 1.5);
     hold off;
     xlabel('Mesh size');
     ylabel('L2-norm');
-    title(sprintf('Convergence order of L2-norm: %.2f', m_L2));
+    title(sprintf('2D Convergence order of L2-norm: %.2f', m_L2));
     
-    figure(2);
+    figure;
     loglog(h,eEN,'o', 'LineWidth', 1.5);
     hold on;
     loglog(h,exp(pEN(2))*h.^pEN(1), 'k', 'LineWidth', 1.5);
     hold off;
     xlabel('Mesh size');
     ylabel('e-norm');
-    title(sprintf('Convergence order of e-norm: %.2f', m_e));    
+    title(sprintf('2D Convergence order of e-norm: %.2f', m_e));    
 end
 
 end
