@@ -132,7 +132,7 @@ if plot_on
     hold off;
     xlabel('Mesh size');
     ylabel('L2-norm');
-    title(sprintf('1D Convergence order of L2-norm: %.2f', m_L2));
+    title(sprintf('1D %s Convergence order of L2-norm: %.2f', Mesh.type, m_L2));
     
     figure;
     loglog(h,eEN,'o', 'LineWidth', 1.5);
@@ -141,7 +141,7 @@ if plot_on
     hold off;
     xlabel('Mesh size');
     ylabel('e-norm');
-    title(sprintf('1D Convergence order of e-norm: %.2f', m_e));
+    title(sprintf('1D %s Convergence order of e-norm: %.2f', Mesh.type, m_e));
 end
 
 end
