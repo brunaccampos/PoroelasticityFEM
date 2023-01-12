@@ -91,6 +91,7 @@ BC.bottom_node_p = find(MeshP.coords == min(MeshP.coords));
 
 %% Dirichlet BCs - solid
 BC.ux = @(x) x.^5 - x.^4;
+BC.dudx = @(x) 5*x.^4 - 4*x.^3;
 % column vector of prescribed displacement dof
 BC.fixed_u_dof1 = BC.top_node_u;
 BC.fixed_u_dof2 = BC.bottom_node_u;
