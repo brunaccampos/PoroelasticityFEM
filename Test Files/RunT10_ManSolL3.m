@@ -53,7 +53,7 @@ Mesh_finer = MeshU;
 %% Step 2 - Check results
 [m_L2, m_e] = ManufacturedSolution1D_check(d_coarse, d_fine, d_finer, ...
     stress_coarse, stress_fine, stress_finer, strain_coarse, strain_fine, ...
-    strain_finer, Mesh_coarse, Mesh_fine, Mesh_finer, Material, Control, QuadU);
+    strain_finer, Mesh_coarse, Mesh_fine, Mesh_finer, Material, Control, QuadU, BC);
 
 fprintf('\nL3 L2-norm converges at a rate of %.2f',m_L2)
 fprintf('\nL3  e-norm converges at a rate of %.2f',m_e)
