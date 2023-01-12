@@ -111,21 +111,6 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 %% Neumann BCs - solid
 % column vector of prescribed traction nodes
 BC.tractionNodes = [];
-% prescribed traction [t1x t1y;t2x t2y;...] [N]
-% Fnode = 1/(length(BC.tractionNodes) - 1);
-% BC.tractionForce = Fnode*[zeros(size(BC.tractionNodes)), zeros(size(BC.tractionNodes))];
-% 
-% NOTE: point loads at any of the element nodes can also be
-% added as a traction.
-
-% magnitude of distributed body force [N/m] [bx;by] according to
-% the manufactured solution:
-% bx = -E / (1-v^2) * ( 20x^3 + 3vy^2          + (1-v)/2*[ 6xy - 30y^4 + 3y^2 ])
-% by = -E/  (1-v^2) * ( (1-v)/2*[3y^2 + 20x^3] +           3vy^2 + 6xy - 30y^4 )
-% 1D: [N/m], 2D: [N/m2]
-% NOTE: if no body force, use '@(x)[]'
-% NOTE: anonymous functions is defined with respect to the
-%      variable x,  which is a vector [x(1) x(2)] = [x y]
 
 % body force
 BC.b = @(x) - Material.E * (20 * x.^3 - 12 * x.^2);
