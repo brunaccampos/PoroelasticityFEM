@@ -41,12 +41,12 @@ switch MeshType
         % number of space dimensions
         nsd = 1;
         % number of elements
-        ne = 128;
+        ne = 12;
         % column size [m]
         L = 1;
         
         % solid displacement field
-        typeU = 'L3';
+        typeU = 'L2';
         fieldU = 'u';
         MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
         
@@ -92,7 +92,7 @@ BC.top_node_p = find(MeshP.coords == max(MeshP.coords));
 BC.bottom_node_p = find(MeshP.coords == min(MeshP.coords));
 
 %% Dirichlet BCs - solid
-BC.ux = @(x) -x.^2 + 2*max(MeshU.coords).*x;
+BC.ux = @(x) x.^5 - x.^4;
 % column vector of prescribed displacement dof
 BC.fixed_u_dof1 = BC.top_node_u;
 BC.fixed_u_dof2 = BC.bottom_node_u;
@@ -115,7 +115,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 BC.tractionNodes = [];
 
 % body force
-BC.b = @(x) 2;
+BC.b = @(x) - Material.E * (20 * x.^3 - 12 * x.^2);
 
 % point load [N]
 BC.pointLoad = [];
@@ -131,8 +131,8 @@ BC.fluxNodes = [];
 BC.s = @(x)[]; 
 
 %% Quadrature order
-Control.nqU = 4;
-Control.nqP = 2;
+Control.nqU = 2;
+Control.nqP = 1;
 
 %% Problem type
 % 1 = quasi-steady/transient problem (no acceleration and pressure change)
