@@ -52,6 +52,10 @@ while Control.t < Control.tend
             [~, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control);
         end
 
+%         p_an = zeros(MeshP.nDOF,1);
+%         u_an = @(x) x.^5 - x.^4;
+%         u_an = u_an(MeshU.coords);
+%         
         % store variables over length
         Plot.pan_space = p_an;
         Plot.uan_space = u_an;
