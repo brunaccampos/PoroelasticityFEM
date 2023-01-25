@@ -146,9 +146,10 @@ BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 MeshP.nodesWell2 = [6; 74; 75; 76; 77; 78; 79; 80]; 
 % fixed DOFs 
 BC.fixed_p = [MeshP.nodesWell2; MeshP.left_nodes; MeshP.right_nodes];
+% BC.fixed_p = [];
 % fixed DOF values
 BC.fixed_p_value = zeros(length(BC.fixed_p),1);
-BC.fixed_p_value(1:length(MeshP.nodesWell2)) = -p0;
+% BC.fixed_p_value(1:length(MeshP.nodesWell2)) = -p0;
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -157,7 +158,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 BC.tractionNodes = [];
 
 % in situ stress [GPa]
-sigmaV = Material.rho_Top * Material.g * depth * 1e-9;
+sigmaV = -Material.rho_Top * Material.g * depth + p0;
 sigmaH = sigmaV*Material.nu/(1-Material.nu);
 % global in situ stress
 sigma_G = [sigmaH, 0; 0, sigmaV];
@@ -165,7 +166,7 @@ sigma_G = [sigmaH, 0; 0, sigmaV];
 % traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
 BC.tractionInterp = 1;
 % traction unit normal in local coords
-normal_L = [0; 1];
+normal_L = [0; -1];
 
 % nodes at wells
 BC.tractionNodes1 = [5; 131; 132; 133; 134; 135; 136; 137; 138; 139; 140; 141; 142; 143; 144; 145];
@@ -248,8 +249,8 @@ BC.b = @(x)[];
 % distributed flux [m3/s]
 % impervious at bottom; injection rate at well 2
 
-% flux at well 1 [GPa]
-BC.flux = -5e-3;
+% flux at well 1
+BC.flux = -1e-3;
 % nodes well 1
 BC.fluxNodes = [5; 67; 68; 69; 70; 71; 72; 73];
 % find surface area
@@ -304,8 +305,12 @@ Control.tend = 50;   % final simulation time [s]
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
-Control.plotu = 874*2; 
-Control.plotp = 794;
+% point at x=7.46, y=7.45
+% Control.plotu = 874*2; 
+% Control.plotp = 794;
+
+Control.plotu = 225*2; 
+Control.plotp = 145;
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false
