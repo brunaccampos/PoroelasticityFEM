@@ -111,7 +111,7 @@ plot2csv_on = 0;
 % export Matlab images
 saveGraphs_on = 0;
 % export Matlab files
-saveMatData_on = 0;
+saveMatData_on = 1;
 % output progress messages
 progress_on = 1;
 
