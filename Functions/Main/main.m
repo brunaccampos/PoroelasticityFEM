@@ -66,6 +66,12 @@ if plot2csv_on
     Plot2csv(config_name, vtk_dir, Plot);
 end
 
+% compute error
+if saveMatData_on && Control.plotansol
+    [ErrorComp] = ComputeMeshSizeError(Material, BC, Control, MeshU, MeshP, Solution, Plot);
+    save('Results.mat', 'ErrorComp');
+end
+
 % store results for error computation
 if saveMatData_on && Control.plotansol
     u = Solution.u;
@@ -74,5 +80,5 @@ if saveMatData_on && Control.plotansol
     u_an = Plot.uan_space;
     p_an = Plot.pan_space;
     q_an = ComputeFluidFlux(Material, MeshP, p_an);
-    save('Results.mat', 'Control', 'Plot', 'QuadU', 'QuadP', 'MeshU', 'u', 'u_an', 'MeshP', 'p', 'p_an', 'q', 'q_an');
+    save('Results.mat', 'Material', 'Control', 'Plot', 'QuadU', 'QuadP', 'MeshU', 'u', 'u_an', 'MeshP', 'p', 'p_an', 'q', 'q_an');
 end
