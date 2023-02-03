@@ -68,17 +68,22 @@ end
 
 % compute error
 if saveMatData_on && Control.plotansol
-    [ErrorComp] = ComputeMeshSizeError(Material, BC, Control, MeshU, MeshP, Solution, Plot);
+    % compute strain and stress
+    [e,s] = ComputeSolidStress(Material, MeshU, Solution.u);
+    [e_an,s_an] = ComputeSolidStress(Material, MeshU, Plot.uan_space);
+    % sotore results
+    Solution.e = e;
+    Solution.s = s;
+    Solution.e_an = e_an;
+    Solution.s_an = s_an;
+    % compute flux
+    q = ComputeFluidFlux(Material, MeshP, Solution.p);
+    q_an = ComputeFluidFlux(Material, MeshP, Plot.pan_space);
+    % store results
+    Solution.q = q;
+    Solution.q_an = q_an;
+    % compute norm errors
+    [ErrorComp] = ComputeMeshSizeError(MeshU, MeshP, Solution, Plot);
+    % save results
     save('Results.mat', 'ErrorComp');
-end
-
-% store results for error computation
-if saveMatData_on && Control.plotansol
-    u = Solution.u;
-    p = Solution.p;
-    q = ComputeFluidFlux(Material, MeshP, p);
-    u_an = Plot.uan_space;
-    p_an = Plot.pan_space;
-    q_an = ComputeFluidFlux(Material, MeshP, p_an);
-    save('Results.mat', 'Material', 'Control', 'Plot', 'QuadU', 'QuadP', 'MeshU', 'u', 'u_an', 'MeshP', 'p', 'p_an', 'q', 'q_an');
 end
