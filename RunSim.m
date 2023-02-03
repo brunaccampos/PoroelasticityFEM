@@ -46,8 +46,9 @@ File = 'Column1D_Dynamic_Komijani';
 
 % -------------------- 1D tests
 % File = 'Column1D_Steady_Korsawe_fixedP';
-% File = 'HeatConduction_1D_Steady';
+% File = 'HeatConduction_1D_Transient';
 % File = 'ManufacturedSolution1D';
+% File = 'ManufacturedSolution1D_fixedU';
 
 % -------------------- 2D tests
 % File = 'Column2D_Steady_Korsawe_fixedP';
