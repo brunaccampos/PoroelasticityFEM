@@ -159,9 +159,13 @@ BC.tractionNodes = [];
 
 % in situ stress [GPa]
 sigmaV = -Material.rho_Top * Material.g * depth + p0;
-sigmaH = sigmaV*Material.nu/(1-Material.nu);
+sigmaH = (-Material.rho_Top * Material.g * depth)*Material.nu/(1-Material.nu) + p0;
 % global in situ stress
 sigma_G = [sigmaH, 0; 0, sigmaV];
+
+% pressure in well 1 from prescribed flux, applied as a traction
+BC.flux = -1e-3;
+traction_q = [-BC.flux/Material.kf, 0; 0, -BC.flux/Material.kf];
 
 % traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
 BC.tractionInterp = 1;
@@ -171,6 +175,7 @@ normal_L = [0; -1];
 % nodes at wells
 BC.tractionNodes1 = [5; 131; 132; 133; 134; 135; 136; 137; 138; 139; 140; 141; 142; 143; 144; 145];
 BC.tractionNodes2 = [6; 146; 147; 148; 149; 150; 151; 152; 153; 154; 155; 156; 157; 158; 159; 160];
+
 BC.tractionNodes = [BC.tractionNodes1; BC.tractionNodes2];
 
 % traction force vector
@@ -203,6 +208,7 @@ for i = 1:length(BC.tractionNodes1)
     normal_G = rot*normal_L;
     % global traction vector in node i
     BC.tractionForce1(i,:) = (sigma_G * normal_G)';
+%     BC.tractionForce1(i,:) = (sigma_G * normal_G)' + (traction_q * normal_G)';
 end
 
 % loop over traction nodes
@@ -227,6 +233,15 @@ for i = 1:length(BC.tractionNodes2)
     normal_G = rot*normal_L;
     % global traction vector in node i
     BC.tractionForce2(i,:) = (sigma_G * normal_G)';
+end
+
+% weighting for Q9
+switch MeshU.type
+    case 'Q9'
+    BC.tractionForce1(1:8,:) = BC.tractionForce1(1:8,:)*1/3; 
+    BC.tractionForce1(9:end,:) = BC.tractionForce1(9:end,:)*2/3; % midside node
+    BC.tractionForce2(1:8,:) = BC.tractionForce2(1:8,:)*1/3;
+    BC.tractionForce2(9:end,:) = BC.tractionForce2(9:end,:)*2/3; % midside node
 end
 
 % traction force vector
@@ -306,11 +321,11 @@ Control.tend = 50;   % final simulation time [s]
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
 % point at x=7.46, y=7.45
-% Control.plotu = 874*2; 
-% Control.plotp = 794;
+Control.plotu = 874*2; 
+Control.plotp = 794;
 
-Control.plotu = 225*2; 
-Control.plotp = 145;
+% Control.plotu = 225*2; 
+% Control.plotp = 145;
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false
