@@ -11,9 +11,6 @@ disp([num2str(toc),': Assembling System Matrices...']);
 
 [Kuu, Kup, Kpp, S] = ComputeSystemMatrices_BiotTransient(Material, MeshU, MeshP, QuadU, QuadP);
 
-%% Assemble system load vectors
-[fu,fp,fn] = ComputeSystemLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
-
 %% Solve eigenproblem
 if Control.freqDomain
     disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
@@ -44,18 +41,41 @@ end
 while Control.t < Control.tend
     fprintf('\n Step %d \n', Control.step);
 
+    % Assemble system load vectors
+    [fu,fp,fn] = ComputeSystemLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
+    
     % analytical solution for 1D case
     if Control.plotansol
-        if any(Material.Minv)
-            [p_an, u_an] = getAnalyticResult_Comp(Material, MeshU, MeshP, BC, Control);
-        else % 1/M = 0
-            [~, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control);
-        end
+%         if any(Material.Minv)
+%             [p_an, u_an] = getAnalyticResult_Comp(Material, MeshU, MeshP, BC, Control);
+%         else % 1/M = 0
+%             [~, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control);
+%         end
 
 %         p_an = zeros(MeshP.nDOF,1);
 %         u_an = @(x) x.^5 - x.^4;
 %         u_an = u_an(MeshU.coords);
-%         
+ 
+        u_an = zeros(MeshU.nDOF,1);
+%         p_an = @(x) x.^5 - x.^4;
+%         p_an = p_an(MeshP.coords);
+
+%         p_an = zeros(MeshP.nDOF,1);
+%         u_an = @(x) sin(x);
+%         u_an = u_an(MeshU.coords);
+
+        
+        % solution for 1D heat transfer
+        aux=0;
+        x = MeshP.coords;
+        N=1000;
+        for k=1:N
+           aux = aux + (1/k)*exp(-3*k^2*pi()^2*Control.t)*sin(k*pi()*x); 
+        end
+        
+        p_an = 100 - 50*x - (100/pi()) * aux;
+%         p_an = 100 - 50*x;
+
         % store variables over length
         Plot.pan_space = p_an;
         Plot.uan_space = u_an;
