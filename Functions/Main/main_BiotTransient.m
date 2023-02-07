@@ -46,36 +46,17 @@ while Control.t < Control.tend
     
     % analytical solution for 1D case
     if Control.plotansol
-%         if any(Material.Minv)
-%             [p_an, u_an] = getAnalyticResult_Comp(Material, MeshU, MeshP, BC, Control);
-%         else % 1/M = 0
-%             [~, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control);
-%         end
-
-%         p_an = zeros(MeshP.nDOF,1);
-%         u_an = @(x) x.^5 - x.^4;
-%         u_an = u_an(MeshU.coords);
- 
-        u_an = zeros(MeshU.nDOF,1);
-%         p_an = @(x) x.^5 - x.^4;
-%         p_an = p_an(MeshP.coords);
-
-%         p_an = zeros(MeshP.nDOF,1);
-%         u_an = @(x) sin(x);
-%         u_an = u_an(MeshU.coords);
-
-        
-        % solution for 1D heat transfer
-        aux=0;
-        x = MeshP.coords;
-        N=1000;
-        for k=1:N
-           aux = aux + (1/k)*exp(-3*k^2*pi()^2*Control.t)*sin(k*pi()*x); 
+        if Control.uncoupled
+            p_an = Control.p_an;
+            u_an = Control.u_an;
+        else
+            if any(Material.Minv)
+                [p_an, u_an] = getAnalyticResult_Comp(Material, MeshU, MeshP, BC, Control);
+            else % 1/M = 0
+                [~, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control);
+            end
         end
-        
-        p_an = 100 - 50*x - (100/pi()) * aux;
-%         p_an = 100 - 50*x;
-
+       
         % store variables over length
         Plot.pan_space = p_an;
         Plot.uan_space = u_an;

@@ -47,10 +47,15 @@ while Control.t < Control.tend
 
     % analytical solution for 1D case
     if Control.plotansol
-        if any(Material.Minv)
-            [p_an, u_an] = getAnalyticResult_Comp(Material, MeshU, MeshP, BC, Control);
-        else % 1/M = 0
-            [~, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control);
+        if Control.uncoupled
+            p_an = Control.p_an;
+            u_an = Control.u_an;
+        else
+            if any(Material.Minv)
+                [p_an, u_an] = getAnalyticResult_Comp(Material, MeshU, MeshP, BC, Control);
+            else % 1/M = 0
+                [~, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control);
+            end
         end
 
         % store variables over length
