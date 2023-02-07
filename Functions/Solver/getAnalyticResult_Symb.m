@@ -10,8 +10,7 @@ function [p_an, u_an] = getAnalyticResult_Symb(Material, MeshU, MeshP, BC, Contr
 L = max(MeshU.coords);
 
 % coordinates vector
-xu = MeshU.coords;
-xp = MeshP.coords;
+syms x
 
 % traction
 P = BC.pointLoadValue;
@@ -27,7 +26,7 @@ cm = 1/(Material.lambda + 2*mu);
 c = Material.kh/(Material.rho_f*Material.g*(Material.Minv + alpha^2*cm));
 
 % initial displacement after instantaneous load
-u0 = P*(L-xu)/(Ku + 4*mu/3);
+u0 = P*(L-x)/(Ku + 4*mu/3);
 % initial pressure after instantaneous load
 p0 = alpha*M*P/(Ku + 4*mu/3);
 
@@ -40,11 +39,11 @@ auxu = 0;
 
 % loop over N
 for m = 0:N
-   auxp = auxp + (1/(2*m+1)) * exp(-(2*m+1)^2*pi()^2*c*t/(4*L^2)) * sin((2*m+1)*pi().*xp/(2*L));
-   auxu = auxu + (1/(2*m+1)^2) * exp(-(2*m+1)^2*pi()^2*c*t/(4*L^2)) * cos((2*m+1)*pi().*xu/(2*L));
+   auxp = auxp + (1/(2*m+1)) * exp(-(2*m+1)^2*pi()^2*c*t/(4*L^2)) * sin((2*m+1)*pi().*x/(2*L));
+   auxu = auxu + (1/(2*m+1)^2) * exp(-(2*m+1)^2*pi()^2*c*t/(4*L^2)) * cos((2*m+1)*pi().*x/(2*L));
 end
 
 p_an = 4*p0.*auxp/pi();
-u_an = cm*p0*(L-xu -8*L.*auxu/pi()^2) + u0;
+u_an = cm*p0*(L-x -8*L.*auxu/pi()^2) + u0;
 
 end
