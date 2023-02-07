@@ -161,11 +161,11 @@ Control.steady = 1;
 % tag used for computing analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
-Control.uncoupled = 0; 
+Control.uncoupled = 1; 
 
 %% Solution parameters
 Control.dt = 1;  % time step
-Control.tend = 1;   % final simulation time
+Control.tend = 10;   % final simulation time
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
@@ -177,5 +177,17 @@ Control.plotansol = 1; % 1 = true; 0 = false
 
 % solve in the frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
+
+% analytical solution
+aux=0;
+x = MeshP.coords;
+N=1000;
+for k=1:N
+    aux = aux + (1/k)*exp(-3*k^2*pi()^2*Control.tend)*sin(k*pi()*x);
+end
+Control.p_an = 100 - 50*x - (100/pi()) * aux; % transient solution
+% Control.p_an = 100 - 50*x; % steady state solution
+
+Control.u_an = zeros(MeshU.nDOF,1);
 
 end
