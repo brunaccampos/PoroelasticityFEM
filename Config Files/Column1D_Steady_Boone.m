@@ -228,8 +228,13 @@ Control.nqP = 1;
 % 0 = dynamic problem (acceleration/intertia terms included)
 Control.steady = 1;
 
+% tag used for computing analytical solution
+% 1 = uncoupled problem (elasticity, heat transfer, etc)
+% 0 = coupled problem (Biot, Spanos model)
+Control.uncoupled = 0; 
+
 %% Solution parameters
-Control.dt = 1e-1;  % time step [s]
+Control.dt = 1e-3;  % time step [s]
 Control.tend = 1;   % final simulation time [s]
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson

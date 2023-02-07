@@ -131,13 +131,24 @@ BC.fluxNodes = [];
 BC.s = @(x)[]; 
 
 %% Quadrature order
-Control.nqU = 2;
+Control.nqU = 4;
 Control.nqP = 1;
 
 %% Problem type
 % 1 = quasi-steady/transient problem (no acceleration and pressure change)
 % 0 = dynamic problem (acceleration/intertia terms included)
 Control.steady = 1;
+
+% tag used for computing analytical solution
+% 1 = uncoupled problem (elasticity, heat transfer, etc)
+% 0 = coupled problem (Biot, Spanos model)
+Control.uncoupled = 1; 
+
+% analytical solution
+Control.p_an = zeros(MeshP.nDOF,1);
+% Control.u_an = @(x) x.^5 - x.^4;
+Control.u_an = @(x) sin(x);
+Control.u_an = Control.u_an(MeshU.coords);
 
 %% Solution parameters
 Control.dt = 1;  % time step

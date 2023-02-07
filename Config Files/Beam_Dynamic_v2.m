@@ -195,6 +195,11 @@ Control.nqP = 2;
 % 0 = dynamic problem (acceleration/intertia terms included)
 Control.steady = 0;
 
+% tag used for computing analytical solution
+% 1 = uncoupled problem (elasticity, heat transfer, etc)
+% 0 = coupled problem (Biot, Spanos model)
+Control.uncoupled = 1; 
+
 %% Solution parameters
 Control.dt = 0.1;  % time step
 Control.tend = 50;   % final simulation time

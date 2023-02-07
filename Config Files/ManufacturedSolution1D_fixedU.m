@@ -139,6 +139,16 @@ Control.nqP = 2;
 % 0 = dynamic problem (acceleration/intertia terms included)
 Control.steady = 1;
 
+% tag used for computing analytical solution
+% 1 = uncoupled problem (elasticity, heat transfer, etc)
+% 0 = coupled problem (Biot, Spanos model)
+Control.uncoupled = 1; 
+
+% analytical solution
+Control.u_an = zeros(MeshU.nDOF,1);
+Control.p_an = @(x) x.^5 - x.^4;
+Control.p_an = Control.p_an(MeshP.coords);
+
 %% Solution parameters
 Control.dt = 1;  % time step
 Control.tend = 1;
