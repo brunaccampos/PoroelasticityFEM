@@ -41,12 +41,12 @@ switch MeshType
         % number of space dimensions
         nsd = 1;
         % number of elements
-        ne = 12;
+        ne = 8;
         % column size [m]
         L = 1;
         
         % solid displacement field
-        typeU = 'L2';
+        typeU = 'L3';
         fieldU = 'u';
         MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
         
@@ -92,7 +92,8 @@ BC.top_node_p = find(MeshP.coords == max(MeshP.coords));
 BC.bottom_node_p = find(MeshP.coords == min(MeshP.coords));
 
 %% Dirichlet BCs - solid
-BC.ux = @(x) x.^5 - x.^4;
+% BC.ux = @(x) x.^5 - x.^4;
+BC.ux = @(x) sin(x);
 % column vector of prescribed displacement dof
 BC.fixed_u_dof1 = BC.top_node_u;
 BC.fixed_u_dof2 = BC.bottom_node_u;
@@ -115,7 +116,8 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 BC.tractionNodes = [];
 
 % body force
-BC.b = @(x) - Material.E * (20 * x.^3 - 12 * x.^2);
+% BC.b = @(x) - Material.E * (20 * x.^3 - 12 * x.^2);
+BC.b = @(x) sin(x);
 
 % point load [N]
 BC.pointLoad = [];
