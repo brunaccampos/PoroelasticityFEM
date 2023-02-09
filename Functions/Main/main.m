@@ -83,7 +83,7 @@ if saveMatData_on && Control.plotansol
     Solution.q = q;
     Solution.q_an = q_an;
     % compute norm errors
-    [ErrorComp] = ComputeMeshSizeError(MeshU, MeshP, Solution, Plot);
+    [ErrorComp] = ComputeMeshSizeError(MeshU, MeshP, Solution, Plot, Control);
     % save results
     save('Results.mat', 'ErrorComp');
 end

@@ -1,4 +1,4 @@
-function [ErrorComp] = ComputeMeshSizeError(MeshU, MeshP, Solution, Plot)
+function [ErrorComp] = ComputeMeshSizeError(MeshU, MeshP, Solution, Plot, Control)
 % ------------------------------------------------------------------------
 % Compute displacement and pressure errors related to the mesh size
 % ------------------------------------------------------------------------
