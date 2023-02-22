@@ -42,7 +42,7 @@ if plot2vtk
 end
 
 %% Solve system
-while Control.t < Control.tend
+for t = 0:Control.dt:Control.tend
     fprintf('\n Step %d \n', Control.step);
 
     % analytical solution for 1D case
@@ -108,6 +108,6 @@ while Control.t < Control.tend
     Iteration.fp_old = fp; % flux vector  
 
     % update time and step
-    Control.t = Control.t + Control.dt;
+    Control.t = t;
     Control.step = Control.step + 1;
 end
