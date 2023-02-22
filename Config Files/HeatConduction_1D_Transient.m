@@ -10,9 +10,9 @@ Control.Biotmodel = 1;
 
 %% Material properties
 % porous media permeability [m2/Pa s]
-Material.kf = 1;
+Material.kf = 0.002;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
+Material.Minv = 1;
 
 % material density [kg/m3]
 Material.rho = 0;
@@ -49,7 +49,7 @@ switch MeshType
         % number of space dimensions
         nsd = 1;
         % number of elements
-        ne = 128;
+        ne = 8;
         % column size [m]
         L = 2;
         %%%% solid displacement field
@@ -57,7 +57,7 @@ switch MeshType
         fieldU = 'u';
         MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
         %%%% fluid pressure field
-        typeP = 'L2';
+        typeP = 'L3';
         fieldP = 'p';
         MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
         %%%% porosity field
@@ -95,7 +95,7 @@ end
 BC.initU = [];
 
 % pressure
-BC.initP = zeros(MeshP.nDOF,1);
+BC.initP = 50*ones(MeshP.nDOF,1);
 
 %% Find nodes for prescribed BCs
 % find top and bottom nodes for displacement field
@@ -164,7 +164,7 @@ Control.steady = 1;
 Control.uncoupled = 1; 
 
 %% Solution parameters
-Control.dt = 1;  % time step
+Control.dt = 1e-2;  % time step
 Control.tend = 10;   % final simulation time
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
@@ -183,10 +183,12 @@ aux=0;
 x = MeshP.coords;
 N=1000;
 for k=1:N
-    aux = aux + (1/k)*exp(-3*k^2*pi()^2*Control.tend)*sin(k*pi()*x);
+    aux = aux + (1/k)*exp(-Material.kf*k^2*pi()^2*Control.tend)*sin(k*pi()*x);
 end
-Control.p_an = 100 - 50*x - (100/pi()) * aux; % transient solution
-% Control.p_an = 100 - 50*x; % steady state solution
+steady = (BC.fixed_p_value(2) - BC.fixed_p_value(1))*x/max(MeshP.coords) + BC.fixed_p_value(1);
+
+Control.p_an = steady - (BC.fixed_p_value(1)/pi()) * aux; % transient solution
+% Control.p_an = steady; % steady state solution
 
 Control.u_an = zeros(MeshU.nDOF,1);
 
