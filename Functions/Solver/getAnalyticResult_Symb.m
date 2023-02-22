@@ -1,4 +1,4 @@
-function [p_an, u_an] = getAnalyticResult_Symb(Material, MeshU, MeshP, BC, Control)
+function [p_an, u_an] = getAnalyticResult_Symb(Material, MeshU, BC, Control)
 % ------------------------------------------------------------------------
 % Analytical solution for column consolidation (Terzaghi problem)
 % Valid for compressible solid and fluid materials
