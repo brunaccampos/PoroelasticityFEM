@@ -82,8 +82,8 @@ for e = 1:ne
         BuVoigt = getBVoigt(MeshU, Bu);
 
         % assemble local matrices
-        Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Jdet * QuadU.w(ip,1);
-        S_e = S_e + Material.Minv * (NpVoigt.') * NpVoigt * Jdet * QuadU.w(ip,1);
+        Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        S_e = S_e + Material.Minv * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
     
     % loop over integration points - LINEAR polynomial
@@ -112,13 +112,13 @@ for e = 1:ne
         BuVoigt = getBVoigt(MeshU, Bu);
 
         % assemble local matrices
-        Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Jdet * QuadP.w(ip,1);
+        Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Material.t * Jdet * QuadP.w(ip,1);
         
         if MeshU.nsd == 2
             m = [1; 1; 0]; % mapping vector for plane stress
-            Kup_e = Kup_e + Material.alpha * (BuVoigt.') * m * NpVoigt * Jdet * QuadP.w(ip,1);
+            Kup_e = Kup_e + Material.alpha * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
         else
-            Kup_e = Kup_e + Material.alpha * (BuVoigt.') * NpVoigt * Jdet * QuadP.w(ip,1);
+            Kup_e = Kup_e + Material.alpha * (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
         end
     end
     

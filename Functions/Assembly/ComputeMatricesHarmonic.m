@@ -85,16 +85,16 @@ for e = 1:ne
         BpVoigt = getBVoigt(MeshP, Bp);
 
         % assemble local matrices
-        Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Jdet * Quad.w(ip,1);
-        Kpp_e = Kpp_e + (Material.n^2 / Material.rho22_tilde) * (BpVoigt.') * BpVoigt * Jdet * Quad.w(ip,1);
-        S_e = S_e + (Material.n^2 / Material.R) * (NpVoigt.') * NpVoigt * Jdet * Quad.w(ip,1);
-        M_e = M_e + Material.rho_tilde * (NuVoigt.') * NuVoigt * Jdet * Quad.w(ip,1);
+        Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
+        Kpp_e = Kpp_e + (Material.n^2 / Material.rho22_tilde) * (BpVoigt.') * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
+        S_e = S_e + (Material.n^2 / Material.R) * (NpVoigt.') * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
+        M_e = M_e + Material.rho_tilde * (NuVoigt.') * NuVoigt * Material.t * Jdet * Quad.w(ip,1);
 
         if MeshU.nsd == 2
             m = [1; 1; 0]; % mapping vector for plane stress
-            Kup_e = Kup_e + Material.gamma_tilde * (NuVoigt.') * m' * BpVoigt * Jdet * Quad.w(ip,1);
+            Kup_e = Kup_e + Material.gamma_tilde * (NuVoigt.') * m' * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
         else
-            Kup_e = Kup_e + Material.gamma_tilde * (NuVoigt.') * BpVoigt * Jdet * Quad.w(ip,1);
+            Kup_e = Kup_e + Material.gamma_tilde * (NuVoigt.') * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
         end
     end
     
