@@ -15,11 +15,13 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = VelocityImpact1D_Idesman
 % 0 - Spanos theory (additional porosity equation)
 Control.Biotmodel = 1;
 
-%% Material properties - Komijani (2019)
+%% Material properties - Idesman (2011)
 % elasticity modulus [Pa]
 Material.E = 1;
 % average density of the medium
 Material.rho = 1;
+% Poisson's ratio
+Material.nu = 0.3;
 
 % porous media permeability [m2/GPa s]
 Material.kf = 0;
@@ -32,6 +34,11 @@ Material.rho_f = 0;
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;
+
+% thickness 
+% 1D: cross sectional area [m2]
+% 2D: out of plane thickness [m]
+Material.t = 1;
 
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
@@ -153,8 +160,8 @@ BC.pointFlux = [];
 BC.s = @(x)[]; 
 
 %% Quadrature order
-Control.nqU = 2;
-Control.nqP = 2;
+Control.nqU = 3;
+Control.nqP = 3;
 
 %% Problem type
 % 1 = quasi-steady/transient problem (no acceleration and pressure change)
@@ -168,7 +175,7 @@ Control.uncoupled = 0;
 
 %% Solution parameters
 Control.dt = 1e-3;  % time step
-Control.tend = 2;   % final simulation time
+Control.tend = 1;   % final simulation time
 
 Control.plotu = find(MeshU.coords == 2); % x = 2m
 Control.plotp = find(MeshP.coords == 2); % x = 2m
@@ -181,7 +188,7 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 
 %% Time discretization parameters
 % Newmark method
-Control.beta = 0.25;
+Control.beta = 0.5;
 Control.gamma = 0.5;
 Control.theta = 0.5;
 

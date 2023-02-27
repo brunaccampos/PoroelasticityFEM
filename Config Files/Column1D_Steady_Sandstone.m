@@ -43,6 +43,11 @@ Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.
 % fluid bulk viscosity [GPa s]
 Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
 
+% thickness 
+% 1D: cross sectional area [m2]
+% 2D: out of plane thickness [m]
+Material.t = 1;
+
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
 Material.constLaw = 'PlaneStrain';

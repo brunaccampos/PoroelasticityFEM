@@ -42,6 +42,11 @@ Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;
 
+% thickness 
+% 1D: cross sectional area [m2]
+% 2D: out of plane thickness [m]
+Material.t = 1;
+
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
 Material.constLaw = 'PlaneStress';
