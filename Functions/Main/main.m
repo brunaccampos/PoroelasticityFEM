@@ -36,15 +36,15 @@ Control.step = 0; % step counter
 %% Select model name and type
 if Control.Biotmodel
     if Control.steady
-        main_BiotTransient;
+        mainTransient_Biot;
     else
-        main_BiotDynamic;
+        mainDynamic_Biot;
     end
 else
     if Control.steady
-        main_SpanosTransient;
+        mainTransient_Spanos;
     else
-        main_SpanosDynamic;
+        mainDynamic_Spanos;
     end
 end
 
@@ -68,21 +68,30 @@ end
 
 % compute error
 if saveMatData_on && Control.plotansol
+    % symbolic analytical results
+    if ~Control.uncoupled
+        [pan_symb, uan_symb] = getAnalyticResult_Symb(Material, MeshU, BC, Control);
+        Control.uan_symb = uan_symb;
+        Control.pan_symb = pan_symb;
+    end
+
     % compute strain and stress
     [e,s] = ComputeSolidStress(Material, MeshU, Solution.u);
     [e_an,s_an] = ComputeSolidStress(Material, MeshU, Plot.uan_space);
-    % sotore results
+    % store results
     Solution.e = e;
     Solution.s = s;
     Solution.e_an = e_an;
     Solution.s_an = s_an;
+
     % compute flux
     q = ComputeFluidFlux(Material, MeshP, Solution.p);
     q_an = ComputeFluidFlux(Material, MeshP, Plot.pan_space);
     % store results
     Solution.q = q;
     Solution.q_an = q_an;
-    % compute norm errors
+   
+    % error
     [ErrorComp] = ComputeMeshSizeError(MeshU, MeshP, Solution, Plot, Control);
     % save results
     save('Results.mat', 'ErrorComp');
