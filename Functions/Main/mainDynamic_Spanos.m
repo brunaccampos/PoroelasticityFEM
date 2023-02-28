@@ -44,7 +44,8 @@ end
 
 %% Solve system
 for t = 0:Control.dt:Control.tend
-    fprintf('\n Step %d \n', Control.step);
+    fprintf('\n Step %d, t = %d \n', Control.step, t);
+    Control.t = t;
 
     % linear solver
     [Solution] = SolverDynamic_Spanos(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration);
@@ -88,7 +89,6 @@ for t = 0:Control.dt:Control.tend
     Iteration.fp_old = fp; % flux vector
 
     % update time and step
-    Control.t = t;
     Control.step = Control.step + 1;
 end
 

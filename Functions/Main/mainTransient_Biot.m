@@ -39,10 +39,11 @@ end
 
 %% Solve system
 for t = 0:Control.dt:Control.tend
-    fprintf('\n Step %d \n', Control.step);
+    fprintf('\n Step %d, t = %d \n', Control.step, t);
+    Control.t = t;
 
     % Assemble system load vectors
-    [fu,fp,fn] = ComputeSystemLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
+    [fu,fp,fn] = ComputeLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
     
     % analytical solution for 1D case
     if Control.plotansol
@@ -130,7 +131,6 @@ for t = 0:Control.dt:Control.tend
     end
 
     % update time and step
-    Control.t = t;
     Control.step = Control.step + 1;
 end
 
