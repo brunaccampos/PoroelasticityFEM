@@ -42,10 +42,20 @@ end
 
 %% Solve system
 for t = 0:Control.dt:Control.tend
-    fprintf('\n Step %d \n', Control.step);
+    fprintf('\n Step %d, t = %d \n', Control.step, t);
+    Control.t = t;
 
     % linear solver
     [Solution] = SolverDynamic_Biot(Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Control, Iteration);
+
+%     figure(1);
+%     subplot(1,2,1);
+%     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
+%     title('Displacement')
+%     subplot(1,2,2);
+%     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
+%     title('Velocity')
+%     pause(0.001);
 
     % solution in the frequency domain
     if Control.freqDomain
@@ -112,6 +122,5 @@ for t = 0:Control.dt:Control.tend
     end
 
     % update time and step
-    Control.t = t;
     Control.step = Control.step + 1;
 end
