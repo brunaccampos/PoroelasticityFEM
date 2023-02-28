@@ -33,11 +33,12 @@ DirFolder = 'Config Files';
 % File = 'Column1D_Steady_Ferronato';
 
 % -------------------- 1D dynamic column consolidation
-File = 'Column1D_Dynamic_Komijani';
+% File = 'Column1D_Dynamic_Komijani';
 % File = 'Column1D_Dynamic_Zienck';
 % File = 'Column1D_Dynamic_Diebels';
 
 % -------------------- 1D dynamic velocity impact
+% File = 'VelocityImpact1D_Ham';
 % File = 'VelocityImpact1D_Idesman';
 % File = 'VelocityImpact1D_Dynamic_Komijani';
 
@@ -49,6 +50,8 @@ File = 'Column1D_Dynamic_Komijani';
 % File = 'HeatConduction_1D_Transient';
 % File = 'ManufacturedSolution1D';
 % File = 'ManufacturedSolution1D_fixedU';
+% File = 'ManufacturedSolution1D_coupled';
+% File = 'ManufacturedSolution1D_SteaTrans';
 
 % -------------------- 2D tests
 % File = 'Column2D_Steady_Korsawe_fixedP';
