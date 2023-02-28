@@ -21,7 +21,7 @@ Material.E = 1;
 % average density of the medium
 Material.rho = 1;
 % Poisson's ratio
-Material.nu = 0.3;
+Material.nu = 0.0;
 
 % porous media permeability [m2/GPa s]
 Material.kf = 0;
@@ -33,7 +33,7 @@ Material.Minv = 0;
 Material.rho_f = 0;
 
 % lumped mass matrix - 0: false, 1: true
-Material.lumpedMass = 0;
+Material.lumpedMass = 1;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -59,7 +59,7 @@ switch MeshType
         % number of space dimensions
         nsd = 1;
         % number of elements
-        ne = 100;
+        ne = 300;
         % column size [m]
         L = 4;
         %%%% solid displacement field
@@ -175,7 +175,7 @@ Control.uncoupled = 0;
 
 %% Solution parameters
 Control.dt = 1e-3;  % time step
-Control.tend = 1;   % final simulation time
+Control.tend = 2;   % final simulation time
 
 Control.plotu = find(MeshU.coords == 2); % x = 2m
 Control.plotp = find(MeshP.coords == 2); % x = 2m
@@ -188,7 +188,7 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 
 %% Time discretization parameters
 % Newmark method
-Control.beta = 0.5;
+Control.beta = 0.25;
 Control.gamma = 0.5;
 Control.theta = 0.5;
 
