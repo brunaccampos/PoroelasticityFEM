@@ -9,10 +9,10 @@ disp([num2str(toc),': Model: Biot dynamic case']);
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
 
-[Kuu, Kup, Kpp, M, Mhat, S] = ComputeSystemMatrices_BiotDynamic(Material, MeshU, MeshP, QuadU, QuadP);
+[Kuu, Kup, Kpp, M, Mhat, S] = ComputeMatricesDynamic_Biot(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Assemble system load vectors
-[fu,fp,fn] = ComputeSystemLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
+[fu,fp,fn] = ComputeLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
 
 %% Solve eigenproblem
 if Control.freqDomain

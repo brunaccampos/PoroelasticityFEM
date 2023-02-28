@@ -9,10 +9,10 @@ disp([num2str(toc),': Model: Spanos transient case']);
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
 
-[Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeSystemMatrices_SpanosTransient(Material, MeshU, MeshP, MeshN, QuadU, QuadP);
+[Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesTransient_Spanos(Material, MeshU, MeshP, MeshN, QuadU, QuadP);
 
 %% Assemble system load vectors
-[fu,fp,fn] = ComputeSystemLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
+[fu,fp,fn] = ComputeLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
 
 %% Solve eigenproblem
 if Control.freqDomain

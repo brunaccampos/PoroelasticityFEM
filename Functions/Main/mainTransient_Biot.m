@@ -9,7 +9,7 @@ disp([num2str(toc),': Model: Biot transient case']);
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
 
-[Kuu, Kup, Kpp, S] = ComputeSystemMatrices_BiotTransient(Material, MeshU, MeshP, QuadU, QuadP);
+[Kuu, Kup, Kpp, S] = ComputeMatricesTransient_Biot(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Solve eigenproblem
 if Control.freqDomain

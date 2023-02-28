@@ -9,10 +9,10 @@ disp([num2str(toc),': Model: Spanos dynamic case']);
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
 
-[Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeSystemMatrices_SpanosDynamic(Material, MeshU, MeshP, MeshN, QuadU);
+[Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesDynamic_Spanos(Material, MeshU, MeshP, MeshN, QuadU);
 
 %% Assemble system load vectors
-[fu,fp,fn] = ComputeSystemLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
+[fu,fp,fn] = ComputeLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
 
 %% Solve eigenproblem
 if Control.freqDomain
