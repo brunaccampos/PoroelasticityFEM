@@ -51,10 +51,12 @@ for t = 0:Control.dt:Control.tend
 %     figure(1);
 %     subplot(1,2,1);
 %     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
-%     title('Displacement')
+%     title('Displacement');
+%     xlim([0 max(MeshU.coords)]);
 %     subplot(1,2,2);
 %     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
-%     title('Velocity')
+%     title('Velocity');
+%     xlim([0 max(MeshU.coords)]);
 %     pause(0.001);
 
     % solution in the frequency domain
