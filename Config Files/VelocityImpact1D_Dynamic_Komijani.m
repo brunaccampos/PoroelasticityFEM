@@ -44,12 +44,12 @@ Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
 Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
 
 % lumped mass matrix - 0: false, 1: true
-Material.lumpedMass = 0;
+Material.lumpedMass = 1;
 
 % thickness 
 % 1D: cross sectional area [m2]
 % 2D: out of plane thickness [m]
-Material.t = 1;
+Material.t = 0.1;
 
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
@@ -70,7 +70,7 @@ switch MeshType
         % number of space dimensions
         nsd = 1;
         % number of elements
-        ne = 100;
+        ne = 200;
         % column size [m]
         L = 6;
         %%%% solid displacement field
@@ -171,8 +171,8 @@ BC.pointFlux = [];
 BC.s = @(x)[]; 
 
 %% Quadrature order
-Control.nqU = 2;
-Control.nqP = 2;
+Control.nqU = 3;
+Control.nqP = 3;
 
 %% Problem type
 % 1 = quasi-steady/transient problem (no acceleration and pressure change)
@@ -185,8 +185,8 @@ Control.steady = 0;
 Control.uncoupled = 0; 
 
 %% Solution parameters
-Control.dt = 1e-2;  % time step
-Control.tend = 1;   % final simulation time
+Control.dt = 0.07e-2;  % time step
+Control.tend = 0.07;   % final simulation time
 
 Control.plotu = find(MeshU.coords == 3); % x = 3m
 Control.plotp = find(MeshP.coords == 3); % x = 3m
@@ -199,8 +199,8 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 
 %% Time discretization parameters
 % Newmark method
-Control.beta = 0.25;
-Control.gamma = 0.5;
-Control.theta = 0.5;
+Control.beta = 0.7;
+Control.gamma = 0.7;
+Control.theta = 0.7;
 
 end
