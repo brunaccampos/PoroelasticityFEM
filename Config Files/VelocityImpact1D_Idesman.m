@@ -175,7 +175,7 @@ Control.uncoupled = 0;
 
 %% Solution parameters
 Control.dt = 1e-3;  % time step
-Control.tend = 2;   % final simulation time
+Control.tend = 6;   % final simulation time
 
 Control.plotu = find(MeshU.coords == 2); % x = 2m
 Control.plotp = find(MeshP.coords == 2); % x = 2m
