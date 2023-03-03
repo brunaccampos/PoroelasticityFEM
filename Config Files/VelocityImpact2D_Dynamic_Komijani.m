@@ -158,8 +158,8 @@ BC.pointFlux = [];
 BC.s = @(x)[]; 
 
 %% Quadrature order
-Control.nqU = 2;
-Control.nqP = 2;
+Control.nqU = 3;
+Control.nqP = 3;
 
 %% Problem type
 % 1 = quasi-steady/transient problem (no acceleration and pressure change)
@@ -172,8 +172,8 @@ Control.steady = 0;
 Control.uncoupled = 0; 
 
 %% Solution parameters
-Control.dt = 1e-4;  % time step
-Control.tend = 0.1;   % final simulation time
+Control.dt = 7e-4;  % time step
+Control.tend = 0.07;   % final simulation time
 
 Control.plotu = 98*2-1; % dof x of node 98 (x = 3m, y = 0.05m)
 Control.plotp = 54; % dof of node 54 (x = 3m, y = 0.05m)
