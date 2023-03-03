@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = VelocityImpact1D_Idesman(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = VelocityImpact1D_Ham(config_dir, progress_on)
 % Column Consolidation 2D simulation
 % Configuration File
 % Based on Zienkiewicz (1982) model
@@ -42,7 +42,7 @@ Material.t = 0.01;
 
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
-Material.constLaw = 'PlaneStrain';
+Material.constLaw = 'PlaneStress';
 
 %% Mesh parameters
 if progress_on
@@ -117,9 +117,9 @@ BC.top_node_p = find(MeshP.coords == max(MeshP.coords));
 BC.bottom_node_p = find(MeshP.coords == min(MeshP.coords));
 
 %% Dirichlet BCs - solid
-% displacement u=0 at bottom and top
+% displacement u=0 at right
 BC.fixed_u1 = BC.top_node_u;
-% u = t at left (x)
+% displacement u=t at left (v=1)
 BC.fixed_u2 = BC.bottom_node_u;
 % fixed DOFs
 BC.fixed_u = [BC.fixed_u1; BC.fixed_u2];
@@ -150,7 +150,6 @@ BC.b = @(x)[];
 
 %% Neumann BCs - fluid
 % distributed flux [m3/s]
-% impervious at bottom, left, and right
 BC.fluxNodes = [];
 
 % point flux [m/s]
@@ -171,11 +170,11 @@ Control.steady = 0;
 % tag used for computing analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
-Control.uncoupled = 0; 
+Control.uncoupled = 1; 
 
 %% Solution parameters
 Control.dt = 2.5e-8;  % time step
-Control.tend = 0.00005;   % final simulation time
+Control.tend = 5e-5;   % final simulation time
 
 Control.plotu = find(MeshU.coords == max(MeshU.coords)/2); % middle node
 Control.plotp = find(MeshU.coords == max(MeshU.coords)/2); % middle node
