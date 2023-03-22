@@ -17,7 +17,7 @@ disp([num2str(toc),': Assembling System Matrices...']);
 %% Solve eigenproblem
 if Control.freqDomain
     disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
-    [phi_u, omega2_u, phi_p, omega2_p] = SolveEig_Transient(Kuu, Kup, Kpp, MeshU, MeshP, BC, Control);
+    [phi_u, omega2_u, phi_p, omega2_p, phi_n, omega_n] = SolveEigDynamic_Spanos(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, MeshU, MeshP, MeshN, BC, Control);
 else
     phi_u = [];
     phi_p = [];
@@ -49,6 +49,11 @@ for t = 0:Control.dt:Control.tend
 
     % linear solver
     [Solution] = SolverDynamic_Spanos(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration);
+
+    % solution in the frequency domain
+    if Control.freqDomain
+        [SolutionFreq] = SolverDynamicFreq(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Control, Iteration);
+    end
 
     % update external forces vectors
     fu(BC.fixed_u) = Solution.fE;
