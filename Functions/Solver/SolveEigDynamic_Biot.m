@@ -1,5 +1,5 @@
-function [phi_u, omega2_u, phi_p, omega2_p] = SolveEig_Dynamic(Kuu, Kup, Kpp, M, Mhat, MeshU, MeshP, BC, Control)
-% solve eigenproblem for dynamic systems
+function [phi_u, omega2_u, phi_p, omega2_p] = SolveEigDynamic_Biot(Kuu, Kup, Kpp, M, Mhat, MeshU, MeshP, BC, Control)
+% solve eigenproblem for dynamic systems considering Biot theory
 % ------------------------------------------------------------------------
 
 % partitioned matrices for unknown variables
