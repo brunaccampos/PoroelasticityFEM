@@ -48,7 +48,7 @@ Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
 % thickness 
 % 1D: cross sectional area [m2]
 % 2D: out of plane thickness [m]
-Material.t = 1;
+Material.t = 0.1;
 
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
@@ -127,13 +127,6 @@ switch MeshType
         end
 end
 
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
-
 %% Find nodes for prescribed BCs
 % find top and bottom nodes for displacement field
 BC.top_node_u = find(MeshU.coords == min(MeshU.coords));
@@ -142,6 +135,13 @@ BC.bottom_node_u = find(MeshU.coords == max(MeshU.coords));
 % find top and bottom nodes for pressure field
 BC.top_node_p = find(MeshP.coords == min(MeshP.coords));
 BC.bottom_node_p = find(MeshP.coords == max(MeshP.coords));
+
+%% Initial conditions
+% displacement
+BC.initU = [];
+
+% pressure
+BC.initP = [];
 
 %% Dirichlet BCs - solid
 % displacement u=0 at the bottom
@@ -159,7 +159,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
 % point load [GN]
-BC.pointLoadValue = -3000e-9;
+BC.pointLoadValue = 3e-6;
 BC.pointLoadNodes = BC.top_node_u;
 BC.pointLoad = zeros(MeshU.nDOF,1);
 BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
@@ -218,7 +218,7 @@ Control.plotp = find(MeshP.coords == 5); % x = 5m
 Control.plotansol = 0; % 1 = true; 0 = false
 
 % solve in the frequency domain
-Control.freqDomain = 0;  % 1 = true; 0 = false
+Control.freqDomain = 1;  % 1 = true; 0 = false
 
 %% Time discretization parameters
 % Newmark method
