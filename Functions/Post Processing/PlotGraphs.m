@@ -19,7 +19,7 @@ if Control.steady
     end
 else
     if MeshU.nsd == 1
-        plot1Ddynamic(Solution, SolutionFreq, MeshU, MeshP, Control, Plot, saveGraphs_on);
+        plot1Ddynamic(Solution, SolutionFreq, MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on);
     else
         plot2Ddynamic(Solution, MeshU, MeshP, Control, Plot, saveGraphs_on);
     end
@@ -146,7 +146,6 @@ if ~Control.Biotmodel
         exportgraphics(gcf,'Poros_depth.png','Resolution',300)
     end
 end
-
 %% porosity vs time
 if ~Control.Biotmodel
     figure;
@@ -229,17 +228,17 @@ end
 % ------------------------------------------------------------------------
 % PLOTS FOR 1D DYNAMIC CASE
 % ------------------------------------------------------------------------
-function plot1Ddynamic(Solution, SolutionFreq, MeshU, MeshP, Control, Plot, saveGraphs_on)
+function plot1Ddynamic(Solution, SolutionFreq, MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on)
 %% pressure vs depth
 figure;
-plot(MeshP.coords, Solution.p,'k','LineWidth',2);
+plot(MeshP.coords, Solution.p*10^9.*Material.t,'k','LineWidth',2);
 hold on
 xlabel('Column depth [m]');
 ylabel('p [Pa]');
 title(sprintf('Pressure at t = %.0f s', Control.tend));
 % frequency domain solution
 if Control.freqDomain
-    plot(MeshP.coords, SolutionFreq.pF,'r--','LineWidth',2);
+    plot(MeshP.coords, SolutionFreq.pF*10^9.*Material.t,'r--','LineWidth',2);
     legend('Time', 'Frequency');
 end
 hold off
@@ -248,14 +247,14 @@ if saveGraphs_on
 end
 %% pressure vs time
 figure;
-plot(Plot.time, Plot.p_time*10^9,'k','LineWidth',2);
+plot(Plot.time, Plot.p_time*10^9.*Material.t,'k','LineWidth',2);
 hold on
 xlabel('Time [s]');
 ylabel('p [Pa]');
 title(sprintf('Pressure at x = %.2f m', MeshP.coords(Control.plotp,1)));
 % frequency domain solution
 if Control.freqDomain
-    plot(Plot.time, Plot.pF*10^9,'r--','LineWidth',2);
+    plot(Plot.time, Plot.pF*10^9.*Material.t,'r--','LineWidth',2);
     legend('Time', 'Frequency');
 end
 hold off
@@ -309,6 +308,32 @@ end
 hold off
 if saveGraphs_on
     exportgraphics(gcf,'Vel_time.png','Resolution',300)
+end
+%% porosity vs depth
+if ~Control.Biotmodel
+    figure;
+    plot(MeshN.coords, Solution.n ./ Material.n,'g','LineWidth',2);
+    hold on
+    xlabel('Column depth [m]');
+    ylabel('Porosity normalized [-]');
+    title(sprintf('Porosity norm at t = %.0f s', Control.tend));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'Poros_depth.png','Resolution',300)
+    end
+end
+%% porosity vs time
+if ~Control.Biotmodel
+    figure;
+    plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
+    hold on
+    xlabel('Time [s]');
+    ylabel('Porosity normalized [-]');
+    title(sprintf('Porosity norm at x = %.2f m', MeshN.coords(Control.plotp,1)));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'Poros_time.png','Resolution',300)
+    end
 end
 
 end
