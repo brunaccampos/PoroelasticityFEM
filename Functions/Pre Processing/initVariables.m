@@ -42,6 +42,13 @@ if Control.freqDomain
     Iteration.xuF2dot_old = zeros(length(BC.free_u),1);
     Iteration.xpF_old = (phi_p) \ Iteration.pF_old(BC.free_p);
     Iteration.xpFdot_old = (phi_p) \ Iteration.pFdot_old(BC.free_p);
+    if ~Control.Biotmodel
+        Iteration.nF_old = zeros(MeshN.nDOF, 1); % porosity variable storage
+        Iteration.nF_old(:) = Material.n;
+        Iteration.nFdot_old = zeros(MeshN.nDOF, 1); % porosity gradient
+        Iteration.xnF_old = zeros(MeshN.nDOF, 1);
+        Iteration.xnFdot_old = zeros(MeshN.nDOF, 1);
+    end
 end
 
 %% Plot arrays - frequency domain
