@@ -1,4 +1,4 @@
-function [phi_u, omega2_u, phi_p, omega2_p] = SolveEig_Transient(Kuu, Kup, Kpp, MeshU, MeshP, BC, Control)
+function [phi_u, omega2_u, phi_p, omega2_p] = SolveEigTransient_Biot(Kuu, Kup, Kpp, MeshU, MeshP, BC, Control)
 % solve eigenproblem for transient systems
 % ------------------------------------------------------------------------
 

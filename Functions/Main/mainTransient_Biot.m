@@ -74,7 +74,7 @@ for t = 0:Control.dt:Control.tend
     
     % solution in the frequency domain
     if Control.freqDomain
-        [SolutionFreq] = SolverTransientFreq(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration);
+        [SolutionFreq] = SolverTransientFreq_Biot(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration);
     end
 
     % update external forces vectors
