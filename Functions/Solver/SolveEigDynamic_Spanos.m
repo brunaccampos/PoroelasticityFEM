@@ -1,4 +1,4 @@
-function [phi_u, omega2_u, phi_p, omega2_p, phi_n, omega2_n] = SolveEigDynamic_Spanos(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, MeshU, MeshP, MeshN, BC, Control)
+function [phi_ucoupl, omega2_ucoupl, phi_pcoupl, omega2_pcoupl, phi_ncoupl, omega2_ncoupl] = SolveEigDynamic_Spanos(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Knp, MeshU, MeshP, MeshN, BC, Control)
 % solve eigenproblem for dynamic systems considering Spanos theory
 % ------------------------------------------------------------------------
 
@@ -6,12 +6,6 @@ function [phi_u, omega2_u, phi_p, omega2_p, phi_n, omega2_n] = SolveEigDynamic_S
 MuuFF = Muu(BC.free_u, BC.free_u);
 MpuFF = Mpu(BC.free_p, BC.free_u);
 MnuFF = Mnu(BC.free_n, BC.free_u);
-
-KpuFF = Kpu(BC.free_p, BC.free_u);
-KpnFF = Kpn(BC.free_p, BC.free_n);
-KnuFF = Knu(BC.free_n, BC.free_u);
-KnnFF = Knn(BC.free_n, BC.free_n);
-SFF = S(BC.free_p, BC.free_p);
 
 KuuFF = Kuu(BC.free_u, BC.free_u);
 KupFF = Kup(BC.free_u, BC.free_p);
@@ -23,8 +17,6 @@ KnpFF = Knp(BC.free_n, BC.free_p);
 [phi_u, omega2_u] = eig(full(KuuFF), full(MuuFF));
 % pressure uncoupled
 [phi_p, omega2_p] = eig(full(KppFF));
-% porosity uncoupled
-[phi_n, omega2_n] = eig(full(KnnFF));
 
 %% Coupled problem
 % coupled matrix
@@ -54,13 +46,6 @@ phi_p_sorted = zeros(length(phi_p), length(phi_p));
 for i = 1: length(phi_p)
     phi_p_sorted(:,i) = phi_p(:,index(i));
 end
-% sort modes porosity
-omega2_n_vec = diag(omega2_n);
-[omega2_n_sorted, index] = sort(omega2_n_vec);
-phi_n_sorted = zeros(length(phi_n), length(phi_n));
-for i = 1: length(phi_n)
-    phi_n_sorted(:,i) = phi_n(:,index(i));
-end
 
 % plot together
 figure;
@@ -68,20 +53,17 @@ hold on
 sgtitle(sprintf('PM Mode Shapes at t = %.2f s - UNCOUPLED PROBLEM', Control.tend));
 modeshapeu = zeros(MeshU.nDOF,6);
 modeshapep = zeros(MeshP.nDOF,6);
-modeshapen = zeros(MeshN.nDOF,6);
 for mode = 1:6
     modeshapeu(BC.free_u, mode) = phi_u_sorted(:,mode) / norm(phi_u_sorted(:,mode));
     modeshapep(BC.free_p, mode) = phi_p_sorted(:,mode);
-    modeshapen(BC.free_n, mode) = phi_n_sorted(:,mode);
     subplot(2,3, mode);
     plot(MeshU.coords, modeshapeu(:,mode), 'b', 'LineWidth', 2);
     hold on
     plot(MeshP.coords, modeshapep(:,mode), 'k', 'LineWidth', 2);
-    plot(MeshN.coords, modeshapen(:,mode), 'r', 'LineWidth', 2);
     xlabel('Length (m)');
     ylabel('Shape');
-    legend('u', 'p', 'n');
-    title(sprintf('# %.0f, omU = %.2f Hz, omP = %.2d Hz, omN = %.2d Hz', mode, sqrt(omega2_u_sorted(mode)), sqrt(omega2_p_sorted(mode)*1e-9), sqrt(omega2_n_sorted(mode))));
+    legend('u', 'p');
+    title(sprintf('# %.0f, omU = %.2f Hz, omP = %.2d Hz', mode, sqrt(omega2_u_sorted(mode)), sqrt(omega2_p_sorted(mode)*1e-9)));
 end
 hold off
 
