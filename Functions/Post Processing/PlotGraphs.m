@@ -48,6 +48,10 @@ if Control.plotansol
     plot(MeshP.coords, Plot.pan_space*10^9,'k:','LineWidth',2);
     legend('Numerical', 'Analytical');
 end
+% adapt legend if both frequency and analytical solutions are plotted
+if Control.freqDomain && Control.plotansol
+    legend('Time', 'Frequency', 'Analytical');
+end
 hold off
 if saveGraphs_on
     exportgraphics(gcf,'Press_depth.png','Resolution',300)
@@ -68,6 +72,10 @@ end
 if Control.plotansol
     plot(Plot.time, Plot.pan_time*10^9,'k:','LineWidth',2);
     legend('Numerical', 'Analytical');
+end
+% adapt legend if both frequency and analytical solutions are plotted
+if Control.freqDomain && Control.plotansol
+    legend('Time', 'Frequency', 'Analytical');
 end
 hold off
 if saveGraphs_on
@@ -92,6 +100,10 @@ if Control.plotansol
     plot(MeshU.coords, Plot.uan_space,'k:','LineWidth',2);
     legend('Numerical', 'Analytical');
 end
+% adapt legend if both frequency and analytical solutions are plotted
+if Control.freqDomain && Control.plotansol
+    legend('Time', 'Frequency', 'Analytical');
+end
 hold off
 if saveGraphs_on
     exportgraphics(gcf,'Displ_depth.png','Resolution',300)
@@ -112,6 +124,10 @@ end
 if Control.plotansol
     plot(Plot.time, Plot.uan_time,'k:','LineWidth',2);
     legend('Numerical', 'Analytical');
+end
+% adapt legend if both frequency and analytical solutions are plotted
+if Control.freqDomain && Control.plotansol
+    legend('Time', 'Frequency', 'Analytical');
 end
 hold off
 if saveGraphs_on
