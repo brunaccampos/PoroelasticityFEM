@@ -17,14 +17,15 @@ disp([num2str(toc),': Assembling System Matrices...']);
 %% Solve eigenproblem
 if Control.freqDomain
     disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
-    [phi_u, omega2_u, phi_p, omega2_p] = SolveEigTransient_Spanos(Kuu, Kup, Kpp, Knp, MeshU, MeshP, MeshN, BC, Control);
+    [phi_u, omega2_u, phi_p, omega2_p, phi_n, omega2_n] = SolveEigTransient_Spanos(Kuu, Kup, Kpp, Knp, MeshU, MeshP, MeshN, BC, Control);
 else
     phi_u = [];
     phi_p = [];
+    phi_n = [];
 end
 
 %% Initialize iteration variables
-[Iteration, Plot] = initVariables(phi_u, phi_p, MeshU, MeshP, MeshN, Material, Control, BC);
+[Iteration, Plot] = initVariables(phi_u, phi_p, phi_n, MeshU, MeshP, MeshN, Material, Control, BC);
 
 %% Initial condition file
 if plot2vtk
@@ -75,7 +76,7 @@ for t = 0:Control.dt:Control.tend
     
     % solution in the frequency domain
     if Control.freqDomain
-        [SolutionFreq] = SolverTransientFreq_Spanos(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration);
+        [SolutionFreq] = SolverTransientFreq_Spanos(phi_u, omega2_u, phi_p, omega2_p, phi_n, omega2_n, Kuu, Kup, Kpu, Kpp, S, Kpn, Knu, Knp, Knn, fu, fp, BC, Control, Iteration);
     end
     % update external forces vectors
     fu(BC.fixed_u) = Solution.fE;

@@ -17,14 +17,15 @@ disp([num2str(toc),': Assembling System Matrices...']);
 %% Solve eigenproblem
 if Control.freqDomain
     disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
-    [phi_u, omega2_u, phi_p, omega2_p, phi_n, omega_n] = SolveEigDynamic_Spanos(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, MeshU, MeshP, MeshN, BC, Control);
+    [phi_u, omega2_u, phi_p, omega2_p, phi_n, omega2_n] = SolveEigDynamic_Spanos(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Knp, MeshU, MeshP, MeshN, BC, Control);
 else
     phi_u = [];
     phi_p = [];
+    phi_n = [];
 end
 
 %% Initialize iteration variables
-[Iteration, Plot] = initVariables(phi_u, phi_p, MeshU, MeshP, MeshN, Material, Control, BC);
+[Iteration, Plot] = initVariables(phi_u, phi_p, phi_n, MeshU, MeshP, MeshN, Material, Control, BC);
 
 %% Initial condition file
 if plot2vtk
@@ -52,7 +53,7 @@ for t = 0:Control.dt:Control.tend
 
     % solution in the frequency domain
     if Control.freqDomain
-        [SolutionFreq] = SolverDynamicFreq_Spanos(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
+        [SolutionFreq] = SolverDynamicFreq_Spanos(phi_u, omega2_u, phi_p, omega2_p, phi_n, omega2_n, Kuu, Kup, Kpu, Kpp, S, Kpn, Knu, Knp, Knn, Muu, Mpu, Mnu, fu, fp, BC, Control, Iteration);
     end
 
     % update external forces vectors
@@ -75,6 +76,18 @@ for t = 0:Control.dt:Control.tend
         Plot.udot_time(Control.step+1,:) = Solution.udot(Control.plotu, 1);
         % plot porosity vs time
         Plot.n_time(Control.step+1,:) = Solution.n(Control.plotp, 1);
+
+        % frequency domain
+        if Control.freqDomain
+            % plot pressure vs time
+            Plot.pF(Control.step+1,:) = SolutionFreq.pF(Control.plotp, 1);
+            % plot displacement vs time
+            Plot.uF(Control.step+1,:) = SolutionFreq.uF(Control.plotu, 1);
+            % plot velocity vs time
+            Plot.uFdot(Control.step+1,:) = SolutionFreq.uFdot(Control.plotu, 1);
+            % plot porosity vs time
+            Plot.nF(Control.step+1,:) = SolutionFreq.nF(Control.plotp, 1);
+        end
     end
 
     % store variables over space
@@ -92,6 +105,25 @@ for t = 0:Control.dt:Control.tend
     Iteration.ndot_old = Solution.ndot; % porosity variation
     Iteration.fu_old = fu; % load vector
     Iteration.fp_old = fp; % flux vector
+
+    % update variables - frequency domain
+    if Control.freqDomain
+        Iteration.xuF_old = SolutionFreq.xuF;
+        Iteration.xuFdot_old = SolutionFreq.xuFdot;
+        Iteration.xpF_old = SolutionFreq.xpF;
+        Iteration.xuF2dot_old = SolutionFreq.xuF2dot;
+        Iteration.xpFdot_old = SolutionFreq.xpFdot;
+        Iteration.xnF_old = SolutionFreq.xnF;
+        Iteration.xnFdot_old = SolutionFreq.xnFdot;
+
+        Iteration.uF_old = SolutionFreq.uF; % solid displacement
+        Iteration.uFdot_old = SolutionFreq.uFdot; % solid velocity
+        Iteration.pF_old = SolutionFreq.pF; % fluid pressure
+        Iteration.uF2dot_old = SolutionFreq.uF2dot; % solid acceleration
+        Iteration.pFdot_old = SolutionFreq.pFdot; % fluid pressure gradient
+        Iteration.nF_old = SolutionFreq.nF; % porosity
+        Iteration.nFdot_old = SolutionFreq.nFdot; % porosity gradient
+    end
 
     % update time and step
     Control.step = Control.step + 1;

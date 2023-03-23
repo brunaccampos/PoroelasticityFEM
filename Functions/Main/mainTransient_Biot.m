@@ -21,7 +21,7 @@ else
 end
 
 %% Initialize iteration variables
-[Iteration, Plot] = initVariables(phi_u, phi_p, MeshU, MeshP, MeshN, Material, Control, BC);
+[Iteration, Plot] = initVariables(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, BC);
 
 %% Initial condition file
 if plot2vtk
