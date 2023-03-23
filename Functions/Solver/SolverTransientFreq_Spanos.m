@@ -1,4 +1,4 @@
-function [SolutionFreq] = SolverTransientFreq(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration)
+function [SolutionFreq] = SolverTransientFreq_Biot(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration)
 % ------------------------------------------------------------------------
 % Solve linear system for quasi-steady case
 % ------------------------------------------------------------------------
