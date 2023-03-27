@@ -120,16 +120,22 @@ MuuFF = Muu(BC.free_u, BC.free_u);
 KuuFF = Kuu(BC.free_u, BC.free_u);
 KupFF = Kup(BC.free_u, BC.free_p);
 
+KnnFF = Knn(BC.free_n, BC.free_n);
+MnuFF = Mnu(BC.free_n, BC.free_u);
+KnuFF = Knu(BC.free_n, BC.free_u);
+KnpFF = Knp(BC.free_n, BC.free_p);
+
+SFF = S(BC.free_p, BC.free_p);
 MpuFF = Mpu(BC.free_p, BC.free_u);
 KpuFF = Kpu(BC.free_p, BC.free_u);
 KppFF = Kpp(BC.free_p, BC.free_p);
-SFF = S(BC.free_p, BC.free_p);
 KpnFF = Kpn(BC.free_p, BC.free_n);
 
 % at first step: compute solid acceleration and pressure gradient
 if Control.step == 1
-    u2dot_old(BC.free_u) = MuuFF\(-KuuFF*u_old(BC.free_u) + KupFF*p_old(BC.free_p) + fu(BC.free_u));
-    pdot_old(BC.free_p) = SFF\(MpuFF*u2dot_old(BC.free_u) - KpuFF*udot_old(BC.free_u) - KppFF*p_old(BC.free_p) - KpnFF*ndot_old(BC.free_n) + fp(BC.free_p));
+    u2dot_old(BC.free_u) = MuuFF\(fu(BC.free_u) - KuuFF*u_old(BC.free_u) + KupFF*p_old(BC.free_p));
+    ndot_old(BC.free_n) = KnnFF\(MnuFF*u2dot_old(BC.free_u) - KnuFF*udot_old(BC.free_u) - KnpFF*p_old(BC.free_p));
+    pdot_old(BC.free_p) = SFF\(fp(BC.free_p) + MpuFF*u2dot_old(BC.free_u) - KpuFF*udot_old(BC.free_u) - KppFF*p_old(BC.free_p) - KpnFF*ndot_old(BC.free_n));
 end
 
 % auxiliar terms for external forces vector
