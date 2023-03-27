@@ -15,13 +15,13 @@ if Control.steady
     if MeshU.nsd == 1
         plot1Dsteady(Solution, SolutionFreq, Material, MeshU, MeshP, MeshN, Control, Plot, saveGraphs_on);
     else
-        plot2Dsteady(Solution, MeshU, MeshP, Control, Plot, saveGraphs_on);
+        plot2Dsteady(MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on);
     end
 else
     if MeshU.nsd == 1
         plot1Ddynamic(Solution, SolutionFreq, MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on);
     else
-        plot2Ddynamic(Solution, MeshU, MeshP, Control, Plot, saveGraphs_on);
+        plot2Ddynamic(MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on);
     end
 end
 
@@ -180,7 +180,7 @@ end
 % ------------------------------------------------------------------------
 % PLOTS FOR 2D QUASI-STEADY CASE
 % ------------------------------------------------------------------------
-function plot2Dsteady(Solution, MeshU, MeshP, Control, Plot, saveGraphs_on)
+function plot2Dsteady(MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on)
 %% pressure vs time
 figure;
 plot(Plot.time, Plot.p_time*10^9,'k','LineWidth',2);
@@ -229,16 +229,19 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Vel_time.png','Resolution',300)
 end
-% %% pressure over mesh
-% figure;
-% trisurf(MeshP.conn, MeshP.coords(:,1), MeshP.coords(:,2), Solution.p*1e9);
-% view(2)
-% hold on
-% colorbar
-% xlabel('x [m]');
-% ylabel('y [m]');
-% title(sprintf('Pressure [Pa] at t = %.0f s', Control.tend));
-% hold off
+%% porosity vs time
+if ~Control.Biotmodel
+    figure;
+    plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
+    hold on
+    xlabel('Time [s]');
+    ylabel('Porosity normalized [-]');
+    title(sprintf('Porosity norm at x = %.2f m', MeshN.coords(Control.plotp,1)));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'Poros_time.png','Resolution',300)
+    end
+end
 end
 
 % ------------------------------------------------------------------------
@@ -357,7 +360,7 @@ end
 % ------------------------------------------------------------------------
 % PLOTS FOR 2D DYNAMIC CASE
 % ------------------------------------------------------------------------
-function plot2Ddynamic(Solution, MeshU, MeshP, Control, Plot, saveGraphs_on)
+function plot2Ddynamic(MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on)
 %% pressure vs time
 figure;
 plot(Plot.time, Plot.p_time*10^9,'k','LineWidth',2);
@@ -406,15 +409,18 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Vel_time.png','Resolution',300)
 end
-% %% pressure over mesh
-% figure;
-% trisurf(MeshP.conn, MeshP.coords(:,1), MeshP.coords(:,2), Solution.p*1e9);
-% view(2)
-% hold on
-% colorbar
-% xlabel('x [m]');
-% ylabel('y [m]');
-% title(sprintf('Pressure [Pa] at t = %.0f s', Control.tend));
-% hold off
+%% porosity vs time
+if ~Control.Biotmodel
+    figure;
+    plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
+    hold on
+    xlabel('Time [s]');
+    ylabel('Porosity normalized [-]');
+    title(sprintf('Porosity norm at x = %.2f m', MeshN.coords(Control.plotp,1)));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'Poros_time.png','Resolution',300)
+    end
+end
 
 end
