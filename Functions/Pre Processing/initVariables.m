@@ -1,4 +1,4 @@
-function [Iteration, Plot] = initVariables(phi_u, phi_p, phi_n, MeshU, MeshP, MeshN, Material, Control, BC)
+function [Iteration, Plot] = initVariables(phi_u, phi_p, phi_n, MeshU, MeshP, MeshN, Material, Control, BC, M)
 % ------------------------------------------------------------------------
 % Initialize variables for iteration and plot stages; store initial
 % conditions
@@ -48,6 +48,11 @@ if Control.freqDomain
         Iteration.nFdot_old = zeros(MeshN.nDOF, 1); % porosity gradient
         Iteration.xnF_old = (phi_n) \ Iteration.nF_old(BC.free_n);
         Iteration.xnFdot_old = (phi_n) \ Iteration.nFdot_old(BC.free_n);
+    end
+    
+    if nargin > 9
+        Iteration.xuF_old = (phi_u.') * M(BC.free_u, BC.free_u) * Iteration.uF_old(BC.free_u);
+        Iteration.xuFdot_old = (phi_u.') * M(BC.free_u, BC.free_u) * Iteration.uFdot_old(BC.free_u);
     end
 end
 
