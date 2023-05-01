@@ -160,6 +160,9 @@ uE = BC.fixed_u_value;
 pE = BC.fixed_p_value;
 nE = BC.fixed_n_value;
 
+% uncomment for velocity impact problem
+% uE(end-length(BC.fixed_u2)+1:end) = uE(end-length(BC.fixed_u2)+1:end)*Control.t;
+
 dE = [uE; pE; nE];
 fF = [fuF; fpF; fnF];
 fE = [fuE; fpE; fnE];
@@ -193,6 +196,9 @@ udot = (u - u_old)*gamma/(beta*dt) - udot_old * (gamma/beta -1) - u2dot_old * dt
 u2dot = (u - u_old)/(beta*dt^2) - udot_old/(beta*dt) - u2dot_old * (1/(2*beta) -1);
 pdot = (p - p_old)/(theta*dt) - (1/theta - 1) * pdot_old;
 ndot = (n - n_old)/(lambda*dt) - (1/lambda - 1) * ndot_old;
+
+% uncomment for velocity impact problem
+% udot(BC.fixed_u2) = 1;
 
 %% Store variables
 Solution.u = u;
