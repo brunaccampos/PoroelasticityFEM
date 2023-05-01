@@ -1,4 +1,4 @@
-function [SolutionFreq] = SolverTransientFreq_Biot(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration)
+function [SolutionFreq] = SolverTransientFreq_Biot(phi_u, phi_p, Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration)
 % ------------------------------------------------------------------------
 % Solve linear system for quasi-steady case
 % ------------------------------------------------------------------------
@@ -22,11 +22,9 @@ dt = Control.dt;
 %% Matrix partitioning
 % matrices time discretization
 Kuubar = (phi_u.') * Kuu(BC.free_u, BC.free_u) * phi_u;
-Kuubar = omega2_u;
 Kupbar = -(phi_u.') * Kup(BC.free_u, BC.free_p) * phi_p;
 Kpubar = (phi_p.') * Kup(BC.free_u, BC.free_p)' * phi_u;
 Kppbar = (phi_p.') * Kpp(BC.free_p, BC.free_p) * phi_p * dt + (phi_p.') * S(BC.free_p, BC.free_p) * phi_p;
-Kppbar = omega2_p * dt + (phi_p.') * S(BC.free_p, BC.free_p) * phi_p;
 
 % auxiliar terms for external forces vector
 fubar = (phi_u.') * fu(BC.free_u);
