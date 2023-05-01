@@ -13,7 +13,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = VelocityImpact2D_Dynamic
 %% Poroelasticity model
 % 1 - Biot theory
 % 0 - Spanos theory (additional porosity equation)
-Control.Biotmodel = 1;
+Control.Biotmodel = 0;
 
 %% Material properties - Komijani (2019)
 % elasticity modulus [GPa]
@@ -54,6 +54,20 @@ Material.t = 1;
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
 Material.constLaw = 'PlaneStrain';
+
+%% Spanos material parameters
+% porosity effective pressure coefficient (Spanos, 1989)
+% n = 0; % lower limit
+n = 1; % return to Biot
+% n = Material.Ks/Material.Kf; % upper limit
+
+% modified storage coefficient (Muller, 2019)
+Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks; 
+Mstar = 1/Mstarinv;
+
+% porosity equation coefficients
+Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
+Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
 
 %% Mesh parameters
 if progress_on
@@ -157,6 +171,13 @@ BC.pointFlux = [];
 % flux source [m3/s/m3]
 BC.s = @(x)[]; 
 
+%% Porosity BCs
+if ~Control.Biotmodel
+    BC.fixed_n = [];
+    BC.free_n = setdiff(MeshN.DOF, BC.fixed_n);
+    BC.fixed_n_value = zeros(length(BC.fixed_n),1);
+end
+
 %% Quadrature order
 Control.nqU = 3;
 Control.nqP = 3;
@@ -173,7 +194,7 @@ Control.uncoupled = 0;
 
 %% Solution parameters
 Control.dt = 7e-4;  % time step
-Control.tend = 0.07;   % final simulation time
+Control.tend = 0.3;   % final simulation time
 
 Control.plotu = 98*2-1; % dof x of node 98 (x = 3m, y = 0.05m)
 Control.plotp = 54; % dof of node 54 (x = 3m, y = 0.05m)
@@ -189,5 +210,6 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 Control.beta = 0.7;
 Control.gamma = 0.7;
 Control.theta = 0.7;
+Control.lambda = 0.7;
 
 end
