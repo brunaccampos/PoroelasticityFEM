@@ -24,7 +24,7 @@ else
 end
 
 %% Initialize iteration variables
-[Iteration, Plot] = initVariables(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, BC);
+[Iteration, Plot] = initVariables(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, BC, M);
 
 %% Initial condition file
 if plot2vtk
@@ -39,6 +39,11 @@ if plot2vtk
     % update time step
     Control.step = 1;
 end
+
+%% Initialize video
+% myVideo = VideoWriter('myVideoFile'); %open video file
+% myVideo.FrameRate = 10;
+% open(myVideo)
 
 %% Solve system
 for t = 0:Control.dt:Control.tend
@@ -58,7 +63,9 @@ for t = 0:Control.dt:Control.tend
 %     title('Velocity');
 %     xlim([0 max(MeshU.coords)]);
 %     pause(0.001);
-
+%     frame = getframe(gcf); %get frame
+%     writeVideo(myVideo, frame);
+    
     % solution in the frequency domain
     if Control.freqDomain
         [SolutionFreq] = SolverDynamicFreq_Biot(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Control, Iteration);
@@ -126,3 +133,5 @@ for t = 0:Control.dt:Control.tend
     % update time and step
     Control.step = Control.step + 1;
 end
+
+% close(myVideo)
