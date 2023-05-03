@@ -81,6 +81,7 @@ DirFolder = 'Config Files';
 
 % -------------------- 2D dynamic velocity impact
 % File = 'VelocityImpact2D_Dynamic_Komijani';
+% File = 'VelocityImpact2D_Dynamic_Plate';
 
 % -------------------- 2D tests: elasticity
 % File = 'PlateWithHole_Elasticity';
