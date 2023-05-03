@@ -17,7 +17,7 @@ disp([num2str(toc),': Assembling System Matrices...']);
 %% Solve eigenproblem
 if Control.freqDomain
     disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
-    [phi_u, omega2_u, phi_p, omega2_p, phi_n, omega2_n] = SolveEigTransient_Spanos(Kuu, Kup, Kpp, Knp, MeshU, MeshP, MeshN, BC, Control);
+    [phi_u, omega2_u, phi_p, omega2_p, phi_n, omega2_n] = SolveEigTransient_Spanos(Kuu, Kup, Kpp, Knp, Kpu, S, Kpn, Knu, Knn, MeshU, MeshP, MeshN, BC, Control);
 else
     phi_u = [];
     phi_p = [];
@@ -97,7 +97,7 @@ for t = 0:Control.dt:Control.tend
         % plot velocity vs time
         Plot.udot_time(Control.step+1,:) = Solution.udot(Control.plotu, 1);
         % plot porosity vs time
-        Plot.n_time(Control.step+1,:) = Solution.n(Control.plotp, 1) ;
+        Plot.n_time(Control.step+1,:) = Solution.n(Control.plotp, 1);
         
         % frequency domain
         if Control.freqDomain
