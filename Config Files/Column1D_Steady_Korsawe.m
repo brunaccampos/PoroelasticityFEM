@@ -37,6 +37,18 @@ Material.Minv = 0;
 % porosity
 Material.n = 0.3;
 
+% additional coefficients for analytical result
+% Lame constant [GPa]
+Material.lambda = Material.E * Material.nu/((1+Material.nu)*(1-2*Material.nu));
+% gravitational acceleration [m/s2]
+Material.g = 9.81;
+% fluid density [10^9 kg/m3]
+Material.rho_f = 1000e-9;
+% hydraulic conductivity [m/s]
+Material.kh = Material.kf * Material.rho_f * Material.g;
+% shear modulus [GPa]
+Material.G = Material.E/(2*(1+Material.nu));
+
 % thickness 
 % 1D: cross sectional area [m2]
 % 2D: out of plane thickness [m]
