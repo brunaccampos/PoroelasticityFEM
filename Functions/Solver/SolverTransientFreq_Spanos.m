@@ -24,13 +24,11 @@ dt = Control.dt;
 %% Matrix partitioning
 % matrices time discretization
 Kuubar = (phi_u.') * Kuu(BC.free_u, BC.free_u) * phi_u;
-Kuubar = omega2_u;
 Kupbar = -(phi_u.') * Kup(BC.free_u, BC.free_p) * phi_p;
 Kunbar = sparse(length(BC.free_u), length(BC.free_n));
 
 Kpubar = (phi_p.') * Kpu(BC.free_p, BC.free_u) * phi_u;
 Kppbar = (phi_p.') * Kpp(BC.free_p, BC.free_p) * phi_p * dt + (phi_p.') * S(BC.free_p, BC.free_p) * phi_p;
-Kppbar = omega2_p * dt + (phi_p.') * S(BC.free_p, BC.free_p) * phi_p;
 Kpnbar = (phi_p.') * Kpn(BC.free_p, BC.free_n) * phi_n;
 
 Knubar = (phi_n.') * Knu(BC.free_n, BC.free_u) * phi_u;
