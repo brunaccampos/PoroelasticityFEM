@@ -9,7 +9,7 @@ disp([num2str(toc),': Model: Biot dynamic case']);
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
 
-[Kuu, Kup, Kpp, M, Mhat, S] = ComputeMatricesDynamic_Biot(Material, MeshU, MeshP, QuadU, QuadP);
+[Kuu, Kup, Kpp, Muu, Mpu, S] = ComputeMatricesDynamic_Biot(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Assemble system load vectors
 [fu,fp,fn] = ComputeLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
@@ -17,14 +17,14 @@ disp([num2str(toc),': Assembling System Matrices...']);
 %% Solve eigenproblem
 if Control.freqDomain
     disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
-    [phi_u, omega2_u, phi_p, omega2_p] = SolveEigDynamic_Biot(Kuu, Kup, Kpp, M, Mhat, MeshU, MeshP, BC, Control);
+    [phi_u, omega2_u, phi_p, omega2_p] = SolveEigDynamic_Biot(Kuu, Kup, Kpp, Muu, Mpu, MeshU, MeshP, BC, Control);
 else
     phi_u = [];
     phi_p = [];
 end
 
 %% Initialize iteration variables
-[Iteration, Plot] = initVariables(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, BC, M);
+[Iteration, Plot] = initVariables(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, BC, Muu);
 
 %% Initial condition file
 if plot2vtk
@@ -51,7 +51,7 @@ for t = 0:Control.dt:Control.tend
     Control.t = t;
 
     % linear solver
-    [Solution] = SolverDynamic_Biot(Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Control, Iteration);
+    [Solution] = SolverDynamic_Biot(Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
 
 %     figure(1);
 %     subplot(1,2,1);
@@ -68,7 +68,7 @@ for t = 0:Control.dt:Control.tend
     
     % solution in the frequency domain
     if Control.freqDomain
-        [SolutionFreq] = SolverDynamicFreq_Biot(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Control, Iteration);
+        [SolutionFreq] = SolverDynamicFreq_Biot(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
     end
 
     % update external forces vectors
