@@ -33,7 +33,7 @@ nqP = QuadP.nq;
 % global vectors
 fu = zeros(MeshU.nDOF, 1);
 fp = zeros(MeshP.nDOF, 1);
-if ~Control.Biotmodel
+if contains(Control.Biotmodel, 'Spanos')
     fn = zeros(MeshN.nDOF, 1);
 else
     fn = [];

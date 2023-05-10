@@ -33,20 +33,10 @@ QuadP = GlobalQuad(MeshP, Control);
 Control.t = 0;  % initial simulation time
 Control.step = 0; % step counter
 
-%% Select model name and type
-if Control.Biotmodel
-    if Control.steady
-        mainTransient_Biot;
-    else
-        mainDynamic_Biot;
-    end
-else
-    if Control.steady
-        mainTransient_Spanos;
-    else
-        mainDynamic_Spanos;
-    end
-end
+%% Select model and evaluate main function
+[~,modeltype] = fileparts(Control.Biotmodel);
+main_type = append('main',modeltype);
+feval(main_type);
 
 %% Post processing
 % plot figures

@@ -45,7 +45,7 @@ if nsd == 1
     % fixed DOFs
     scalardataU(5).name = 'fixedU';  scalardataU(5).data = fixedU(MeshU.DOF);
     scalardataU(5).type = 'int';
-    if ~Control.steady
+    if contains(Control.Biotmodel, 'Dynamic')
         % acceleration
         scalardataU(6).name = 'acc_u';
         scalardataU(6).data = Solution.u2dot(xdofs_u);
@@ -66,7 +66,7 @@ elseif nsd == 2
     vectordataU(2).name = 'vel_u';
     vectordataU(2).data = [Solution.udot(xdofs_u) Solution.udot(ydofs_u) zeros(length(xdofs_u),1)];
     vectordataU(2).type = 'float';
-    if ~Control.steady
+    if contains(Control.Biotmodel, 'Dynamic')
         % acceleration
         vectordataU(3).name = 'acc_u';
         vectordataU(3).data = [Solution.u2dot(xdofs_u) Solution.u2dot(ydofs_u) zeros(length(xdofs_u),1)];
@@ -116,7 +116,7 @@ end
 
 %% Storing data for porosity field
 % porosity
-if ~Control.Biotmodel
+if contains(Control.Biotmodel, 'Spanos')
     scalardataN(1).name = 'porosity';
     scalardataN(1).data = Solution.n;
     scalardataN(1).type = 'float';
@@ -138,7 +138,7 @@ filenameP = fullfile(vtk_dir, [nameP, num2str(step)]);
 WriteMesh2VTK(filenameP, description, MeshP, scalardataP, vectordataP);
 
 % porosity
-if ~Control.Biotmodel
+if contains(Control.Biotmodel, 'Spanos')
     description = config_name; % config file name
     nameN = 'Solution_N.vtk.';
     filenameN = fullfile(vtk_dir, [nameN, num2str(step)]);

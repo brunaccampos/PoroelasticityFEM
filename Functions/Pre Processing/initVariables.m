@@ -42,7 +42,7 @@ if Control.freqDomain
     Iteration.xuF2dot_old = zeros(length(BC.free_u),1);
     Iteration.xpF_old = (phi_p) \ Iteration.pF_old(BC.free_p);
     Iteration.xpFdot_old = (phi_p) \ Iteration.pFdot_old(BC.free_p);
-    if ~Control.Biotmodel
+    if contains(Control.Biotmodel, 'Spanos')
         Iteration.nF_old = zeros(MeshN.nDOF, 1); % porosity variable storage
         Iteration.nF_old(:) = Material.n;
         Iteration.nFdot_old = zeros(MeshN.nDOF, 1); % porosity gradient
@@ -77,7 +77,7 @@ if ~isempty(BC.initP)
 end
 
 % porosity
-if ~Control.Biotmodel
+if contains(Control.Biotmodel, 'Spanos')
     % initial porosity condition
     Iteration.n_old = zeros(MeshN.nDOF, 1);
     Iteration.n_old(:) = Material.n;
