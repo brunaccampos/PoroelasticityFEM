@@ -11,9 +11,15 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Komijan
 % - solid grains and fluid are incompressible
 
 %% Poroelasticity model
-% 1 - Biot theory
-% 0 - Spanos theory (additional porosity equation)
-Control.Biotmodel = 1;
+% Options:  Transient_Biot ----- Biot model (u-p), transient
+%           Transient_Spanos --- Spanos model (u-p-n), transient
+%           Transient_BiotPoro - Biot model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+%           Dynamic_Biot ------- Biot model (u-p), dynamic
+%           Dynamic_Spanos ----- Spanos model (u-p-n), dynamic
+%           Dynamic_BiotPoro --- Biot model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+Control.Biotmodel = 'Dynamic_Biot';
 
 %% Material properties - Komijani (2019)
 % elasticity modulus [GPa]
@@ -98,7 +104,7 @@ switch MeshType
         fieldP = 'p';
         MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
         %%%% porosity field
-        if ~Control.Biotmodel
+        if contains(Control.Biotmodel, 'Spanos')
             typeN = 'L2';
             fieldN = 'n';
             MeshN = Build1DMesh(nsd, ne, L, typeN, fieldN);
@@ -118,7 +124,7 @@ switch MeshType
         meshFileNameP = 'Column2DQ4.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
-        if ~Control.Biotmodel
+        if contains(Control.Biotmodel, 'Spanos')
             fieldN = 'n';
             meshFileNameN = 'Column2DQ4.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
@@ -187,7 +193,7 @@ BC.fluxNodes = [];
 BC.s = @(x)[]; 
 
 %% Porosity BCs
-if ~Control.Biotmodel
+if contains(Control.Biotmodel, 'Spanos')
     BC.fixed_n = [];
     BC.free_n = setdiff(MeshN.DOF, BC.fixed_n);
     BC.fixed_n_value = zeros(length(BC.fixed_n),1);
@@ -197,17 +203,12 @@ end
 Control.nqU = 3;
 Control.nqP = 3;
 
-%% Problem type
-% 1 = quasi-steady/transient problem (no acceleration and pressure change)
-% 0 = dynamic problem (acceleration/intertia terms included)
-Control.steady = 0;
-
+%% Solution parameters
 % tag used for computing analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
-%% Solution parameters
 Control.dt = 1e-2;  % time step
 Control.tend = 10;   % final simulation time
 
@@ -218,7 +219,7 @@ Control.plotp = find(MeshP.coords == 5); % x = 5m
 Control.plotansol = 0; % 1 = true; 0 = false
 
 % solve in the frequency domain
-Control.freqDomain = 1;  % 1 = true; 0 = false
+Control.freqDomain = 0;  % 1 = true; 0 = false
 
 %% Time discretization parameters
 % Newmark method

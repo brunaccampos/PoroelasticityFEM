@@ -3,6 +3,17 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = HeatConduction2D_PointFl
 % Heat transfer problem adapted from file Q4one8thModel
 % ------------------------------------------------------------------------
 
+%% Poroelasticity model
+% Options:  Transient_Biot ----- Biot model (u-p), transient
+%           Transient_Spanos --- Spanos model (u-p-n), transient
+%           Transient_BiotPoro - Biot model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+%           Dynamic_Biot ------- Biot model (u-p), dynamic
+%           Dynamic_Spanos ----- Spanos model (u-p-n), dynamic
+%           Dynamic_BiotPoro --- Biot model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+Control.Biotmodel = 'Transient_Biot';
+
 %% Material properties
 % thermal conductance coefficient [W/m3]
 Material.kf = 1e-3;
@@ -15,9 +26,6 @@ Material.E = 0;
 Material.nu = 0;
 % Biot's coefficient
 Material.alpha = 0;
-
-% poroelasticity model
-Control.Biotmodel = 1;
 % initial displacement
 BC.initU = [];
 % initial pressure
@@ -107,7 +115,7 @@ switch MeshType
         meshFileNameP = 'Mesh Files\UnitPlateQ4.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
-        if ~Control.Biotmodel
+        if contains(Control.Biotmodel, 'Spanos')
             fieldN = 'n';
             meshFileNameN = 'Mesh Files\UnitPlateQ4.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
@@ -155,17 +163,12 @@ BC.s = @(x)[];
 Control.nqU = 2;
 Control.nqP = 2;
 
-%% Problem type
-% 1 = quasi-steady/transient problem (no acceleration and pressure change)
-% 0 = dynamic problem (acceleration/intertia terms included)
-Control.steady = 1;
-
+%% Solution parameters
 % tag used for computing analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
-%% Solution parameters
 Control.dt = 1;  % time step
 Control.tend = 100;   % final simulation time
 

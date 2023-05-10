@@ -13,7 +13,7 @@ Material.Minv = 0;
 % Biot's coefficient
 Material.alpha = 0;
 % poroelasticity model
-Control.Biotmodel = 1;
+Control.Biotmodel = 'Transient_Biot';
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -145,11 +145,7 @@ BC.s = @(x) sin(x);
 Control.nqU = 3;
 Control.nqP = 3;
 
-%% Problem type
-% 1 = quasi-steady/transient problem (no acceleration and pressure change)
-% 0 = dynamic problem (acceleration/intertia terms included)
-Control.steady = 1;
-
+%% Solution parameters
 % tag used for computing analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
@@ -161,7 +157,6 @@ Control.p_an = Control.pan_symb(MeshP.coords);
 Control.uan_symb = @(x) sin(x);
 Control.u_an = Control.uan_symb(MeshU.coords);
 
-%% Solution parameters
 Control.dt = 1;  % time step
 Control.tend = 1;
 Control.step = 1;

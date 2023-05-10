@@ -17,7 +17,7 @@ Material.alpha = 0;
 % 1/Q (related to storage coefficient)
 Material.Minv = 0;
 % poroelasticity model
-Control.Biotmodel = 1;
+Control.Biotmodel = 'Transient_Biot';
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 1;
@@ -56,7 +56,7 @@ switch MeshType
         typeP = 'L2';
         MeshP = Build1DMesh(nsd, ne, L, typeP);
         %%%% porosity field
-        if ~Control.Biotmodel
+        if contains(Control.Biotmodel, 'Spanos')
             typeN = 'L2';
             MeshN = Build1DMesh(nsd, ne, L, typeN);
         else
@@ -75,7 +75,7 @@ switch MeshType
         meshFileNameP = 'Mesh Files\PlateWithHoleQ4.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
-        if ~Control.Biotmodel
+        if contains(Control.Biotmodel, 'Spanos')
             fieldN = 'n';
             meshFileNameN = 'Mesh Files\PlateWithHoleQ4.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
@@ -147,17 +147,12 @@ BC.s = @(x)[];
 Control.nqU = 2;
 Control.nqP = 2;
 
-%% Problem type
-% 1 = quasi-steady/transient problem (no acceleration and pressure change)
-% 0 = dynamic problem (acceleration/intertia terms included)
-Control.steady = 1;
-
+%% Solution parameters
 % tag used for computing analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
-%% Solution parameters
 Control.dt = 1;  % time step
 Control.tend = 1;   % final simulation time
 

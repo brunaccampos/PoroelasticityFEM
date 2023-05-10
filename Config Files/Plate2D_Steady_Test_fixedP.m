@@ -12,9 +12,15 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_Steady_Test_fixe
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
-% 1 - Biot theory
-% 0 - Spanos theory (additional porosity equation)
-Control.Biotmodel = 1;
+% Options:  Transient_Biot ----- Biot model (u-p), transient
+%           Transient_Spanos --- Spanos model (u-p-n), transient
+%           Transient_BiotPoro - Biot model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+%           Dynamic_Biot ------- Biot model (u-p), dynamic
+%           Dynamic_Spanos ----- Spanos model (u-p-n), dynamic
+%           Dynamic_BiotPoro --- Biot model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+Control.Biotmodel = 'Transient_Biot';
 
 %% Material properties - Komijani (2019)
 % shear modulus [GPa]
@@ -64,27 +70,7 @@ MeshType = 'Manual';
 
 switch MeshType
     case 'Manual'
-%         % number of space dimensions
-%         nsd = 1;
-%         % number of elements
-%         ne = 100;
-%         % column size [m]
-%         L = 6;
-%         %%%% solid displacement field
-%         typeU = 'L3';
-%         MeshU = Build1DMesh(nsd, ne, L, typeU);
-%         %%%% fluid pressure field
-%         typeP = 'L2';
-%         MeshP = Build1DMesh(nsd, ne, L, typeP);
-%         %%%% porosity field
-%         if ~Control.Biotmodel
-%             typeN = 'L2';
-%             MeshN = Build1DMesh(nsd, ne, L, typeN);
-%         else
-%             MeshN = [];
-%         end
-% ------------------------------------------------------------------------
-% Manual 2D mesh
+    % Manual 2D mesh
         MeshU.nsd = 2; % number of spatial directions
         MeshU.nn = 9; % number of nodes
         MeshU.ne = 4; % number of elements
@@ -145,7 +131,7 @@ switch MeshType
         meshFileNameP = 'Mesh Files\PlateDiffusion.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
-        if ~Control.Biotmodel
+        if contains(Control.Biotmodel, 'Spanos')
             fieldN = 'n';
             meshFileNameN = 'Mesh Files\PlateDiffusion.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
@@ -243,17 +229,12 @@ BC.s = @(x)[];
 Control.nqU = 2;
 Control.nqP = 2;
 
-%% Problem type
-% 1 = quasi-steady/transient problem (no acceleration and pressure change)
-% 0 = dynamic problem (acceleration/intertia terms included)
-Control.steady = 1;
-
+%% Solution parameters
 % tag used for computing analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
-%% Solution parameters
 Control.dt = 1e-2;  % time step
 Control.tend = 10;   % final simulation time
 

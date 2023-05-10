@@ -13,9 +13,15 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Injection2D_Plate(config
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
-% 1 - Biot theory
-% 0 - Spanos theory (additional porosity equation)
-Control.Biotmodel = 0;
+% Options:  Transient_Biot ----- Biot model (u-p), transient
+%           Transient_Spanos --- Spanos model (u-p-n), transient
+%           Transient_BiotPoro - Biot model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+%           Dynamic_Biot ------- Biot model (u-p), dynamic
+%           Dynamic_Spanos ----- Spanos model (u-p-n), dynamic
+%           Dynamic_BiotPoro --- Biot model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+Control.Biotmodel = 'Transient_Biot';
 
 %% Material properties - Berea Sandstone (Detournay, 1993, p.26)
 % elasticity modulus [GPa]
@@ -102,7 +108,7 @@ switch MeshType
         typeP = 'L2';
         MeshP = Build1DMesh(nsd, ne, L, typeP);
         %%%% porosity field
-        if ~Control.Biotmodel
+        if contains(Control.Biotmodel, 'Spanos')
             typeN = 'L2';
             MeshN = Build1DMesh(nsd, ne, L, typeN);
         else
@@ -121,7 +127,7 @@ switch MeshType
         meshFileNameP = 'Mesh Files\Injection2D_PlateQ4Coarse.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
-        if ~Control.Biotmodel
+        if contains(Control.Biotmodel, 'Spanos')
             fieldN = 'n';
             meshFileNameN = 'Mesh Files\Injection2D_PlateQ4Coarse.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
@@ -286,7 +292,7 @@ BC.pointFlux = [];
 BC.s = @(x)[]; 
 
 %% Porosity BCs
-if ~Control.Biotmodel
+if contains(Control.Biotmodel, 'Spanos')
     BC.fixed_n = [];
     BC.free_n = setdiff(MeshN.DOF, BC.fixed_n);
     BC.fixed_n_value = zeros(length(BC.fixed_n),1);
@@ -296,17 +302,12 @@ end
 Control.nqU = 2;
 Control.nqP = 2;
 
-%% Problem type
-% 1 = quasi-steady/transient problem (no acceleration and pressure change)
-% 0 = dynamic problem (acceleration/intertia terms included)
-Control.steady = 1;
-
+%% Solution parameters
 % tag used for computing analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
-%% Solution parameters
 Control.dt = 1;  % time step [s]
 Control.tend = 50;   % final simulation time [s]
 
