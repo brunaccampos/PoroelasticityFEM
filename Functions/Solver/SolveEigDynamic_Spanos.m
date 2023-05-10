@@ -29,7 +29,7 @@ Kbar = [KuuFF, -KupFF, sparse(length(BC.free_u), length(BC.free_n));
     sparse(length(BC.free_n), length(BC.free_u)), KnpFF, sparse(length(BC.free_n), length(BC.free_n))];
 
 % coupled solution
-[phi_coupled, omega2_coupled] = eig(full(Kbar), full(Mbar));
+[phi_coupled, omega2_coupled] = eigenshuffle(full(Kbar), full(Mbar));
 
 %% Plots uncoupled
 % sort modes displacement
