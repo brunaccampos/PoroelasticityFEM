@@ -1,4 +1,4 @@
-function [Solution] = SolverTransient_Biot(Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration, MeshU)
+function [Solution] = SolverTransient_Biot(Kuu, Kup, Kpp, Kpu, S, fu, fp, BC, Control, Iteration)
 % ------------------------------------------------------------------------
 % Solve linear system for quasi-steady case
 % ------------------------------------------------------------------------
@@ -32,11 +32,10 @@ dt = Control.dt;
 % beta parameter
 beta = Control.beta;
 
-% S = eye(length(Kpp), length(Kpp));
 %% Matrix partitioning
 % matrices time discretization
 Kuubar = beta * Kuu;
-Kpubar = (Kup.') ./ dt;
+Kpubar = Kpu ./ dt;
 Kppbar = beta * Kpp + S ./ dt;
 Kupbar = -beta * Kup;
 
@@ -73,7 +72,7 @@ KFF = [Kuu_FF, Kup_FF;
 
 % auxiliar terms for external forces vector
 fubar = (beta - 1) * Kuu * u_old + (1-beta) * Kup * p_old + (1-beta) * fu_old + beta * fu;
-fpbar = (Kup.')./dt * u_old + (S./dt + (beta-1) * Kpp) * p_old + (1-beta) * fp_old + beta * fp;
+fpbar = Kpu./dt * u_old + (S./dt + (beta-1) * Kpp) * p_old + (1-beta) * fp_old + beta * fp;
 
 % partitioning vectors
 fuF = fubar(BC.free_u);

@@ -9,7 +9,7 @@ disp([num2str(toc),': Model: Biot transient case']);
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
 
-[Kuu, Kup, Kpp, S] = ComputeMatricesTransient_Biot(Material, MeshU, MeshP, QuadU, QuadP);
+[Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesTransient_Biot(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Solve eigenproblem
 if Control.freqDomain
@@ -70,7 +70,7 @@ for t = 0:Control.dt:Control.tend
     end
 
     % linear solver
-    [Solution] = SolverTransient_Biot(Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration, MeshU);
+    [Solution] = SolverTransient_Biot(Kuu, Kup, Kpp, Kpu, S, fu, fp, BC, Control, Iteration);
     
     % solution in the frequency domain
     if Control.freqDomain

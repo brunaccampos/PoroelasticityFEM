@@ -1,4 +1,4 @@
-function [Kuu, Kup, Kpp, S] = ComputeMatricesTransient_Biot(Material, MeshU, MeshP, QuadU, QuadP)
+function [Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesTransient_Biot(Material, MeshU, MeshP, QuadU, QuadP)
 % Compute System Matrices for 1D quasi-steady simulation
 % Input parameters: Material, Mesh, Control, Quad
 % Output matrices: Kuu, Kup, Kpp, S
@@ -163,5 +163,6 @@ Kuu = sparse(rowu, colu, Kuuvec, MeshU.nDOF, MeshU.nDOF);
 Kpp = sparse(rowp, colp, Kppvec, MeshP.nDOF, MeshP.nDOF);
 S = sparse(rowp, colp, Svec, MeshP.nDOF, MeshP.nDOF);
 Kup = sparse(rowup, colup, Kupvec, MeshU.nDOF, MeshP.nDOF);
+Kpu = Kup.';
 
 end
