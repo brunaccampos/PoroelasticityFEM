@@ -5,13 +5,19 @@ function [Iteration, Plot] = initVariables(phi_u, phi_p, phi_n, MeshU, MeshP, Me
 % ------------------------------------------------------------------------
 
 %% Iteration data - time domain
-Iteration.u_old = zeros(MeshU.nDOF, 1); % displacement variable storage
+Iteration.u_old = zeros(MeshU.nDOF, 1); % solid displacement 
 Iteration.udot_old = zeros(MeshU.nDOF, 1); % solid velocity
-Iteration.p_old = zeros(MeshP.nDOF, 1); % pressure variable storage
+Iteration.p_old = zeros(MeshP.nDOF, 1); % pressure
 Iteration.u2dot_old = zeros(MeshU.nDOF, 1); % solid acceleration
 Iteration.pdot_old = zeros(MeshP.nDOF, 1); % pressure gradient
 Iteration.fu_old = zeros(MeshU.nDOF, 1); % load vector
 Iteration.fp_old = zeros(MeshP.nDOF, 1); % flux vector
+if contains(Control.Biotmodel, 'UUP')
+    Iteration.uf_old = zeros(MeshU.nDOF, 1); % fluid displacement
+    Iteration.ufdot_old = zeros(MeshU.nDOF, 1); % fluid velocity
+    Iteration.uf2dot_old = zeros(MeshU.nDOF, 1); % fluid acceleration
+    Iteration.ff_old = zeros(MeshU.nDOF, 1); % load vector
+end
 
 %% Plot arrays - time domain
 Plot.time = (0:Control.dt:Control.tend);
@@ -20,6 +26,10 @@ Plot.pan_time = zeros(length(Plot.time), 1); % analytic fluid pressure (quasi-st
 Plot.uan_time = zeros(length(Plot.time),1); % analytic solid displacement
 Plot.u_time = zeros(length(Plot.time), 1); % solid displacement
 Plot.udot_time = zeros(length(Plot.time), 1); % solid velocity
+if contains(Control.Biotmodel, 'UUP')
+    Plot.uf_time = zeros(length(Plot.time), 1); % fluid displacement
+    Plot.ufdot_time = zeros(length(Plot.time), 1); % fluid velocity
+end
 
 %% Plot arrays - space
 Plot.p_space = zeros(length(Control.plotp),1);
@@ -27,6 +37,10 @@ Plot.u_space = zeros(length(Control.plotu),1);
 Plot.udot_space = zeros(length(Control.plotu),1);
 Plot.pan_space = zeros(length(Control.plotp),1);
 Plot.uan_space = zeros(length(Control.plotu),1);
+if contains(Control.Biotmodel, 'UUP')
+    Plot.uf_space = zeros(length(Control.plotu),1);
+    Plot.ufdot_space = zeros(length(Control.plotu),1);
+end
 
 %% Iteration data - frequency domain
 Iteration.uF_old = zeros(MeshU.nDOF, 1); % displacement variable storage
@@ -62,7 +76,7 @@ Plot.uF = zeros(length(Plot.time), 1); % solid displacement
 Plot.uFdot = zeros(length(Plot.time), 1); % solid velocity
 
 %% Initial conditions
-% displacement
+% solid displacement
 if ~isempty(BC.initU)
     Iteration.u_old = BC.initU;
     Plot.u_time(1,1) = BC.initU(Control.plotu,1);
