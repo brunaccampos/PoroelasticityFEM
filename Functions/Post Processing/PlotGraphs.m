@@ -2,7 +2,7 @@ function PlotGraphs(Solution, SolutionFreq, Material, MeshU, MeshP, MeshN, Contr
 % ------------------------------------------------------------------------
 % Plot results in graphs
 % ------------------------------------------------------------------------
-% Input: Mesh, Control, Plot, u, p
+% Input: Solution, Material, Mesh, Control, Plot
 % ------------------------------------------------------------------------
 % Output: plots of
 %               displacement vs depth
@@ -81,13 +81,13 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Press_time.png','Resolution',300)
 end
-%% displacement vs depth
+%% solid displacement vs depth
 figure;
 plot(MeshU.coords, Solution.u,'b','LineWidth',2);
 hold on
 xlabel('Column depth [m]');
-ylabel('u [m]');
-title(sprintf('Displacement at t = %.0f s', Control.tend));
+ylabel('u (solid) [m]');
+title(sprintf('Solid displacement at t = %.0f s', Control.tend));
 % frequency domain solution
 if Control.freqDomain
     plot(MeshU.coords, SolutionFreq.uF,'m--','LineWidth',2);
@@ -95,8 +95,8 @@ if Control.freqDomain
 end
 % analytical solution
 if Control.plotansol
-%     syms x
-%     fplot((-x^2 +2*x), [0,1], 'LineWidth',2);
+    %     syms x
+    %     fplot((-x^2 +2*x), [0,1], 'LineWidth',2);
     plot(MeshU.coords, Plot.uan_space,'k:','LineWidth',2);
     legend('Numerical', 'Analytical');
 end
@@ -108,13 +108,13 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Displ_depth.png','Resolution',300)
 end
-%% displacement vs time
+%% solid displacement vs time
 figure;
 plot(Plot.time, Plot.u_time, 'b', 'LineWidth',2);
 hold on
 xlabel('Time [s]');
-ylabel('u [m]');
-title(sprintf('Solid skeleton displacement at x = %.2f m', MeshU.coords(Control.plotu,1)));
+ylabel('u (solid) [m]');
+title(sprintf('Solid displacement at x = %.2f m', MeshU.coords(Control.plotu,1)));
 % frequency domain solution
 if Control.freqDomain
     plot(Plot.time, Plot.uF, 'm--', 'LineWidth', 2);
@@ -133,13 +133,13 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Displ_time.png','Resolution',300)
 end
-%% velocity vs time
+%% solid velocity vs time
 figure;
 plot(Plot.time, Plot.udot_time,'b','LineWidth',2);
 hold on
 xlabel('Time [s]');
-ylabel('udot [m/s]');
-title(sprintf('Solid skeleton velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
+ylabel('udot (solid) [m/s]');
+title(sprintf('Solid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
 % frequency domain solution
 if Control.freqDomain
     plot(Plot.time, Plot.uFdot, 'm--', 'LineWidth',2);
@@ -197,13 +197,13 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Press_time.png','Resolution',300)
 end
-%% displacement vs time
+%% solid displacement vs time
 figure;
 plot(Plot.time, Plot.u_time,'b','LineWidth',2);
 hold on
 xlabel('Time [s]');
-ylabel('u [m]');
-title(sprintf('Solid skeleton displacement at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
+ylabel('u (solid) [m]');
+title(sprintf('Solid displacement at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
 % frequency domain solution
 if Control.freqDomain
     plot(Plot.time, Plot.uF,'m--','LineWidth',2);
@@ -213,13 +213,13 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Displ_time.png','Resolution',300)
 end
-%% velocity vs time
+%% solid velocity vs time
 figure;
 plot(Plot.time, Plot.udot_time,'b','LineWidth',2);
 hold on
 xlabel('Time [s]');
-ylabel('udot [m/s]');
-title(sprintf('Solid skeleton velocity at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
+ylabel('udot (solid) [m/s]');
+title(sprintf('Solid velocity at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
 % frequency domain solution
 if Control.freqDomain
     plot(Plot.time, Plot.uFdot,'m--','LineWidth',2);
@@ -248,8 +248,9 @@ end
 % PLOTS FOR 1D DYNAMIC CASE
 % ------------------------------------------------------------------------
 function plot1Ddynamic(Solution, SolutionFreq, MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on)
-%% pressure vs depth
 figure;
+%% pressure vs depth
+subplot(2,3,1);
 plot(MeshP.coords, Solution.p*10^9.*Material.t,'k','LineWidth',2);
 hold on
 xlabel('Column depth [m]');
@@ -265,7 +266,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Press_depth.png','Resolution',300)
 end
 %% pressure vs time
-figure;
+subplot(2,3,4);
 plot(Plot.time, Plot.p_time*10^9.*Material.t,'k','LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -280,13 +281,13 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Press_time.png','Resolution',300)
 end
-%% displacement vs depth
-figure;
+%% solid displacement vs depth
+subplot(2,3,2);
 plot(MeshU.coords, Solution.u,'b','LineWidth',2);
 hold on
 xlabel('Column depth [m]');
-ylabel('u [m]');
-title(sprintf('Displacement at t = %.0f s', Control.tend));
+ylabel('u (solid) [m]');
+title(sprintf('Solid displacement at t = %.0f s', Control.tend));
 % frequency domain solution
 if Control.freqDomain
     plot(MeshU.coords, SolutionFreq.uF,'m--','LineWidth',2);
@@ -296,13 +297,13 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Displ_depth.png','Resolution',300)
 end
-%% displacement vs time
-figure;
+%% solid displacement vs time
+subplot(2,3,5);
 plot(Plot.time, Plot.u_time,'b','LineWidth',2);
 hold on
 xlabel('Time [s]');
-ylabel('u [m]');
-title(sprintf('Solid skeleton displacement at x = %.2f m', MeshU.coords(Control.plotu,1)));
+ylabel('u (solid) [m]');
+title(sprintf('Solid displacement at x = %.2f m', MeshU.coords(Control.plotu,1)));
 % frequency domain solution
 if Control.freqDomain
     plot(Plot.time, Plot.uF,'m--','LineWidth',2);
@@ -312,13 +313,13 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Displ_time.png','Resolution',300)
 end
-%% velocity vs time
-figure;
-plot(Plot.time, Plot.udot_time,'b','LineWidth',2);
+%% solid velocity vs time
+subplot(2,3,3);
+plot(Plot.time, Plot.udot_time,'r','LineWidth',2);
 hold on
 xlabel('Time [s]');
-ylabel('udot [m/s]');
-title(sprintf('Solid skeleton velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
+ylabel('udot (solid) [m/s]');
+title(sprintf('Solid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
 % frequency domain solution
 if Control.freqDomain
     plot(Plot.time, Plot.uFdot,'m--','LineWidth',2);
