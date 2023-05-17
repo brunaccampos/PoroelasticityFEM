@@ -26,20 +26,24 @@ Plot.pan_time = zeros(length(Plot.time), 1); % analytic fluid pressure (quasi-st
 Plot.uan_time = zeros(length(Plot.time),1); % analytic solid displacement
 Plot.u_time = zeros(length(Plot.time), 1); % solid displacement
 Plot.udot_time = zeros(length(Plot.time), 1); % solid velocity
+Plot.u2dot_time = zeros(length(Plot.time), 1); % solid acceleration
 if contains(Control.Biotmodel, 'UUP')
     Plot.uf_time = zeros(length(Plot.time), 1); % fluid displacement
     Plot.ufdot_time = zeros(length(Plot.time), 1); % fluid velocity
+    Plot.uf2dot_time = zeros(length(Plot.time), 1); % fluid acceleration
 end
 
 %% Plot arrays - space
 Plot.p_space = zeros(length(Control.plotp),1);
 Plot.u_space = zeros(length(Control.plotu),1);
 Plot.udot_space = zeros(length(Control.plotu),1);
+Plot.u2dot_space = zeros(length(Control.plotu),1);
 Plot.pan_space = zeros(length(Control.plotp),1);
 Plot.uan_space = zeros(length(Control.plotu),1);
 if contains(Control.Biotmodel, 'UUP')
     Plot.uf_space = zeros(length(Control.plotu),1);
     Plot.ufdot_space = zeros(length(Control.plotu),1);
+    Plot.uf2dot_space = zeros(length(Control.plotu),1);
 end
 
 %% Iteration data - frequency domain
