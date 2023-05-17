@@ -79,6 +79,14 @@ for t = 0:Control.dt:Control.tend
         % plot fluid velocity vs time
         Plot.ufdot_time(Control.step+1,:) = Solution.ufdot(Control.plotu, 1);
         
+        % dynamic case
+        if contains(Control.Biotmodel, 'Dynamic')
+            % plot solid acceleration vs time
+            Plot.u2dot_time(Control.step+1,:) = Solution.u2dot(Control.plotu, 1);
+            % plot fluid acceleration vs time
+            Plot.uf2dot_time(Control.step+1,:) = Solution.uf2dot(Control.plotu, 1);
+        end
+        
         % frequency domain
         if Control.freqDomain
             % plot pressure vs time
@@ -96,6 +104,10 @@ for t = 0:Control.dt:Control.tend
     Plot.udot_space = Solution.udot(Control.plotu);
     Plot.uf_space = Solution.uf(Control.plotu);
     Plot.ufdot_space = Solution.ufdot(Control.plotu);
+    if contains(Control.Biotmodel, 'Dynamic')
+        Plot.u2dot_space = Solution.u2dot(Control.plotu);
+        Plot.uf2dot_space = Solution.uf2dot(Control.plotu);
+    end
     
     % update variables - time domain
     Iteration.u_old = Solution.u; % solid displacement
