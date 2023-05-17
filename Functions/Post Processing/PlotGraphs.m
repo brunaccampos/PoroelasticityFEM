@@ -329,6 +329,17 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Vel_time.png','Resolution',300)
 end
+%% solid acceleration vs time
+subplot(2,3,6);
+plot(Plot.time, Plot.u2dot_time,'r','LineWidth',2);
+hold on
+xlabel('Time [s]');
+ylabel('u2dot (solid) [m/s]');
+title(sprintf('Solid acceleration at x = %.2f m', MeshU.coords(Control.plotu,1)));
+hold off
+if saveGraphs_on
+    exportgraphics(gcf,'Vel_time.png','Resolution',300)
+end
 %% porosity vs depth
 if contains(Control.Biotmodel, 'Spanos')
     figure;
@@ -356,6 +367,54 @@ if contains(Control.Biotmodel, 'Spanos')
     end
 end
 
+if contains(Control.Biotmodel, 'UUP')
+    figure;
+    %% fluid displacement vs depth
+    subplot(2,2,1);
+    plot(MeshU.coords, Solution.uf,'m','LineWidth',2);
+    hold on
+    xlabel('Column depth [m]');
+    ylabel('u (fluid) [m]');
+    title(sprintf('Fluid displacement at t = %.0f s', Control.tend));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'DisplFluid_depth.png','Resolution',300)
+    end
+    
+    %% fluid displacement vs time
+    subplot(2,2,3);
+    plot(Plot.time, Plot.uf_time,'m','LineWidth',2);
+    hold on
+    xlabel('Time [s]');
+    ylabel('u (fluid) [m]');
+    title(sprintf('Fluid displacement at x = %.2f m', MeshU.coords(Control.plotu,1)));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'DisplFluid_time.png','Resolution',300)
+    end
+    %% fluid velocity vs time
+    subplot(2,2,2);
+    plot(Plot.time, Plot.ufdot_time,'c','LineWidth',2);
+    hold on
+    xlabel('Time [s]');
+    ylabel('udot (fluid) [m/s]');
+    title(sprintf('Fluid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'VelFluid_time.png','Resolution',300)
+    end
+    %% fluid acceleration vs time
+    subplot(2,2,4);
+    plot(Plot.time, Plot.uf2dot_time,'c','LineWidth',2);
+    hold on
+    xlabel('Time [s]');
+    ylabel('u2dot (fluid) [m/s]');
+    title(sprintf('Fluid acceleration at x = %.2f m', MeshU.coords(Control.plotu,1)));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'VelFluid_time.png','Resolution',300)
+    end
+end
 end
 
 % ------------------------------------------------------------------------
