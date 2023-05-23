@@ -43,11 +43,20 @@ if plot2vtk
     Control.step = 1;
 end
 
-%% Solve system
-for t = 0:Control.dt:Control.tend
-    fprintf('\n Step %d, t = %d \n', Control.step, t);
-    Control.t = t;
+Control.t = 0;
 
+%% Solve system
+while Control.t < Control.tend
+    fprintf('\n Step %d, t = %d \n', Control.step, Control.t);
+
+    if isfield(Control, 'dtmin') 
+        if Control.t < Control.tlim
+            Control.dtc = Control.dtmin;
+        else
+            Control.dtc = Control.dt;
+        end
+    end
+    
     % linear solver
     [Solution] = SolverDynamic_BiotUUP(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, fu, ff, BC, Control, Iteration);
 
@@ -141,5 +150,6 @@ for t = 0:Control.dt:Control.tend
 
     % update time and step
     Control.step = Control.step + 1;
+    Control.t = Control.t + Control.dtc;
 end
  
