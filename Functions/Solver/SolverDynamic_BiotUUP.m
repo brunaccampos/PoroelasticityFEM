@@ -51,9 +51,9 @@ Kssbar = Kss + Mss./(beta*dt^2) + Css*(gamma/beta/dt);
 Kspbar = -Ksp;
 Ksfbar = -Csf*(xi/lambda/dt);
 
-Kpsbar = Kps;
-Kppbar = Kpp;
-Kpfbar = Kpf;
+Kpsbar = -Kps;
+Kppbar = -Kpp;
+Kpfbar = -Kpf;
 
 Kfsbar = -Cfs*(gamma/beta/dt);
 Kfpbar = -Kfp;
@@ -121,15 +121,16 @@ KFF = [Kss_FF, Ksp_FF, Ksf_FF;
 
 % matrices for unknown DOFs
 MssFF = Mss(BC.free_u, BC.free_u);
+MffFF = Mff(BC.free_u, BC.free_u);
+
+CssFF = Css(BC.free_u, BC.free_u);
+CsfFF = Csf(BC.free_u, BC.free_u);
+CfsFF = Cfs(BC.free_u, BC.free_u);
+CffFF = Cff(BC.free_u, BC.free_u);
+
 KssFF = Kss(BC.free_u, BC.free_u);
 KspFF = Ksp(BC.free_u, BC.free_p);
-CsfFF = Csf(BC.free_u, BC.free_u);
-CssFF = Css(BC.free_u, BC.free_u);
-
-MffFF = Mff(BC.free_u, BC.free_u);
 KfpFF = Kfp(BC.free_u, BC.free_p);
-CffFF = Cff(BC.free_u, BC.free_u);
-CfsFF = Cfs(BC.free_u, BC.free_u);
 
 % at first step: compute solid acceleration and pressure gradient
 if Control.step == 1
@@ -152,15 +153,18 @@ ffF = ff(BC.free_u) + MffFF * (1/(lambda*dt^2) * uf_old(BC.free_u) + 1/(lambda*d
 
 
 fuE = fu(BC.fixed_u);
-fpE = zeros(length(BC.fixed_p),1);
 ffE = ff(BC.fixed_u);
 
 uE = BC.fixed_u_value;
 pE = zeros(length(BC.fixed_p),1);
 ufE = BC.fixed_u_value;
 
+% uncomment for velocity impact problem (1D)
+% uE(end) = uE(end)*Control.t;
+% ufE(end) = ufE(end)*Control.t;
+
 dE = [uE; pE; ufE];
-fE = [fuE; fpE; ffE];
+fE = [fuE; zeros(length(BC.fixed_p),1); ffE];
 fF = [fuF; zeros(length(BC.free_p),1); ffF];
 
 %% Solve linear system
@@ -177,8 +181,6 @@ ufF = dF(length(BC.free_u) + length(BC.free_p) + 1 : end,1);
 %% Store u/p/uf
 % force reactions
 fuE = rE(1:length(BC.fixed_u),1);
-% flux reactions
-fpE = rE(length(BC.fixed_u)+1 : length(BC.fixed_u) + length(BC.fixed_p),1);
 % force reactions
 ffE = rE(length(BC.fixed_u) + length(BC.fixed_u) + 1: end,1);
 
@@ -195,6 +197,10 @@ u2dot = (u - u_old)/(beta*dt^2) - udot_old/(beta*dt) - u2dot_old * (1/(2*beta) -
 pdot = (p - p_old)/(theta*dt) - (1/theta - 1) * pdot_old;
 ufdot = (uf - uf_old)*xi/(lambda*dt) - ufdot_old * (xi/lambda -1) - uf2dot_old * dt * (xi/(2*lambda)-1);
 uf2dot = (uf - uf_old)/(lambda*dt^2) - ufdot_old/(lambda*dt) - uf2dot_old * (1/(2*lambda) -1);
+
+% uncomment for velocity impact problem
+% udot(BC.fixed_u2) = 1;
+% ufdot(BC.fixed_u2) = 1;
 
 %% Store variables
 Solution.u = u;
