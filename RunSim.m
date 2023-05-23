@@ -34,6 +34,8 @@ DirFolder = 'Config Files';
 
 % -------------------- 1D dynamic column consolidation
 % File = 'Column1D_Dynamic_Komijani';
+% File = 'Column1D_Dynamic_Gajo';
+File = 'Column1D_Dynamic_Tasiop';
 % File = 'Column1D_Dynamic_Zienck';
 % File = 'Column1D_Dynamic_Diebels';
 
