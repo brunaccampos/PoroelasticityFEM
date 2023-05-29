@@ -103,6 +103,7 @@ pE = BC.fixed_p_value;
 
 % uncomment for velocity impact problem
 % uE(end-length(BC.fixed_u2)+1:end) = uE(end-length(BC.fixed_u2)+1:end)*Control.t;
+% uE(end) = uE(end)*Control.t;
 
 dE = [uE; pE];
 fE = [fuE; fpE];
