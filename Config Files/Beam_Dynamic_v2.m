@@ -4,15 +4,18 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Beam_Dynamic_v2(config_d
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
-% Options:  Transient_Biot ----- Biot model (u-p), transient
-%           Transient_Spanos --- Spanos model (u-p-n), transient
-%           Transient_BiotPoro - Biot model (u-p), dynamic, implicit
+% Options:  Tr1_Biot_UP -------- Biot model (u-p), transient
+%           Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient
+%           Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
 %                                   porosity perturbation equation
-%           Dynamic_Biot ------- Biot model (u-p), dynamic
-%           Dynamic_Spanos ----- Spanos model (u-p-n), dynamic
-%           Dynamic_BiotPoro --- Biot model (u-p), dynamic, implicit
+%           Dyn1_Biot_UP -------- Biot model (u-p), dynamic
+%           Dyn2_Spanos_UPN ----- Spanos model (u-p-n), dynamic
+%           Dyn3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
 %                                   porosity perturbation equation
-Control.Biotmodel = 'Dynamic_Biot';
+%           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
+%           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
+%                                   porosity perturbation equation
+Control.PMmodel = 'Dyn1_Biot_UP';
 
 %% Material properties
 % shear modulus [Pa]
@@ -113,7 +116,7 @@ switch MeshType
         meshFileNameP = 'PlateWithHoleQ4.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
-        if contains(Control.Biotmodel, 'Spanos')
+        if contains(Control.PMmodel, 'UPN')
             fieldN = 'n';
             meshFileNameN = 'PlateWithHoleQ4.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
@@ -190,11 +193,11 @@ Control.nqP = 2;
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 1; 
 
+% basic time step controls
 Control.dt = 0.1;  % time step
 Control.tend = 50;   % final simulation time
-Control.tol = 1e-3; % tolerance for NR method
-Control.max_it = 100; % maximum of iterations
 
+% DOF to plot graphs
 Control.plotu = 12;
 Control.plotp = 2;
 

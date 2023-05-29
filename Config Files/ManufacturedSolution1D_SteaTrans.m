@@ -11,7 +11,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1D_S
 % Biot's coefficient
 Material.alpha = 0;
 % poroelasticity model
-Control.Biotmodel = 'Transient_Biot';
+Control.PMmodel = 'Tr1_Biot_UP';
 
 % thickness 
 % 1D: cross sectional area [m2]

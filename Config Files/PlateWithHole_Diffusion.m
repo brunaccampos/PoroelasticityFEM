@@ -17,7 +17,7 @@ Material.alpha = 0;
 % 1/Q (related to storage coefficient)
 Material.Minv = 0;
 % poroelasticity model
-Control.Biotmodel = 'Transient_Biot';
+Control.PMmodel = 'Tr1_Biot_UP';
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -53,7 +53,7 @@ switch MeshType
         typeP = 'L2';
         MeshP = Build1DMesh(nsd, ne, L, typeP);
         %%%% porosity field
-        if contains(Control.Biotmodel, 'Spanos')
+        if contains(Control.PMmodel, 'UPN')
             typeN = 'L2';
             MeshN = Build1DMesh(nsd, ne, L, typeN);
         else
@@ -72,7 +72,7 @@ switch MeshType
         meshFileNameP = 'Mesh Files\PlateWithHoleQ4.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
-        if contains(Control.Biotmodel, 'Spanos')
+        if contains(Control.PMmodel, 'UPN')
             fieldN = 'n';
             meshFileNameN = 'Mesh Files\PlateWithHoleQ4.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
@@ -128,11 +128,13 @@ Control.nqP = 2;
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
+% basic time step controls
 Control.dt = 1;  % time step
 Control.tend = 1;   % final simulation time
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
+% DOF to plot graphs
 Control.plotu = 2;
 Control.plotp = 2;
 

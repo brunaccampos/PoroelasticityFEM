@@ -3,17 +3,6 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = DamQ9Example(config_dir,
 % Elasticity problem adapted from file Q9_Example_dam_v2
 % ------------------------------------------------------------------------
 
-%% Poroelasticity model
-% Options:  Transient_Biot ----- Biot model (u-p), transient
-%           Transient_Spanos --- Spanos model (u-p-n), transient
-%           Transient_BiotPoro - Biot model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dynamic_Biot ------- Biot model (u-p), dynamic
-%           Dynamic_Spanos ----- Spanos model (u-p-n), dynamic
-%           Dynamic_BiotPoro --- Biot model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-Control.Biotmodel = 'Transient_Biot';
-
 %% Material properties
 % elasticity modulus [Pa]
 Material.E = 40e9;
@@ -23,6 +12,8 @@ Material.nu = 0.2;
 Material.rho_c = 2700;
 % water density [kg/m3]
 Material.rho_w = 1000;
+% Poroelasticity model
+Control.PMmodel = 'Tr1_Biot_UP';
 
 % thermal conductance coefficient
 Material.kf = 0;
@@ -106,7 +97,7 @@ switch MeshType
         meshFileNameP = 'PlateWithHoleQ4.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
-        if contains(Control.Biotmodel, 'Spanos')
+        if contains(Control.PMmodel, 'UPN')
             fieldN = 'n';
             meshFileNameN = 'PlateWithHoleQ4.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
@@ -211,11 +202,13 @@ Control.nqP = 2;
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
+% basic time step controls
 Control.dt = 1;  % time step
 Control.tend = 1;   % final simulation time
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
+% DOF to plot graphs
 Control.plotu = 2;
 Control.plotp = 2;
 

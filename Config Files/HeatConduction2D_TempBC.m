@@ -3,20 +3,11 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = HeatConduction2D_TempBC(
 % Heat transfer problem adapted from file Q4one8thModel
 % ------------------------------------------------------------------------
 
-%% Poroelasticity model
-% Options:  Transient_Biot ----- Biot model (u-p), transient
-%           Transient_Spanos --- Spanos model (u-p-n), transient
-%           Transient_BiotPoro - Biot model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dynamic_Biot ------- Biot model (u-p), dynamic
-%           Dynamic_Spanos ----- Spanos model (u-p-n), dynamic
-%           Dynamic_BiotPoro --- Biot model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-Control.Biotmodel = 'Transient_Biot';
-
 %% Material properties
 % thermal conductance coefficient [W/m3]
 Material.kf = 1;
+% Poroelasticity model
+Control.PMmodel = 'Tr1_Biot_UP';
 
 % elasticity modulus [Pa]
 Material.E = 0;
@@ -117,7 +108,7 @@ switch MeshType
         meshFileNameP = 'Mesh Files\UnitPlateQ4.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
-        if contains(Control.Biotmodel, 'Spanos')
+        if contains(Control.PMmodel, 'UPN')
             fieldN = 'n';
             meshFileNameN = 'Mesh Files\UnitPlateQ4.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
@@ -177,11 +168,13 @@ Control.nqP = 2;
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
+% basic time step controls
 Control.dt = 1;  % time step
 Control.tend = 1;   % final simulation time
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
+% DOF to plot graphs
 Control.plotu = 1;
 Control.plotp = 1;
 

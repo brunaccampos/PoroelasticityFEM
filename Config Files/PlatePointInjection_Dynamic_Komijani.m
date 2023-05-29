@@ -12,15 +12,18 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = PlatePointInjection_Dyna
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
-% Options:  Transient_Biot ----- Biot model (u-p), transient
-%           Transient_Spanos --- Spanos model (u-p-n), transient
-%           Transient_BiotPoro - Biot model (u-p), dynamic, implicit
+% Options:  Tr1_Biot_UP -------- Biot model (u-p), transient
+%           Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient
+%           Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
 %                                   porosity perturbation equation
-%           Dynamic_Biot ------- Biot model (u-p), dynamic
-%           Dynamic_Spanos ----- Spanos model (u-p-n), dynamic
-%           Dynamic_BiotPoro --- Biot model (u-p), dynamic, implicit
+%           Dyn1_Biot_UP -------- Biot model (u-p), dynamic
+%           Dyn2_Spanos_UPN ----- Spanos model (u-p-n), dynamic
+%           Dyn3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
 %                                   porosity perturbation equation
-Control.Biotmodel = 'Dynamic_Biot';
+%           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
+%           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
+%                                   porosity perturbation equation
+Control.PMmodel = 'Dyn1_Biot_UP';
 
 %% Material properties - Komijani (2019)
 % elasticity modulus [GPa]
@@ -87,7 +90,7 @@ switch MeshType
         typeP = 'L2';
         MeshP = Build1DMesh(nsd, ne, L, typeP);
         %%%% porosity field
-        if contains(Control.Biotmodel, 'Spanos')
+        if contains(Control.PMmodel, 'UPN')
             typeN = 'L2';
             MeshN = Build1DMesh(nsd, ne, L, typeN);
         else
@@ -106,7 +109,7 @@ switch MeshType
         meshFileNameP = 'Mesh Files\UnitPlate10elQ4.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
-        if contains(Control.Biotmodel, 'Spanos')
+        if contains(Control.PMmodel, 'UPN')
             fieldN = 'n';
             meshFileNameN = 'Mesh Files\UnitPlate10elQ4.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
@@ -171,9 +174,11 @@ Control.nqP = 2;
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
+% basic time step controls
 Control.dt = 1e-5;  % time step
 Control.tend = 0.1;   % final simulation time
 
+% DOF to plot graphs
 Control.plotu = 121*2; % dof y of node 121 (x = 0.5m, y = 0.5m)
 Control.plotp = 81; % dof of node 81 (x = 0.5m, y = 0.5m)
 

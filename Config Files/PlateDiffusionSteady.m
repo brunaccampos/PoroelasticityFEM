@@ -21,7 +21,7 @@ Material.nu = 0;
 % Biot's coefficient
 Material.alpha = 0;
 % poroelasticity model
-Control.Biotmodel = 'Transient_Biot';
+Control.PMmodel = 'Tr1_Biot_UP';
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;
@@ -114,7 +114,7 @@ switch MeshType
         meshFileNameP = 'Mesh Files\PlateDiffusion.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
-        if contains(Control.Biotmodel, 'Spanos')
+        if contains(Control.PMmodel, 'UPN')
             fieldN = 'n';
             meshFileNameN = 'Mesh Files\PlateDiffusion.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
@@ -169,13 +169,13 @@ Control.nqP = 2;
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
+% basic time step controls
 Control.dt = 1;  % time step
 Control.tend = 1;   % final simulation time
-Control.tol = 1e-3; % tolerance for NR method
-Control.max_it = 100; % maximum of iterations
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
+% DOF to plot graphs
 Control.plotu = 2;
 Control.plotp = 2;
 
