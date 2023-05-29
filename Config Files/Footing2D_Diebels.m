@@ -43,7 +43,15 @@ Material.n = 0.33;
 % Biot's coefficient
 Material.alpha = 1;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
+% Material.Minv = 0;
+
+% alternative values of Kf, Ks for compressible materials (Boone, 1990)
+% fluid bulk modulus [GPa]
+Material.Kf = 3;
+% solid bulk modulus [GPa]
+Material.Ks = 36;
+% 1/Q (related to storage coefficient)
+Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;
@@ -64,8 +72,17 @@ n = 1; % return to Biot
 % n = Material.Ks/Material.Kf; % upper limit
  
 % porosity equation coefficients
-Material.deltaF = 0;
-Material.deltaS = Material.alpha - Material.n;
+% Material.deltaF = 0;
+% Material.deltaS = Material.alpha - Material.n;
+
+% alternative equations for compressible materials
+% modified storage coefficient (Muller, 2019)
+Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks; 
+Mstar = 1/Mstarinv;
+
+% porosity equation coefficients
+Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
+Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
 
 %% Mesh parameters
 if progress_on
@@ -225,12 +242,14 @@ Control.nqP = 2;
 Control.uncoupled = 0; 
 
 Control.dt = 1e-2;  % time step
-Control.tend = 10;   % final simulation time
+Control.tend = 20;   % final simulation time
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
-Control.plotu = 5*2; % dof y of node 5 (x = 5m, y = 10m)
-Control.plotp = 5*2; % dof y of node 5 (x = 5m, y = 10m)
+% Control.plotu = 5*2; % dof y of node 5 (x = 5m, y = 10m)
+% Control.plotp = 5*2; % dof y of node 5 (x = 5m, y = 10m)
+Control.plotu = 303*2; % dof y of node 303 (x = 4.9150m, y = 4.5798m)
+Control.plotp = 245; % dof of node 5 (x = 4.9150m, y = 4.5798m)
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false
