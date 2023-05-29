@@ -33,7 +33,7 @@ nqP = QuadP.nq;
 % global vectors
 fu = zeros(MeshU.nDOF, 1);
 fp = zeros(MeshP.nDOF, 1);
-if contains(Control.Biotmodel, 'Spanos')
+if contains(Control.PMmodel, 'UPN')
     fn = zeros(MeshN.nDOF, 1);
 else
     fn = [];
@@ -81,12 +81,12 @@ for e = 1:ne
             J = dN*gcoords;
             % Jacobian determinant
             Jdet = det(J);
-            
+
             % body force
             fb_e = fb_e + NVoigt.' * BC.b(ipcoords) * Jdet * QuadU.w(ip,1);
         end
     end
-    
+
     % loop over traction forces
     for j = 1:length(tractionNodes)
         % check if traction is applied to current element
@@ -173,12 +173,12 @@ for e = 1:ne
             J = dN*gcoords;
             % Jacobian determinant
             Jdet = det(J);
-            
+
             % flux source
             fs_e = fs_e + NVoigt.' * BC.s(ipcoords) * Jdet * QuadP.w(ip,1);
         end
     end
-    
+
     % loop over flux values
     for j = 1:length(fluxNodes)
         % check if flux is applied to current element
@@ -201,13 +201,47 @@ for e = 1:ne
     fp(dofe) = fp(dofe) + fp_e + fs_e;
 end
 
-% if Control.t <= 100*1e-4
-%     BC.pointFlux = BC.pointFlux*Control.t/(100*1e-4);
-% end
+%% Contribution in porosity equation
+if contains(Control.PMmodel, 'UPN')
+    % loop over elements
+    for e = 1:ne
+        % element connectivity
+        connN_e = MeshN.conn(e,:);
+        % element DOFs
+        dofe = MeshN.DOF(connN_e,:);
+        dofe = reshape(dofe', MeshN.nDOFe,[]);
+        % element flux matrix
+        fn_e = zeros(MeshN.nDOFe,1);
+
+        % loop over flux values
+        for j = 1:length(fluxNodes)
+            % check if flux is applied to current element
+            if ~isempty(find(connN_e == fluxNodes(j),1)) && count(j) == 0
+                % current node
+                node = find(connN_e == fluxNodes(j),1);
+                % node parent coordinates
+                coord = getParentCoords(node, MeshN.type);
+                % node shape functions
+                [N,~] = lagrange_basis(MeshN, coord);
+                Nvoigt = getNVoigt(MeshN, N');
+                % element load vector
+                fn_e = fn_e - (Material.deltaF/Material.n) * Nvoigt.' * fluxValue(j,:)';
+                % update counting
+                count(j) = 1;
+            end
+        end
+
+        % assemble global flux vector
+        fn(dofe) = fn(dofe) + fn_e;
+    end
+end
 
 % adding point loads
 if ~isempty(BC.pointFlux)
     fp = fp - BC.pointFlux;
+    if contains(Control.PMmodel,'UPN')
+        fn = fn - (Material.deltaF/Material.n) * BC.pointFlux;
+    end
 end
-    
+
 end
