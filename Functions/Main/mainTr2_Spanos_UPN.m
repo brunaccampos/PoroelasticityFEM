@@ -4,12 +4,12 @@
 % ------------------------------------------------------------------------
 
 %% Model name and type
-disp([num2str(toc),': Model: Spanos transient case']);
+disp([num2str(toc),': Model: Spanos u-p-n transient case']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
 
-[Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesTransient_Spanos(Material, MeshU, MeshP, MeshN, QuadU, QuadP);
+[Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesTr2_Spanos_UPN(Material, MeshU, MeshP, MeshN, QuadU, QuadP);
 
 %% Solve eigenproblem
 if Control.freqDomain

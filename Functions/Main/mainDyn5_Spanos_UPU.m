@@ -4,12 +4,12 @@
 % ------------------------------------------------------------------------
 
 %% Model name and type
-disp([num2str(toc),': Model: Spanos dynamic case, u-p-U formulation']);
+disp([num2str(toc),': Model: Spanos u-p-U dynamic case']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
 
-[Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs] = ComputeMatricesDynamic_BiotPoroUUP(Material, MeshU, MeshP, QuadU, QuadP);
+[Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs] = ComputeMatricesDyn5_Spanos_UPU(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Solve eigenproblem
 if Control.freqDomain

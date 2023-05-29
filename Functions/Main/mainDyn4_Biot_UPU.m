@@ -4,12 +4,12 @@
 % ------------------------------------------------------------------------
 
 %% Model name and type
-disp([num2str(toc),': Model: Biot dynamic case, u-p-U formulation']);
+disp([num2str(toc),': Model: Biot u-p-U dynamic case']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
 
-[Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs] = ComputeMatricesDynamic_BiotUUP(Material, MeshU, MeshP, QuadU, QuadP);
+[Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs] = ComputeMatricesDyn4_Biot_UPU(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Solve eigenproblem
 if Control.freqDomain

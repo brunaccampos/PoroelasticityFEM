@@ -4,12 +4,12 @@
 % ------------------------------------------------------------------------
 
 %% Model name and type
-disp([num2str(toc),': Model: Spanos dynamic case']);
+disp([num2str(toc),': Model: Spanos u-p-n dynamic case']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
 
-[Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesDynamic_Spanos(Material, MeshU, MeshP, MeshN, QuadU);
+[Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesDyn2_Spanos_UPN(Material, MeshU, MeshP, MeshN, QuadU);
 
 %% Solve eigenproblem
 if Control.freqDomain

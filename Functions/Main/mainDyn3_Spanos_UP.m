@@ -6,12 +6,12 @@
 % ------------------------------------------------------------------------
 
 %% Model name and type
-disp([num2str(toc),': Model: Biot dynamic case, implicit porosity variation']);
+disp([num2str(toc),': Model: Spanos u-p dynamic case']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
 
-[Muu, Mpu, Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesDynamic_BiotPoro(Material, MeshU, MeshP, QuadU);
+[Muu, Mpu, Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesDyn3_Spanos_UP(Material, MeshU, MeshP, QuadU);
 
 %% Solve eigenproblem
 if Control.freqDomain
