@@ -19,12 +19,14 @@ if ~isempty(Iteration)
     n_old = Iteration.n_old;
     fu_old = Iteration.fu_old;
     fp_old = Iteration.fp_old;
+    fn_old = Iteration.fn_old;
 else
     u_old = zeros(length(Kuu),1);
     p_old = zeros(length(Kpp),1);
     n_old = zeros(length(Knn),1);
     fu_old = zeros(length(Kuu),1);
     fp_old = zeros(length(Kpp),1);
+    fn_old = zeros(length(Knn),1);
 end
 % time step
 dt = Control.dt;
@@ -110,7 +112,7 @@ KFF = [Kuu_FF, Kup_FF, Kun_FF;
 % auxiliar terms for external forces vector
 fubar = -dt * (1-beta) * Kuu * u_old + dt * (1-beta) * Kup * p_old + dt * (1-beta) * fu_old + dt * beta * fu;
 fpbar = Kpu * u_old + (S - dt * (1-beta) * Kpp) * p_old + Kpn * n_old + dt * (1-beta) * fp_old + dt * beta * fp;
-fnbar = Knu * u_old - dt * (1-beta) * Knp * p_old + Knn * n_old;
+fnbar = Knu * u_old - dt * (1-beta) * Knp * p_old + Knn * n_old + dt * (1-beta) * fn_old + dt * beta * fn;
 
 
 % partitioning vectors
@@ -146,6 +148,7 @@ nF = dF(length(BC.free_u) + length(BC.free_p) + 1 : end,1);
 fE = rE(1:length(BC.fixed_u),1);
 % flux reactions
 qE = rE(length(BC.fixed_u)+1 : length(BC.fixed_u) + length(BC.fixed_p),1);
+fnE = rE(length(BC.fixed_u) + length(BC.fixed_p) + 1:end,1);
 
 u(BC.fixed_u, 1) = uE;
 u(BC.free_u, 1) = uF;
@@ -168,5 +171,6 @@ Solution.n = n;
 Solution.ndot = ndot;
 Solution.fE = fE;
 Solution.qE = qE;
+Solution.fnE = fnE;
 
 end

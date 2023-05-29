@@ -134,7 +134,7 @@ KpnFF = Kpn(BC.free_p, BC.free_n);
 % at first step: compute solid acceleration and pressure gradient
 if Control.step == 1
     u2dot_old(BC.free_u) = MuuFF\(fu(BC.free_u) - KuuFF*u_old(BC.free_u) + KupFF*p_old(BC.free_p));
-    ndot_old(BC.free_n) = KnnFF\(MnuFF*u2dot_old(BC.free_u) - KnuFF*udot_old(BC.free_u) - KnpFF*p_old(BC.free_p));
+    ndot_old(BC.free_n) = KnnFF\(fn(BC.free_n) + MnuFF*u2dot_old(BC.free_u) - KnuFF*udot_old(BC.free_u) - KnpFF*p_old(BC.free_p));
     pdot_old(BC.free_p) = SFF\(fp(BC.free_p) + MpuFF*u2dot_old(BC.free_u) - KpuFF*udot_old(BC.free_u) - KppFF*p_old(BC.free_p) - KpnFF*ndot_old(BC.free_n));
 end
 
@@ -183,6 +183,7 @@ nF = dF(length(BC.free_u) + length(BC.free_p) + 1 : end,1);
 fE = rE(1:length(BC.fixed_u),1);
 % flux reactions
 qE = rE(length(BC.fixed_u)+1 : length(BC.fixed_u) + length(BC.fixed_p),1);
+fnE = rE(length(BC.fixed_u) + length(BC.fixed_p) + 1:end,1);
 
 u(BC.fixed_u, 1) = uE;
 u(BC.free_u, 1) = uF;
@@ -210,5 +211,6 @@ Solution.n = n;
 Solution.ndot = ndot;
 Solution.fE = fE;
 Solution.qE = qE;
+Solution.fnE = fnE;
 
 end
