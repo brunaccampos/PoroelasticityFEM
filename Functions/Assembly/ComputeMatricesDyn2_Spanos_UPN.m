@@ -1,4 +1,4 @@
-function [Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesDynamic_Spanos(Material, MeshU, MeshP, MeshN, Quad)
+function [Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesDyn2_Spanos_UPN(Material, MeshU, MeshP, MeshN, Quad)
 % ------------------------------------------------------------------------
 % Compute System Matrices for 1D dynamic simulation
 % ------------------------------------------------------------------------
