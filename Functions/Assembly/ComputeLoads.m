@@ -1,4 +1,4 @@
-function [fu,fp,fn] = ComputeLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP)
+function [fu,fp,fn] = ComputeLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP, Material)
 % Compute system load force vectors
 % ------------------------------------------------------------------------
 %   Input
