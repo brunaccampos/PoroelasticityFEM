@@ -11,7 +11,7 @@ function PlotGraphs(Solution, SolutionFreq, Material, MeshU, MeshP, MeshN, Contr
 %               pressure vs time at specific node
 % ------------------------------------------------------------------------
 
-if contains(Control.Biotmodel, 'Transient')
+if contains(Control.PMmodel, 'Tr')
     if MeshU.nsd == 1
         plot1Dsteady(Solution, SolutionFreq, Material, MeshU, MeshP, MeshN, Control, Plot, saveGraphs_on);
     else
@@ -150,7 +150,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Vel_time.png','Resolution',300)
 end
 %% porosity vs depth
-if contains(Control.Biotmodel, 'Spanos')
+if contains(Control.PMmodel, 'UPN')
     figure;
     plot(MeshN.coords, Solution.n ./ Material.n,'g','LineWidth',2);
     hold on
@@ -163,7 +163,7 @@ if contains(Control.Biotmodel, 'Spanos')
     end
 end
 %% porosity vs time
-if contains(Control.Biotmodel, 'Spanos')
+if contains(Control.PMmodel, 'UPN')
     figure;
     plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
     hold on
@@ -187,7 +187,7 @@ plot(Plot.time, Plot.p_time*10^9,'k','LineWidth',2);
 hold on
 xlabel('Time [s]');
 ylabel('p [Pa]');
-title(sprintf('Pressure at x = %.2f m, y = %.2f m', MeshP.coords(Control.plotp,1), MeshP.coords(Control.plotp,2)));
+title(sprintf('Pressure at x = %.2f m, y = %.2f m', MeshP.coords(round(Control.plotp/2),1), MeshP.coords(round(Control.plotp/2),2)));
 % frequency domain solution
 if Control.freqDomain
     plot(Plot.time, Plot.pF*10^9,'r--','LineWidth',2);
@@ -230,13 +230,13 @@ if saveGraphs_on
     exportgraphics(gcf,'Vel_time.png','Resolution',300)
 end
 %% porosity vs time
-if contains(Control.Biotmodel, 'Spanos')
+if contains(Control.PMmodel, 'UPN')
     figure;
     plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
     hold on
     xlabel('Time [s]');
     ylabel('Porosity normalized [-]');
-    title(sprintf('Porosity norm at x = %.2f m', MeshN.coords(Control.plotp,1)));
+    title(sprintf('Porosity norm at x = %.2f m', MeshN.coords(round(Control.plotp/2),1), MeshN.coords(round(Control.plotp/2),2)));
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'Poros_time.png','Resolution',300)
@@ -341,7 +341,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Vel_time.png','Resolution',300)
 end
 %% porosity vs depth
-if contains(Control.Biotmodel, 'Spanos')
+if contains(Control.PMmodel, 'UPN')
     figure;
     plot(MeshN.coords, Solution.n ./ Material.n,'g','LineWidth',2);
     hold on
@@ -354,7 +354,7 @@ if contains(Control.Biotmodel, 'Spanos')
     end
 end
 %% porosity vs time
-if contains(Control.Biotmodel, 'Spanos')
+if contains(Control.PMmodel, 'UPN')
     figure;
     plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
     hold on
@@ -367,7 +367,7 @@ if contains(Control.Biotmodel, 'Spanos')
     end
 end
 
-if contains(Control.Biotmodel, 'UUP')
+if contains(Control.PMmodel, 'UPU')
     figure;
     %% fluid displacement vs depth
     subplot(2,2,1);
@@ -470,7 +470,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Vel_time.png','Resolution',300)
 end
 %% porosity vs time
-if contains(Control.Biotmodel, 'Spanos')
+if contains(Control.PMmodel, 'UPN')
     figure;
     plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
     hold on

@@ -12,7 +12,10 @@ Iteration.u2dot_old = zeros(MeshU.nDOF, 1); % solid acceleration
 Iteration.pdot_old = zeros(MeshP.nDOF, 1); % pressure gradient
 Iteration.fu_old = zeros(MeshU.nDOF, 1); % load vector
 Iteration.fp_old = zeros(MeshP.nDOF, 1); % flux vector
-if contains(Control.Biotmodel, 'UUP')
+if contains(Control.PMmodel, 'UPN')
+    Iteration.fn_old = zeros(MeshN.nDOF, 1); % flux vector
+end
+if contains(Control.PMmodel, 'UPU')
     Iteration.uf_old = zeros(MeshU.nDOF, 1); % fluid displacement
     Iteration.ufdot_old = zeros(MeshU.nDOF, 1); % fluid velocity
     Iteration.uf2dot_old = zeros(MeshU.nDOF, 1); % fluid acceleration
@@ -27,7 +30,7 @@ Plot.uan_time = zeros(length(Plot.time),1); % analytic solid displacement
 Plot.u_time = zeros(length(Plot.time), 1); % solid displacement
 Plot.udot_time = zeros(length(Plot.time), 1); % solid velocity
 Plot.u2dot_time = zeros(length(Plot.time), 1); % solid acceleration
-if contains(Control.Biotmodel, 'UUP')
+if contains(Control.PMmodel, 'UPU')
     Plot.uf_time = zeros(length(Plot.time), 1); % fluid displacement
     Plot.ufdot_time = zeros(length(Plot.time), 1); % fluid velocity
     Plot.uf2dot_time = zeros(length(Plot.time), 1); % fluid acceleration
@@ -40,7 +43,7 @@ Plot.udot_space = zeros(length(Control.plotu),1);
 Plot.u2dot_space = zeros(length(Control.plotu),1);
 Plot.pan_space = zeros(length(Control.plotp),1);
 Plot.uan_space = zeros(length(Control.plotu),1);
-if contains(Control.Biotmodel, 'UUP')
+if contains(Control.PMmodel, 'UPU')
     Plot.uf_space = zeros(length(Control.plotu),1);
     Plot.ufdot_space = zeros(length(Control.plotu),1);
     Plot.uf2dot_space = zeros(length(Control.plotu),1);
@@ -60,7 +63,7 @@ if Control.freqDomain
     Iteration.xuF2dot_old = zeros(length(BC.free_u),1);
     Iteration.xpF_old = (phi_p) \ Iteration.pF_old(BC.free_p);
     Iteration.xpFdot_old = (phi_p) \ Iteration.pFdot_old(BC.free_p);
-    if contains(Control.Biotmodel, 'Spanos')
+    if contains(Control.PMmodel, 'UPN')
         Iteration.nF_old = zeros(MeshN.nDOF, 1); % porosity variable storage
         Iteration.nF_old(:) = Material.n;
         Iteration.nFdot_old = zeros(MeshN.nDOF, 1); % porosity gradient
@@ -95,7 +98,7 @@ if ~isempty(BC.initP)
 end
 
 % porosity
-if contains(Control.Biotmodel, 'Spanos')
+if contains(Control.PMmodel, 'UPN')
     % initial porosity condition
     Iteration.n_old = zeros(MeshN.nDOF, 1);
     Iteration.n_old(:) = Material.n;

@@ -45,7 +45,7 @@ if nsd == 1
     % fixed DOFs
     scalardataU(5).name = 'fixedU';  scalardataU(5).data = fixedU(MeshU.DOF);
     scalardataU(5).type = 'int';
-    if contains(Control.Biotmodel, 'Dynamic')
+    if contains(Control.PMmodel, 'Dyn')
         % acceleration
         scalardataU(6).name = 'acc_u';
         scalardataU(6).data = Solution.u2dot(xdofs_u);
@@ -54,7 +54,7 @@ if nsd == 1
     vectordataU = [];
     
     %% Storing data for fluid media - 1D case
-    if contains(Control.Biotmodel, 'UUP')
+    if contains(Control.PMmodel, 'UPU')
         % displacement
         scalardataUf(1).name = 'disp_uf';
         scalardataUf(1).data = Solution.uf(xdofs_u);
@@ -63,7 +63,7 @@ if nsd == 1
         scalardataUf(2).name = 'vel_uf';
         scalardataUf(2).data = Solution.ufdot(xdofs_u);
         scalardataUf(2).type = 'float';
-        if contains(Control.Biotmodel, 'Dynamic')
+        if contains(Control.PMmodel, 'Dyn')
             % acceleration
             scalardataUf(3).name = 'acc_uf';
             scalardataUf(3).data = Solution.uf2dot(xdofs_u);
@@ -84,7 +84,7 @@ elseif nsd == 2
     vectordataU(2).name = 'vel_u';
     vectordataU(2).data = [Solution.udot(xdofs_u) Solution.udot(ydofs_u) zeros(length(xdofs_u),1)];
     vectordataU(2).type = 'float';
-    if contains(Control.Biotmodel, 'Dynamic')
+    if contains(Control.PMmodel, 'Dyn')
         % acceleration
         vectordataU(3).name = 'acc_u';
         vectordataU(3).data = [Solution.u2dot(xdofs_u) Solution.u2dot(ydofs_u) zeros(length(xdofs_u),1)];
@@ -109,7 +109,7 @@ elseif nsd == 2
     scalardataU(7).type = 'int';
     
     %% Storing data for fluid media - 2D case
-    if contains(Control.Biotmodel, 'UUP')
+    if contains(Control.PMmodel, 'UPU')
         % displacement
         vectordataUf(1).name = 'disp_uf';
         vectordataUf(1).data = [Solution.uf(xdofs_u) Solution.uf(ydofs_u) zeros(length(xdofs_u),1)];
@@ -118,7 +118,7 @@ elseif nsd == 2
         vectordataUf(2).name = 'vel_uf';
         vectordataUf(2).data = [Solution.ufdot(xdofs_u) Solution.ufdot(ydofs_u) zeros(length(xdofs_u),1)];
         vectordataUf(2).type = 'float';
-        if contains(Control.Biotmodel, 'Dynamic')
+        if contains(Control.PMmodel, 'Dyn')
             % acceleration
             vectordataUf(3).name = 'acc_uf';
             vectordataUf(3).data = [Solution.uf2dot(xdofs_u) Solution.uf2dot(ydofs_u) zeros(length(xdofs_u),1)];
@@ -151,7 +151,7 @@ end
 
 %% Storing data for porosity field
 % porosity
-if contains(Control.Biotmodel, 'Spanos')
+if contains(Control.PMmodel, 'UPN')
     scalardataN(1).name = 'porosity';
     scalardataN(1).data = Solution.n;
     scalardataN(1).type = 'float';
@@ -173,7 +173,7 @@ filenameP = fullfile(vtk_dir, [nameP, num2str(step)]);
 WriteMesh2VTK(filenameP, description, MeshP, scalardataP, vectordataP);
 
 % porosity
-if contains(Control.Biotmodel, 'Spanos')
+if contains(Control.PMmodel, 'UPN')
     description = config_name; % config file name
     nameN = 'Solution_N.vtk.';
     filenameN = fullfile(vtk_dir, [nameN, num2str(step)]);
@@ -181,7 +181,7 @@ if contains(Control.Biotmodel, 'Spanos')
 end
 
 % fluid (u-p-U)
-if contains(Control.Biotmodel, 'UUP')
+if contains(Control.PMmodel, 'UPU')
     description = config_name; % config file name
     nameUf = 'Solution_Uf.vtk.';
     filenameUf = fullfile(vtk_dir, [nameUf, num2str(step)]);
