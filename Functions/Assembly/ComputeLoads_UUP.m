@@ -104,19 +104,24 @@ for e = 1:ne
         end
     end
 
-%     if Control.t <= 1
-%         fu_e = fu_e*Control.t;
-%     end
+    % apply step load gradualy
+    if isfield(Control, 'rampLoad')
+        if Control.t <= Control.tlim
+            fu_e = fu_e*Control.t;
+        end
+    end
+
     % assemble global load vector
     fs(dofe) = fs(dofe) + fu_e + fb_e;
 end
 
-% if Control.t <= 1
-%     BC.pointLoad = BC.pointLoad*Control.t;
-% end
+% apply step load gradualy
+if isfield(Control, 'rampLoad')
+    if Control.t <= Control.tlim
+        BC.pointLoad = BC.pointLoad*Control.t;
+    end
+end
     
-% BC.pointLoad = BC.pointLoadValue * (1 - cos(75*Control.t));
-
 % adding point loads
 if ~isempty(BC.pointLoad)
     fs = fs + BC.pointLoad;
@@ -191,10 +196,6 @@ for e = 1:ne
     % assemble global flux vector
     ff(dofe) = ff(dofe) + fp_e + fb_e;
 end
-
-% if Control.t <= 100*1e-4
-%     BC.pointFlux = BC.pointFlux*Control.t/(100*1e-4);
-% end
 
 % adding point loads
 if ~isempty(BC.pointFlux)
