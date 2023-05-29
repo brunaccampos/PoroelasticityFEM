@@ -34,7 +34,7 @@ Control.t = 0;  % initial simulation time
 Control.step = 0; % step counter
 
 %% Select model and evaluate main function
-[~,modeltype] = fileparts(Control.Biotmodel);
+[~,modeltype] = fileparts(Control.PMmodel);
 main_type = append('main',modeltype);
 feval(main_type);
 
