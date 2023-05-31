@@ -242,4 +242,7 @@ Control.gamma = 0.7;
 Control.theta = 0.7;
 Control.lambda = 0.7;
 
+% HHT method
+Control.alpha = 0;
+
 end
