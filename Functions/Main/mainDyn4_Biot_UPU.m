@@ -54,13 +54,15 @@ while Control.t < Control.tend
         else
             Control.dtc = Control.dt;
         end
+    else
+        Control.dtc = Control.dt;
     end
     
     % system load vectors
-    [fu, ff] = ComputeLoads_UUP(BC, MeshU, MeshP, Control, Material, QuadU, QuadP);
+    [fu, ff] = ComputeLoads_UPU(BC, MeshU, MeshP, Control, Material, QuadU, QuadP);
     
     % linear solver
-    [Solution] = SolverDynamic_BiotUUP(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, fu, ff, BC, Control, Iteration);
+    [Solution] = SolverDyn_UPU_HHT(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, fu, ff, BC, Control, Iteration);
 
     % solution in the frequency domain
     if Control.freqDomain

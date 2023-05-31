@@ -64,7 +64,7 @@ while Control.t < Control.tend
     [fu,fp,fn] = ComputeLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
 
     % linear solver
-    [Solution] = SolverDynamic_Biot(Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
+    [Solution] = SolverDyn_UP(Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
 
 %     figure(1);
 %     subplot(1,2,1);
