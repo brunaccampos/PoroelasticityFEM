@@ -85,7 +85,7 @@ while Control.t < Control.tend
     end
 
     % linear solver
-    [Solution] = SolverTransient_Spanos(Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration);
+    [Solution] = SolverTr_UPN(Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration);
     
     % solution in the frequency domain
     if Control.freqDomain
