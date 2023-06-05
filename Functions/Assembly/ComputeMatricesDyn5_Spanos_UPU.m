@@ -100,7 +100,8 @@ for e = 1:ne
         % assemble local matrices
         Kss_e = Kss_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         
-        Css_e = Css_e + Material.n^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Css_e = Css_e + Material.n^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1)- ...
+            Material.xif*Material.deltaS * (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         Csf_e = Csf_e + Material.n^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) + ...
             (Material.n*Material.mu + Material.n*Material.xif + Material.n*Material.mu/3 - Material.xif*Material.deltaF) * ...
             (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
