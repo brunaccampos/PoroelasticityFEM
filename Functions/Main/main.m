@@ -60,7 +60,11 @@ end
 if saveMatData_on && Control.plotansol
     % symbolic analytical results
     if ~Control.uncoupled
-        [pan_symb, uan_symb] = getAnalyticResult_Symb(Material, MeshU, BC, Control);
+        if any(Material.Minv)
+            [pan_symb, uan_symb] = getAnalyticResult_Comp_Symb(Material, MeshU, BC, Control);
+        else
+            [pan_symb, uan_symb] = getAnalyticResult_Incomp_Symb(Material, MeshU, BC, Control);
+        end
         Control.uan_symb = uan_symb;
         Control.pan_symb = pan_symb;
     end
