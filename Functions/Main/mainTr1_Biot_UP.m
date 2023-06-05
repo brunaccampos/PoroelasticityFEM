@@ -83,7 +83,7 @@ while Control.t < Control.tend
     end
 
     % linear solver
-    [Solution] = SolverTransient_Biot(Kuu, Kup, Kpp, Kpu, S, fu, fp, BC, Control, Iteration);
+    [Solution] = SolverTr_UP(Kuu, Kup, Kpp, Kpu, S, fu, fp, BC, Control, Iteration);
     
     % solution in the frequency domain
     if Control.freqDomain
