@@ -33,6 +33,7 @@ end
 function plot1Dsteady(Solution, SolutionFreq, Material, MeshU, MeshP, MeshN, Control, Plot, saveGraphs_on)
 %% pressure vs depth
 figure;
+subplot(2,2,1);
 plot(MeshP.coords, Solution.p*10^9.*Material.t,'k','LineWidth',2);
 hold on
 xlabel('Column depth [m]');
@@ -57,7 +58,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Press_depth.png','Resolution',300)
 end
 %% pressure vs time
-figure;
+subplot(2,2,3);
 plot(Plot.time, Plot.p_time*10^9.*Material.t,'k','LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -82,7 +83,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Press_time.png','Resolution',300)
 end
 %% solid displacement vs depth
-figure;
+subplot(2,2,2);
 plot(MeshU.coords, Solution.u,'b','LineWidth',2);
 hold on
 xlabel('Column depth [m]');
@@ -109,7 +110,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Displ_depth.png','Resolution',300)
 end
 %% solid displacement vs time
-figure;
+subplot(2,2,4);
 plot(Plot.time, Plot.u_time, 'b', 'LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -152,6 +153,7 @@ end
 %% porosity vs depth
 if contains(Control.PMmodel, 'UPN')
     figure;
+    subplot(1,2,1);
     plot(MeshN.coords, Solution.n ./ Material.n,'g','LineWidth',2);
     hold on
     xlabel('Column depth [m]');
@@ -161,10 +163,8 @@ if contains(Control.PMmodel, 'UPN')
     if saveGraphs_on
         exportgraphics(gcf,'Poros_depth.png','Resolution',300)
     end
-end
 %% porosity vs time
-if contains(Control.PMmodel, 'UPN')
-    figure;
+    subplot(1,2,2);
     plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
     hold on
     xlabel('Time [s]');
@@ -423,6 +423,7 @@ end
 function plot2Ddynamic(MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on)
 %% pressure vs time
 figure;
+subplot(1,3,1);
 plot(Plot.time, Plot.p_time*10^9,'k','LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -438,7 +439,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Press_time.png','Resolution',300)
 end
 %% displacement vs time
-figure;
+subplot(1,3,2);
 plot(Plot.time, Plot.u_time,'b','LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -454,7 +455,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Displ_time.png','Resolution',300)
 end
 %% velocity vs time
-figure;
+subplot(1,3,3);
 plot(Plot.time, Plot.udot_time,'b','LineWidth',2);
 hold on
 xlabel('Time [s]');
