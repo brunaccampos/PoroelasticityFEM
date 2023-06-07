@@ -95,24 +95,20 @@ for i = 1:ne
        
        % approximate (FEM)
        eh = Nu*e(connu_e);
-       sh = Nu*s(connu_e);
        qh = Np*q(connp_e);
        
        % exact
        ee = Nu*e_exact(connu_e);
-       se = Nu*s_exact(connu_e);
        qe = Np*q_exact(connp_e);
        
 %        ee = eval(subs(e_exact, Nu*MeshU.coords(connu_e)));
-%        se = eval(subs(s_exact, Nu*MeshU.coords(connu_e)));
-
 %        qe = eval(subs(qex_exact, Np*MeshP.coords(connp_e)));
      
        % energy norm
-       eENu_num = eENu_num + (eh-ee) * (sh-se) * Quad.w(ip,1) * Jdet;
-       eENu_den = eENu_den + ee * se * Quad.w(ip,1) * Jdet;
-       eENp_num = eENp_num + (qh-qe) * (qh-qe) * Quad.w(ip,1) * Jdet;
-       eENp_den = eENp_den + qe * qe * Quad.w(ip,1) * Jdet;
+       eENu_num = eENu_num + (eh-ee)^2 * Quad.w(ip,1) * Jdet;
+       eENu_den = eENu_den + (ee)^2 * Quad.w(ip,1) * Jdet;
+       eENp_num = eENp_num + (qh-qe)^2 * Quad.w(ip,1) * Jdet;
+       eENp_den = eENp_den + (qe)^2 * Quad.w(ip,1) * Jdet;
 
 
        % H1 norm
