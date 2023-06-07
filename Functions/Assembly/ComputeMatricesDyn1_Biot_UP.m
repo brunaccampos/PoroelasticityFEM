@@ -129,7 +129,7 @@ for e = 1:ne
     end
 
     % lumped element mass matrix
-    if Material.lumpedMass
+    if isfield(Material, 'lumpedMass')
         M_eDiag = zeros(MeshU.nDOFe, MeshU.nDOFe);
         for k = 1:MeshU.nDOFe
             M_eDiag(k,k) = sum(M_e(k,:));
