@@ -182,7 +182,7 @@ ufF = dF(length(BC.free_u) + length(BC.free_p) + 1 : end,1);
 % force reactions
 fuE = rE(1:length(BC.fixed_u),1);
 % force reactions
-ffE = rE(length(BC.fixed_u) + length(BC.fixed_u) + 1: end,1);
+ffE = rE(length(BC.fixed_u) + 1: end,1);
 
 u(BC.fixed_u, 1) = uE;
 u(BC.free_u, 1) = uF;
