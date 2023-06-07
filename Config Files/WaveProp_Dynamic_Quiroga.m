@@ -122,16 +122,16 @@ switch MeshType
         nsd = 2;
         %%%% displacement field
         fieldU = 'u';
-        meshFileNameU = 'Plate_15x15Q9.msh';
+        meshFileNameU = 'Mesh Files\Plate_15x15Q4fine.msh';
         MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
         %%%% pressure field
         fieldP = 'p';
-        meshFileNameP = 'Plate_15x15Q4.msh';
+        meshFileNameP = 'Mesh Files\Plate_15x15Q4fine.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
         if contains(Control.PMmodel, 'UPN')
             fieldN = 'n';
-            meshFileNameN = 'Plate_15x15Q4.msh';
+            meshFileNameN = 'Mesh Files\Plate_15x15Q4.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
         else
             MeshN = [];
@@ -146,25 +146,27 @@ BC.initU = [];
 BC.initP = [];
 
 %% Dirichlet BCs - solid
-% displacement u=0 at the bottom
-BC.fixed_u = (BC.bottom_node_u);
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+% displacement fixed at central node in y
+node = find(MeshU.coords(:,1) == 7.5 & MeshU.coords(:,2) == 7.5);
+BC.fixed_u = node*2;
+t0 = 1e-3;
+BC.fixed_u_value = @(t) sin(2*pi*(t)/t0) - 0.5*sin(4*pi*(t)/t0);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
-%   pressure p=0 at the top
-BC.fixed_p = (BC.top_node_p);
+% pressure p=0 at the top
+BC.fixed_p = [];
 BC.fixed_p_value = zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
 % point load [GN]
-BC.pointLoadValue = -1e-6;
-BC.pointLoadNodes = BC.top_node_u;
-BC.pointLoad = zeros(MeshU.nDOF,1);
-BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
+% BC.pointLoadValue = -1e-6;
+% BC.pointLoadNodes = BC.top_node_u;
+BC.pointLoad = [];
+% BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
 
 % distributed load [GN/m2]
 BC.tractionNodes = [];
@@ -174,10 +176,10 @@ BC.b = @(x)[];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
-BC.pointFluxValue = 0;
-BC.pointFluxNodes = BC.bottom_node_p;
-BC.pointFlux = zeros(MeshP.nDOF,1);
-BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
+% BC.pointFluxValue = 0;
+BC.pointFluxNodes = [];
+BC.pointFlux = [];
+% BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
 
 % distributed flux [m3/s]
 BC.fluxNodes = [];
@@ -203,12 +205,12 @@ Control.nqP = 2;
 Control.uncoupled = 0; 
 
 % basic time step controls
-Control.dt = 1e-2;  % time step
+Control.dt = 1e-5;  % time step
 Control.tend = 3e-3;   % final simulation time
 
 % DOF to plot graphs
-Control.plotu = 242*2; % dof y of node 242 (x = 7.5m, y = 7.5m)
-Control.plotp = 177; % dof y of node 177 (x = 7.5m, y = 7.5m)
+Control.plotu = node*2; % dof y of node 242 (x = 7.5m, y = 7.5m)
+Control.plotp = node; % dof y of node 177 (x = 7.5m, y = 7.5m)
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false
