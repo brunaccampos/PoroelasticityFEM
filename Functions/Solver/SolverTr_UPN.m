@@ -1,4 +1,4 @@
-function [Solution] = SolverTransient_Spanos(Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration)
+function [Solution] = SolverTr_UPN(Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration)
 % ------------------------------------------------------------------------
 % Solve linear system for quasi-steady case 
 % ------------------------------------------------------------------------
