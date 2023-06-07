@@ -23,6 +23,12 @@ switch type
         dN(1,1) = 0.5*(2*Quad.p(ip) - 1);
         dN(1,2) = -2*Quad.p(ip);
         dN(1,3) = 0.5*(2*Quad.p(ip) + 1);
+    case 'L4'
+        % 1D cubic element
+        dN(1,1) = (9*Quad.p(ip))/8 - (27*Quad.p(ip)^2)/16 + 1/16;
+        dN(1,2) = (81*Quad.p(ip)^2)/16 - (9*Quad.p(ip))/8 - 27/16;
+        dN(1,3) = 27/16 - (81*Quad.p(ip)^2)/16 - (9*Quad.p(ip))/8;
+        dN(1,4) = (9*Quad.p(ip))/8 + (27*Quad.p(ip)^2)/16 - 1/16;
     case 'T3'
         % 2D linear element
         % csi derivatives

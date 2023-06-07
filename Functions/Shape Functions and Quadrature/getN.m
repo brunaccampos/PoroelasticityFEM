@@ -23,6 +23,12 @@ switch type
         N(1,1) = 0.5*(Quad.p(ip,1)^2 - Quad.p(ip,1));
         N(1,2) = 1 - Quad.p(ip,1)^2;
         N(1,3) = 0.5*(Quad.p(ip,1)^2 + Quad.p(ip,1));
+    case 'L4'
+        % 1D cubic element
+        N(1,1) = Quad.p(ip,1)/16 + (9*Quad.p(ip,1)^2)/16 - (9*Quad.p(ip,1)^3)/16 - 1/16;
+        N(1,2) = (27*Quad.p(ip,1)^3)/16 - (9*Quad.p(ip,1)^2)/16 - (27*Quad.p(ip,1))/16 + 9/16;
+        N(1,3) = (27*Quad.p(ip,1))/16 - (9*Quad.p(ip,1)^2)/16 - (27*Quad.p(ip,1)^3)/16 + 9/16;
+        N(1,4) = (9*Quad.p(ip,1)^2)/16 - Quad.p(ip,1)/16 + (9*Quad.p(ip,1)^3)/16 - 1/16;
     case 'T3'
         % 2D linear element
         csi = Quad.p(:,1);
