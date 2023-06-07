@@ -1,7 +1,6 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1D(config_dir, progress_on)
 % ------------------------------------------------------------------------
 % Manufactured solution for L3 element mesh size convergence study
-% ux = x^5 - x^4
 % ------------------------------------------------------------------------
 % Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
 % ------------------------------------------------------------------------
@@ -46,7 +45,7 @@ switch MeshType
         % number of space dimensions
         nsd = 1;
         % number of elements
-        ne = 8;
+        ne = 128;
         % column size [m]
         L = 1;
         
@@ -147,15 +146,8 @@ Control.nqP = 1;
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 1; 
 
-% analytical solution
-Control.p_an = zeros(MeshP.nDOF,1);
-% Control.u_an = @(x) x.^5 - x.^4;
-Control.u_an = @(x) sin(x);
-Control.u_an = Control.u_an(MeshU.coords);
-
 Control.dt = 1;  % time step
 Control.tend = 1;
-Control.step = 1;
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
@@ -167,5 +159,13 @@ Control.plotansol = 1; % 1 = true; 0 = false
 
 % solve in the frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
+
+%% Analytical solution
+Control.pan_symb = @(x) zeros(length(MeshP.coords),1);
+Control.p_an = Control.pan_symb(MeshP.coords);
+
+% Control.u_an = @(x) x.^5 - x.^4;
+Control.uan_symb = @(x) sin(x);
+Control.u_an = Control.uan_symb(MeshU.coords);
 
 end
