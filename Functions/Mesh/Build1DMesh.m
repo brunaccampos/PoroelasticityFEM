@@ -23,6 +23,11 @@ switch type
         Mesh.nne = 3;
         % number of DOFs per element
         Mesh.nDOFe = 3;
+    case 'L4'
+        % number of nodes per element
+        Mesh.nne = 4;
+        % number of DOFs per element
+        Mesh.nDOFe = 4;
 end
 
 % number of DOFs
