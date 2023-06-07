@@ -124,6 +124,7 @@ elseif nsd == 2
             vectordataUf(3).data = [Solution.uf2dot(xdofs_u) Solution.uf2dot(ydofs_u) zeros(length(xdofs_u),1)];
             vectordataUf(3).type = 'float';
         end
+        scalardataUf = [];
     end 
 end
 

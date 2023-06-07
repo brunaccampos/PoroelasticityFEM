@@ -170,7 +170,9 @@ if nv > 0
         elseif strcmp(type,'int')
             numsigdigs = '0';
         end
-        
+        % number of components
+        numcomp = 3;
+    
         text = ['VECTORS ', vectordata(i).name,' ' type ' '];
         fprintf(fid,'%s\n',text);
         for j = 1:nn
