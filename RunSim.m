@@ -35,7 +35,7 @@ DirFolder = 'Config Files';
 % -------------------- 1D dynamic column consolidation
 % File = 'Column1D_Dynamic_Komijani';
 % File = 'Column1D_Dynamic_Gajo';
-File = 'Column1D_Dynamic_Tasiop';
+% File = 'Column1D_Dynamic_Tasiop';
 % File = 'Column1D_Dynamic_Zienck';
 % File = 'Column1D_Dynamic_Diebels';
 
@@ -48,17 +48,11 @@ File = 'Column1D_Dynamic_Tasiop';
 % File = 'Harmonic1D';
 
 % -------------------- 1D tests
-% File = 'Column1D_Steady_Korsawe_fixedP';
 % File = 'HeatConduction_1D_Transient';
-% File = 'ManufacturedSolution1D';
-% File = 'ManufacturedSolution1D_fixedU';
-% File = 'ManufacturedSolution1D_coupled';
-% File = 'ManufacturedSolution1D_SteaTrans';
-
-% -------------------- 2D tests
-% File = 'Column2D_Steady_Korsawe_fixedP';
-% File = 'Column2D_Steady_Test_fixedP';
-% File = 'Column2D_Steady_Test_fixedU';
+% File = 'ManufacturedSolution1D_Pste';
+% File = 'ManufacturedSolution1D_UstePste';
+% File = 'ManufacturedSolution1D_UstePtra';
+File = 'ManufacturedSolution1D_UtraPtra';
 
 % -------------------- 2D steady/transient column consolidation
 % File = 'Column2D_Steady_Korsawe';
@@ -68,12 +62,10 @@ File = 'Column1D_Dynamic_Tasiop';
 
 % -------------------- 2D dynamic column consolidation
 % File = 'Column2D_Dynamic_Komijani';
-% File = 'Column2D_Dynamic_Komijani_T3T6';
 % File = 'Plate_Dynamic_Komijani';
 
 % -------------------- 2D injection wells
 % File = 'InjectionWells2D_15x15';
-% File = 'InjectionWells2D_1layer_Saeed';
 % File = 'InjectionWellPoint_Dynamic_Komijani';
 % File = 'PlatePointInjection_Dynamic_Komijani';
 
@@ -85,10 +77,13 @@ File = 'Column1D_Dynamic_Tasiop';
 % File = 'VelocityImpact2D_Dynamic_Komijani';
 % File = 'VelocityImpact2D_Dynamic_Plate';
 
+% -------------------- 2D wave propagation
+% File = 'WaveProp_Dynamic_Quiroga';
+% File = 'WaveProp_Dynamic_Komijani';
+
 % -------------------- 2D tests: elasticity
 % File = 'PlateWithHole_Elasticity';
 % File = 'PlateWithHole_HeatTransfer';
-% File = 'DamQ9Example';
 % File = 'Beam_Dynamic';
 % File = 'Beam_Dynamic_v2';
 % File = 'PlateWithHole_Elasticity_Stress';
@@ -98,18 +93,16 @@ File = 'Column1D_Dynamic_Tasiop';
 % File = 'PlateWithHole_Diffusion';
 % File = 'PlateWithHole_Diffusion_Transient';
 % File = 'PlateDiffusionSteady';
-% File = 'PlateDiffusionSteadyT3';
 % File = 'PlateDiffusionDynamic';
 % File = 'PlateDiffusionDynamic_Point';
 % File = 'HeatConduction1D_Dynamic';
 % File = 'HeatConduction2D';
-% File = 'HeatConduction2D_T3';
 % File = 'HeatConduction2D_TempBC';
 % File = 'HeatConduction2D_PointFluxBC';
 
 % Directory for VTK file
-% VTKFolder ='C:\Users\bu_ca\Downloads\PoroelasticityFEM\Results';
-VTKFolder ='C:\Users\bccampos\Downloads\PoroelasticityFEM\Results';
+VTKFolder ='C:\Users\bu_ca\Downloads\PoroelasticityFEM\Results';
+% VTKFolder ='C:\Users\bccampos\Downloads\PoroelasticityFEM\Results';
 
 % output VTK file
 plot2vtk = 1;
