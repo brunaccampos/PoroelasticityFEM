@@ -4,10 +4,6 @@ function PlotConvergenceRate()
 % fields
 % ------------------------------------------------------------------------
 
-clearvars
-clear, clc
-close all
-
 %% Initialize variables
 nsims = 5;
 h = zeros(nsims,1);
@@ -20,7 +16,7 @@ eH1p = zeros(nsims,1);
 
 %% Mesh 1
 % load file
-load Results_m1Boone_testH1.mat
+load Results_m1ManCoupTTL2L2.mat
 % mesh size
 h(1) = ErrorComp.h;
 % error displacement
@@ -37,7 +33,7 @@ eH1u(1) = ErrorComp.eH1u;
 eH1p(1) = ErrorComp.eH1p;
 
 %% Mesh 2
-load Results_m2Boone_testH1.mat
+load Results_m2ManCoupTTL2L2.mat
 % mesh size
 h(2) = ErrorComp.h;
 % error displacement
@@ -54,7 +50,7 @@ eH1u(2) = ErrorComp.eH1u;
 eH1p(2) = ErrorComp.eH1p;
 
 %% Mesh 3
-load Results_m3Boone_testH1.mat
+load Results_m3ManCoupTTL2L2.mat
 % mesh size
 h(3) = ErrorComp.h;
 % error displacement
@@ -71,7 +67,7 @@ eH1u(3) = ErrorComp.eH1u;
 eH1p(3) = ErrorComp.eH1p;
 
 %% Mesh 4
-load Results_m4Boone_testH1.mat
+load Results_m4ManCoupTTL2L2.mat
 % mesh size
 h(4) = ErrorComp.h;
 % error displacement
@@ -88,7 +84,7 @@ eH1u(4) = ErrorComp.eH1u;
 eH1p(4) = ErrorComp.eH1p;
 
 %% Mesh 5
-load Results_m5Boone_testH1.mat
+load Results_m5ManCoupTTL2L2.mat
 % mesh size
 h(5) = ErrorComp.h;
 % error displacement
@@ -127,43 +123,44 @@ pH1p = polyfit(log(h(1:2)), log(eH1p(1:2)),1);
 m_H1p = pH1p(1);
 
 %% Plots
-% L2 norm displacement
 figure;
+% L2 norm displacement
+subplot(2,3,1);
 loglog(h,eL2u,'g-o', 'LineWidth', 1.5);
 xlabel('Mesh size (m)');
 ylabel('L2-norm');
 title(sprintf('L2 - u Convergence: %.2f', m_L2u));
 
 % L2 norm pressure
-figure;
+subplot(2,3,4);
 loglog(h,eL2p,'m-o', 'LineWidth', 1.5);
 xlabel('Mesh size (m)');
 ylabel('L2-norm');
 title(sprintf('L2 - p Convergence: %.2f', m_L2p));
 
 % Energy norm displacement
-figure;
+subplot(2,3,2);
 loglog(h,eENu,'b-o', 'LineWidth', 1.5);
 xlabel('Mesh size (m)');
 ylabel('e-norm');
 title(sprintf('Energy - u Convergence: %.2f', m_ENu));
 
 % Energy norm pressure
-figure;
+subplot(2,3,5);
 loglog(h,eENp,'k-o', 'LineWidth', 1.5);
 xlabel('Mesh size (m)');
 ylabel('q-norm');
 title(sprintf('Energy - p Convergence: %.2f', m_ENp));
 
 % H1 norm displacement
-figure;
+subplot(2,3,3);
 loglog(h,eH1u,'r-o', 'LineWidth', 1.5);
 xlabel('Mesh size (m)');
 ylabel('e-norm');
 title(sprintf('H1 - u Convergence: %.2f', m_H1u));
 
 % H1 norm norm pressure
-figure;
+subplot(2,3,6);
 loglog(h,eH1p,'c-o', 'LineWidth', 1.5);
 xlabel('Mesh size (m)');
 ylabel('q-norm');
