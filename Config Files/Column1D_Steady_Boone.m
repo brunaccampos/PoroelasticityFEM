@@ -26,7 +26,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Steady_Boone(co
 %           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
 %           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
 %                                   porosity perturbation equation
-Control.PMmodel = 'Tr3_Spanos_UP';
+Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties - Boone (1990)
 % shear modulus [GPa]
@@ -126,7 +126,7 @@ switch MeshType
         % number of space dimensions
         nsd = 1;
         % number of elements
-        ne = 100;
+        ne = 16;
         % column size [m]
         L = 6;
         %%%% solid displacement field
@@ -244,8 +244,8 @@ Control.nqP = 1;
 Control.uncoupled = 0; 
 
 % basic time step controls
-Control.dt = 1e-1;  % time step [s]
-Control.tend = 50;   % final simulation time [s]
+Control.dt = 1e-4;  % time step [s]
+Control.tend = 1;   % final simulation time [s]
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
