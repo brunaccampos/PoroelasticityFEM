@@ -70,20 +70,22 @@ if saveMatData_on && Control.plotansol
     end
 
     % compute strain and stress
-    [e,s] = ComputeSolidStress(Material, MeshU, Solution.u);
-    [e_an,s_an] = ComputeSolidStress(Material, MeshU, Plot.uan_space);
+    [strain, stress] = ComputeSolidStress(Material, MeshU, Solution.u);
+    [strain_an, stress_an] = ComputeSolidStress(Material, MeshU, Plot.uan_space);
     % store results
-    Solution.e = e;
-    Solution.s = s;
-    Solution.e_an = e_an;
-    Solution.s_an = s_an;
+    Solution.strain = strain;
+    Solution.stress = stress;
+    Solution.strain_an = strain_an;
+    Solution.stress_an = stress_an;
 
     % compute flux
-    q = ComputeFluidFlux(Material, MeshP, Solution.p);
-    q_an = ComputeFluidFlux(Material, MeshP, Plot.pan_space);
+    [gradp, flux] = ComputeFluidFlux(Material, MeshP, Solution.p);
+    [gradp_an, flux_an] = ComputeFluidFlux(Material, MeshP, Plot.pan_space);
     % store results
-    Solution.q = q;
-    Solution.q_an = q_an;
+    Solution.gradp = gradp;
+    Solution.flux = flux;
+    Solution.gradp_an = gradp_an;
+    Solution.flux_an = flux_an;
    
     % error
     [ErrorComp] = ComputeMeshSizeError(MeshU, MeshP, Solution, Plot, Control);
