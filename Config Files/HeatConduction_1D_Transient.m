@@ -11,18 +11,12 @@ Material.Minv = 1;
 % Poroelasticity model
 Control.PMmodel = 'Tr1_Biot_UP';
 
-% material density [kg/m3]
-Material.rho = 0;
-% fluid density [kg/m3]
-Material.rho_f = 0;
 % elasticity modulus [Pa]
 Material.E = 0;
 % Poisson's ratio
 Material.nu = 0;
 % Biot's coefficient
 Material.alpha = 0;
-% poroelasticity model
-Control.Biotmodel = 1;
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;
@@ -177,7 +171,21 @@ Control.plotansol = 1; % 1 = true; 0 = false
 % solve in the frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
 
-% analytical solution
+%% Analytical solution
+Control.uan_symb = @(x) x*0;
+Control.u_an = Control.uan_symb(MeshU.coords);
+
+aux=0;
+syms x
+N=1000;
+for k=1:N
+    aux = aux + (1/k)*exp(-Material.kf*k^2*pi()^2*Control.tend)*sin(k*pi()*x);
+end
+steady = (BC.fixed_p_value(2) - BC.fixed_p_value(1))*x/max(MeshP.coords) + BC.fixed_p_value(1);
+
+Control.pan_symb = steady - (BC.fixed_p_value(1)/pi()) * aux; % transient solution
+
+
 aux=0;
 x = MeshP.coords;
 N=1000;
@@ -187,8 +195,5 @@ end
 steady = (BC.fixed_p_value(2) - BC.fixed_p_value(1))*x/max(MeshP.coords) + BC.fixed_p_value(1);
 
 Control.p_an = steady - (BC.fixed_p_value(1)/pi()) * aux; % transient solution
-% Control.p_an = steady; % steady state solution
-
-Control.u_an = zeros(MeshU.nDOF,1);
 
 end
