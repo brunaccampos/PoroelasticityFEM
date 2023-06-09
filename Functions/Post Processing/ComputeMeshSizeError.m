@@ -16,14 +16,14 @@ ErrorComp.h = max(MeshP.coords)/MeshP.ne;
 % approximate solutions
 du = Solution.u;
 dp = Solution.p;
-e = Solution.e;
-q = Solution.q;
+strain = Solution.strain;
+gradp = Solution.gradp;
 
 % exact solutions evaluated at nodes
 du_exact = Plot.uan_space;
 dp_exact = Plot.pan_space;
-e_exact = Solution.e_an;
-q_exact = Solution.q_an;
+strain_exact = Solution.strain_an;
+gradp_exact = Solution.gradp_an;
 
 % exact solution with symbolic function
 d_exact = @(x) Control.uan_symb(x,Control.t);
@@ -92,12 +92,12 @@ for i = 1:ne
        eL2p_den = eL2p_den + (pxe)^2 * Quad.w(ip,1) * Jdet;
        
        % approximate (FEM)
-       eh = Nu*e(connu_e);
-       qh = Np*q(connp_e);
+       eh = Nu*strain(connu_e);
+       gph = Np*gradp(connp_e);
        
        % exact
-       ee = Nu*e_exact(connu_e);
-       qe = Np*q_exact(connp_e);
+       ee = Nu*strain_exact(connu_e);
+       gpe = Np*gradp_exact(connp_e);
        
 %        ee = eval(subs(e_exact, Nu*MeshU.coords(connu_e)));
 %        qe = eval(subs(qex_exact, Np*MeshP.coords(connp_e)));
@@ -105,15 +105,15 @@ for i = 1:ne
        % energy norm
        eENu_num = eENu_num + (eh-ee)^2 * Quad.w(ip,1) * Jdet;
        eENu_den = eENu_den + (ee)^2 * Quad.w(ip,1) * Jdet;
-       eENp_num = eENp_num + (qh-qe)^2 * Quad.w(ip,1) * Jdet;
-       eENp_den = eENp_den + (qe)^2 * Quad.w(ip,1) * Jdet;
+       eENp_num = eENp_num + (gph-gpe)^2 * Quad.w(ip,1) * Jdet;
+       eENp_den = eENp_den + (gpe)^2 * Quad.w(ip,1) * Jdet;
 
 
        % H1 norm
        eH1u_num = eH1u_num + ((eh-ee)^2 + (uxh-uxe)^2) * Quad.w(ip,1) * Jdet;
        eH1u_den = eH1u_den + ((ee)^2 + (uxe)^2) * Quad.w(ip,1) * Jdet;
-       eH1p_num = eH1p_num + ((qh-qe)^2 + (pxh-pxe)^2) * Quad.w(ip,1) * Jdet;
-       eH1p_den = eH1p_den + ((qe)^2 + (pxe)^2) * Quad.w(ip,1) * Jdet;
+       eH1p_num = eH1p_num + ((gph-gpe)^2 + (pxh-pxe)^2) * Quad.w(ip,1) * Jdet;
+       eH1p_den = eH1p_den + ((gpe)^2 + (pxe)^2) * Quad.w(ip,1) * Jdet;
     end
 end
 
