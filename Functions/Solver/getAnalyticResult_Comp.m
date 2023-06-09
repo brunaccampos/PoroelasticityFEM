@@ -32,7 +32,7 @@ u0 = P*(L-xu)/(Ku + 4*mu/3);
 p0 = alpha*M*P/(Ku + 4*mu/3);
 
 % number of terms for Fourier expansion
-N = 100;
+N = 1000;
 
 % auxiliar terms
 auxp = 0;
