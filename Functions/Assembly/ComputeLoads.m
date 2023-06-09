@@ -67,7 +67,7 @@ for e = 1:ne
     fb_e = zeros(MeshU.nDOFe,1);
 
     % loop over IPs if there are body forces
-    if ~strcmp(func2str(BC.b),'@(x)[]')
+    if ~strcmp(func2str(BC.b),'@(x,t)[]')
         for ip = 1:nqU
             % N matrices
             N = getN(MeshU, QuadU, ip);
@@ -83,7 +83,7 @@ for e = 1:ne
             Jdet = det(J);
 
             % body force
-            fb_e = fb_e + NVoigt.' * BC.b(ipcoords) * Jdet * QuadU.w(ip,1);
+            fb_e = fb_e + NVoigt.' * BC.b(ipcoords, Control.t) * Jdet * QuadU.w(ip,1);
         end
     end
 
@@ -164,7 +164,7 @@ for e = 1:ne
     fs_e = zeros(MeshP.nDOFe,1);
 
     % loop over IPs if there are flux sources
-    if ~strcmp(func2str(BC.s),'@(x)[]')
+    if ~strcmp(func2str(BC.s),'@(x,t)[]')
         for ip = 1:nqP
             % N matrices
             N = getN(MeshP, QuadP, ip);
@@ -180,7 +180,7 @@ for e = 1:ne
             Jdet = det(J);
 
             % flux source
-            fs_e = fs_e + NVoigt.' * BC.s(ipcoords) * Jdet * QuadP.w(ip,1);
+            fs_e = fs_e + NVoigt.' * BC.s(ipcoords, Control.t) * Jdet * QuadP.w(ip,1);
         end
     end
 

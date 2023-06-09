@@ -156,8 +156,12 @@ fuE = fu(BC.fixed_u);
 ffE = ff(BC.fixed_u);
 
 uE = BC.fixed_u_value;
-pE = zeros(length(BC.fixed_p),1);
 ufE = BC.fixed_u_value;
+pE = zeros(length(BC.fixed_p),1);
+
+% use for time dependent displacement
+% uE = BC.fixed_u_value(Control.t);
+% ufE = BC.fixed_u_value(Control.t);
 
 % uncomment for velocity impact problem (1D)
 % uE(end) = uE(end)*Control.t;
@@ -182,7 +186,7 @@ ufF = dF(length(BC.free_u) + length(BC.free_p) + 1 : end,1);
 % force reactions
 fuE = rE(1:length(BC.fixed_u),1);
 % force reactions
-ffE = rE(length(BC.fixed_u) + 1: end,1);
+ffE = rE(length(BC.fixed_u) + length(BC.fixed_p) + 1: end,1);
 
 u(BC.fixed_u, 1) = uE;
 u(BC.free_u, 1) = uF;

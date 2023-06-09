@@ -81,8 +81,8 @@ fpF = fpbar(BC.free_p);
 fuE = fu(BC.fixed_u);
 fpE = fpbar(BC.fixed_p);
 
-uE = BC.fixed_u_value;
-pE = BC.fixed_p_value;
+uE = BC.fixed_u_value(Control.t);
+pE = BC.fixed_p_value(Control.t);
 
 dE = [uE;pE];
 fF = [fuF; fpF];

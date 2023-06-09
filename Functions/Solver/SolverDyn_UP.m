@@ -98,7 +98,7 @@ fpF = fp(BC.free_p) + (KpuFF * gamma/(beta*dt) - MhatFF /(beta*dt^2)) * u_old(BC
 fuE = fu(BC.fixed_u);
 fpE = fp(BC.fixed_p);
 
-uE = BC.fixed_u_value;
+uE = BC.fixed_u_value(Control.t);
 pE = BC.fixed_p_value;
 
 % uncomment for velocity impact problem

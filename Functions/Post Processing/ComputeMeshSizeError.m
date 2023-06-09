@@ -17,22 +17,20 @@ ErrorComp.h = max(MeshP.coords)/MeshP.ne;
 du = Solution.u;
 dp = Solution.p;
 e = Solution.e;
-s = Solution.s;
 q = Solution.q;
 
 % exact solutions evaluated at nodes
 du_exact = Plot.uan_space;
 dp_exact = Plot.pan_space;
 e_exact = Solution.e_an;
-s_exact = Solution.s_an;
 q_exact = Solution.q_an;
 
 % exact solution with symbolic function
-d_exact = Control.uan_symb;
-p_exact = Control.pan_symb;
+d_exact = @(x) Control.uan_symb(x,Control.t);
+p_exact = @(x) Control.pan_symb(x,Control.t);
 
 % higher quadrature to evaluate error
-Control.nqU = 16;
+Control.nqU = 8;
 Quad = GlobalQuad(MeshU, Control);
 
 % numerator and denominator terms
