@@ -1,4 +1,4 @@
-function [strainU, stressU] = ComputeSolidStress(Material, Mesh, u)
+function [strain, stress] = ComputeSolidStress(Material, Mesh, u)
 % Compute strain and stress in the elements of displacement field
 % ------------------------------------------------------------------------
 % Reference: https://github.com/GCMLab (Acknowledgements: Matin Parchei
@@ -19,8 +19,8 @@ switch Mesh.nsd
         dim = 3;
 end
 
-strainU = zeros(nn,dim); % strain matrix
-stressU = zeros(nn,dim); % stress matrix
+strain = zeros(nn,dim); % strain matrix
+stress = zeros(nn,dim); % stress matrix
 count = zeros(nn,dim);
 
 %% Loop over elements
@@ -57,13 +57,15 @@ for e = 1:ne
     end
     
     % add to global matrices
-    strainU(conne,:) = strainU(conne,:) + strain_e;
-    stressU(conne,:) = stressU(conne,:) + stress_e;
+    strain(conne,:) = strain(conne,:) + strain_e;
+    stress(conne,:) = stress(conne,:) + stress_e;
+    
+    % update counter
     count(conne,:) = count(conne,:) + 1;
 end
 
 % average over nodes
-strainU = strainU./count;
-stressU = stressU./count;
+strain = strain./count;
+stress = stress./count;
 
 end
