@@ -25,6 +25,10 @@ Material.constLaw = 'PlaneStress';
 Material.E = 1;
 % Poisson's ratio
 Material.nu = 0.3;
+% porous media permeability [m2/Pa s]
+Material.kf = 1;
+% 1/Q (related to storage coefficient)
+Material.Minv = 0;
 
 %% Mesh parameters
 if progress_on
@@ -41,12 +45,12 @@ switch MeshType
         % number of space dimensions
         nsd = 1;
         % number of elements
-        ne = 8;
+        ne = 128;
         % column size [m]
         L = 1;
         
         % solid displacement field
-        typeU = 'L3';
+        typeU = 'L2';
         fieldU = 'u';
         MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
         
@@ -92,22 +96,26 @@ BC.top_node_p = find(MeshP.coords == max(MeshP.coords));
 BC.bottom_node_p = find(MeshP.coords == min(MeshP.coords));
 
 %% Dirichlet BCs - solid
-% BC.ux = @(x) x.^5 - x.^4;
-BC.ux = @(x) sin(x);
+BC.ux = @(x,t) sin(x*t);
 % column vector of prescribed displacement dof
 BC.fixed_u_dof1 = BC.top_node_u;
 BC.fixed_u_dof2 = BC.bottom_node_u;
 BC.fixed_u = [BC.fixed_u_dof1; BC.fixed_u_dof2];
 % prescribed displacement
 BC.fixed_u_value = zeros(length(BC.fixed_u),1);
-BC.fixed_u_value = BC.ux(MeshU.coords(BC.fixed_u));
+BC.fixed_u_value = @(t) BC.ux(MeshU.coords(BC.fixed_u),t);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
+BC.p = @(x,t) sin(x*t);
+% column vector of prescribed displacement dof
+BC.fixed_p_dof1 = BC.top_node_p;
+BC.fixed_p_dof2 = BC.bottom_node_p;
+BC.fixed_p = [BC.fixed_p_dof1; BC.fixed_p_dof2];
 % prescribed pressure
-BC.fixed_p = 1:MeshP.nDOF;
 BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t)BC.p(MeshU.coords(BC.fixed_p),t);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -116,8 +124,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 BC.tractionNodes = [];
 
 % body force
-% BC.b = @(x) - Material.E * (20 * x.^3 - 12 * x.^2);
-BC.b = @(x) sin(x);
+BC.b = @(x,t) Material.E * t^2 * sin(x*t);
 
 % point load [N]
 BC.pointLoad = [];
@@ -130,11 +137,11 @@ BC.pointFlux = [];
 BC.fluxNodes = [];
 
 % flux source
-BC.s = @(x)[]; 
+BC.s = @(x,t) Material.kf * t^2 * sin(x*t); 
 
 %% Quadrature order
-Control.nqU = 6;
-Control.nqP = 1;
+Control.nqU = 2;
+Control.nqP = 2;
 
 %% Solution parameters
 % tag used for computing analytical solution
@@ -142,7 +149,7 @@ Control.nqP = 1;
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 1; 
 
-Control.dt = 1;  % time step
+Control.dt = 1e-4;  % time step
 Control.tend = 1;
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
@@ -157,11 +164,10 @@ Control.plotansol = 1; % 1 = true; 0 = false
 Control.freqDomain = 0;  % 1 = true; 0 = false
 
 %% Analytical solution
-Control.pan_symb = @(x) x*0;
-Control.p_an = Control.pan_symb(MeshP.coords);
+Control.pan_symb = @(x,t) sin(x*t);
+Control.p_an = @(t) Control.pan_symb(MeshP.coords,t);
 
-% Control.u_an = @(x) x.^5 - x.^4;
-Control.uan_symb = @(x) sin(x);
-Control.u_an = Control.uan_symb(MeshU.coords);
+Control.uan_symb = @(x,t) sin(x*t);
+Control.u_an = @(t) Control.uan_symb(MeshU.coords,t);
 
 end
