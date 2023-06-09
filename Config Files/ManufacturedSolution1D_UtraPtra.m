@@ -8,6 +8,8 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1D_U
 %% Poroelasticity
 % Biot's coefficient
 Material.alpha = 0;
+% 1/Q (related to storage coefficient)
+Material.Minv = 0;
 % poroelasticity model
 Control.PMmodel = 'Tr1_Biot_UP';
 
@@ -27,8 +29,6 @@ Material.E = 1;
 Material.nu = 0.3;
 % porous media permeability [m2/Pa s]
 Material.kf = 1;
-% 1/Q (related to storage coefficient)
-Material.Minv = 0;
 
 %% Mesh parameters
 if progress_on
@@ -115,7 +115,7 @@ BC.fixed_p_dof2 = BC.bottom_node_p;
 BC.fixed_p = [BC.fixed_p_dof1; BC.fixed_p_dof2];
 % prescribed pressure
 BC.fixed_p_value = zeros(length(BC.fixed_p),1);
-BC.fixed_p_value = @(t)BC.p(MeshU.coords(BC.fixed_p),t);
+BC.fixed_p_value = @(t)BC.p(MeshP.coords(BC.fixed_p),t);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 

@@ -58,7 +58,7 @@ for e = 1:ne
     Kpp_e = zeros (MeshP.nDOFe, MeshP.nDOFe);
     S_e = zeros (MeshP.nDOFe, MeshP.nDOFe);
 
-    % loop over integration points - QUADRATIC polynomial
+    % loop over integration points
     for ip = 1:nqU
 
         % N matrices
@@ -93,7 +93,7 @@ for e = 1:ne
         end
     end
     
-    % loop over integration points - LINEAR polynomial
+    % loop over integration points
     for ip = 1:nqP
 
         % N derivatives
