@@ -44,6 +44,7 @@ gamma = Control.gamma;
 theta = Control.theta;
 lambda = beta;
 xi = gamma;
+
 % HHT method parameter
 alpha = Control.alpha;
 

@@ -43,6 +43,11 @@ end
 % initialize time variable
 Control.t = 0;
 
+% check if HHT method is used
+if ~isfield(Control, 'alpha')
+    Control.alpha = 0;
+end
+
 %% Solve system
 while Control.t < Control.tend
     fprintf('\n Step %d, t = %d \n', Control.step, Control.t);
@@ -62,7 +67,7 @@ while Control.t < Control.tend
     [fu, ff] = ComputeLoads_UPU(BC, MeshU, MeshP, Control, Material, QuadU, QuadP);
     
     % linear solver
-    [Solution] = SolverDyn_UPU(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, fu, ff, BC, Control, Iteration);
+    [Solution] = SolverDyn_UPU_HHT(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, fu, ff, BC, Control, Iteration);
 
     % solution in the frequency domain
     if Control.freqDomain

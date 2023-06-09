@@ -248,4 +248,7 @@ Control.gamma = 0.6;
 Control.theta = 0.6;
 Control.lambda = 0.6;
 
+% HHT method (-1/3 < alpha < 0)
+Control.alpha = 0;
+
 end
