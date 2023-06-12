@@ -151,7 +151,7 @@ BC.initP = [];
 % displacement u=0 at left, right, top, and bottom boundaries
 BC.fixed_u = [MeshU.bottom_dofy; MeshU.top_dofy; MeshU.left_dofx; MeshU.right_dofx];
 % fixed DOF values
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
@@ -162,7 +162,7 @@ MeshP.nodesWell2 = [6; 74; 75; 76; 77; 78; 79; 80];
 BC.fixed_p = [MeshP.nodesWell2; MeshP.left_nodes; MeshP.right_nodes];
 % BC.fixed_p = [];
 % fixed DOF values
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % BC.fixed_p_value(1:length(MeshP.nodesWell2)) = -p0;
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
@@ -272,7 +272,7 @@ end
 BC.pointLoad = [];
 
 % body force [GN/m3]
-BC.b = @(x)[];
+BC.b = @(x,t)[];
 
 %% Neumann BCs - fluid
 % distributed flux [m3/s]
@@ -310,7 +310,7 @@ BC.fluxValue = Flux*ones(size(BC.fluxNodes));
 BC.pointFlux = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x)[]; 
+BC.s = @(x,t)[]; 
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')
