@@ -183,6 +183,7 @@ end
 function plot2Dsteady(MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on)
 %% pressure vs time
 figure;
+subplot(2,2,1);
 plot(Plot.time, Plot.p_time*10^9,'k','LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -198,7 +199,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Press_time.png','Resolution',300)
 end
 %% solid displacement vs time
-figure;
+subplot(2,2,2);
 plot(Plot.time, Plot.u_time,'b','LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -214,7 +215,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Displ_time.png','Resolution',300)
 end
 %% solid velocity vs time
-figure;
+subplot(2,2,3);
 plot(Plot.time, Plot.udot_time,'b','LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -231,7 +232,7 @@ if saveGraphs_on
 end
 %% porosity vs time
 if contains(Control.PMmodel, 'UPN')
-    figure;
+    subplot(2,2,4);
     plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
     hold on
     xlabel('Time [s]');
