@@ -485,4 +485,28 @@ if contains(Control.PMmodel, 'UPN')
     end
 end
 
+figure;
+if isfield(Control, 'depthplot')
+    %% displacement for fixed y
+    subplot(1,3,1);
+    plot(MeshU.coords(Control.ploturow,1), Plot.urow,'b','LineWidth',2);
+    hold on
+    xlabel('x [m]');
+    ylabel('u [m]');
+    title(sprintf('Solid displacement at y = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+    %% velocity for fixed y
+    subplot(1,3,2);
+    plot(MeshU.coords(Control.ploturow,1), Plot.udotrow,'b','LineWidth',2);
+    hold on
+    xlabel('x [m]');
+    ylabel('udot [m]');
+    title(sprintf('Solid velocity at y = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+    %% pressure for fixed y
+    subplot(1,3,3);
+    plot(MeshU.coords(Control.ploturow,1), Plot.prow*10^9,'b','LineWidth',2);
+    hold on
+    xlabel('x [m]');
+    ylabel('p [Pa]');
+    title(sprintf('Pressure at y = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+end
 end

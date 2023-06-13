@@ -210,6 +210,18 @@ Control.tend = 3e-3;   % final simulation time
 Control.plotu = node*2; % dof y of node 242 (x = 7.5m, y = 7.5m)
 Control.plotp = node; % dof y of node 177 (x = 7.5m, y = 7.5m)
 
+% Plot in a row (all nodes at y = 7.5m)
+Control.depthplot = 7.5;
+rowofnodes_u = find(MeshU.coords(:,2) == Control.depthplot); % node numbering
+nodes_u = [MeshU.coords(rowofnodes_u,1),rowofnodes_u]; % matrix with node numbering and x coord
+nodes_u_sorted = sortrows(nodes_u); % order in terms of x coord
+Control.ploturow = nodes_u_sorted(:,2);
+
+rowofnodes_p = find(MeshP.coords(:,2) == Control.depthplot); % node numbering
+nodes_p = [MeshP.coords(rowofnodes_p,1),rowofnodes_p]; % matrix with node numbering and x coord
+nodes_p_sorted = sortrows(nodes_p); % order in terms of x coord
+Control.plotprow = nodes_p_sorted(:,2);
+
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false
 
