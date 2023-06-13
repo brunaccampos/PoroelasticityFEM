@@ -160,9 +160,8 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 %% Neumann BCs - solid
 % point load [GN]
 L = max(MeshU.coords);
-BC.pointLoadValue = @(t) (2*Material.G + Material.lambda)* t * cos(L*t) - Material.alpha * cos(L*t);
 BC.pointLoadNodes = BC.bottom_node_u;
-BC.pointLoad = @(t) [zeros(MeshU.nDOF-1,1); (2*Material.G + Material.lambda)* t * cos(L*t) - Material.alpha*cos(L*t)];
+BC.pointLoad = @(t) [zeros(MeshU.nDOF-1,1); (2*Material.G + Material.lambda)* t * cos(L*t) - Material.alpha * cos(L*t)];
 
 % traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
 BC.tractionInterp = 0;
@@ -175,7 +174,6 @@ BC.b = @(x,t) (2*Material.G + Material.lambda) * t^2 * sin (x*t) - Material.alph
 
 %% Neumann BCs - fluid
 % point flux [m/s]
-BC.pointFluxValue = @(t) t * Material.kf * sin(L*t);
 BC.pointFluxNodes = BC.bottom_node_p;
 BC.pointFlux = @(t) [zeros(MeshP.nDOF-1,1); t * Material.kf * sin(L*t)];
 
