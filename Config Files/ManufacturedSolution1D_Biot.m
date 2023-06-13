@@ -36,7 +36,7 @@ Material.nu = 0.3;
 % elasticity modulus [GPa]
 Material.E = 2 * Material.G * (1 + Material.nu);
 % intrinsic permeability [m2]
-Material.k = 0.17;
+Material.k = 1.7e-1;
 % dynamic viscosity [GPa s]
 Material.mu = 0.8e-3;
 % porous media permeability [m2/GPa s]
@@ -139,31 +139,30 @@ BC.bottom_node_p = find(MeshP.coords == max(MeshP.coords));
 BC.initU = [];
 
 % pressure
-BC.initP = zeros(MeshN.nDOF,1);
+BC.initP = zeros(MeshP.nDOF,1);
 % pressure p=1 at the top
-BC.initp(BC.top_node_p,1) = 1;
+BC.initP(BC.top_node_p,1) = 1;
 
 %% Dirichlet BCs - solid
 % displacement u=0 at the top
 BC.fixed_u = (BC.top_node_u);
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
 % pressure p=1 at the top
 BC.fixed_p = (BC.top_node_p);
-BC.fixed_p_value = ones(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) ones(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
 % point load [GN]
 L = max(MeshU.coords);
-BC.pointLoadValue = @(t) (2*Material.G+Material.lambda)*cos(L*t) - Material.alpha*cos(L*t);
+BC.pointLoadValue = @(t) (2*Material.G + Material.lambda)* t * cos(L*t) - Material.alpha * cos(L*t);
 BC.pointLoadNodes = BC.bottom_node_u;
-BC.pointLoad = zeros(MeshU.nDOF,1);
-BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
+BC.pointLoad = @(t) [zeros(MeshU.nDOF-1,1); (2*Material.G + Material.lambda)* t * cos(L*t) - Material.alpha*cos(L*t)];
 
 % traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
 BC.tractionInterp = 0;
@@ -172,20 +171,19 @@ BC.tractionInterp = 0;
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.b = @(x,t) (2*Material.G+Material.lambda) * t^2 * sin (x*t) - Material.alpha * t * sin(x*t);  
+BC.b = @(x,t) (2*Material.G + Material.lambda) * t^2 * sin (x*t) - Material.alpha * t * sin(x*t);  
 
 %% Neumann BCs - fluid
 % point flux [m/s]
-BC.pointFluxValue = @(t) t*Material.k/Material.mu * sin(L*t);
+BC.pointFluxValue = @(t) t * Material.kf * sin(L*t);
 BC.pointFluxNodes = BC.bottom_node_p;
-BC.pointFlux = zeros(MeshP.nDOF,1);
-BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
+BC.pointFlux = @(t) [zeros(MeshP.nDOF-1,1); t * Material.kf * sin(L*t)];
 
 % distributed flux [m3/s]
 BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x,t) Material.alpha * (cos(x*t)-t*x*sin(x*t)) - Material.Minv*x*sin(x*t) + Material.k/Material.mu * t^2 * cos(x*t); 
+BC.s = @(x,t) Material.alpha * (cos(x*t) - t * x * sin(x*t)) - Material.Minv * x * sin(x*t) + Material.kf * t^2 * cos(x*t); 
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')
@@ -205,7 +203,7 @@ Control.nqP = 1;
 Control.uncoupled = 1; 
 
 % basic time step controls
-Control.dt = 0.010;  % time step [s]
+Control.dt = 1e-3;  % time step [s]
 Control.tend = 1;   % final simulation time [s]
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
@@ -222,9 +220,9 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 
 %% Analytical solution
 Control.pan_symb = @(x,t) cos(x*t);
-Control.p_an = Control.pan_symb(MeshP.coords);
+Control.p_an = @(t) Control.pan_symb(MeshP.coords,t);
 
 Control.uan_symb = @(x,t) sin(x*t);
-Control.u_an = Control.uan_symb(MeshU.coords);
+Control.u_an = @(t) Control.uan_symb(MeshU.coords,t);
 
 end
