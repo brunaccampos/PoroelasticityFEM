@@ -139,7 +139,11 @@ end
 
 % adding point loads
 if ~isempty(BC.pointLoad)
-    fu = fu + BC.pointLoad;
+    if ~strcmp(func2str(BC.pointLoad),'@(t)[]')
+        fu = fu + BC.pointLoad(Control.t);
+    else
+        fu = fu + BC.pointLoad;
+    end
 end
 
 %% Flux vector
@@ -249,7 +253,11 @@ end
 
 % adding point loads
 if ~isempty(BC.pointFlux)
-    fp = fp - BC.pointFlux;
+    if ~strcmp(func2str(BC.pointFlux),'@(t)[]')
+        fp = fp - BC.pointFlux(Control.t);
+    else
+        fp = fp - BC.pointFlux;
+    end
     if contains(Control.PMmodel,'UPN')
         fn = fn - (Material.deltaF/Material.n) * BC.pointFlux;
     end

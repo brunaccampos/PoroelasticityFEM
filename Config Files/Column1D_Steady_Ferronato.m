@@ -190,7 +190,7 @@ BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
 BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x)[]; 
+BC.s = @(x,t)[]; 
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')
