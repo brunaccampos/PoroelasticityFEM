@@ -29,22 +29,19 @@ QuadP = GlobalQuad(MeshP, Control);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
-[Kuu, Kup, Kpp, S] = ComputeSystemMatrices_BiotTransient(Material, MeshU, MeshP, QuadU, QuadP);
+[Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesTr1_Biot_UP(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Assemble system load vectors
-[fu,fp,~] = ComputeSystemLoads(BC, MeshU, MeshP, [], Control, QuadU, QuadP);
-
-%% Initialize iteration variables
-nsd = MeshU.nsd; % number of spatial directions
+[fu,fp,~] = ComputeLoads(BC, MeshU, MeshP, [], Control, QuadU, QuadP);
 
 %% Solve system
-Solution = SolverTransient_Biot(Kuu, Kup, Kpp, S, fu, fp, BC, Control, []);
+Solution = SolverTr_UP(Kuu, Kup, Kpp, Kpu, S, fu, fp, BC, Control, []);
 fu(BC.fixed_u) = Solution.fE;
 fp(BC.fixed_p) = Solution.qE;
 
 %% Compute strains and stresses
 [strain, stress] = ComputeSolidStress(Material, MeshU, Solution.u);
-[flux] = ComputeFluidFlux(Material, MeshP, Solution.p);
+[gradp, flux] = ComputeFluidFlux(Material, MeshP, Solution.p);
 
 % post processing: export VTK file
 if plot2vtk
