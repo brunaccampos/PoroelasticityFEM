@@ -139,7 +139,7 @@ end
 
 % adding point loads
 if ~isempty(BC.pointLoad)
-    if ~strcmp(func2str(BC.pointLoad),'@(t)[]')
+    if isa(BC.pointLoad,'function_handle')
         fu = fu + BC.pointLoad(Control.t);
     else
         fu = fu + BC.pointLoad;
@@ -253,7 +253,7 @@ end
 
 % adding point loads
 if ~isempty(BC.pointFlux)
-    if ~strcmp(func2str(BC.pointFlux),'@(t)[]')
+    if isa(BC.pointFlux,'function_handle')
         fp = fp - BC.pointFlux(Control.t);
     else
         fp = fp - BC.pointFlux;
