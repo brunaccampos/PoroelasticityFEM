@@ -14,13 +14,19 @@ Material.Minv = 0;
 % Biot's coefficient
 Material.alpha = 0;
 % poroelasticity model
-Control.Biotmodel = 1;
+Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties
 % elasticity modulus [Pa]
 Material.E = 2230;
 % Poisson's ratio
 Material.nu = 0.3;
+
+% thickness 
+% 1D: cross sectional area [m2]
+% 2D: out of plane thickness [m]
+Material.t = 1;
+
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 Material.constLaw = 'PlaneStress';
 
@@ -98,14 +104,14 @@ BC.fixed_u_dof2 = BC.bottom_node_u;
 BC.fixed_u = [BC.fixed_u_dof1; BC.fixed_u_dof2];
 % prescribed displacement
 BC.fixed_u_value = zeros(length(BC.fixed_u),1);
-BC.fixed_u_value = BC.ux(MeshU.coords(BC.fixed_u));
+BC.fixed_u_value = @(t) BC.ux(MeshU.coords(BC.fixed_u));
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
 % prescribed pressure
 BC.fixed_p = 1:MeshP.nDOF;
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -114,7 +120,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 BC.tractionNodes = [];
 
 % body force
-BC.b = @(x) - Material.E * (20 * x.^3 - 12 * x.^2);
+BC.b = @(x,t) - Material.E * (20 * x.^3 - 12 * x.^2);
 
 % point load [N]
 BC.pointLoad = [];
@@ -127,7 +133,7 @@ BC.pointFlux = [];
 BC.fluxNodes = [];
 
 % flux source
-BC.s = @(x)[]; 
+BC.s = @(x,t)[]; 
 
 %% Quadrature order
 Control.nqU = 2;
@@ -140,10 +146,16 @@ Control.steady = 1;
 
 %% Solution parameters
 Control.dt = 1;  % time step
-Control.tend = 1;
-Control.step = 1;
+Control.t = 0; % time variable
+Control.step = 1; % total simulation time
 
 Control.beta = 1;
+
+% analytical solution
+Control.pan_symb = @(x) zeros(MeshP.nDOF,1);
+Control.p_an = Control.pan_symb(MeshP.coords);
+Control.uan_symb = @(x) x.^5 - x.^4;
+Control.u_an = Control.uan_symb(MeshU.coords);
 
 Control.plotu = 2;
 Control.plotp = 2;

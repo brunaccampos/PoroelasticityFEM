@@ -18,25 +18,21 @@ Material.Minv = 0;
 % Biot's coefficient
 Material.alpha = 0;
 % poroelasticity model
-Control.Biotmodel = 1;
-% in situ stress field [GPa]
-BC.S0 = [];
-% initial displacement
-BC.initU = [];
-% initial pressure
-BC.initP = [];
-
-% constititive law - 'PlaneStress' or 'PlaneStrain'
-Material.constLaw = 'PlaneStress';
-
-% lumped mass matrix - 0: false, 1: true
-Material.lumpedMass = 0;
+Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties
 % elasticity modulus [Pa]
 Material.E = 2540;
 % Poisson's ratio
 Material.nu = 0.3;
+
+% thickness 
+% 1D: cross sectional area [m2]
+% 2D: out of plane thickness [m]
+Material.t = 1;
+
+% constititive law - 'PlaneStress' or 'PlaneStrain'
+Material.constLaw = 'PlaneStress';
 
 %% Mesh parameters
 if progress_on
@@ -63,7 +59,7 @@ switch MeshType
         typeP = 'L2';
         MeshP = Build1DMesh(nsd, ne, L, typeP);
         %%%% porosity field
-        if ~Control.Biotmodel
+        if contains(Control.PMmodel, 'UPN')
             typeN = 'L2';
             MeshN = Build1DMesh(nsd, ne, L, typeN);
         else
@@ -84,7 +80,7 @@ switch MeshType
         meshFileNameP = 'Mesh Files\PatchTest.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
-        if ~Control.Biotmodel
+        if contains(Control.PMmodel, 'UPN')
             fieldN = 'n';
             meshFileNameN = 'Mesh Files\PatchTest.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
@@ -106,16 +102,19 @@ BC.fixed_u_dof2 = MeshU.bottom_nodes*2;
 BC.fixed_u = [BC.fixed_u_dof1; BC.fixed_u_dof2];
 % prescribed displacement
 BC.fixed_u_value = zeros(length(BC.fixed_u),1);
-BC.fixed_u_value1 = BC.ux([MeshU.coords(MeshU.left_nodes,1),MeshU.coords(MeshU.left_nodes,2)]);
-BC.fixed_u_value2 = BC.uy([MeshU.coords(MeshU.bottom_nodes,1),MeshU.coords(MeshU.bottom_nodes,2)]);
-BC.fixed_u_value = [BC.fixed_u_value1; BC.fixed_u_value2];
+% auxiliar vector
+displ1 = BC.ux([MeshU.coords(MeshU.left_nodes,1),MeshU.coords(MeshU.left_nodes,2)]);
+displ2 = BC.uy([MeshU.coords(MeshU.bottom_nodes,1),MeshU.coords(MeshU.bottom_nodes,2)]);
+displ = [displ1; displ2];
+% atribute vector to time dependent BC
+BC.fixed_u_value = @(t) displ;
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
 % prescribed pressure
 BC.fixed_p = 1:MeshP.nDOF;
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -147,7 +146,7 @@ BC.tractionForce(topleftnode,2) = BC.tractionForce(topleftnode,2)/2;
 BC.pointLoad = [];
 
 % body force
-BC.b = @(x)[];
+BC.b = @(x,t)[];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
@@ -157,7 +156,7 @@ BC.pointFlux = [];
 BC.fluxNodes = [];
 
 % flux source
-BC.s = @(x)[]; 
+BC.s = @(x,t)[]; 
 
 %% Quadrature order
 Control.nqU = 2;
@@ -170,6 +169,7 @@ Control.steady = 1;
 
 %% Solution parameters
 Control.dt = 1;  % time step
+Control.t = 0; % time variable
 Control.step = 1; % total simulation time
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
