@@ -171,7 +171,7 @@ end
 % displacement u=0 at bottom (y), left (x), and right (x)
 BC.fixed_u = [MeshU.left_dofx; MeshU.right_dofx; MeshU.bottom_dofy];
 % fixed DOF values
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
@@ -179,7 +179,7 @@ BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 % pressure p=0 at top
 BC.fixed_p = setdiff(MeshP.top_nodes, nodesP);
 % fixed DOF values
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -213,7 +213,7 @@ BC.tractionForce(righttopnode,2) = BC.tractionForce(righttopnode,2)/2;
 BC.pointLoad = [];
 
 % body force [GN/m3]
-BC.b = @(x)[];  
+BC.b = @(x,t)[];  
 
 %% Neumann BCs - fluid
 % distributed flux [m/s]
@@ -225,7 +225,7 @@ BC.fluxValue = zeros(length(BC.fluxNodes),1);
 BC.pointFlux = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x)[]; 
+BC.s = @(x,t)[]; 
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')
