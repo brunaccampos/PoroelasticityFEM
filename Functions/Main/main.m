@@ -51,11 +51,6 @@ if Control.freqDomain
     PlotModeShapes(phi_u, omega2_u, phi_p, omega2_p, MeshU, MeshP, Control, BC, config_name, vtk_dir);
 end
 
-% export CSV file
-if plot2csv_on
-    Plot2csv(config_name, vtk_dir, Plot);
-end
-
 % compute error
 if saveMatData_on && Control.plotansol
     % symbolic analytical results
