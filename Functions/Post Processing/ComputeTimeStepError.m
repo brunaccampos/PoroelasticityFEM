@@ -1,14 +1,13 @@
-function ComputeError_Time()
+function ComputeTimeStepError()
 % ------------------------------------------------------------------------
 % Compute error using the Le norm of the displacements
 % ------------------------------------------------------------------------
 
 clearvars
 clear, clc
-close all
 
 %% Initialize variables
-nsims = 4; % number of simulations
+nsims = 3; % number of simulations
 h = zeros(nsims,1); % time step
 
 % discretization of time domain
@@ -117,9 +116,8 @@ for sim = 1:nsims
     eL2_den = 0;
     
     % higher quadrature definition
-    Control.nqU = 8;
-    MeshU.field = 'u';
-    Quad = GlobalQuad(MeshU, Control);
+    Control.nqP = 8;
+    Quad = GlobalQuad(Mesh, Control);
 
     % interpolate 'approx.' mesh at 'exact' mesh nodes
     d_interp = zeros(Mesh_Exact.nn,1);
