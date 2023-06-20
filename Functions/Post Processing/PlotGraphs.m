@@ -243,6 +243,42 @@ if contains(Control.PMmodel, 'UPN')
         exportgraphics(gcf,'Poros_time.png','Resolution',300)
     end
 end
+
+figure;
+tiledlayout(2,3);
+if isfield(Control, 'depthplot')
+    %% displacement for fixed x
+    nexttile
+    plot(MeshU.coords(Control.ploturow,1), Plot.urow,'b','LineWidth',2);
+    hold on
+    xlabel('x [m]');
+    ylabel('u [m]');
+    title(sprintf('Solid displacement at y = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+    %% velocity for fixed x
+    nexttile
+    plot(MeshU.coords(Control.ploturow./2,1), Plot.udotrow,'b','LineWidth',2);
+    hold on
+    xlabel('x [m]');
+    ylabel('udot [m]');
+    title(sprintf('Solid velocity at y = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+    %% pressure for fixed x
+    nexttile
+    plot(MeshU.coords(Control.ploturow./2,1), Plot.prow*10^9,'b','LineWidth',2);
+    hold on
+    xlabel('x [m]');
+    ylabel('p [Pa]');
+    title(sprintf('Pressure at y = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+    
+    if contains (Control.PMmodel,'UPN')
+        %% porosity for fixed x
+        nexttile
+        plot(MeshN.coords(Control.plotnrow./2,1), (Plot.nrow - Material.n)./ Material.n,'g','LineWidth',2);
+        hold on
+        xlabel('x [m]');
+        ylabel('Porosity normalized [-]');
+        title(sprintf('Porosity at y = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+    end
+end
 end
 
 % ------------------------------------------------------------------------
