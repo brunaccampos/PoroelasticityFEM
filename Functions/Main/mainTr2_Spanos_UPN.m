@@ -159,3 +159,11 @@ while Control.t < Control.tend
     Control.step = Control.step + 1;
     Control.t = Control.t + Control.dtc;
 end
+
+% plot variables in x for fixed y (2D case)
+if isfield(Control, 'depthplot')
+    Plot.urow = Solution.u(Control.ploturow);
+    Plot.udotrow = Solution.udot(Control.ploturow);
+    Plot.prow = Solution.p(Control.plotprow);
+    Plot.nrow = Solution.n(Control.plotprow);
+end
