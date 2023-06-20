@@ -102,24 +102,24 @@ eH1p(5) = ErrorComp.eH1p;
 
 %% Curve slope
 % Determine slope of L2 norm
-pL2u = polyfit(log(h(1:2)), log(eL2u(1:2)),1);
+pL2u = polyfit(log(h), log(eL2u),1);
 m_L2u = pL2u(1);
 
-pL2p = polyfit(log(h(1:2)), log(eL2p(1:2)),1);
+pL2p = polyfit(log(h), log(eL2p),1);
 m_L2p = pL2p(1);
 
 % Determine slope of energy norm
-pENu = polyfit(log(h(1:2)), log(eENu(1:2)),1);
+pENu = polyfit(log(h), log(eENu),1);
 m_ENu = pENu(1);
 
-pENp = polyfit(log(h(1:2)), log(eENp(1:2)),1);
+pENp = polyfit(log(h), log(eENp),1);
 m_ENp = pENp(1);
 
 % Determine slope of H1 norm
-pH1u = polyfit(log(h(1:2)), log(eH1u(1:2)),1);
+pH1u = polyfit(log(h), log(eH1u),1);
 m_H1u = pH1u(1);
 
-pH1p = polyfit(log(h(1:2)), log(eH1p(1:2)),1);
+pH1p = polyfit(log(h), log(eH1p),1);
 m_H1p = pH1p(1);
 
 %% Plots
