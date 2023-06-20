@@ -259,7 +259,11 @@ if ~isempty(BC.pointFlux)
         fp = fp - BC.pointFlux;
     end
     if contains(Control.PMmodel,'UPN')
-        fn = fn - (Material.deltaF/Material.n) * BC.pointFlux;
+        if isa(BC.pointFlux,'function_handle')
+            fn = fn - (Material.deltaF/Material.n) * BC.pointFlux(Control.t);
+        else
+            fn = fn - (Material.deltaF/Material.n) * BC.pointFlux;
+        end
     end
 end
 
