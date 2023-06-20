@@ -29,3 +29,5 @@ Plane Surface(1) = {2};
 //+
 MeshSize {5} = 0.1;
 
+//+
+Transfinite Surface {1};
