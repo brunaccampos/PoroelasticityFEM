@@ -1,6 +1,9 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1D_Biot(config_dir, progress_on)
-% Column Consolidation 1D simulation
-% Configuration File
+% ------------------------------------------------------------------------
+% Manufactured solution in 1D
+% u = sin(xt)
+% p = cos(xt)
+% ------------------------------------------------------------------------
 % Based on Korsawe (2006) model
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
@@ -30,26 +33,26 @@ Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties - Boone (1990)
 % shear modulus [GPa]
-Material.G = 3e3;
+Material.G = 1e3;
 % Poisson's ratio
 Material.nu = 0.3;
 % elasticity modulus [GPa]
 Material.E = 2 * Material.G * (1 + Material.nu);
 % intrinsic permeability [m2]
-Material.k = 1.7e-1;
+Material.k = 0.1;
 % dynamic viscosity [GPa s]
-Material.mu = 0.8e-3;
+Material.mu = 1e-3;
 % porous media permeability [m2/GPa s]
 Material.kf = Material.k/Material.mu;
 % Biot's coefficient
-Material.alpha = 0.9;
+Material.alpha = 1;
 %  [GPa]
 Material.Ku = 1.5;
 %  [GPa]
 Material.B = 0.9;
 % 1/Q (related to storage coefficient)
-Material.Minv = Material.alpha/(Material.Ku*Material.B);
-
+% Material.Minv = Material.alpha/(Material.Ku*Material.B);
+Material.Minv = 0.75;
 % additional coefficients for analytical result
 % Lame constant [GPa]
 Material.lambda = Material.E * Material.nu/((1+Material.nu)*(1-2*Material.nu));
@@ -201,7 +204,7 @@ Control.nqP = 1;
 Control.uncoupled = 1; 
 
 % basic time step controls
-Control.dt = 1e-3;  % time step [s]
+Control.dt = 1e-2;  % time step [s]
 Control.tend = 1;   % final simulation time [s]
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson

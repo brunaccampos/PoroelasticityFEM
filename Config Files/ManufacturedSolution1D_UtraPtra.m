@@ -1,6 +1,8 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1D_UtraPtra(config_dir, progress_on)
 % ------------------------------------------------------------------------
 % Manufactured solution for L3 element mesh size convergence study
+% u = sin(xt)
+% p = sin(xt)
 % ------------------------------------------------------------------------
 % Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
 % ------------------------------------------------------------------------
@@ -45,12 +47,12 @@ switch MeshType
         % number of space dimensions
         nsd = 1;
         % number of elements
-        ne = 128;
+        ne = 100;
         % column size [m]
         L = 1;
         
         % solid displacement field
-        typeU = 'L2';
+        typeU = 'L3';
         fieldU = 'u';
         MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
         
