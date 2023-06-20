@@ -63,8 +63,8 @@ while Control.t < Control.tend
     % analytical solution for 1D case
     if Control.plotansol
         if Control.uncoupled
-            p_an = Control.p_an;
-            u_an = Control.u_an;
+            p_an = Control.p_an(Control.t);
+            u_an = Control.u_an(Control.t);
         else
             if any(Material.Minv)
                 [p_an, u_an] = getAnalyticResult_Comp(Material, MeshU, MeshP, BC, Control);
