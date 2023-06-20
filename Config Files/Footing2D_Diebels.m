@@ -124,16 +124,16 @@ switch MeshType
         nsd = 2;
         %%%% displacement field
         fieldU = 'u';
-        meshFileNameU = 'Mesh Files\Footing_DiebelsQ9.msh';
+        meshFileNameU = 'Mesh Files\Footing_DiebelsQ9uniformCoarse.msh';
         MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
         %%%% pressure field
         fieldP = 'p';
-        meshFileNameP = 'Mesh Files\Footing_DiebelsQ4.msh';
+        meshFileNameP = 'Mesh Files\Footing_DiebelsQ4uniformCoarse.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
         if contains(Control.PMmodel, 'UPN')
             fieldN = 'n';
-            meshFileNameN = 'Mesh Files\Footing_DiebelsQ4.msh';
+            meshFileNameN = 'Mesh Files\Footing_DiebelsQ4uniformCoarse.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
         else
             MeshN = [];
@@ -246,15 +246,30 @@ Control.uncoupled = 0;
 
 % basic time step controls
 Control.dt = 1e-2;  % time step
-Control.tend = 20;   % final simulation time
+Control.tend = 10;   % final simulation time
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
 % DOF to plot graphs
-% Control.plotu = 5*2; % dof y of node 5 (x = 5m, y = 10m)
-% Control.plotp = 5*2; % dof y of node 5 (x = 5m, y = 10m)
-Control.plotu = 303*2; % dof y of node 303 (x = 4.9150m, y = 4.5798m)
-Control.plotp = 245; % dof of node 5 (x = 4.9150m, y = 4.5798m)
+% Control.plotu = 227*2; % dof y at (x = 5m, y = 10m)
+% Control.plotp = 127; % dof at (x = 5m, y = 10m)
+% Control.plotu = 1601*2; % dof y at (x = 5m, y = 5m)
+% Control.plotp = 1401; % dof at (x = 5m, y = 5m)
+% coarse mesh
+Control.plotu = 341*2; % dof y at (x = 5m, y = 5m)
+Control.plotp = 261; % dof at (x = 5m, y = 5m)
+
+% Plot in a row (all nodes at x = 7.5m)
+Control.depthplot = 7.5;
+rowofnodes_u = find(MeshU.coords(:,1) == Control.depthplot); % node numbering
+nodes_u = [MeshU.coords(rowofnodes_u,1),rowofnodes_u]; % matrix with node numbering and x coord
+nodes_u_sorted = sortrows(nodes_u); % order in terms of x coord
+Control.ploturow = nodes_u_sorted(:,2);
+
+rowofnodes_p = find(MeshP.coords(:,1) == Control.depthplot); % node numbering
+nodes_p = [MeshP.coords(rowofnodes_p,1),rowofnodes_p]; % matrix with node numbering and x coord
+nodes_p_sorted = sortrows(nodes_p); % order in terms of x coord
+Control.plotprow = nodes_p_sorted(:,2);
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false
