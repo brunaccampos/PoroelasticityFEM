@@ -153,22 +153,21 @@ end
 %% porosity vs depth
 if contains(Control.PMmodel, 'UPN')
     figure;
-    subplot(1,2,1);
-    plot(MeshN.coords, Solution.n ./ Material.n,'g','LineWidth',2);
+    semilogx(MeshN.coords, (Solution.n-Material.n) ./ Material.n,'g','LineWidth',2);
     hold on
     xlabel('Column depth [m]');
-    ylabel('Porosity normalized [-]');
+    ylabel('Change in porosity normalized [-]');
     title(sprintf('Porosity norm at t = %.0f s', Control.tend));
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'Poros_depth.png','Resolution',300)
     end
 %% porosity vs time
-    subplot(1,2,2);
-    plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
+    figure;
+    semilogx(Plot.time, (Plot.n_time-Material.n) ./ Material.n,'g','LineWidth',2);
     hold on
     xlabel('Time [s]');
-    ylabel('Porosity normalized [-]');
+    ylabel('Change in porosity normalized [-]');
     title(sprintf('Porosity norm at x = %.2f m', MeshN.coords(Control.plotp,1)));
     hold off
     if saveGraphs_on
