@@ -126,44 +126,61 @@ m_H1p = pH1p(1);
 figure;
 % L2 norm displacement
 subplot(2,3,1);
-loglog(h,eL2u,'g-o', 'LineWidth', 1.5);
+loglog(h,eL2u,'g*', 'LineWidth', 1.5);
+hold on
+loglog(h,exp(pL2u(2))*h.^pL2u(1),'g', 'LineWidth', 1.5);
 xlabel('Mesh size (m)');
 ylabel('L2-norm');
 title(sprintf('L2 - u Convergence: %.2f', m_L2u));
+hold off
 
 % L2 norm pressure
 subplot(2,3,4);
-loglog(h,eL2p,'m-o', 'LineWidth', 1.5);
+loglog(h,eL2p,'m*', 'LineWidth', 1.5);
+hold on
+loglog(h,exp(pL2p(2))*h.^pL2p(1),'m', 'LineWidth', 1.5);
 xlabel('Mesh size (m)');
 ylabel('L2-norm');
 title(sprintf('L2 - p Convergence: %.2f', m_L2p));
+hold off
 
 % Energy norm displacement
 subplot(2,3,2);
-loglog(h,eENu,'b-o', 'LineWidth', 1.5);
+loglog(h,eENu,'b*', 'LineWidth', 1.5);
+hold on
+loglog(h,exp(pENu(2))*h.^pENu(1),'b', 'LineWidth', 1.5);
 xlabel('Mesh size (m)');
 ylabel('e-norm');
 title(sprintf('Energy - u Convergence: %.2f', m_ENu));
+hold off
 
 % Energy norm pressure
 subplot(2,3,5);
-loglog(h,eENp,'k-o', 'LineWidth', 1.5);
+loglog(h,eENp,'k*', 'LineWidth', 1.5);
+hold on
+loglog(h,exp(pENp(2))*h.^pENp(1),'k', 'LineWidth', 1.5);
 xlabel('Mesh size (m)');
 ylabel('q-norm');
 title(sprintf('Energy - p Convergence: %.2f', m_ENp));
+hold off
 
 % H1 norm displacement
 subplot(2,3,3);
-loglog(h,eH1u,'r-o', 'LineWidth', 1.5);
+loglog(h,eH1u,'r*', 'LineWidth', 1.5);
+hold on
+loglog(h,exp(pH1u(2))*h.^pH1u(1),'r', 'LineWidth', 1.5);
 xlabel('Mesh size (m)');
 ylabel('e-norm');
 title(sprintf('H1 - u Convergence: %.2f', m_H1u));
+hold off
 
 % H1 norm norm pressure
 subplot(2,3,6);
-loglog(h,eH1p,'c-o', 'LineWidth', 1.5);
+loglog(h,eH1p,'c*', 'LineWidth', 1.5);
+hold on
+loglog(h,exp(pH1p(2))*h.^pH1p(1),'c', 'LineWidth', 1.5);
 xlabel('Mesh size (m)');
 ylabel('q-norm');
 title(sprintf('H1 - p Convergence: %.2f', m_H1p));
-
+hold off 
 end
