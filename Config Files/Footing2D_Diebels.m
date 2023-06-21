@@ -253,21 +253,22 @@ Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; 
 % DOF to plot graphs
 % Control.plotu = 227*2; % dof y at (x = 5m, y = 10m)
 % Control.plotp = 127; % dof at (x = 5m, y = 10m)
+% fine mesh
 % Control.plotu = 1601*2; % dof y at (x = 5m, y = 5m)
 % Control.plotp = 1401; % dof at (x = 5m, y = 5m)
 % coarse mesh
 Control.plotu = 341*2; % dof y at (x = 5m, y = 5m)
 Control.plotp = 261; % dof at (x = 5m, y = 5m)
 
-% Plot in a row (all nodes at x = 7.5m)
-Control.depthplot = 7.5;
+% Plot in a row (all nodes at x = 10m)
+Control.depthplot = 10;
 rowofnodes_u = find(MeshU.coords(:,1) == Control.depthplot); % node numbering
-nodes_u = [MeshU.coords(rowofnodes_u,1),rowofnodes_u]; % matrix with node numbering and x coord
+nodes_u = [MeshU.coords(rowofnodes_u,2),rowofnodes_u]; % matrix with node numbering and x coord
 nodes_u_sorted = sortrows(nodes_u); % order in terms of x coord
-Control.ploturow = nodes_u_sorted(:,2);
+Control.ploturow = nodes_u_sorted(:,2)*2;
 
 rowofnodes_p = find(MeshP.coords(:,1) == Control.depthplot); % node numbering
-nodes_p = [MeshP.coords(rowofnodes_p,1),rowofnodes_p]; % matrix with node numbering and x coord
+nodes_p = [MeshP.coords(rowofnodes_p,2),rowofnodes_p]; % matrix with node numbering and x coord
 nodes_p_sorted = sortrows(nodes_p); % order in terms of x coord
 Control.plotprow = nodes_p_sorted(:,2);
 

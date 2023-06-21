@@ -248,34 +248,34 @@ tiledlayout(2,3);
 if isfield(Control, 'depthplot')
     %% displacement for fixed x
     nexttile
-    plot(MeshU.coords(Control.ploturow,1), Plot.urow,'b','LineWidth',2);
+    plot(MeshU.coords(Control.ploturow./2,2), Plot.urow,'b','LineWidth',2);
     hold on
-    xlabel('x [m]');
+    xlabel('y [m]');
     ylabel('u [m]');
-    title(sprintf('Solid displacement at y = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+    title(sprintf('Solid displacement at x = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
     %% velocity for fixed x
     nexttile
-    plot(MeshU.coords(Control.ploturow./2,1), Plot.udotrow,'b','LineWidth',2);
+    plot(MeshU.coords(Control.ploturow./2,2), Plot.udotrow,'b','LineWidth',2);
     hold on
-    xlabel('x [m]');
+    xlabel('y [m]');
     ylabel('udot [m]');
-    title(sprintf('Solid velocity at y = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+    title(sprintf('Solid velocity at x = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
     %% pressure for fixed x
     nexttile
-    plot(MeshU.coords(Control.ploturow./2,1), Plot.prow*10^9,'b','LineWidth',2);
+    plot(MeshP.coords(Control.plotprow,2), Plot.prow*10^9,'b','LineWidth',2);
     hold on
-    xlabel('x [m]');
+    xlabel('y [m]');
     ylabel('p [Pa]');
-    title(sprintf('Pressure at y = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+    title(sprintf('Pressure at x = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
     
     if contains (Control.PMmodel,'UPN')
         %% porosity for fixed x
         nexttile
-        plot(MeshN.coords(Control.plotnrow./2,1), (Plot.nrow - Material.n)./ Material.n,'g','LineWidth',2);
+        plot(MeshN.coords(Control.plotprow,2), (Plot.nrow - Material.n)./ Material.n,'g','LineWidth',2);
         hold on
-        xlabel('x [m]');
-        ylabel('Porosity normalized [-]');
-        title(sprintf('Porosity at y = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+        xlabel('y [m]');
+        ylabel('Change in porosity normalized [-]');
+        title(sprintf('Porosity at x = %.2f m, t = %.0f s', Control.depthplot, Control.tend));
     end
 end
 end
