@@ -17,7 +17,7 @@ field = 'p'; % equivalent to scalar field
 
 %% Mesh 1
 % load file
-load Results_m1_time_Boone1e-1_beta05.mat
+load Results_m1ManUtraPtra_beta1.mat
 
 L = Control.tend; % final simulation time
 beta = Control.beta; % beta method parameter
@@ -32,7 +32,7 @@ d1 = Plot.p_time;
 h(1) = Control.dt;
 
 %% Mesh 2
-load Results_m2_time_Boone1e-2_beta05.mat
+load Results_m2ManUtraPtra_beta1.mat
 
 % discretization of time domain
 ne = round(Control.tend/Control.dt); % number of elements
@@ -44,7 +44,7 @@ d2 = Plot.p_time;
 h(2) = Control.dt;
 
 %% Mesh 3
-load Results_m3_time_Boone1e-3_beta05.mat
+load Results_m3ManUtraPtra_beta1.mat
 
 % discretization of time domain
 ne = round(Control.tend/Control.dt); % number of elements
@@ -56,20 +56,20 @@ d3 = Plot.p_time;
 h(3) = Control.dt;
 
 %% Mesh 4
-load Results_m4_time_Boone1e-4_beta05.mat
-
-% discretization of time domain
-ne = round(Control.tend/Control.dt); % number of elements
-% generate mesh
-Mesh4 = Build1DMesh(nsd, ne, L, type, field);
-% pressure values
-d4 = Plot.p_time;
-% time step
-h(4) = Control.dt;
+% load Results_m4ManUtraPtra_beta1.mat
+% 
+% % discretization of time domain
+% ne = round(Control.tend/Control.dt); % number of elements
+% % generate mesh
+% Mesh4 = Build1DMesh(nsd, ne, L, type, field);
+% % pressure values
+% d4 = Plot.p_time;
+% % time step
+% h(4) = Control.dt;
 
 %% Reference mesh in time
 % load ref results
-load Results_m5_time_Boone1e-5_beta05.mat
+load Results_m4ManUtraPtra_beta1.mat
 
 % discretization of time domain
 nsd = 1; % number of dimensions

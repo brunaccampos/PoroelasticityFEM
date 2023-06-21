@@ -80,8 +80,8 @@ for i = 1:ne
        pxe = Np*dp_exact(MeshP.DOF(connp_e)');
        
        % exact with function handle
-       uxe = eval(subs(d_exact, Nu*MeshU.coords(connu_e)));
-       pxe = eval(subs(p_exact, Np*MeshP.coords(connp_e)));
+%        uxe = eval(subs(d_exact, Nu*MeshU.coords(connu_e)));
+%        pxe = eval(subs(p_exact, Np*MeshP.coords(connp_e)));
        
        % L2 norm displacement
        eL2u_num = eL2u_num + (uxh - uxe)^2 * Quad.w(ip,1) * Jdet;

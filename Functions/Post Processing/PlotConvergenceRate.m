@@ -16,7 +16,7 @@ eH1p = zeros(nsims,1);
 
 %% Mesh 1
 % load file
-load Results_m1ManCoupTTL2L2.mat
+load Results_m1ManBiot_dt1e-5.mat
 % mesh size
 h(1) = ErrorComp.h;
 % error displacement
@@ -33,7 +33,7 @@ eH1u(1) = ErrorComp.eH1u;
 eH1p(1) = ErrorComp.eH1p;
 
 %% Mesh 2
-load Results_m2ManCoupTTL2L2.mat
+load Results_m2ManBiot_dt1e-5.mat
 % mesh size
 h(2) = ErrorComp.h;
 % error displacement
@@ -50,7 +50,7 @@ eH1u(2) = ErrorComp.eH1u;
 eH1p(2) = ErrorComp.eH1p;
 
 %% Mesh 3
-load Results_m3ManCoupTTL2L2.mat
+load Results_m3ManBiot_dt1e-5.mat
 % mesh size
 h(3) = ErrorComp.h;
 % error displacement
@@ -67,7 +67,7 @@ eH1u(3) = ErrorComp.eH1u;
 eH1p(3) = ErrorComp.eH1p;
 
 %% Mesh 4
-load Results_m4ManCoupTTL2L2.mat
+load Results_m4ManBiot_dt1e-5.mat
 % mesh size
 h(4) = ErrorComp.h;
 % error displacement
@@ -84,7 +84,7 @@ eH1u(4) = ErrorComp.eH1u;
 eH1p(4) = ErrorComp.eH1p;
 
 %% Mesh 5
-load Results_m5ManCoupTTL2L2.mat
+load Results_m5ManBiot_dt1e-5.mat
 % mesh size
 h(5) = ErrorComp.h;
 % error displacement
