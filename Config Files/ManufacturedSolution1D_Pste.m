@@ -139,30 +139,33 @@ BC.s = @(x) - Material.kf * (20 * x.^3 - 12 * x.^2);
 Control.nqU = 1;
 Control.nqP = 2;
 
-%% Solution parameters
-% tag used for computing analytical solution
+%% Frequency domain
+Control.freqDomain = 0;  % 1 = true; 0 = false
+
+%% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 1; 
 
-% analytical solution
+% plot analytical solution (valid for 1D problems with Material.Minv == 0)
+Control.plotansol = 1; % 1 = true; 0 = false
+
+% solution in u
 Control.u_an = zeros(MeshU.nDOF,1);
+
+% solution in p
 Control.p_an = @(x) x.^5 - x.^4;
 Control.p_an = Control.p_an(MeshP.coords);
 
+%% Time step controls
 Control.dt = 1;  % time step
 Control.tend = 1;
 Control.step = 1;
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
+%% Plot data
 Control.plotu = round(MeshU.nn/2);
 Control.plotp = round(MeshP.nn/2);
-
-% plot analytical solution (valid for 1D problems with Material.Minv == 0)
-Control.plotansol = 1; % 1 = true; 0 = false
-
-% solve in the frequency domain
-Control.freqDomain = 0;  % 1 = true; 0 = false
 
 end

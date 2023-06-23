@@ -207,26 +207,26 @@ end
 Control.nqU = 2;
 Control.nqP = 2;
 
-%% Solution parameters
-% tag used for computing analytical solution
+%% Frequency domain
+Control.freqDomain = 0;  % 1 = true; 0 = false
+
+%% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
-% basic time step controls
+% plot analytical solution (valid for 1D problems with Material.Minv == 0)
+Control.plotansol = 0; % 1 = true; 0 = false
+
+%% Time step controls
 Control.dt = 0.1;  % time step [s]
 Control.tend = 60;   % final simulation time [s]
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
+%% Plot data
 % DOF to plot graphs
 Control.plotu = 147*2; % dof y of node 70 (x = 0.033m, y = 7.5m)
 Control.plotp = 81; % dof y of node 42 (x = 0.033m, y = 7.5m)
-
-% plot analytical solution (valid for 1D problems with Material.Minv == 0)
-Control.plotansol = 0; % 1 = true; 0 = false
-
-% solve in the frequency domain
-Control.freqDomain = 0;  % 1 = true; 0 = false
 
 end

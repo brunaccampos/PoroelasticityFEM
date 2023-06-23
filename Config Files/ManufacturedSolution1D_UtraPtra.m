@@ -145,31 +145,33 @@ BC.s = @(x,t) Material.kf * t^2 * sin(x*t);
 Control.nqU = 2;
 Control.nqP = 2;
 
-%% Solution parameters
-% tag used for computing analytical solution
+%% Frequency domain
+Control.freqDomain = 0;  % 1 = true; 0 = false
+
+%% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 1; 
 
+% plot analytical solution (valid for 1D problems with Material.Minv == 0)
+Control.plotansol = 1; % 1 = true; 0 = false
+
+% solution in u
+Control.uan_symb = @(x,t) sin(x*t);
+Control.u_an = @(t) Control.uan_symb(MeshU.coords,t);
+
+% solution in p
+Control.pan_symb = @(x,t) sin(x*t);
+Control.p_an = @(t) Control.pan_symb(MeshP.coords,t);
+
+%% Time step controls
 Control.dt = 1e-4;  % time step
 Control.tend = 1;
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
+%% Plot data
 Control.plotu = round(MeshU.nn/2);
 Control.plotp = round(MeshP.nn/2);
-
-% plot analytical solution (valid for 1D problems with Material.Minv == 0)
-Control.plotansol = 1; % 1 = true; 0 = false
-
-% solve in the frequency domain
-Control.freqDomain = 0;  % 1 = true; 0 = false
-
-%% Analytical solution
-Control.pan_symb = @(x,t) sin(x*t);
-Control.p_an = @(t) Control.pan_symb(MeshP.coords,t);
-
-Control.uan_symb = @(x,t) sin(x*t);
-Control.u_an = @(t) Control.uan_symb(MeshU.coords,t);
 
 end

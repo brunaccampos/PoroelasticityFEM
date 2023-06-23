@@ -210,31 +210,30 @@ end
 Control.nqU = 3;
 Control.nqP = 3;
 
-%% Solution parameters
-% tag used for computing analytical solution
+%% Frequency domain
+Control.freqDomain = 0;  % 1 = true; 0 = false
+
+%% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
-% basic time step controls
-Control.dt = 1.4e-6;  % time step [s]
-Control.tend = 1e-3;   % final simulation time [s]
-
-% DOF to plot graphs
-Control.plotu = find(MeshU.coords == 0.1); % x = 0.1m
-Control.plotp = find(MeshP.coords == 0.1); % x = 0.1m
-
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false
 
-% solve in the frequency domain
-Control.freqDomain = 0;  % 1 = true; 0 = false
+%% Time step controls
+Control.dt = 1.4e-6;  % time step [s]
+Control.tend = 1e-3;   % final simulation time [s]
 
-%% Time discretization parameters
 % Newmark method
 Control.beta = 0.6;
 Control.gamma = 0.6;
 Control.theta = 0.6;
 Control.lambda = 0.6;
+
+%% Plot data
+% DOF to plot graphs
+Control.plotu = find(MeshU.coords == 0.1); % x = 0.1m
+Control.plotp = find(MeshP.coords == 0.1); % x = 0.1m
 
 end

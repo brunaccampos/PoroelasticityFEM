@@ -215,16 +215,27 @@ BC.s = @(x)[];
 Control.nqU = 2;
 Control.nqP = 2;
 
-%% Solution parameters
-% tag used for computing analytical solution
+%% Frequency domain
+Control.freqDomain = 0;  % 1 = true; 0 = false
+
+%% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
-% basic time step controls
+% plot analytical solution (valid for 1D problems with Material.Minv == 0)
+Control.plotansol = 0; % 1 = true; 0 = false
+
+%% Time step controls
 Control.dt = 1e-4;  % time step
 Control.tend = 0.1;   % final simulation time
 
+% Newmark method
+Control.beta = 0.7;
+Control.gamma = 0.7;
+Control.theta = 0.7;
+
+%% Plot graphs
 % DOF to plot graphs
 Control.plotu = 121*2; % dof y of node 121 (x = 1.5m, y = 1.5m)
 Control.plotp = 81; % dof of node 81 (x = 1.5m, y = 1.5m)
@@ -232,17 +243,5 @@ Control.plotp = 81; % dof of node 81 (x = 1.5m, y = 1.5m)
 % Fine mesh
 % Control.plotu = 681*2; % dof y of node 121 (x = 1.5m, y = 1.5m)
 % Control.plotp = 361; % dof of node 81 (x = 1.5m, y = 1.5m)
-
-% plot analytical solution (valid for 1D problems with Material.Minv == 0)
-Control.plotansol = 0; % 1 = true; 0 = false
-
-% solve in the frequency domain
-Control.freqDomain = 0;  % 1 = true; 0 = false
-
-%% Time discretization parameters
-% Newmark method
-Control.beta = 0.7;
-Control.gamma = 0.7;
-Control.theta = 0.7;
 
 end

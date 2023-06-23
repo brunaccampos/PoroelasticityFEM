@@ -149,32 +149,20 @@ end
 Control.nqU = 2;
 Control.nqP = 2;
 
-%% Solution parameters
-% tag used for computing analytical solution
+%% Frequency domain
+Control.freqDomain = 0;  % 1 = true; 0 = false
+
+%% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 1; 
 
-% basic time step controls
-Control.dt = 1e-2;  % time step
-Control.tend = 10;   % final simulation time
-
-Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
-
-% DOF to plot graphs
-Control.plotu = 1;
-Control.plotp = 1;
-
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 1; % 1 = true; 0 = false
 
-% solve in the frequency domain
-Control.freqDomain = 0;  % 1 = true; 0 = false
-
-%% Analytical solution
+% solution in x
 Control.uan_symb = @(x) x*0;
 Control.u_an = Control.uan_symb(MeshU.coords);
-
 aux=0;
 syms x
 N=1000;
@@ -185,7 +173,7 @@ steady = (BC.fixed_p_value(2) - BC.fixed_p_value(1))*x/max(MeshP.coords) + BC.fi
 
 Control.pan_symb = steady - (BC.fixed_p_value(1)/pi()) * aux; % transient solution
 
-
+% solution in p
 aux=0;
 x = MeshP.coords;
 N=1000;
@@ -193,7 +181,17 @@ for k=1:N
     aux = aux + (1/k)*exp(-Material.kf*k^2*pi()^2*Control.tend)*sin(k*pi()*x);
 end
 steady = (BC.fixed_p_value(2) - BC.fixed_p_value(1))*x/max(MeshP.coords) + BC.fixed_p_value(1);
-
 Control.p_an = steady - (BC.fixed_p_value(1)/pi()) * aux; % transient solution
+
+%% Time step controls
+Control.dt = 1e-2;  % time step
+Control.tend = 10;   % final simulation time
+
+Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
+
+%% Plot data
+% DOF to plot graphs
+Control.plotu = 1;
+Control.plotp = 1;
 
 end
