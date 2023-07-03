@@ -104,6 +104,13 @@ while Control.t < Control.tend
             % plot porosity vs time
             Plot.nF(Control.step+1,:) = SolutionFreq.nF(Control.plotp, 1);
         end
+
+        % synthetics
+        if isfield(Control, 'depthplot')
+            Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
+            Plot.p_synthetic(Control.step+1,:) = Solution.p(Control.plotprow);
+            Plot.n_synthetic(Control.step+1,:) = Solution.n(Control.plotprow);
+        end
     end
 
     % store variables over space

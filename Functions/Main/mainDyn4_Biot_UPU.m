@@ -67,7 +67,7 @@ while Control.t < Control.tend
     [fu, ff] = ComputeLoads_UPU(BC, MeshU, MeshP, Control, Material, QuadU, QuadP);
     
     % linear solver
-    [Solution] = SolverDyn_UPU_HHT(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, fu, ff, BC, Control, Iteration);
+    [Solution] = SolverDyn_UPU(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, fu, ff, BC, Control, Iteration);
 
     % solution in the frequency domain
     if Control.freqDomain
@@ -109,6 +109,13 @@ while Control.t < Control.tend
             Plot.uF(Control.step+1,:) = SolutionFreq.uF(Control.plotu, 1);
             % plot velocity vs time
             Plot.uFdot(Control.step+1,:) = SolutionFreq.uFdot(Control.plotu, 1);
+        end
+
+        % synthetics
+        if isfield(Control, 'depthplot')
+            Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
+            Plot.p_synthetic(Control.step+1,:) = Solution.p(Control.plotprow);
+            Plot.uf_synthetic(Control.step+1,:) = Solution.uf(Control.ploturow);
         end
     end
 
