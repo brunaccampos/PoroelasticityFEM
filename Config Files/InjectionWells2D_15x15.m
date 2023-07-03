@@ -158,6 +158,7 @@ BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 %% Dirichlet BCs - fluid
 % nodes at injection well 2
 MeshP.nodesWell2 = [6; 74; 75; 76; 77; 78; 79; 80]; 
+% MeshP.nodesWell2 = [6; 146; 147; 148; 149; 150; 151; 152; 153; 154; 155; 156; 157; 158; 159; 160]; % fine mesh
 % fixed DOFs 
 BC.fixed_p = [MeshP.nodesWell2; MeshP.left_nodes; MeshP.right_nodes];
 % BC.fixed_p = [];
@@ -189,6 +190,9 @@ normal_L = [0; -1];
 % nodes at wells
 BC.tractionNodes1 = [5; 131; 132; 133; 134; 135; 136; 137; 138; 139; 140; 141; 142; 143; 144; 145];
 BC.tractionNodes2 = [6; 146; 147; 148; 149; 150; 151; 152; 153; 154; 155; 156; 157; 158; 159; 160];
+
+% BC.tractionNodes1 = [5; 274; 259; 275; 260; 276; 261; 277; 262; 278; 263; 279; 264; 280; 265; 281; 266; 282; 267; 283; 268; 284; 269; 285; 270; 286; 271; 287; 272; 288; 273; 289]; % fine mesh
+% BC.tractionNodes2 = [6; 305; 290; 306; 291; 307; 292; 308; 293; 309; 294; 310; 295; 311; 296; 312; 297; 313; 298; 314; 299; 315; 300; 316; 301; 317; 302; 318; 303; 319; 304; 320]; % fine mesh
 
 BC.tractionNodes = [BC.tractionNodes1; BC.tractionNodes2];
 
@@ -282,6 +286,7 @@ BC.b = @(x,t)[];
 BC.flux = -1e-3;
 % nodes well 1
 BC.fluxNodes = [5; 67; 68; 69; 70; 71; 72; 73];
+% BC.fluxNodes = [5; 131; 132; 133; 134; 135; 136; 137; 138; 139; 140; 141; 142; 143; 144; 145]; % fine mesh
 % find surface area
 surfs1 = zeros(length(BC.fluxNodes), 2);
 L = 0;
@@ -323,29 +328,29 @@ end
 Control.nqU = 2;
 Control.nqP = 2;
 
-%% Solution parameters
-% tag used for computing analytical solution
+%% Frequency domain
+Control.freqDomain = 0;  % 1 = true; 0 = false
+
+%% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
-% basic time step controls
+% plot analytical solution (valid for 1D problems with Material.Minv == 0)
+Control.plotansol = 0; % 1 = true; 0 = false
+
+%% Time step controls
 Control.dt = 1;  % time step [s]
 Control.tend = 50;   % final simulation time [s]
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
+%% Plot data
 % DOF to plot graphs
-Control.plotu = 874*2; % point at x=7.46, y=7.45
+Control.plotu = 1172*2; % point at x=7.46, y=7.45
 Control.plotp = 794; % point at x=7.46, y=7.45
 
-% Control.plotu = 225*2; 
-% Control.plotp = 145;
-
-% plot analytical solution (valid for 1D problems with Material.Minv == 0)
-Control.plotansol = 0; % 1 = true; 0 = false
-
-% solve in the frequency domain
-Control.freqDomain = 0;  % 1 = true; 0 = false
+% Control.plotu = 1332*2; % fine mesh, point at x=7.49, y=7.53
+% Control.plotp = 1172; % fine mesh, point at x=7.49, y=7.53
 
 end
