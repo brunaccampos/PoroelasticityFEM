@@ -156,8 +156,8 @@ fuE = fubar(BC.fixed_u);
 fpE = fpbar(BC.fixed_p);
 fnE = fnbar(BC.fixed_n);
 
-uE = BC.fixed_u_value;
-pE = BC.fixed_p_value;
+uE = BC.fixed_u_value(Control.t);
+pE = BC.fixed_p_value(Control.t);
 nE = BC.fixed_n_value;
 
 % uncomment for velocity impact problem
