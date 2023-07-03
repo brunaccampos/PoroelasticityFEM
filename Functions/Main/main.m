@@ -46,6 +46,11 @@ else
     PlotGraphs(Solution, [], Material, MeshU, MeshP, MeshN, Control, Plot, saveGraphs_on);
 end
 
+% plot synthetics
+if isfield(Control, 'depthplot') && contains(Control.PMmodel, 'Dyn')
+    PlotSynthetics(MeshU, MeshP, MeshN, Plot, Control);
+end
+    
 % plot natural frequencies
 if Control.freqDomain
     PlotModeShapes(phi_u, omega2_u, phi_p, omega2_p, MeshU, MeshP, Control, BC, config_name, vtk_dir);
