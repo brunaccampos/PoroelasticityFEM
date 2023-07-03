@@ -104,6 +104,7 @@ while Control.t < Control.tend
         % synthetics
         if isfield(Control, 'depthplot')
             Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
+            Plot.udot_synthetic(Control.step+1,:) = Solution.udot(Control.ploturow);
             Plot.p_synthetic(Control.step+1,:) = Solution.p(Control.plotprow);
         end
     end
