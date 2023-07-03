@@ -155,13 +155,9 @@ ffF = ff(BC.free_u) + MffFF * (1/(lambda*dt^2) * uf_old(BC.free_u) + 1/(lambda*d
 fuE = fu(BC.fixed_u);
 ffE = ff(BC.fixed_u);
 
-uE = BC.fixed_u_value;
-ufE = BC.fixed_u_value;
+uE = BC.fixed_u_value(Control.t);
+ufE = BC.fixed_u_value(Control.t);
 pE = zeros(length(BC.fixed_p),1);
-
-% use for time dependent displacement
-% uE = BC.fixed_u_value(Control.t);
-% ufE = BC.fixed_u_value(Control.t);
 
 % uncomment for velocity impact problem (1D)
 % uE(end) = uE(end)*Control.t;
