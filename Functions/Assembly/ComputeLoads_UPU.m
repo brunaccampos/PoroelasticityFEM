@@ -1,4 +1,4 @@
-function [fs, ff] = ComputeLoads_UUP(BC, MeshU, MeshP, Control, Material, QuadU, QuadP)
+function [fs, ff] = ComputeLoads_UPU(BC, MeshU, MeshP, Control, Material, QuadU, QuadP)
 % Compute system load force vectors
 % ------------------------------------------------------------------------
 %   Input
@@ -30,6 +30,12 @@ nqP = QuadP.nq;
 fs = zeros(MeshU.nDOF, 1);
 ff = zeros(MeshU.nDOF, 1);
 
+%% Return zeros if no applied loads
+if isempty(BC.tractionNodes) && strcmp(func2str(BC.b),'@(x,t)[]') && isempty(BC.pointLoad) ...
+        && isempty(BC.fluxNodes) && strcmp(func2str(BC.s),'@(x,t)[]') && isempty(BC.pointFlux)
+    return
+end
+
 %% Traction vector
 % veryfing if there are applied loads
 if ~isempty(BC.tractionNodes)
@@ -58,7 +64,7 @@ for e = 1:ne
     fb_e = zeros(MeshU.nDOFe,1);
 
     % loop over IPs if there are body forces
-    if ~strcmp(func2str(BC.b),'@(x)[]')
+    if ~strcmp(func2str(BC.b),'@(x,t)[]')
         for ip = 1:nqU
             % N matrices
             N = getN(MeshU, QuadU, ip);
@@ -74,7 +80,7 @@ for e = 1:ne
             Jdet = det(J);
             
             % body force
-            fb_e = fb_e + (1-Material.n) * Material.rho_s * NVoigt.' * BC.b(ipcoords) * Jdet * QuadU.w(ip,1);
+            fb_e = fb_e + (1-Material.n) * Material.rho_s * NVoigt.' * BC.b(ipcoords, Control.t) * Jdet * QuadU.w(ip,1);
         end
     end
     
@@ -124,7 +130,11 @@ end
     
 % adding point loads
 if ~isempty(BC.pointLoad)
-    fs = fs + BC.pointLoad;
+    if isa(BC.pointLoad,'function_handle')
+        fs = fs + BC.pointLoad(Control.t);
+    else
+        fs = fs + BC.pointLoad;
+    end
 end
 
 %% Flux vector
@@ -155,7 +165,7 @@ for e = 1:ne
     fb_e = zeros(MeshP.nDOFe,1);
 
     % loop over IPs if there are flux sources
-    if ~strcmp(func2str(BC.s),'@(x)[]')
+    if ~strcmp(func2str(BC.s),'@(x,t)[]')
         for ip = 1:nqP
             % N matrices
             N = getN(MeshP, QuadP, ip);
@@ -171,7 +181,7 @@ for e = 1:ne
             Jdet = det(J);
             
             % flux source
-            fb_e = fb_e + NVoigt.' * BC.s(ipcoords) * Jdet * QuadP.w(ip,1);
+            fb_e = fb_e + NVoigt.' * BC.s(ipcoords, Control.t) * Jdet * QuadP.w(ip,1);
         end
     end
     
@@ -201,7 +211,11 @@ end
 if ~isempty(BC.pointFlux)
     % change vector size
     ff_point = zeros(MeshU.nDOF,1);
-    ff_point(1:2:end) = BC.pointFlux;
+    if isa(BC.pointFlux,'function_handle')
+        ff_point(1:2:end) = BC.pointFlux(Control.t);
+    else
+        ff_point(1:2:end) = BC.pointFlux;
+    end
     ff = ff - Material.n * ff_point;
     % add contribution to fs
     fs = fs - (Material.alpha-Material.n) * ff_point;
