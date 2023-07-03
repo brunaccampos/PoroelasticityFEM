@@ -36,6 +36,18 @@ if contains(Control.PMmodel, 'UPU')
     Plot.uf2dot_time = zeros(length(Plot.time), 1); % fluid acceleration
 end
 
+%% Plot arrays - synthetic plots
+if isfield(Control, 'depthplot')
+    Plot.u_synthetic = zeros(length(Plot.time), length(Control.ploturow));
+    Plot.p_synthetic = zeros(length(Plot.time), length(Control.plotprow));
+    if contains(Control.PMmodel, 'UPN')
+        Plot.n_synthetic = zeros(length(Plot.time), length(Control.plotprow));
+    end
+    if contains(Control.PMmodel, 'UPU')
+        Plot.uf_synthetic = zeros(length(Plot.time), length(Control.ploturow));
+    end 
+end
+
 %% Plot arrays - space
 Plot.p_space = zeros(length(Control.plotp),1);
 Plot.u_space = zeros(length(Control.plotu),1);
