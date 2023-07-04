@@ -38,13 +38,15 @@ end
 
 %% Plot arrays - synthetic plots
 if isfield(Control, 'depthplot')
-    Plot.u_synthetic = zeros(length(Plot.time), length(Control.ploturow));
-    Plot.p_synthetic = zeros(length(Plot.time), length(Control.plotprow));
+    Plot.u_synthetic = zeros(length(Plot.time), length(Control.ploturow)); % solid displacement
+    Plot.udot_synthetic = zeros(length(Plot.time), length(Control.ploturow)); % solid velocity
+    Plot.p_synthetic = zeros(length(Plot.time), length(Control.plotprow)); % fluid pressure
     if contains(Control.PMmodel, 'UPN')
-        Plot.n_synthetic = zeros(length(Plot.time), length(Control.plotprow));
+        Plot.n_synthetic = zeros(length(Plot.time), length(Control.plotprow)); % porosity
     end
     if contains(Control.PMmodel, 'UPU')
-        Plot.uf_synthetic = zeros(length(Plot.time), length(Control.ploturow));
+        Plot.uf_synthetic = zeros(length(Plot.time), length(Control.ploturow)); % fluid displacement
+        Plot.ufdot_synthetic = zeros(length(Plot.time), length(Control.ploturow)); % fluid pressure
     end 
 end
 
