@@ -1,8 +1,11 @@
 function PlotGraphs2D_Tr(MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on)
 
-%% pressure vs time
+% initialize figure
 figure;
-subplot(2,2,1);
+tiledlayout(2,2);
+
+%% pressure vs time
+nexttile
 plot(Plot.time, Plot.p_time*10^9,'k','LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -18,7 +21,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Press_time.png','Resolution',300)
 end
 %% solid displacement vs time
-subplot(2,2,2);
+nexttile
 plot(Plot.time, Plot.u_time,'b','LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -34,7 +37,7 @@ if saveGraphs_on
     exportgraphics(gcf,'Displ_time.png','Resolution',300)
 end
 %% solid velocity vs time
-subplot(2,2,3);
+nexttile
 plot(Plot.time, Plot.udot_time,'b','LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -51,7 +54,7 @@ if saveGraphs_on
 end
 %% porosity vs time
 if contains(Control.PMmodel, 'UPN')
-    subplot(2,2,4);
+    nexttile
     plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
     hold on
     xlabel('Time [s]');
@@ -63,8 +66,10 @@ if contains(Control.PMmodel, 'UPN')
     end
 end
 
+% initialize figure
 figure;
 tiledlayout(2,3);
+
 if isfield(Control, 'depthplot')
     %% displacement for fixed coord
     nexttile

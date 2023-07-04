@@ -1,8 +1,11 @@
 function PlotGraphs1D_Tr(Solution, SolutionFreq, Material, MeshU, MeshP, MeshN, Control, Plot, saveGraphs_on)
 
-%% pressure vs depth
+% initialize figure
 figure;
-subplot(2,2,1);
+tiledlayout(2,4);
+
+%% pressure vs depth
+nexttile
 plot(MeshP.coords, Solution.p*10^9.*Material.t,'k','LineWidth',2);
 hold on
 xlabel('Column depth [m]');
@@ -26,8 +29,9 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Press_depth.png','Resolution',300)
 end
+
 %% pressure vs time
-subplot(2,2,3);
+nexttile
 plot(Plot.time, Plot.p_time*10^9.*Material.t,'k','LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -51,8 +55,9 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Press_time.png','Resolution',300)
 end
+
 %% solid displacement vs depth
-subplot(2,2,2);
+nexttile
 plot(MeshU.coords, Solution.u,'b','LineWidth',2);
 hold on
 xlabel('Column depth [m]');
@@ -78,8 +83,9 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Displ_depth.png','Resolution',300)
 end
+
 %% solid displacement vs time
-subplot(2,2,4);
+nexttile
 plot(Plot.time, Plot.u_time, 'b', 'LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -103,8 +109,9 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Displ_time.png','Resolution',300)
 end
+
 %% solid velocity vs time
-figure;
+nexttile
 plot(Plot.time, Plot.udot_time,'b','LineWidth',2);
 hold on
 xlabel('Time [s]');
@@ -119,9 +126,10 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Vel_time.png','Resolution',300)
 end
+
 %% porosity vs depth
 if contains(Control.PMmodel, 'UPN')
-    figure;
+    nexttile
     semilogx(MeshN.coords, (Solution.n-Material.n) ./ Material.n,'g','LineWidth',2);
     hold on
     xlabel('Column depth [m]');
@@ -131,8 +139,9 @@ if contains(Control.PMmodel, 'UPN')
     if saveGraphs_on
         exportgraphics(gcf,'Poros_depth.png','Resolution',300)
     end
+    
 %% porosity vs time
-    figure;
+    nexttile
     semilogx(Plot.time, (Plot.n_time-Material.n) ./ Material.n,'g','LineWidth',2);
     hold on
     xlabel('Time [s]');
