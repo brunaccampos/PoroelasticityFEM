@@ -150,17 +150,17 @@ BC.initP = [];
 node = find(MeshU.coords(:,1) == 7.5 & MeshU.coords(:,2) == 7.5);
 % central node y DOF
 BC.fixed_u = node*2;
-% frequency
+% period [ms]
 t0 = 1e-3;
 % fixed DOF values
-BC.fixed_u_value = @(t) (sin(2*pi*(t)/t0) - 0.5*sin(4*pi*(t)/t0)).*(t<t0);
-% BC.fixed_u_value = @(t) (-(t0/2/pi)*cos(2*pi*(t)/t0) + (t0/8/pi)*cos(4*pi*(t)/t0)).*(t<t0);
+BC.fixed_u_value = @(t) (sin(2*pi*(t)/t0) - 0.5*sin(4*pi*(t)/t0)).*(t<1/t0);
+% BC.fixed_u_value = @(t) (-(t0/2/pi)*cos(2*pi*(t)/t0) + (t0/8/pi)*cos(4*pi*(t)/t0)).*(t<1/t0);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
-% pressure p=0 at the top
 BC.fixed_p = [];
+% fixed DOF values
 BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
