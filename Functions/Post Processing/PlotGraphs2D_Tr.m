@@ -66,11 +66,11 @@ if contains(Control.PMmodel, 'UPN')
     end
 end
 
-% initialize figure
-figure;
-tiledlayout(2,3);
-
 if isfield(Control, 'depthplot')
+    % initialize figure
+    figure;
+    tiledlayout(2,3);
+    
     %% displacement for fixed coord
     nexttile
     plot(MeshU.coords(Control.ploturow./Control.DOFplot, Control.depthDir), Plot.urow,'b','LineWidth',2);
