@@ -222,16 +222,27 @@ Control.lambda = 0.7;
 Control.plotu = node*2; % dof y of node 242 (x = 7.5m, y = 7.5m)
 Control.plotp = node; % dof y of node 177 (x = 7.5m, y = 7.5m)
 
-% Plot in a row (all nodes at x = 10m)
-Control.depthplot = 11.25;
-rowofnodes_u = find(MeshU.coords(:,1) == Control.depthplot); % node numbering
-nodes_u = [MeshU.coords(rowofnodes_u,2),rowofnodes_u]; % matrix with node numbering and x coord
-nodes_u_sorted = sortrows(nodes_u); % order in terms of x coord
-Control.ploturow = nodes_u_sorted(:,2)*2;
+% Plot in a row
+Control.depthplot = 7.5; % fixed coordinate
+Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
+Control.DOFplot = 2; % 1 = x DOF, 2 = y DOF (valid for displacement field)
 
-rowofnodes_p = find(MeshP.coords(:,1) == Control.depthplot); % node numbering
-nodes_p = [MeshP.coords(rowofnodes_p,2),rowofnodes_p]; % matrix with node numbering and x coord
-nodes_p_sorted = sortrows(nodes_p); % order in terms of x coord
+% node numbering
+switch Control.depthDir
+    case 1
+        rowofnodes_u = find(MeshU.coords(:,2) == Control.depthplot);
+        rowofnodes_p = find(MeshP.coords(:,2) == Control.depthplot); 
+    case 2
+        rowofnodes_u = find(MeshU.coords(:,1) == Control.depthplot); 
+        rowofnodes_p = find(MeshP.coords(:,1) == Control.depthplot); 
+end
+
+nodes_u = [MeshU.coords(rowofnodes_u,Control.depthDir), rowofnodes_u]; % matrix with node numbering and variable coord
+nodes_u_sorted = sortrows(nodes_u); % order in terms of variable coord
+Control.ploturow = nodes_u_sorted(:,2) * Control.DOFplot;
+
+nodes_p = [MeshP.coords(rowofnodes_p,Control.depthDir), rowofnodes_p]; % matrix with node numbering and variable coord
+nodes_p_sorted = sortrows(nodes_p); % order in terms of variable coord
 Control.plotprow = nodes_p_sorted(:,2);
 
 end
