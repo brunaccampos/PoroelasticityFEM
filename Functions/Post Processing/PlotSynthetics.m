@@ -3,25 +3,31 @@ function PlotSynthetics(MeshU, MeshP, MeshN, Plot, Control)
 % Plot synthetics at fixed coordinate (x or y) in 2D domain
 % ------------------------------------------------------------------------
 
+% scaling factor
+scale = 1;
+
 % initialize figure
 figure;
 tiledlayout(2,3);
 
 %% solid displacement
+% normalized values
+u_normalized = scale * Plot.u_synthetic./max(abs(Plot.u_synthetic),[],'all');
+
 nexttile
 for i = 1:length(Control.ploturow)
-    plot(Plot.u_synthetic(:,i) + MeshU.coords(Control.ploturow(i)./Control.DOFplot, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
+    plot(u_normalized(:,i) + MeshU.coords(Control.ploturow(i)./Control.DOFplot, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
     hold on
 end
 ylabel('Time [s]');
 xlabel('Coordinate [m]');
-xlim([0 max(MeshU.coords(:,Control.depthDir))]);
+% xlim([0 max(MeshU.coords(:,Control.depthDir))]);
 title(sprintf('Solid displ. at fixed %.2f m, DOF %.0f', Control.depthplot, Control.DOFplot));
 hold off
 
 %% solid velocity
 % normalized values
-udot_normalized = Plot.udot_synthetic./max(Plot.udot_synthetic,[],'all');
+udot_normalized = scale * Plot.udot_synthetic./max(abs(Plot.udot_synthetic),[],'all');
 
 nexttile
 for i = 1:length(Control.ploturow)
@@ -30,13 +36,13 @@ for i = 1:length(Control.ploturow)
 end
 ylabel('Time [s]');
 xlabel('Coordinate [m]');
-xlim([0 max(MeshU.coords(:,Control.depthDir))]);
+% xlim([0 max(MeshU.coords(:,Control.depthDir))]);
 title(sprintf('Solid vel. at fixed %.2f m, DOF %.0f', Control.depthplot, Control.DOFplot));
 hold off
 
 %% fluid pressure
 % normalized values
-p_normalized = Plot.p_synthetic./max(abs(Plot.p_synthetic),[],'all');
+p_normalized = scale * Plot.p_synthetic./max(abs(Plot.p_synthetic),[],'all');
 
 nexttile
 for i = 1:length(Control.plotprow)
@@ -45,7 +51,7 @@ for i = 1:length(Control.plotprow)
 end
 ylabel('Time [s]');
 xlabel('Coordinate [m]');
-xlim([0 max(MeshU.coords(:,Control.depthDir))]);
+% xlim([0 max(MeshU.coords(:,Control.depthDir))]);
 title(sprintf('Fluid press. at fixed %.2f m', Control.depthplot));
 hold off
 
@@ -65,9 +71,12 @@ end
 
 if contains(Control.PMmodel, 'UPU')
     %% fluid displacement
+    % normalized values
+    uf_normalized = scale * Plot.uf_synthetic./max(abs(Plot.uf_synthetic),[],'all');
+    
     nexttile
     for i = 1:length(Control.ploturow)
-        plot(Plot.uf_synthetic(:,i) + MeshU.coords(Control.ploturow(i)./Control.DOFplot, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
+        plot(uf_normalized(:,i) + MeshU.coords(Control.ploturow(i)./Control.DOFplot, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
         hold on
     end
     ylabel('Time [s]');
@@ -78,7 +87,7 @@ if contains(Control.PMmodel, 'UPU')
 
     %% fluid velocity
     % normalized values
-    ufdot_normalized = Plot.ufdot_synthetic./max(Plot.ufdot_synthetic,[],'all');
+    ufdot_normalized = scale * Plot.ufdot_synthetic./max(abs(Plot.ufdot_synthetic),[],'all');
 
     nexttile
     for i = 1:length(Control.ploturow)
