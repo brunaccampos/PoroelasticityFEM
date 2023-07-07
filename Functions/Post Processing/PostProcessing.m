@@ -17,9 +17,12 @@ nsd = MeshU.nsd; % number of spatial dimensions
 [q] = ComputeFluidFlux(Material, MeshP, Solution.p);
 
 %% Store fixed DOFs
-% fixed DOFs displacement
+% fixed DOFs solid displacement
 fixedU = zeros(MeshU.nDOF,1);
 fixedU(BC.fixed_u) = 1;
+% fixed DOFs fluid displacement
+fixedUf = zeros(MeshU.nDOF,1);
+fixedUf(BC.fixed_u) = 1;
 % fixed DOFs pressure
 fixedP = zeros(MeshP.nDOF,1);
 fixedP(BC.fixed_p) = 1;
@@ -63,11 +66,14 @@ if nsd == 1
         scalardataUf(2).name = 'vel_uf';
         scalardataUf(2).data = Solution.ufdot(xdofs_u);
         scalardataUf(2).type = 'float';
+        % fixed DOFs
+        scalardataUf(3).name = 'fixedUf';  scalardataUf(3).data = fixedUf(MeshU.DOF);
+        scalardataUf(3).type = 'int';
         if contains(Control.PMmodel, 'Dyn')
             % acceleration
-            scalardataUf(3).name = 'acc_uf';
-            scalardataUf(3).data = Solution.uf2dot(xdofs_u);
-            scalardataUf(3).type = 'float';
+            scalardataUf(4).name = 'acc_uf';
+            scalardataUf(4).data = Solution.uf2dot(xdofs_u);
+            scalardataUf(4).type = 'float';
         end
         vectordataUf = [];
     end
@@ -124,7 +130,9 @@ elseif nsd == 2
             vectordataUf(3).data = [Solution.uf2dot(xdofs_u) Solution.uf2dot(ydofs_u) zeros(length(xdofs_u),1)];
             vectordataUf(3).type = 'float';
         end
-        scalardataUf = [];
+        % fixed DOFs
+        scalardataUf(1).name = 'fixedUf';  scalardataUf(1).data = fixedUf(MeshU.DOF);
+        scalardataUf(1).type = 'int';
     end 
 end
 
