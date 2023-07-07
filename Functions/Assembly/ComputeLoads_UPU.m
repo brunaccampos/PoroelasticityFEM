@@ -113,8 +113,8 @@ for e = 1:ne
     % apply step load gradualy
     if isfield(Control, 'rampLoad')
         if Control.t <= Control.tlim
-%             fu_e = fu_e*Control.t;
-            fu_e = fu_e*sin(pi*Control.t/2/Control.tlim);
+            fu_e = fu_e*Control.t/Control.tlim;
+%             fu_e = fu_e*sin(pi*Control.t/2/Control.tlim);
         end
     end
 
@@ -125,7 +125,7 @@ end
 % apply step load gradualy
 if isfield(Control, 'rampLoad')
     if Control.t <= Control.tlim
-%         BC.pointLoad = BC.pointLoad*Control.t;
+%         BC.pointLoad = BC.pointLoad*Control.t/Control.tlim;
         BC.pointLoad = BC.pointLoad*sin(pi*Control.t/2/Control.tlim);
     end
 end
