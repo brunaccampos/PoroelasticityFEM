@@ -210,8 +210,8 @@ if contains(Control.PMmodel, 'UPN')
 end
 
 %% Quadrature order
-Control.nqU = 3;
-Control.nqP = 3;
+Control.nqU = 2;
+Control.nqP = 2;
 
 %% Frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
@@ -234,9 +234,40 @@ Control.gamma = 0.7;
 Control.theta = 0.7;
 Control.lambda = 0.7;
 
+% adaptive time step (optional)
+% Control.dtmin = 1e-3; % minimum time step
+% Control.tlim = 0.1; % limit to use dtmin
+
+% ramp load option (optional); uses tlim from adaptive time step
+% NOTE: only declare if true
+% Control.rampLoad = 1;
+
 %% Plot data
 % DOF to plot graphs
 Control.plotu = 184; % dof y of node 92 (x = 0.05m, y = 5m)
 Control.plotp = 52; % dof of node 52 (x = 0.05m, y = 5m)
+
+% Plot in a row
+Control.depthplot = 9+4/9; % fixed coordinate
+Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
+Control.DOFplot = 2; % 1 = x DOF, 2 = y DOF (valid for displacement field)
+
+% node numbering
+switch Control.depthDir
+    case 1
+        rowofnodes_u = find(MeshU.coords(:,2) == Control.depthplot);
+        rowofnodes_p = find(MeshP.coords(:,2) == Control.depthplot); 
+    case 2
+        rowofnodes_u = find(MeshU.coords(:,1) == Control.depthplot); 
+        rowofnodes_p = find(MeshP.coords(:,1) == Control.depthplot); 
+end
+
+nodes_u = [MeshU.coords(rowofnodes_u,Control.depthDir), rowofnodes_u]; % matrix with node numbering and variable coord
+nodes_u_sorted = sortrows(nodes_u); % order in terms of variable coord
+Control.ploturow = nodes_u_sorted(:,2) * Control.DOFplot;
+
+nodes_p = [MeshP.coords(rowofnodes_p,Control.depthDir), rowofnodes_p]; % matrix with node numbering and variable coord
+nodes_p_sorted = sortrows(nodes_p); % order in terms of variable coord
+Control.plotprow = nodes_p_sorted(:,2);
 
 end
