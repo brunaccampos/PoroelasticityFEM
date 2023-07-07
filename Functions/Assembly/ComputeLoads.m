@@ -251,6 +251,13 @@ if contains(Control.PMmodel, 'UPN')
     end
 end
 
+% apply step load gradualy
+if isfield(Control, 'rampLoad')
+    if Control.t <= Control.tlim
+        BC.pointFlux = BC.pointFlux*Control.t/Control.tlim;
+    end
+end
+
 % adding point loads
 if ~isempty(BC.pointFlux)
     if isa(BC.pointFlux,'function_handle')
