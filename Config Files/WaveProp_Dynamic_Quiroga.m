@@ -26,15 +26,11 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_Quiroga
 %           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
 %           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
 %                                   porosity perturbation equation
-Control.PMmodel = 'Dyn1_Biot_UP';
+Control.PMmodel = 'Dyn4_Biot_UPU';
 
 %% Material properties - Quiroga-Goode (2005)
-% shear modulus [GPa]
-Material.G = 23;
 % Poisson's ratio
 Material.nu = 0.2;
-% elasticity modulus [GPa]
-Material.E = 2 * Material.G * (1 + Material.nu);
 % dynamic viscosity [GPa s]
 Material.mu = 1e-12;
 % intrinsic permeability [m2]
@@ -51,6 +47,10 @@ Material.Ks = 33;
 Material.xif = 2.8e-12;
 % material porosity
 Material.n = 0.25;
+% shear modulus [GPa]
+Material.G = (1-Material.n)*23;
+% elasticity modulus [GPa]
+Material.E = 2 * Material.G * (1 + Material.nu);
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
 % fluid density [10^9 kg/m3]
@@ -153,8 +153,8 @@ BC.fixed_u = node*2;
 % period [ms]
 t0 = 1e-3;
 % fixed DOF values
-BC.fixed_u_value = @(t) (sin(2*pi*(t)/t0) - 0.5*sin(4*pi*(t)/t0)).*(t<1/t0);
-% BC.fixed_u_value = @(t) (-(t0/2/pi)*cos(2*pi*(t)/t0) + (t0/8/pi)*cos(4*pi*(t)/t0)).*(t<1/t0);
+BC.fixed_u_value = @(t) (sin(2*pi*(t)/t0) - 0.5*sin(4*pi*(t)/t0)).*(t<t0);
+% BC.fixed_u_value = @(t) (-(t0/2/pi)*cos(2*pi*(t)/t0) + (t0/8/pi)*cos(4*pi*(t)/t0)).*(t<t0);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
