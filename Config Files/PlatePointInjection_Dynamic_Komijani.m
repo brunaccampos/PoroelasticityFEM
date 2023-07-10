@@ -180,7 +180,7 @@ Control.uncoupled = 0;
 Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
-Control.dt = 1e-5;  % time step
+Control.dt = 1e-3;  % time step
 Control.tend = 0.1;   % final simulation time
 
 % Newmark method
@@ -188,9 +188,42 @@ Control.beta = 0.7;
 Control.gamma = 0.7;
 Control.theta = 0.7;
 
+% adaptive time step (optional)
+% Control.dtmin = 1e-3; % minimum time step
+% Control.tlim = 1e-2; % limit to use dtmin
+
+% ramp load option (optional); uses tlim from adaptive time step
+% NOTE: only declare if true
+% Control.rampLoad = 1;
+
 %% Plot graphs
 % DOF to plot graphs
-Control.plotu = 121*2; % dof y of node 121 (x = 0.5m, y = 0.5m)
-Control.plotp = 81; % dof of node 81 (x = 0.5m, y = 0.5m)
+nodeUmiddle = find(MeshU.coords(:,1) == 0.5 & MeshU.coords(:,2) == 0.5);
+Control.plotu = nodeUmiddle*2; % dof y of node at (x = 0.5m, y = 0.5m)
+Control.plotp = nodePmiddle; % dof of node at (x = 0.5m, y = 0.5m)
+
+% Plot in a row
+Control.depthplot = 0.6; % fixed coordinate
+tol = 1e-12;
+Control.depthDir = 2; % 1 = fixed y, vary x --- 2 = fixed x, vary y
+Control.DOFplot = 2; % 1 = x DOF, 2 = y DOF (valid for displacement field)
+
+% node numbering
+switch Control.depthDir
+    case 1
+        rowofnodes_u = find(abs(MeshU.coords(:,2) - Control.depthplot) < tol);
+        rowofnodes_p = find(abs(MeshP.coords(:,2) - Control.depthplot) < tol); 
+    case 2
+        rowofnodes_u = find(abs(MeshU.coords(:,1) - Control.depthplot) < tol); 
+        rowofnodes_p = find(abs(MeshP.coords(:,1) - Control.depthplot) < tol); 
+end
+
+nodes_u = [MeshU.coords(rowofnodes_u,Control.depthDir), rowofnodes_u]; % matrix with node numbering and variable coord
+nodes_u_sorted = sortrows(nodes_u); % order in terms of variable coord
+Control.ploturow = nodes_u_sorted(:,2) * Control.DOFplot;
+
+nodes_p = [MeshP.coords(rowofnodes_p,Control.depthDir), rowofnodes_p]; % matrix with node numbering and variable coord
+nodes_p_sorted = sortrows(nodes_p); % order in terms of variable coord
+Control.plotprow = nodes_p_sorted(:,2);
 
 end
