@@ -7,7 +7,7 @@ plot(MeshP.coords, Solution.p*10^9.*Material.t,'k','LineWidth',2);
 hold on
 xlabel('Column depth [m]');
 ylabel('p [Pa]');
-title(sprintf('Pressure at t = %.0f s', Control.tend));
+title(sprintf('Pressure at t = %.1d s', Control.tend));
 % frequency domain solution
 if Control.freqDomain
     plot(MeshP.coords, SolutionFreq.pF*10^9.*Material.t,'r--','LineWidth',2);
@@ -39,7 +39,7 @@ plot(MeshU.coords, Solution.u,'b','LineWidth',2);
 hold on
 xlabel('Column depth [m]');
 ylabel('u (solid) [m]');
-title(sprintf('Solid displacement at t = %.0f s', Control.tend));
+title(sprintf('Solid displacement at t = %.1d s', Control.tend));
 % frequency domain solution
 if Control.freqDomain
     plot(MeshU.coords, SolutionFreq.uF,'m--','LineWidth',2);
@@ -99,7 +99,7 @@ if contains(Control.PMmodel, 'UPN')
     hold on
     xlabel('Column depth [m]');
     ylabel('Porosity normalized [-]');
-    title(sprintf('Porosity norm at t = %.0f s', Control.tend));
+    title(sprintf('Porosity norm at t = %.1d s', Control.tend));
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'Poros_depth.png','Resolution',300)
@@ -127,7 +127,7 @@ if contains(Control.PMmodel, 'UPU')
     hold on
     xlabel('Column depth [m]');
     ylabel('u (fluid) [m]');
-    title(sprintf('Fluid displacement at t = %.0f s', Control.tend));
+    title(sprintf('Fluid displacement at t = %.1d s', Control.tend));
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'DisplFluid_depth.png','Resolution',300)

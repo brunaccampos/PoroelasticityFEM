@@ -77,21 +77,21 @@ if isfield(Control, 'depthplot')
     hold on
     xlabel('Coordinate [m]');
     ylabel('u [m]');
-    title(sprintf('Solid displ. at fixed %.2f m, DOF %.0f, t = %.0f s', Control.depthplot, Control.DOFplot, Control.tend));
+    title(sprintf('Solid displ. at fixed %.2f m, DOF %.0f, t = %.1d s', Control.depthplot, Control.DOFplot, Control.tend));
     %% velocity for fixed coord
     nexttile
     plot(MeshU.coords(Control.ploturow./Control.DOFplot, Control.depthDir), Plot.udotrow,'b','LineWidth',2);
     hold on
     xlabel('Coordinate [m]');
     ylabel('udot [m]');
-    title(sprintf('Solid vel. at fixed %.2f m, DOF %.0f, t = %.0f s', Control.depthplot, Control.DOFplot, Control.tend));
+    title(sprintf('Solid vel. at fixed %.2f m, DOF %.0f, t = %.1d s', Control.depthplot, Control.DOFplot, Control.tend));
     %% pressure for fixed coord
     nexttile
     plot(MeshP.coords(Control.plotprow,2), Plot.prow*10^9,'b','LineWidth',2);
     hold on
     xlabel('Coordinate [m]');
     ylabel('p [Pa]');
-    title(sprintf('Press. at fixed %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+    title(sprintf('Press. at fixed %.2f m, t = %.1d s', Control.depthplot, Control.tend));
     
     if contains (Control.PMmodel,'UPN')
         %% porosity for fixed coord
@@ -100,7 +100,7 @@ if isfield(Control, 'depthplot')
         hold on
         xlabel('y [m]');
         ylabel('Change in porosity normalized [-]');
-        title(sprintf('Porosity at fixed %.2f m, t = %.0f s', Control.depthplot, Control.tend));
+        title(sprintf('Porosity at fixed %.2f m, t = %.1d s', Control.depthplot, Control.tend));
     end
 end
 
