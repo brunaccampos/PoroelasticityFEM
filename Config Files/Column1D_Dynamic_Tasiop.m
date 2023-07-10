@@ -2,13 +2,14 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Tasiop(
 % Column Consolidation 1D simulation
 % Configuration File
 % Based on Zienkiewicz (1982) model
-%
+% ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
 % - only solid acceleration is considered (undrained condition; no motions
 % of the fluid relative to the solid skeleton can occur)
 % - solid grains and fluid are incompressible
+% ------------------------------------------------------------------------
 
 %% Poroelasticity model
 % Options:  Tr1_Biot_UP -------- Biot model (u-p), transient
