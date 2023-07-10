@@ -162,6 +162,13 @@ BC.pointFluxNodes = nodePmiddle;
 BC.pointFlux = zeros(MeshP.nDOF,1);
 BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
 
+% % amplitude
+% a = 1;
+% % frequency
+% f = 20;
+% % Ricker wavelet
+% BC.pointFlux = @(t) a*(1-0.5*f^2.*t.^2) .* exp(-0.25*f^2.*t.^2);
+
 % Gaussian distribution around application point
 % centre = MeshP.coords(nodePmiddle,:); % coords of the centre of domain
 % r = 1; % radius considered [m]
