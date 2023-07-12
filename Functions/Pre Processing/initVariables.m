@@ -23,7 +23,14 @@ if contains(Control.PMmodel, 'UPU')
 end
 
 %% Plot arrays - time domain
-Plot.time = (0:Control.dt:Control.tend);
+if isfield(Control, 'dtmin') 
+    time1 = (0:Control.dtmin:Control.tlim);
+    time2 = (Control.tlim + Control.dt:Control.dt:Control.tend);
+    Plot.time = [time1, time2];
+else
+    Plot.time = (0:Control.dt:Control.tend);
+end
+
 Plot.p_time = zeros(length(Plot.time), 1); % fluid pressure
 Plot.pan_time = zeros(length(Plot.time), 1); % analytic fluid pressure (quasi-steady case)
 Plot.uan_time = zeros(length(Plot.time),1); % analytic solid displacement
