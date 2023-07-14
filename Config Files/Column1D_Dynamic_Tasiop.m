@@ -153,13 +153,6 @@ BC.bottom_node_u = find(MeshU.coords == max(MeshU.coords));
 BC.top_node_p = find(MeshP.coords == min(MeshP.coords));
 BC.bottom_node_p = find(MeshP.coords == max(MeshP.coords));
 
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
-
 %% Dirichlet BCs - solid
 % displacement u=0 at the bottom
 BC.fixed_u = (BC.bottom_node_u);
