@@ -117,6 +117,15 @@ for e = 1:ne
             Mpu_e = Mpu_e + Material.rho_f * Material.kf * (NpVoigt.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
         end
     end
+    
+    % lumped element mass matrix
+    if Material.lumpedMass
+        Muu_eDiag = zeros(MeshU.nDOFe, MeshU.nDOFe);
+        for k = 1:MeshU.nDOFe
+            Muu_eDiag(k,k) = sum(Muu_e(k,:));
+        end
+        Muu_e = Muu_eDiag;
+    end
 
     % vectorized matrices
     count_u = count_u + MeshU.nDOFe^2;

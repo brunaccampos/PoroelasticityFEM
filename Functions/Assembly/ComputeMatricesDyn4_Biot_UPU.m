@@ -143,7 +143,7 @@ for e = 1:ne
     end
 
     % lumped element mass matrix
-    if isfield(Material, 'lumpedMass')
+    if Material.lumpedMass
         Mss_eDiag = zeros(MeshU.nDOFe, MeshU.nDOFe);
         Mff_eDiag = zeros(MeshU.nDOFe, MeshU.nDOFe);
         for k = 1:MeshU.nDOFe
@@ -155,7 +155,7 @@ for e = 1:ne
     end
 
     % lumped element damping matrix
-    if isfield(Material, 'lumpedDamping')
+    if Material.lumpedDamping
         Css_eDiag = zeros(MeshU.nDOFe, MeshU.nDOFe);
         Cff_eDiag = zeros(MeshU.nDOFe, MeshU.nDOFe);
         Csf_eDiag = zeros(MeshU.nDOFe, MeshU.nDOFe);
