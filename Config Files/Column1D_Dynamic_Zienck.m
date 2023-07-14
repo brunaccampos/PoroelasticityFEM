@@ -54,6 +54,8 @@ Material.rho = 0.306e-9;
 Material.rho_s = (Material.rho - Material.n*Material.rho_f) / (1 - Material.n);
 % 1/Q (related to storage coefficient)
 Material.Minv = 1/(0.1385e5);
+% fluid bulk viscosity [GPa s]
+Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -63,6 +65,20 @@ Material.t = 1;
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
 Material.constLaw = 'PlaneStrain';
+
+%% Spanos material parameters
+% porosity effective pressure coefficient (Spanos, 1989)
+% n = 0; % lower limit
+% n = 1; % return to Biot
+n = Material.Ks/Material.Kf; % upper limit
+
+% modified storage coefficient (Muller, 2019)
+Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks; 
+Mstar = 1/Mstarinv;
+
+% porosity equation coefficients
+Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
+Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
 
 %% Mesh parameters
 if progress_on
@@ -195,6 +211,15 @@ Control.tend = 10;   % final simulation time
 Control.beta = 0.7;
 Control.gamma = 0.7;
 Control.theta = 0.7;
+Control.lambda = 0.7;
+
+% adaptive time step (optional)
+% Control.dtmin = 1e-4; % minimum time step
+Control.tlim = 1; % limit to use dtmin
+
+% ramp load option (optional); uses tlim from adaptive time step
+% NOTE: only declare if true
+Control.rampLoad = 1;
 
 %% Plot data
 % DOF to plot graphs
