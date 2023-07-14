@@ -120,7 +120,7 @@ for e = 1:ne
     end
 
     % apply step load gradualy
-    if isfield(Control, 'rampLoad')
+    if Control.rampLoad
         if Control.t <= Control.tlim
             fu_e = fu_e*Control.t/Control.tlim;
         end
@@ -131,7 +131,7 @@ for e = 1:ne
 end
 
 % apply step load gradualy
-if isfield(Control, 'rampLoad')
+if Control.rampLoad
     if Control.t <= Control.tlim
         BC.pointLoad = BC.pointLoad*Control.t/Control.tlim;
     end
@@ -252,7 +252,7 @@ if contains(Control.PMmodel, 'UPN')
 end
 
 % apply step load gradualy
-if isfield(Control, 'rampLoad')
+if Control.rampLoad
     if Control.t <= Control.tlim
         BC.pointFlux = BC.pointFlux*Control.t/Control.tlim;
     end
