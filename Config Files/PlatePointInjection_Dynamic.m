@@ -102,16 +102,16 @@ switch MeshType
         nsd = 2;
         %%%% displacement field
         fieldU = 'u';
-        meshFileNameU = 'Mesh Files\Plate_15x15Q4fine.msh';
+        meshFileNameU = 'Mesh Files\Plate_15x15Q4finer.msh';
         MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
         %%%% pressure field
         fieldP = 'p';
-        meshFileNameP = 'Mesh Files\Plate_15x15Q4fine.msh';
+        meshFileNameP = 'Mesh Files\Plate_15x15Q4finer.msh';
         MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
         %%%% porosity field
         if contains(Control.PMmodel, 'UPN')
             fieldN = 'n';
-            meshFileNameN = 'Mesh Files\Plate_15x15Q4fine.msh';
+            meshFileNameN = 'Mesh Files\Plate_15x15Q4finer.msh';
             MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
         else
             MeshN = [];
