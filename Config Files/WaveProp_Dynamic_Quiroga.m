@@ -225,7 +225,6 @@ Control.plotp = node; % dof y of node 177 (x = 7.5m, y = 7.5m)
 % Plot in a row
 Control.depthplot = 7.5; % fixed coordinate
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
-Control.DOFplot = 2; % 1 = x DOF, 2 = y DOF (valid for displacement field)
 
 % node numbering
 switch Control.depthDir
