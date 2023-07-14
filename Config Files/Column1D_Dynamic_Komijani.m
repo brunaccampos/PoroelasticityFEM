@@ -156,14 +156,14 @@ BC.initP = [];
 %% Dirichlet BCs - solid
 % displacement u=0 at the bottom
 BC.fixed_u = (BC.bottom_node_u);
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
 %   pressure p=0 at the top
 BC.fixed_p = (BC.top_node_p);
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -181,7 +181,7 @@ BC.tractionInterp = 0;
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.b = @(x)[];  
+BC.b = @(x,t)[];  
 
 %% Neumann BCs - fluid
 % point flux [m/s]
@@ -194,7 +194,7 @@ BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
 BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x)[]; 
+BC.s = @(x,t)[]; 
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')
