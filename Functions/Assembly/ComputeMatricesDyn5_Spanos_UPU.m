@@ -15,14 +15,18 @@ C = getConstitutiveMatrix(Material, MeshU);
 
 %% Initialize global matrices
 % initialize vector sizes
+% u-u
 rowu = zeros(ne*MeshU.nDOFe^2,1);
 colu = zeros(ne*MeshU.nDOFe^2,1);
-
+% p-p
 rowp = zeros(ne*MeshP.nDOFe^2,1);
 colp = zeros(ne*MeshP.nDOFe^2,1);
-
+% u-p
 rowup = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
 colup = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
+% p-u
+rowpu = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
+colpu = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
 
 Mssvec = zeros(ne*MeshU.nDOFe^2,1);
 Mffvec = zeros(ne*MeshU.nDOFe^2,1);
@@ -33,9 +37,12 @@ Cfsvec = zeros(ne*MeshU.nDOFe*MeshU.nDOFe,1);
 Cffvec = zeros(ne*MeshU.nDOFe^2,1);
 
 Kssvec = zeros(ne*MeshU.nDOFe^2,1);
-Kspvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
 Kppvec = zeros(ne*MeshP.nDOFe^2,1);
+
+Kspvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
 Kfpvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
+Kpsvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
+Kpfvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
 
 % DOF counter
 count_u = 1;
@@ -70,10 +77,12 @@ for e = 1:ne
     Cff_e = zeros(MeshU.nDOFe, MeshU.nDOFe);
     
     Kss_e = zeros(MeshU.nDOFe, MeshU.nDOFe);
+    Kpp_e = zeros(MeshP.nDOFe, MeshP.nDOFe);
     Ksp_e = zeros(MeshU.nDOFe, MeshP.nDOFe);
     Kfp_e = zeros(MeshU.nDOFe, MeshP.nDOFe);
-    Kpp_e = zeros(MeshP.nDOFe, MeshP.nDOFe);
-
+    Kps_e = zeros(MeshP.nDOFe, MeshU.nDOFe);
+    Kpf_e = zeros(MeshP.nDOFe, MeshU.nDOFe);
+    
     % loop over integration points - Displacement
     for ip = 1:nqU
 
@@ -139,15 +148,19 @@ for e = 1:ne
         BuVoigt = getBVoigt(MeshU, Bu);
 
         % assemble local matrices
-        Kpp_e = Kpp_e + Material.Minv * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kpp_e = Kpp_e + (1/Material.Kf) * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
 
         if MeshU.nsd == 2
             m = [1; 1; 0]; % mapping vector for plane stress
             Ksp_e = Ksp_e + (Material.alpha - Material.n) * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
             Kfp_e = Kfp_e + Material.n * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Kps_e = Kps_e + (Material.deltaS / Material.n) * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Kpf_e = Kpf_e + (1 - Material.deltaF/Material.n) * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);            
         else
             Ksp_e = Ksp_e + (Material.alpha - Material.n) * (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
             Kfp_e = Kfp_e + Material.n * (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Kps_e = Kps_e + (Material.deltaS / Material.n) * (NpVoigt.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Kpf_e = Kpf_e + (1 - Material.deltaF/Material.n) * (NpVoigt.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
         end
     end
 
@@ -195,21 +208,27 @@ for e = 1:ne
     Cff_e = reshape(Cff_e, [MeshU.nDOFe^2,1]);
     
     Kss_e = reshape(Kss_e, [MeshU.nDOFe^2,1]);
+    Kpp_e = reshape(Kpp_e, [MeshP.nDOFe^2,1]);
     Ksp_e = reshape(Ksp_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
     Kfp_e = reshape(Kfp_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
-    Kpp_e = reshape(Kpp_e, [MeshP.nDOFe^2,1]);
+    Kps_e = reshape(Kps_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
+    Kpf_e = reshape(Kpf_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
     
+    % u-u
     rowmatrix_u = dofu_e*ones(1,MeshU.nDOFe);
     rowu_e = reshape(rowmatrix_u, [MeshU.nDOFe^2,1]);
     colu_e = reshape(rowmatrix_u', [MeshU.nDOFe^2,1]);
-
+    % p-p
     rowmatrix_p = dofp_e*ones(1,MeshP.nDOFe);
     rowp_e = reshape(rowmatrix_p, [MeshP.nDOFe^2,1]);
     colp_e = reshape(rowmatrix_p', [MeshP.nDOFe^2,1]);
-    
+    % u-p
     rowup_e = reshape(dofu_e*ones(1,MeshP.nDOFe),[MeshU.nDOFe*MeshP.nDOFe,1]);
     colup_e = reshape(ones(MeshU.nDOFe,1)*dofp_e.',[MeshU.nDOFe*MeshP.nDOFe,1]);
-
+    % p-u
+    rowpu_e = reshape(dofp_e*ones(1,MeshU.nDOFe),[MeshU.nDOFe*MeshP.nDOFe,1]);
+    colpu_e = reshape(ones(MeshP.nDOFe,1)*dofu_e.',[MeshU.nDOFe*MeshP.nDOFe,1]);
+    
     Mssvec(count_u-MeshU.nDOFe^2:count_u-1) = Mss_e;
     Mffvec(count_u-MeshU.nDOFe^2:count_u-1) = Mff_e;
 
@@ -219,18 +238,24 @@ for e = 1:ne
     Cffvec(count_u-MeshU.nDOFe^2:count_u-1) = Cff_e;
 
     Kssvec(count_u-MeshU.nDOFe^2:count_u-1) = Kss_e;
+    Kppvec(count_p-MeshP.nDOFe^2:count_p-1) = Kpp_e;
     Kspvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Ksp_e;
     Kfpvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Kfp_e;
-    Kppvec(count_p-MeshP.nDOFe^2:count_p-1) = Kpp_e;
+    Kpsvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Kps_e;
+    Kpfvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Kpf_e;
 
+    % u-u
     rowu(count_u-MeshU.nDOFe^2:count_u-1) = rowu_e;
     colu(count_u-MeshU.nDOFe^2:count_u-1) = colu_e;
-
+    % p-p
     rowp(count_p-MeshP.nDOFe^2:count_p-1) = rowp_e;
     colp(count_p-MeshP.nDOFe^2:count_p-1) = colp_e;
-
+    % u-p
     rowup(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = rowup_e;
     colup(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = colup_e;
+    % p-u
+    rowpu(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = rowpu_e;
+    colpu(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = colpu_e;
 end
 
 % sparse matrices
@@ -243,10 +268,10 @@ Cfs = sparse(rowu, colu, Cfsvec, MeshU.nDOF, MeshU.nDOF);
 Cff = sparse(rowu, colu, Cffvec, MeshU.nDOF, MeshU.nDOF);
 
 Kss = sparse(rowu, colu, Kssvec, MeshU.nDOF, MeshU.nDOF);
+Kpp = sparse(rowp, colp, Kppvec, MeshP.nDOF, MeshP.nDOF);
 Ksp = sparse(rowup, colup, Kspvec, MeshU.nDOF, MeshP.nDOF);
 Kfp = sparse(rowup, colup, Kfpvec, MeshU.nDOF, MeshP.nDOF);
-Kpp = sparse(rowp, colp, Kppvec, MeshP.nDOF, MeshP.nDOF);
-Kps = Ksp.';
-Kpf = Kfp.';
+Kps = sparse(rowpu, colpu, Kpsvec, MeshP.nDOF, MeshU.nDOF);
+Kpf = sparse(rowpu, colpu, Kpfvec, MeshP.nDOF, MeshU.nDOF);
 
 end
