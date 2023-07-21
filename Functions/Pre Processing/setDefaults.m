@@ -46,4 +46,9 @@ if ~isfield(Control, 'fixedDepthPlotON')
     Control.fixedDepthPlotON = 0;
 end
 
+% plot synthetics: default false
+if ~isfield(Control, 'plotSyntheticsON')
+    Control.plotSyntheticsON = 0;
+end
+
 end

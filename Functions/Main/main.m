@@ -50,7 +50,7 @@ else
 end
 
 % plot synthetics
-if isfield(Control, 'depthplot') && contains(Control.PMmodel, 'Dyn')
+if Control.plotSynthetics
     PlotSynthetics(MeshU, MeshP, MeshN, Plot, Control);
 end
     

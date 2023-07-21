@@ -209,7 +209,7 @@ Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
 Control.dt = 1e-5;  % time step
-Control.tend = 3e-3;   % final simulation time
+Control.tend = 2e-3;   % final simulation time
 
 % Newmark method
 Control.beta = 0.7;
@@ -222,8 +222,11 @@ Control.lambda = 0.7;
 Control.plotu = node*2; % dof y of node 242 (x = 7.5m, y = 7.5m)
 Control.plotp = node; % dof y of node 177 (x = 7.5m, y = 7.5m)
 
+% Plot synthetics
+Control.plotSyntheticsON = 1; % 0: false, 1: true
+
 % Plot in a row
-Control.fixedDepthPlot = 1; % 0: false, 1: true
+Control.fixedDepthPlotON = 1; % 0: false, 1: true
 
 Control.depthplot = 7.5; % fixed coordinate
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
