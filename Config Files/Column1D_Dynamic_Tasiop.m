@@ -90,6 +90,12 @@ Mstar = 1/Mstarinv;
 Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
 Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
 
+% plot deltaS and deltaF
+PlotDelta(Material);
+
+% plot coefficients from dimensionless pressure equation
+PlotNDPressureEqCoef(Material);
+
 %% Mesh parameters
 if progress_on
     disp([num2str(toc),': Building Mesh...']);

@@ -87,6 +87,12 @@ Mstar = 1/Mstarinv;
 Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
 Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
 
+% plot deltaS and deltaF
+PlotDelta(Material);
+
+% plot coefficients from dimensionless pressure equation
+PlotNDPressureEqCoef(Material);
+
 %% Verifying correspondence Biot/Spanos parameters
 % pore scale solid constants
 Gs = Material.G/(1-Material.n);

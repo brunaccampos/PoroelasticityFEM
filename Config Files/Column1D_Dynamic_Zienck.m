@@ -188,6 +188,13 @@ BC.fluxNodes = [];
 % flux source [m3/s/m3]
 BC.s = @(x,t)[]; 
 
+%% Porosity BCs
+if contains(Control.PMmodel, 'UPN')
+    BC.fixed_n = [];
+    BC.free_n = setdiff(MeshN.DOF, BC.fixed_n);
+    BC.fixed_n_value = zeros(length(BC.fixed_n),1);
+end
+
 %% Quadrature order
 Control.nqU = 3;
 Control.nqP = 3;
