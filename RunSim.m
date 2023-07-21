@@ -26,11 +26,12 @@ DirFolder = 'Config Files';
 % Config file to run
 % -------------------- 1D steady/transient column consolidation
 % File = 'Column1D_Steady_Korsawe';
-% File = 'Column1D_Steady_Boone';
+File = 'Column1D_Steady_Boone';
 % File = 'Column1D_Steady_Quiroga';
 % File = 'Column1D_Steady_Sandstone';
 % File = 'Column1D_Steady_Zheng';
 % File = 'Column1D_Steady_Ferronato';
+% File = 'Column1D_Steady_Tasiop';
 
 % -------------------- 1D dynamic column consolidation
 % File = 'Column1D_Dynamic_Komijani';
@@ -49,10 +50,11 @@ DirFolder = 'Config Files';
 
 % -------------------- 1D tests
 % File = 'HeatConduction_1D_Transient';
+% File = 'ManufacturedSolution1D_Biot';
 % File = 'ManufacturedSolution1D_Pste';
 % File = 'ManufacturedSolution1D_UstePste';
 % File = 'ManufacturedSolution1D_UstePtra';
-File = 'ManufacturedSolution1D_UtraPtra';
+% File = 'ManufacturedSolution1D_UtraPtra';
 
 % -------------------- 2D steady/transient column consolidation
 % File = 'Column2D_Steady_Korsawe';
@@ -68,6 +70,7 @@ File = 'ManufacturedSolution1D_UtraPtra';
 % File = 'InjectionWells2D_15x15';
 % File = 'InjectionWellPoint_Dynamic_Komijani';
 % File = 'PlatePointInjection_Dynamic_Komijani';
+% File = 'PlatePointInjection_Dynamic';
 
 % -------------------- 2D footing
 % File = 'Footing2D_Korsawe';
