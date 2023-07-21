@@ -69,7 +69,7 @@ if contains(Control.PMmodel, 'UPN')
     end
 end
 
-if isfield(Control, 'depthplot')
+if Control.fixedDepthPlotON
     % initialize figure
     figure;
     tiledlayout(2,3);

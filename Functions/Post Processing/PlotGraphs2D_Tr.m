@@ -20,6 +20,7 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Press_time.png','Resolution',300)
 end
+
 %% solid displacement vs time
 nexttile
 plot(Plot.time, Plot.u_time,'b','LineWidth',2);
@@ -36,9 +37,10 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Displ_time.png','Resolution',300)
 end
+
 %% solid velocity vs time
 nexttile
-plot(Plot.time, Plot.udot_time,'b','LineWidth',2);
+plot(Plot.time, Plot.udot_time,'r','LineWidth',2);
 hold on
 xlabel('Time [s]');
 ylabel('udot (solid) [m/s]');
@@ -52,6 +54,7 @@ hold off
 if saveGraphs_on
     exportgraphics(gcf,'Vel_time.png','Resolution',300)
 end
+
 %% porosity vs time
 if contains(Control.PMmodel, 'UPN')
     nexttile
@@ -66,32 +69,53 @@ if contains(Control.PMmodel, 'UPN')
     end
 end
 
-if isfield(Control, 'depthplot')
+if Control.fixedDepthPlotON
     % initialize figure
     figure;
     tiledlayout(2,3);
     
-    %% displacement for fixed coord
+    % find half of array
+    half = ceil(length(Control.ploturow)/2);
+    
+    %% displacement in x for fixed coord
     nexttile
-    plot(MeshU.coords(Control.ploturow./Control.DOFplot, Control.depthDir), Plot.urow,'b','LineWidth',2);
+    plot(MeshU.coords((Control.ploturow(1:half)+1)./2, Control.depthDir), Plot.urow(1:half),'b','LineWidth',2);
     hold on
     xlabel('Coordinate [m]');
     ylabel('u [m]');
-    title(sprintf('Solid displ. at fixed %.2f m, DOF %.0f, t = %.1d s', Control.depthplot, Control.DOFplot, Control.tend));
-    %% velocity for fixed coord
+    title(sprintf('Solid displ. in x at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
+    
+    %% velocity in x for fixed coord
     nexttile
-    plot(MeshU.coords(Control.ploturow./Control.DOFplot, Control.depthDir), Plot.udotrow,'b','LineWidth',2);
+    plot(MeshU.coords((Control.ploturow(1:half)+1)./2, Control.depthDir), Plot.udotrow(1:half),'r','LineWidth',2);
     hold on
     xlabel('Coordinate [m]');
     ylabel('udot [m]');
-    title(sprintf('Solid vel. at fixed %.2f m, DOF %.0f, t = %.1d s', Control.depthplot, Control.DOFplot, Control.tend));
+    title(sprintf('Solid vel. in x at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
+    
     %% pressure for fixed coord
     nexttile
-    plot(MeshP.coords(Control.plotprow,2), Plot.prow*10^9,'b','LineWidth',2);
+    plot(MeshP.coords(Control.plotprow, Control.depthDir), Plot.prow*10^9,'k','LineWidth',2);
     hold on
     xlabel('Coordinate [m]');
     ylabel('p [Pa]');
-    title(sprintf('Press. at fixed %.2f m, t = %.1d s', Control.depthplot, Control.tend));
+    title(sprintf('Press. at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
+    
+    %% displacement in y for fixed coord
+    nexttile
+    plot(MeshU.coords((Control.ploturow(half+1:end))./2, Control.depthDir), Plot.urow(half+1:end),'b','LineWidth',2);
+    hold on
+    xlabel('Coordinate [m]');
+    ylabel('u [m]');
+    title(sprintf('Solid displ. in y at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
+    
+    %% velocity in y for fixed coord
+    nexttile
+    plot(MeshU.coords((Control.ploturow(half+1:end))./2, Control.depthDir), Plot.udotrow(half+1:end),'r','LineWidth',2);
+    hold on
+    xlabel('Coordinate [m]');
+    ylabel('udot [m]');
+    title(sprintf('Solid vel. in y at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
     
     if contains (Control.PMmodel,'UPN')
         %% porosity for fixed coord
