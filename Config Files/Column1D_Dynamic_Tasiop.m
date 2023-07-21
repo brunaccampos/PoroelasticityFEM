@@ -58,6 +58,8 @@ Material.kf = Material.kd/(Material.g*Material.rho_f);
 Material.mu = 1e-12;
 % intrinsic permeability [m2]
 Material.k = Material.kf * Material.mu;
+% added mass [10^9 kg/m3]
+Material.rho12 = 0;
 
 % thickness 
 % 1D: cross sectional area [m2]
