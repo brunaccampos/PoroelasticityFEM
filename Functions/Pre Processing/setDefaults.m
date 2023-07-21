@@ -1,5 +1,7 @@
 function [Material, BC, Control] = setDefaults(Material, BC, Control)
-% Set defaults
+% ------------------------------------------------------------------------
+% Set defaults for Material, BC, and Control structures
+% ------------------------------------------------------------------------
 
 %% Material model
 % constitutive law: default plane stress
@@ -34,9 +36,14 @@ if ~isfield(BC, 'initP')
 end
 
 %% Control options
-% ramp applied load in the beginning of simulation
+% ramp applied load in the beginning of simulation: default false
 if ~isfield(Control, 'rampLoad')
    Control.rampLoad = 0; 
+end
+
+% plot in a row at fixed coordinate: default false
+if ~isfield(Control, 'fixedDepthPlotON')
+    Control.fixedDepthPlotON = 0;
 end
 
 end
