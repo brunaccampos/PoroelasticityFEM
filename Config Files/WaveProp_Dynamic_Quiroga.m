@@ -223,6 +223,8 @@ Control.plotu = node*2; % dof y of node 242 (x = 7.5m, y = 7.5m)
 Control.plotp = node; % dof y of node 177 (x = 7.5m, y = 7.5m)
 
 % Plot in a row
+Control.fixedDepthPlot = 1; % 0: false, 1: true
+
 Control.depthplot = 7.5; % fixed coordinate
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 

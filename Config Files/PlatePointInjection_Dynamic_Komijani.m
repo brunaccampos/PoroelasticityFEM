@@ -203,6 +203,8 @@ Control.plotu = nodeUmiddle*2; % dof y of node at (x = 0.5m, y = 0.5m)
 Control.plotp = nodePmiddle; % dof of node at (x = 0.5m, y = 0.5m)
 
 % Plot in a row
+Control.fixedDepthPlotON = 1; % 0: false, 1: true
+
 Control.depthplot = 0.6; % fixed coordinate
 tol = 1e-12;
 Control.depthDir = 2; % 1 = fixed y, vary x --- 2 = fixed x, vary y
@@ -220,7 +222,7 @@ end
 
 nodes_u = [MeshU.coords(rowofnodes_u,Control.depthDir), rowofnodes_u]; % matrix with node numbering and variable coord
 nodes_u_sorted = sortrows(nodes_u); % order in terms of variable coord
-Control.ploturow = nodes_u_sorted(:,2) * Control.DOFplot;
+Control.ploturow = [nodes_u_sorted(:,2) .* 2 - 1; nodes_u_sorted(:,2) .* 2];
 
 nodes_p = [MeshP.coords(rowofnodes_p,Control.depthDir), rowofnodes_p]; % matrix with node numbering and variable coord
 nodes_p_sorted = sortrows(nodes_p); % order in terms of variable coord

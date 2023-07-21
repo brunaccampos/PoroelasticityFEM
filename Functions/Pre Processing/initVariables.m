@@ -44,7 +44,7 @@ if contains(Control.PMmodel, 'UPU')
 end
 
 %% Plot arrays - synthetic plots
-if isfield(Control, 'depthplot')
+if Control.fixedDepthPlotON
     Plot.u_synthetic = zeros(length(Plot.time), length(Control.ploturow)); % solid displacement
     Plot.udot_synthetic = zeros(length(Plot.time), length(Control.ploturow)); % solid velocity
     Plot.p_synthetic = zeros(length(Plot.time), length(Control.plotprow)); % fluid pressure

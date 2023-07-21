@@ -116,7 +116,7 @@ while Control.t < Control.tend
         end
 
         % synthetics
-        if isfield(Control, 'depthplot')
+        if Control.fixedDepthPlotON
             Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
             Plot.udot_synthetic(Control.step+1,:) = Solution.udot(Control.ploturow);
             Plot.p_synthetic(Control.step+1,:) = Solution.p(Control.plotprow);
@@ -159,7 +159,7 @@ while Control.t < Control.tend
 end
 
 % plot variables in x for fixed y (2D case)
-if isfield(Control, 'depthplot')
+if Control.fixedDepthPlotON
     Plot.urow = Solution.u(Control.ploturow);
     Plot.udotrow = Solution.udot(Control.ploturow);
     Plot.prow = Solution.p(Control.plotprow);
