@@ -90,7 +90,9 @@ for e = 1:ne
 
         % assemble local matrices
         Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        S_e = S_e + (Material.n / Material.Kf)*(1/(1-Material.deltaF/Material.n)) * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        if any(Material.Minv)
+            S_e = S_e + (Material.n / Material.Kf)*(1/(1-Material.deltaF/Material.n)) * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        end
     end
     
     % loop over integration points - LINEAR polynomial
