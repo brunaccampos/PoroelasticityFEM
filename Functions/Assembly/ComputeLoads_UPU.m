@@ -98,7 +98,7 @@ for e = 1:ne
             % element load vector
             if ~BC.tractionInterp
                 fu_e = fu_e + Nvoigt.' * tractionForce(j,:)';
-            else
+            else % reorganize vector when interpolating
                 tractionForce_e = tractionForce(connu_e,:);
                 tractionForce_eVec = zeros(MeshU.nne*2,1);
                 tractionForce_eVec(1:2:end) = tractionForce_e(:,1);
