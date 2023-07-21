@@ -145,9 +145,7 @@ BC.fixed_u2 = dofset;
 % fixed DOFs
 BC.fixed_u = [BC.fixed_u1; BC.fixed_u2];
 % fixed DOF values
-BC.fixed_u_value1 = zeros(length(BC.fixed_u1),1);
-BC.fixed_u_value2 = ones(length(BC.fixed_u2),1);
-BC.fixed_u_value = [BC.fixed_u_value1; BC.fixed_u_value2];
+BC.fixed_u_value = @(t) [zeros(length(BC.fixed_u1),1); t*ones(length(BC.fixed_u2),1)];
 % free nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
@@ -155,7 +153,7 @@ BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 % pressure p=0 at all boundaries
 BC.fixed_p = [MeshP.top_dof; MeshP.bottom_dof; MeshP.right_dof; MeshP.left_dof];
 % fixed DOF values
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -167,7 +165,7 @@ BC.tractionNodes = [];
 BC.pointLoad = [];
 
 % body force [GN/m3]
-BC.b = @(x)[];  
+BC.b = @(x,t)[];  
 
 %% Neumann BCs - fluid
 % distributed flux [m3/s]
@@ -177,7 +175,7 @@ BC.fluxNodes = [];
 BC.pointFlux = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x)[]; 
+BC.s = @(x,t)[]; 
 
 %% Quadrature order
 Control.nqU = 3;
