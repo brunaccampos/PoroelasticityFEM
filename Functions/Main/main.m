@@ -50,7 +50,7 @@ else
 end
 
 % plot synthetics
-if Control.plotSynthetics
+if Control.plotSyntheticsON
     PlotSynthetics(MeshU, MeshP, MeshN, Plot, Control);
 end
     
