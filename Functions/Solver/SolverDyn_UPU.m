@@ -49,13 +49,13 @@ xi = gamma;
 % matrices time discretization
 Kssbar = Kss + Mss./(beta*dt^2) + Css*(gamma/beta/dt);
 Kspbar = -Ksp;
-Ksfbar = -Csf*(xi/lambda/dt);
+Ksfbar = Msf./(lambda*dt^2) - Csf*(xi/lambda/dt);
 
 Kpsbar = -Kps;
 Kppbar = -Kpp;
 Kpfbar = -Kpf;
 
-Kfsbar = -Cfs*(gamma/beta/dt);
+Kfsbar = Mfs./(beta*dt^2) - Cfs*(gamma/beta/dt);
 Kfpbar = -Kfp;
 Kffbar = Mff*(1/lambda/dt^2) + Cff*(xi/lambda/dt);
 
@@ -122,6 +122,8 @@ KFF = [Kss_FF, Ksp_FF, Ksf_FF;
 % matrices for unknown DOFs
 MssFF = Mss(BC.free_u, BC.free_u);
 MffFF = Mff(BC.free_u, BC.free_u);
+MsfFF = Msf(BC.free_u, BC.free_u);
+MfsFF = Mfs(BC.free_u, BC.free_u);
 
 CssFF = Css(BC.free_u, BC.free_u);
 CsfFF = Csf(BC.free_u, BC.free_u);
@@ -134,10 +136,11 @@ KfpFF = Kfp(BC.free_u, BC.free_p);
 
 % at first step: compute solid acceleration and pressure gradient
 if Control.step == 1
-    u2dot_old(BC.free_u) = MssFF\(fu(BC.free_u) - KssFF*u_old(BC.free_u) + ...
-        KspFF*p_old(BC.free_p) + CsfFF*ufdot_old(BC.free_u) - CssFF*udot_old(BC.free_u));
-    uf2dot_old(BC.free_u) = MffFF\(ff(BC.free_u) + KfpFF*p_old(BC.free_p) - ...
-        CffFF*ufdot_old(BC.free_u) + CfsFF*udot_old(BC.free_u));
+    aux = [MssFF, MsfFF; MfsFF, MffFF] \...
+        ([fu(BC.free_u); ff(BC.free_u)] - [CssFF, -CsfFF; -CfsFF, CffFF] * [udot_old(BC.free_u); ufdot_old(BC.free_u)]...
+        - [KssFF, -KspFF; zeros(length(KssFF), length(KssFF)), -KfpFF] * [u_old(BC.free_u); p_old(BC.free_p)]);
+    u2dot_old(BC.free_u) = aux(1:length(u2dot_old(BC.free_u)));
+    uf2dot_old(BC.free_u) = aux(length(u2dot_old(BC.free_u))+1:end);
 end
 
 % auxiliar terms for external forces vector
