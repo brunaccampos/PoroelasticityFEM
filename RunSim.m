@@ -39,6 +39,10 @@ File = 'Column1D_Steady_Boone';
 % File = 'Column1D_Dynamic_Tasiop';
 % File = 'Column1D_Dynamic_Zienck';
 % File = 'Column1D_Dynamic_Diebels';
+% File = 'Column1D_Dynamic_Boone';
+
+% -------------------- 2D wave propagation
+% File = 'Column1D_Dynamic_Pulse';
 
 % -------------------- 1D dynamic velocity impact
 % File = 'VelocityImpact1D_Ham';
