@@ -118,4 +118,49 @@ if Control.fixedDepthPlotON
     title(sprintf('Solid vel. in y at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
 end
 
+if Control.fixedDepthPlotON
+    figure;
+    %% solid displacement over depth over time (3D plot)
+    for t = 1:numel(Plot.time)
+        plot3(MeshU.coords((Control.ploturow(half+1:end))./2, Control.depthDir), ones(half,1)*Plot.time(t), Plot.u_synthetic(t,half+1:end), 'k');
+        hold on
+    end
+    xlabel('x [m]');
+    ylabel('Time [s]');
+    zlabel('u [m]');
+    title('Solid displacement in domain over time');
+    hold off
+    
+    % surface plot
+    figure;
+    surf(MeshU.coords((Control.ploturow(half+1:end))./2, Control.depthDir), Plot.time, Plot.u_synthetic(:,half+1:end));
+    hold on
+    xlabel('x [m]');
+    ylabel('Time [s]');
+    zlabel('u [m]');
+    title('Solid displacement in domain over time');
+    hold off
+    
+    % waterfall plot
+    figure;
+    waterfall(MeshU.coords((Control.ploturow(half+1:end))./2, Control.depthDir), Plot.time, Plot.u_synthetic(:,half+1:end));
+    hold on
+    xlabel('x [m]');
+    ylabel('Time [s]');
+    zlabel('u [m]');
+    title('Solid displacement in domain over time');
+    hold off
+    
+    % waterfall plot
+    figure;
+    waterfall(MeshP.coords(Control.plotprow, Control.depthDir), Plot.time, Plot.p_synthetic);
+    hold on
+    xlabel('x [m]');
+    ylabel('Time [s]');
+    zlabel('p [m]');
+    title('Fluid pressure in domain over time');
+    hold off
+
+end
+
 end
