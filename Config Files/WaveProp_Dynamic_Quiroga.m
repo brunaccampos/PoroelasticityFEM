@@ -59,6 +59,8 @@ Material.rho_f = 1000e-9;
 Material.rho_s = 2650e-9;
 % average density of the medium
 Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
+% added mass [10^9 kg/m3]
+% Material.rho12 = -83e-9;
 
 % thickness 
 % 1D: cross sectional area [m2]
