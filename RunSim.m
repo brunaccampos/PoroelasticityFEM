@@ -26,9 +26,8 @@ DirFolder = 'Config Files';
 % Config file to run
 % -------------------- 1D steady/transient column consolidation
 % File = 'Column1D_Steady_Korsawe';
-File = 'Column1D_Steady_Boone';
+% File = 'Column1D_Steady_Boone';
 % File = 'Column1D_Steady_Quiroga';
-% File = 'Column1D_Steady_Sandstone';
 % File = 'Column1D_Steady_Zheng';
 % File = 'Column1D_Steady_Ferronato';
 % File = 'Column1D_Steady_Tasiop';
@@ -40,6 +39,7 @@ File = 'Column1D_Steady_Boone';
 % File = 'Column1D_Dynamic_Zienck';
 % File = 'Column1D_Dynamic_Diebels';
 % File = 'Column1D_Dynamic_Boone';
+% File = 'Column1D_Dynamic_Sandstone';
 
 % -------------------- 2D wave propagation
 % File = 'Column1D_Dynamic_Pulse';
@@ -85,7 +85,7 @@ File = 'Column1D_Steady_Boone';
 % File = 'VelocityImpact2D_Dynamic_Plate';
 
 % -------------------- 2D wave propagation
-% File = 'WaveProp_Dynamic_Quiroga';
+File = 'WaveProp_Dynamic_Quiroga';
 % File = 'WaveProp_Dynamic_Komijani';
 
 % -------------------- 2D tests: elasticity
