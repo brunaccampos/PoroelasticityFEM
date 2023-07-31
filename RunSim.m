@@ -108,17 +108,19 @@ File = 'Column1D_Steady_Boone';
 % File = 'HeatConduction2D_PointFluxBC';
 
 % Directory for VTK file
-VTKFolder ='C:\Users\bu_ca\Downloads\PoroelasticityFEM\Results';
-% VTKFolder ='C:\Users\bccampos\Downloads\PoroelasticityFEM\Results';
+% VTKFolder ='C:\Users\bu_ca\Downloads\PoroelasticityFEM\Results';
+VTKFolder ='C:\Users\bccampos\Downloads\PoroelasticityFEM\Results';
 
 % output VTK file
 plot2vtk = 1;
 % export Matlab images
 saveGraphs_on = 0;
 % export Matlab files
-saveMatData_on = 1;
+saveMatData_on = 0;
 % output progress messages
 progress_on = 1;
+% export video
+saveVideo_on = 0;
 
 %% Directories
 VTKFolder = fullfile(VTKFolder, DirFolder);
@@ -140,7 +142,8 @@ clearvars -except VTKDir ConfigFile...
     file codeSubmitTime ...
     exit_when_done print_log ...
     plot2vtk progress_on ...
-    saveGraphs_on saveMatData_on
+    saveGraphs_on saveMatData_on ...
+    saveVideo_on
 
 clearvars -global
 

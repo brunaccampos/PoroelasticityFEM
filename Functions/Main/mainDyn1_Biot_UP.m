@@ -40,10 +40,12 @@ end
 % initialize time variable
 Control.t = 0;
 
-%% Initialize video
-% myVideo = VideoWriter('myVideoFile'); %open video file
-% myVideo.FrameRate = 10;
-% open(myVideo)
+% initialize video file
+if saveVideo_on
+    myVideo = VideoWriter('myVideoFile'); %open video file
+    myVideo.FrameRate = 10;
+    open(myVideo)
+end
 
 %% Solve system
 while Control.t < Control.tend
@@ -165,4 +167,7 @@ if Control.fixedDepthPlotON
     Plot.prow = Solution.p(Control.plotprow);
 end
 
-% close(myVideo)
+% close video file
+if saveVideo_on
+    close(myVideo)
+end
