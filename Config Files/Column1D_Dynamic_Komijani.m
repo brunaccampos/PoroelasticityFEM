@@ -232,12 +232,12 @@ Control.lambda = 0.7;
 Control.alpha = 0;
 
 % adaptive time step (optional)
-Control.dtmin = 1e-4; % minimum time step
-Control.tlim = 0.1; % limit to use dtmin
+% Control.dtmin = 1e-4; % minimum time step
+Control.tlim = 1; % limit to use dtmin
 
 % ramp load option (optional); uses tlim from adaptive time step
 % NOTE: only declare if true
-% Control.rampLoad = 1;
+Control.rampLoad = 1;
 
 %% Plot data
 % DOF to plot graphs
