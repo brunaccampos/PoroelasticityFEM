@@ -1,15 +1,14 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Steady_Sandstone(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Sandstone(config_dir, progress_on)
 % Column Consolidation 1D simulation
 % Configuration File
-% Based on Korsawe (2006) model
+% Based on Zienkiewicz (1982) model
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
-% - no acceleration terms for solid or fluid
-% - solid velocity is neglected
-% - fluid and solid grains are incompressible
-% - porosity is constant in space and varies over time
+% - only solid acceleration is considered (undrained condition; no motions
+% of the fluid relative to the solid skeleton can occur)
+% - solid grains and fluid are incompressible
 % ------------------------------------------------------------------------
 % column top at x=0, column bottom at x=L
 % ------------------------------------------------------------------------
@@ -51,6 +50,12 @@ Material.n = 0.19;
 Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
 % fluid bulk viscosity [GPa s]
 Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
+% fluid density [10^9 kg/m3]
+Material.rho_f = 1000e-9;
+% solid density [10^9 kg/m3]
+Material.rho_s = 2600e-9;
+% average density of the medium
+Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -89,9 +94,9 @@ switch MeshType
         % number of space dimensions
         nsd = 1;
         % number of elements
-        ne = 10;
+        ne = 100;
         % column size [m]
-        L = 1;
+        L = 10;
         %%%% solid displacement field
         typeU = 'L3';
         fieldU = 'u';
@@ -149,20 +154,20 @@ BC.initP = [];
 %% Dirichlet BCs - solid
 % displacement u=0 at the bottom
 BC.fixed_u = (BC.bottom_node_u);
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
 %   pressure p=0 at the top
 BC.fixed_p = (BC.top_node_p);
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
 % point load [GN]
-BC.pointLoadValue = -1e-6;
+BC.pointLoadValue = 100e-6;
 BC.pointLoadNodes = BC.top_node_u;
 BC.pointLoad = zeros(MeshU.nDOF,1);
 BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
@@ -171,7 +176,7 @@ BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.b = @(x)[];  
+BC.b = @(x,t)[];  
 
 %% Neumann BCs - fluid
 % point flux [m/s]
@@ -184,7 +189,7 @@ BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
 BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x)[]; 
+BC.s = @(x,t)[]; 
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')
@@ -194,8 +199,8 @@ if contains(Control.PMmodel, 'UPN')
 end
 
 %% Quadrature order
-Control.nqU = 2;
-Control.nqP = 2;
+Control.nqU = 3;
+Control.nqP = 3;
 
 %% Frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
@@ -209,10 +214,21 @@ Control.uncoupled = 0;
 Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
-Control.dt = 1;  % time step
+Control.dt = 1e-2;  % time step
 Control.tend = 10;   % final simulation time
 
-Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
+% Newmark method
+Control.beta = 0.7;
+Control.gamma = 0.7;
+Control.theta = 0.7;
+Control.lambda = 0.7;
+
+% adaptive time step (optional)
+% Control.dtmin = 1e-4; % minimum time step
+Control.tlim = 1e-1; % limit to use dtmin
+
+% ramp load option (optional); uses tlim from adaptive time step
+Control.rampLoad = 1;
 
 %% Plot data
 % DOF to plot graphs
