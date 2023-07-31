@@ -68,19 +68,18 @@ while Control.t < Control.tend
     % linear solver
     [Solution] = SolverDyn_UP(Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
 
+    % plot solution over time
 %     figure(1);
 %     subplot(1,2,1);
 %     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
 %     title('Displacement');
-%     xlim([0 max(MeshU.coords)]);
 %     subplot(1,2,2);
 %     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
 %     title('Velocity');
-%     xlim([0 max(MeshU.coords)]);
 %     pause(0.001);
 %     frame = getframe(gcf); %get frame
 %     writeVideo(myVideo, frame);
-    
+
     % solution in the frequency domain
     if Control.freqDomain
         [SolutionFreq] = SolverDynamicFreq_Biot(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
