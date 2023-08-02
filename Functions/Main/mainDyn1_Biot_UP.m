@@ -14,7 +14,7 @@ disp([num2str(toc),': Assembling System Matrices...']);
 %% Solve eigenproblem
 if Control.freqDomain
     disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
-    [phi_u, omega2_u, phi_p, omega2_p] = SolveEigDynamic_Biot(Kuu, Kup, Kpp, Muu, Mpu, MeshU, MeshP, BC, Control);
+    [phi_u, omega2_u, phi_p, omega2_p] = EigenDyn_UP(Kuu, Kup, Kpp, Muu, Mpu, MeshU, MeshP, BC, Control);
 else
     phi_u = [];
     phi_p = [];
@@ -82,7 +82,7 @@ while Control.t < Control.tend
 
     % solution in the frequency domain
     if Control.freqDomain
-        [SolutionFreq] = SolverDynamicFreq_Biot(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
+        [SolutionFreq] = SolverFreqDyn_UP(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
     end
 
     % update external forces vectors
