@@ -23,43 +23,37 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Pulse(c
 %           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
 %           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
 %                                   porosity perturbation equation
-Control.PMmodel = 'Dyn1_Biot_UP';
+Control.PMmodel = 'Dyn4_Biot_UPU';
 
-%% Material properties - Tasiopoulous (2015)
+%% Material properties - Berea Sandstone (Detournay, 1993, p.26)
 % elasticity modulus [GPa]
-Material.E = 1e-2;
+Material.E = 14.4;
 % Poisson's ratio
-Material.nu = 0.25;
-% fluid bulk modulus [GPa]
-Material.Kf = 2.2;
-% solid bulk modulus [GPa]
-Material.Ks = 37;
-% material porosity
-Material.n = 0.46;
+Material.nu = 0.2;
+% intrinsic permeability [m2]
+Material.k = 1.88e-13;
+% dynamic viscosity [GPa s]
+Material.mu = 1e-12;
+% porous media permeability [m2/GPa s]
+Material.kf = Material.k/Material.mu;
 % Biot's coefficient
-Material.alpha = 1;
-% fluid density [10^9 kg/m3]
-Material.rho_f = 1000e-9;
-% solid density [10^9 kg/m3]
-Material.rho_s = 2650e-9;
-% average density of the medium
-Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
+Material.alpha = 0.79;
+% fluid bulk modulus [GPa]
+Material.Kf = 3.3;
+% solid bulk modulus [GPa]
+Material.Ks = 36;
+% material porosity
+Material.n = 0.19;
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
 % fluid bulk viscosity [GPa s]
 Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
-% gravitational acceleration [m/s2]
-Material.g = 9.81;
-% Darcy permeability/ hidraulic conductivity [m/s]
-Material.kd = 1e-3;
-% porous media permeability [m2/GPa s]
-Material.kf = Material.kd/(Material.g*Material.rho_f);
-% dynamic viscosity [GPa s]
-Material.mu = 1e-12;
-% intrinsic permeability [m2]
-Material.k = Material.kf * Material.mu;
-% added mass [10^9 kg/m3]
-Material.rho12 = 0;
+% fluid density [10^9 kg/m3]
+Material.rho_f = 1000e-9;
+% solid density [10^9 kg/m3]
+Material.rho_s = 2600e-9;
+% average density of the medium
+Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -91,10 +85,10 @@ Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Mater
 Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
 
 % plot deltaS and deltaF
-PlotDelta(Material);
+% PlotDelta(Material);
 
 % plot coefficients from dimensionless pressure equation
-PlotNDPressureEqCoef(Material);
+% PlotNDPressureEqCoef(Material);
 
 %% Mesh parameters
 if progress_on
