@@ -52,8 +52,8 @@ uF = phi_u * xuF;
 pF = phi_p * xpF;
 
 % fixed DOFs
-uE = BC.fixed_u_value;
-pE = BC.fixed_p_value;
+uE = BC.fixed_u_value(Control.t);
+pE = BC.fixed_p_value(Control.t);
 
 % store u/p fields
 u(BC.fixed_u, 1) = uE;

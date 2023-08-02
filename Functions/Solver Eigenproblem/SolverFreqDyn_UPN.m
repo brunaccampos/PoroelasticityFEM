@@ -115,8 +115,8 @@ pF = phi_p * xpF;
 nF = phi_n * xnF;
 
 % fixed DOFs
-uE = BC.fixed_u_value;
-pE = BC.fixed_p_value;
+uE = BC.fixed_u_value(Control.t);
+pE = BC.fixed_p_value(Control.t);
 nE = BC.fixed_n_value;
 
 % store u/p fields
@@ -153,6 +153,6 @@ SolutionFreq.pF = p;
 SolutionFreq.pFdot = pdot;
 SolutionFreq.uF2dot = u2dot;
 SolutionFreq.nF = n;
-SolutionFreq.ndot = ndot;
+SolutionFreq.nFdot = ndot;
 
 end
