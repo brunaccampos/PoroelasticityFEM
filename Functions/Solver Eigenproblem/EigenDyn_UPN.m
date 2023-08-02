@@ -30,6 +30,8 @@ Kbar = [KuuFF, -KupFF, sparse(length(BC.free_u), length(BC.free_n));
 
 % coupled solution
 [phi_coupled, omega2_coupled] = eigenshuffle(full(Kbar), full(Mbar));
+% eigenvalue value to matrix form
+omega2_coupled = diag(omega2_coupled);
 
 %% Plots uncoupled
 % sort modes displacement
