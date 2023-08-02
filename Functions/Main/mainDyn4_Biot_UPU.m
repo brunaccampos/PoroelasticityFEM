@@ -48,6 +48,13 @@ if ~isfield(Control, 'alpha')
     Control.alpha = 0;
 end
 
+% initialize video file
+if saveVideo_on
+    myVideo = VideoWriter('myVideoFile'); %open video file
+    myVideo.FrameRate = 10;
+    open(myVideo)
+end
+
 %% Solve system
 while Control.t < Control.tend
     fprintf('\n Step %d, t = %d \n', Control.step, Control.t);
@@ -68,6 +75,18 @@ while Control.t < Control.tend
     
     % linear solver
     [Solution] = SolverDyn_UPU(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, ff, BC, Control, Iteration);
+
+    % plot solution over time
+%     figure(1);
+%     subplot(1,2,1);
+%     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
+%     title('Displacement');
+%     subplot(1,2,2);
+%     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
+%     title('Velocity');
+%     pause(0.001);
+%     frame = getframe(gcf); %get frame
+%     writeVideo(myVideo, frame);
 
     % solution in the frequency domain
     if Control.freqDomain
@@ -172,4 +191,9 @@ if Control.fixedDepthPlotON
     Plot.prow = Solution.p(Control.plotprow);
     Plot.ufrow = Solution.uf(Control.ploturow);
     Plot.ufdotrow = Solution.ufdot(Control.ploturow);
+end
+
+% close video file
+if saveVideo_on
+    close(myVideo)
 end
