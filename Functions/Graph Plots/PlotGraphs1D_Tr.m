@@ -65,7 +65,7 @@ ylabel('udot (solid) [m/s]');
 title(sprintf('Solid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
 % frequency domain solution
 if Control.freqDomain
-    plot(Plot.time, Plot.uFdot, 'm--', 'LineWidth',2);
+    plot(Plot.time, Plot.uFdot, 'g--', 'LineWidth',2);
     legend('Time', 'Frequency');
 end
 hold off
@@ -134,7 +134,7 @@ ylabel('udot (solid) [m]');
 title(sprintf('Solid velocity at t = %.1d s', Control.tend));
 % frequency domain solution
 if Control.freqDomain
-    plot(MeshU.coords, SolutionFreq.uFdot,'m--','LineWidth',2);
+    plot(MeshU.coords, SolutionFreq.uFdot,'g--','LineWidth',2);
     legend('Time', 'Frequency');
 end
 hold off

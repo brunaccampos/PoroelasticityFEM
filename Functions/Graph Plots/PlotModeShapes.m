@@ -18,12 +18,12 @@ for i = 1: length(phi_p)
 end
 
 if MeshU.nsd == 1
-    if Control.steady
+    if contains(Control.PMmodel, 'Tr')
         % 1D transient case
-        PlotModes1DTransient(phi_u_sorted, omega2_u_sorted, phi_p_sorted, omega2_p_sorted, MeshU, MeshP, Control, BC);
+        PlotModes1D_Tr(phi_u_sorted, omega2_u_sorted, phi_p_sorted, omega2_p_sorted, MeshU, MeshP, Control, BC);
     else
         % 1D dynamic case
-        PlotModes1DDynamic(phi_u_sorted, omega2_u_sorted, phi_p_sorted, omega2_p_sorted, MeshU, MeshP, Control, BC);
+        PlotModes1D_Dyn(phi_u_sorted, omega2_u_sorted, phi_p_sorted, omega2_p_sorted, MeshU, MeshP, Control, BC);
     end
 else
     plotmodes = 6;
@@ -34,7 +34,7 @@ end
 end
 
 %% 1D transient plot
-function PlotModes1DTransient(phi_u, omega2_u, phi_p, omega2_p, MeshU, MeshP, Control, BC)
+function PlotModes1D_Tr(phi_u, omega2_u, phi_p, omega2_p, MeshU, MeshP, Control, BC)
 % plot first natural mode shapes
 figure;
 hold on
@@ -57,7 +57,7 @@ hold off
 end
 
 %% 1D dynamic plot
-function PlotModes1DDynamic(phi_u, omega2_u, phi_p, omega2_p, MeshU, MeshP, Control, BC)
+function PlotModes1D_Dyn(phi_u, omega2_u, phi_p, omega2_p, MeshU, MeshP, Control, BC)
 % plot first natural mode shapes
 figure;
 hold on
