@@ -156,17 +156,21 @@ BC.top_node_p = find(MeshP.coords == min(MeshP.coords));
 BC.bottom_node_p = find(MeshP.coords == max(MeshP.coords));
 
 %% Dirichlet BCs - solid
-% displacement at the top
+% displacement at the bottom u=0
 BC.fixed_u1 = BC.bottom_node_u;
+% displacement at the top (sinusoidal)
 BC.fixed_u2 = BC.top_node_u;
 BC.fixed_u = [BC.fixed_u1; BC.fixed_u2];
-t0 = 1e-2;
-BC.fixed_u_value = @(t) [0; t].*(t<t0);
+% amplitude [GPa]
+P0 = 100e-6;
+% frequency [Hz]
+f = 20e3;
+BC.fixed_u_value = @(t) [0; P0*sin(2*pi*f*t)].*(t<1/f);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
-BC.fixed_p = MeshP.DOF;
+BC.fixed_p = [BC.bottom_node_p; BC.top_node_p];
 BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
@@ -214,8 +218,8 @@ Control.uncoupled = 0;
 Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
-Control.dt = 1e-3;  % time step
-Control.tend = 1e-1;   % final simulation time
+Control.dt = 1e-5;  % time step
+Control.tend = 3e-3;   % final simulation time
 
 % Newmark method
 Control.beta = 0.7;
@@ -236,9 +240,10 @@ Control.alpha = 0;
 
 %% Plot data
 % DOF to plot graphs
-node = find(MeshU.coords == 5); % x = 5m
+node = find(MeshU.coords == 3); % x = 5m
 Control.plotu = node;
 Control.plotp = node;
+Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 
 % Plot in a row
 Control.fixedDepthPlotON = 1; % 0: false, 1: true
