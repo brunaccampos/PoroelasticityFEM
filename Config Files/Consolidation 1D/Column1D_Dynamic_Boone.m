@@ -1,17 +1,12 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Boone(config_dir, progress_on)
 % Column Consolidation 1D simulation
 % Configuration File
-% Based on Korsawe (2006) model
+% ------------------------------------------------------------------------
+% Based on Zienkiewicz (1982) model for dynamic case
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
-% - no acceleration terms for solid or fluid
-% - solid velocity is neglected
-% - fluid and solid grains are incompressible
-% - porosity is constant in space and varies over time
-% ------------------------------------------------------------------------
-% column top at x=0, column bottom at x=L
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
@@ -53,35 +48,12 @@ Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
 Material.n = 0.19;
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
-
-% additional coefficients for analytical result
-% Lame constant [GPa]
-Material.lambda = Material.E * Material.nu/((1+Material.nu)*(1-2*Material.nu));
-% gravitational acceleration [m/s2]
-Material.g = 9.81;
-% fluid density [10^9 kg/m3]
-Material.rho_f = 1000e-9;
-% hydraulic conductivity [m/s]
-Material.kh = Material.kf * Material.rho_f * Material.g;
-
 % fluid density [10^9 kg/m3]
 Material.rho_f = 1000e-9;
 % solid density [10^9 kg/m3]
 Material.rho_s = 2650e-9;
 % average density of the medium
 Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
-% Newmark method
-Control.beta = 0.7;
-Control.gamma = 0.7;
-Control.theta = 0.7;
-Control.lambda = 0.7;
-% adaptive time step (optional)
-% Control.dtmin = 1e-3; % minimum time step
-Control.tlim = 1; % limit to use dtmin
-
-% ramp load option (optional); uses tlim from adaptive time step
-% NOTE: only declare if true
-Control.rampLoad = 1;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -106,118 +78,55 @@ Mstar = 1/Mstarinv;
 Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
 Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
 
-% plot deltaS and deltaF
-PlotDelta(Material);
-
-% plot coefficients from dimensionless pressure equation
-PlotNDPressureEqCoef(Material);
-
-%% Verifying correspondence Biot/Spanos parameters
-% pore scale solid constants
-Gs = Material.G/(1-Material.n);
-lambdaS = Material.Ks - Gs*2/3;
-% averaged material constants
-M = 1/Material.Minv;
-lambda = (1-Material.alpha)*Material.Ks-2*Material.G/3;
-% Biot constants
-N_Biot = Material.G;
-Q_Biot = Material.n * (Material.alpha - Material.n)*M;
-R_Biot = Material.n^2*M;
-A_Biot = lambda + Q_Biot^2/R_Biot;
-% Spanos constants
-N_Spanos = (1-Material.n)*Material.G;
-Q_Spanos = Material.Ks*Material.deltaF;
-R_Spanos = Material.Kf*(Material.n - Material.deltaF);
-A_Spanos = (1-Material.n)*lambdaS -Material.deltaS*Material.Ks;
-% check term Q^2/R
-resBiot = Q_Biot^2/R_Biot;
-resSpanos = Q_Spanos^2/R_Spanos;
-% print info
-fprintf('Biot Constants: \n N = %.4f \n Q = %.4f \n R = %.4f \n A = %.4f \n Q^2/R = %.4f \n', N_Biot, Q_Biot, R_Biot, A_Biot, resBiot);
-fprintf('Spanos Constants: \n N = %.4f \n Q = %.4f \n R = %.4f \n A = %.4f \n Q^2/R = %.4f \n', N_Spanos, Q_Spanos, R_Spanos, A_Spanos, resSpanos);
-
 %% Mesh parameters
 if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Manual';
+% location of initial node [m] [x0;y0;z0]
+coord0 = [0;0;0];
+% number of space dimensions
+nsd = 1;
+% size of domain [m] [Lx;Ly;Lz]
+L = 6;
+% number of elements in each direction [nex; ney; nez]
+ne = 100;
 
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 100;
-        % column size [m]
-        L = 6;
-        %%%% solid displacement field
-        typeU = 'L3';
-        fieldU = 'u';
-        MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
-        %%%% fluid pressure field
-        typeP = 'L2';
-        fieldP = 'p';
-        MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            typeN = 'L2';
-            fieldN = 'n';
-            MeshN = Build1DMesh(nsd, ne, L, typeN, fieldN);
-        else
-            MeshN = [];
-        end
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        meshFileNameU = 'Column2DQ9.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        meshFileNameP = 'Column2DQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            fieldN = 'n';
-            meshFileNameN = 'Column2DQ4.msh';
-            MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
-        else
-            MeshN = [];
-        end
+%%%% displacement mesh
+% element type ('Q4')
+typeU = 'L3';
+% variable field ('u', 'p', 'n')
+fieldU = 'u';
+MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
+
+%%%% pressure mesh
+% element type ('Q4')
+typeP = 'L2';
+% variable field ('u', 'p', 'n')
+fieldP = 'p';
+MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
+
+%%%% porosity mesh
+if contains(Control.PMmodel, 'UPN')
+    % element type ('Q4')
+    typeN = 'L2';
+    % variable field ('u', 'p', 'n')
+    fieldN = 'n';
+    MeshN = BuildMesh_structured(nsd, coord0, L, ne, typeN, fieldN, progress_on);
+else
+    MeshN = [];
 end
-
-%% Find nodes for prescribed BCs
-% find top and bottom nodes for displacement field
-BC.top_node_u = find(MeshU.coords == min(MeshU.coords));
-BC.bottom_node_u = find(MeshU.coords == max(MeshU.coords));
-
-% find top and bottom nodes for pressure field
-BC.top_node_p = find(MeshP.coords == min(MeshP.coords));
-BC.bottom_node_p = find(MeshP.coords == max(MeshP.coords));
-
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
 
 %% Dirichlet BCs - solid
 % displacement u=0 at the bottom
-BC.fixed_u = (BC.bottom_node_u);
+BC.fixed_u = MeshU.right_nodes;
 BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
-%   pressure p=0 at the top
-BC.fixed_p = (BC.top_node_p);
+% pressure p=0 at the top
+BC.fixed_p = MeshP.left_nodes;
 BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
@@ -225,12 +134,9 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 %% Neumann BCs - solid
 % point load [GN]
 BC.pointLoadValue = 1e-6;
-BC.pointLoadNodes = BC.top_node_u;
+BC.pointLoadNodes = MeshU.left_nodes;
 BC.pointLoad = zeros(MeshU.nDOF,1);
 BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
-
-% traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
-BC.tractionInterp = 0;
 
 % distributed load [GN/m2]
 BC.tractionNodes = [];
@@ -241,7 +147,7 @@ BC.b = @(x,t)[];
 %% Neumann BCs - fluid
 % point flux [m/s]
 BC.pointFluxValue = 0;
-BC.pointFluxNodes = [];
+BC.pointFluxNodes = MeshP.right_nodes;
 BC.pointFlux = zeros(MeshP.nDOF,1);
 BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
 
@@ -278,7 +184,19 @@ Control.plotansol = 0; % 1 = true; 0 = false
 Control.dt = 1e-2;  % time step [s]
 Control.tend = 20;   % final simulation time [s]
 
-% Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
+% Newmark method
+Control.beta = 0.7;
+Control.gamma = 0.7;
+Control.theta = 0.7;
+Control.lambda = 0.7;
+
+% adaptive time step (optional)
+% Control.dtmin = 1e-3; % minimum time step
+Control.tlim = 1; % limit to use dtmin
+
+% ramp load option (optional); uses tlim from adaptive time step
+% NOTE: only declare if true
+Control.rampLoad = 1;
 
 %% Plot data
 % DOF to plot graphs

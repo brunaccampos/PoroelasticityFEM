@@ -1,15 +1,12 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Zienck(config_dir, progress_on)
 % Column Consolidation 1D simulation
-% Based on Zienkiewicz (1982) model
+% Configuration File
+% ------------------------------------------------------------------------
+% Based on Zienkiewicz (1982) model for dynamic case
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
-% - only solid acceleration is considered (undrained condition; no motions
-% of the fluid relative to the solid skeleton can occur)
-% - solid grains and fluid are incompressible
-% ------------------------------------------------------------------------
-% column top at x=0, column bottom at x=L
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
@@ -27,7 +24,6 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Zienck(
 Control.PMmodel = 'Dyn3_Spanos_UP';
 
 %% Material properties - Simon & Zienckiewicz (1986)
-
 % elasticity modulus [GPa]
 Material.E = 3000e-9;
 % Poisson's ratio
@@ -85,76 +81,50 @@ if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Manual';
+% location of initial node [m] [x0;y0;z0]
+coord0 = [0;0;0];
+% number of space dimensions
+nsd = 1;
+% size of domain [m] [Lx;Ly;Lz]
+L = 100;
+% number of elements in each direction [nex; ney; nez]
+ne = 100;
 
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 100;
-        % column size [m]
-        L = 100;
-        %%%% solid displacement field
-        typeU = 'L3';
-        fieldU = 'u';
-        MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
-        %%%% fluid pressure field
-        typeP = 'L2';
-        fieldP = 'p';
-        MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            typeN = 'L2';
-            fieldN = 'n';
-            MeshN = Build1DMesh(nsd, ne, L, typeN, fieldN);
-        else
-            MeshN = [];
-        end
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        meshFileNameU = 'Column2DQ9.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        meshFileNameP = 'Column2DQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            fieldN = 'n';
-            meshFileNameN = 'Column2DQ4.msh';
-            MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
-        else
-            MeshN = [];
-        end
+%%%% displacement mesh
+% element type ('Q4')
+typeU = 'L3';
+% variable field ('u', 'p', 'n')
+fieldU = 'u';
+MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
+
+%%%% pressure mesh
+% element type ('Q4')
+typeP = 'L2';
+% variable field ('u', 'p', 'n')
+fieldP = 'p';
+MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
+
+%%%% porosity mesh
+if contains(Control.PMmodel, 'UPN')
+    % element type ('Q4')
+    typeN = 'L2';
+    % variable field ('u', 'p', 'n')
+    fieldN = 'n';
+    MeshN = BuildMesh_structured(nsd, coord0, L, ne, typeN, fieldN, progress_on);
+else
+    MeshN = [];
 end
-
-%% Find nodes for prescribed BCs
-% find top and bottom nodes for displacement field
-BC.top_node_u = find(MeshU.coords == min(MeshU.coords));
-BC.bottom_node_u = find(MeshU.coords == max(MeshU.coords));
-
-% find top and bottom nodes for pressure field
-BC.top_node_p = find(MeshP.coords == min(MeshP.coords));
-BC.bottom_node_p = find(MeshP.coords == max(MeshP.coords));
 
 %% Dirichlet BCs - solid
 % displacement u=0 at the bottom
-BC.fixed_u = (BC.bottom_node_u);
+BC.fixed_u = MeshU.right_nodes;
 BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
-%   pressure p=0 at the top
-BC.fixed_p = (BC.top_node_p);
+% pressure p=0 at the top
+BC.fixed_p = MeshP.left_nodes;
 BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
@@ -162,7 +132,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 %% Neumann BCs - solid
 % point load [GN]
 BC.pointLoadValue = 1e-6;
-BC.pointLoadNodes = BC.top_node_u;
+BC.pointLoadNodes = MeshU.left_nodes;
 BC.pointLoad = zeros(MeshU.nDOF,1);
 BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
 
@@ -178,7 +148,7 @@ BC.b = @(x,t)[];
 %% Neumann BCs - fluid
 % point flux [m/s]
 BC.pointFluxValue = 0;
-BC.pointFluxNodes = BC.bottom_node_p;
+BC.pointFluxNodes = MeshP.right_nodes;
 BC.pointFlux = zeros(MeshP.nDOF,1);
 BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
 
