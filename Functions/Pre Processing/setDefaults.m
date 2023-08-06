@@ -35,6 +35,12 @@ if ~isfield(BC, 'initP')
     BC.initP = [];
 end
 
+% traction interpolation (needed for traction applied in circular
+% geometries)
+if isfield(BC,'tractionInterp')
+    BC.tractionInterp = 0;
+end
+
 %% Control options
 % ramp applied load in the beginning of simulation: default false
 if ~isfield(Control, 'rampLoad')
