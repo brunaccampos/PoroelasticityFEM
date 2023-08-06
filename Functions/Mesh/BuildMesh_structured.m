@@ -205,6 +205,7 @@ end
 Mesh.eneighbours = zeros(Mesh.ne,nneighbors);
 
 if nsd == 1
+    Mesh.L = max(Mesh.coords,[],'all');
     for e = 1:Mesh.ne   % loop through all elements
         % if it is the first element
         if e == 1
@@ -216,7 +217,6 @@ if nsd == 1
 
         Mesh.eneighbours(e,1) = e - 1;
         Mesh.eneighbours(e,2) = e + 1;
-
     end
 elseif strcmp(Mesh.type,'Q4')
     e = 1; % element counter
