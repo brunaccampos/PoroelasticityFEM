@@ -141,13 +141,6 @@ switch MeshType
         end
 end
 
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
-
 %% Dirichlet BCs - solid
 % column vector of prescribed displacement dof
 BC.fixed_u = [1; 2; 23];

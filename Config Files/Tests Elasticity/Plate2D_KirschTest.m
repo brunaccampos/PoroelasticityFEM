@@ -1,15 +1,6 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_KirschTest(config_dir, progress_on)
-% 2D simulation of hydraulic dilation stimulation of SADG well pair
+% Plate with hole for Kirsch test
 % Configuration File
-% Based on Korsawe (2006) model
-% ------------------------------------------------------------------------
-% Assumptions/conventions:
-% - stress is positive for tension
-% - boundary condition for force is based on total stress
-% - no acceleration terms for solid or fluid
-% - solid velocity is neglected
-% - fluid and solid grains are incompressible
-% - porosity is constant in space and varies over time
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
@@ -51,7 +42,7 @@ Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;
 
-% thickness 
+% thickness
 % 1D: cross sectional area [m2]
 % 2D: out of plane thickness [m]
 Material.t = 1;
@@ -65,66 +56,31 @@ if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Gmsh';
-
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 10;
-        % column size [m]
-        L = 10;
-        %%%% solid displacement field
-        typeU = 'L3';
-        MeshU = Build1DMesh(nsd, ne, L, typeU);
-        %%%% fluid pressure field
-        typeP = 'L2';
-        MeshP = Build1DMesh(nsd, ne, L, typeP);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            typeN = 'L2';
-            MeshN = Build1DMesh(nsd, ne, L, typeN);
-        else
-            MeshN = [];
-        end
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        meshFileNameU = 'Mesh Files\PlateWithHole_FullGeometryQ4.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        meshFileNameP = 'Mesh Files\PlateWithHole_FullGeometryQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            fieldN = 'n';
-            meshFileNameN = 'Mesh Files\PlateWithHole_FullGeometryQ4.msh';
-            MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
-        else
-            MeshN = [];
-        end
+% GMSH file Version 2 ASCII
+% number of space dimensions
+nsd = 2;
+%%%% displacement field
+fieldU = 'u';
+meshFileNameU = 'Mesh Files\PlateWithHole_FullGeometryQ4.msh';
+MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+%%%% pressure field
+fieldP = 'p';
+meshFileNameP = 'Mesh Files\PlateWithHole_FullGeometryQ4.msh';
+MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+%%%% porosity field
+if contains(Control.PMmodel, 'UPN')
+    fieldN = 'n';
+    meshFileNameN = 'Mesh Files\PlateWithHole_FullGeometryQ4.msh';
+    MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
+else
+    MeshN = [];
 end
-
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
 
 %% Dirichlet BCs - solid
 % displacement u=0 at boundaries
 BC.fixed_u = [MeshU.bottom_dofy; MeshU.top_dofy; MeshU.left_dofx; MeshU.right_dofx];
 % fixed DOF values
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
@@ -132,7 +88,7 @@ BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 % fixed DOFs (nodes at injection wells)
 BC.fixed_p = MeshP.DOF;
 % fixed DOF values
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -191,7 +147,7 @@ end
 BC.pointLoad = [];
 
 % body force [GN/m3]
-BC.b = @(x)[];
+BC.b = @(x,t)[];
 
 %% Neumann BCs - fluid
 % distributed flux [m3/s]
@@ -203,7 +159,7 @@ BC.fluxValue = zeros(length(BC.fluxNodes),1);
 BC.pointFlux = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x)[]; 
+BC.s = @(x,t)[];
 
 %% Quadrature order
 Control.nqU = 2;
@@ -215,7 +171,7 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 %% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
-Control.uncoupled = 0; 
+Control.uncoupled = 0;
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false
