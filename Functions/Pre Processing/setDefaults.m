@@ -37,7 +37,7 @@ end
 
 % traction interpolation (needed for traction applied in circular
 % geometries)
-if isfield(BC,'tractionInterp')
+if ~isfield(BC,'tractionInterp')
     BC.tractionInterp = 0;
 end
 
