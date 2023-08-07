@@ -18,7 +18,7 @@ Material.alpha = 0;
 % poroelasticity model
 Control.PMmodel = 'Tr1_Biot_UP';
 
-% thickness 
+% thickness
 % 1D: cross sectional area [m2]
 % 2D: out of plane thickness [m]
 Material.t = 1;
@@ -36,82 +36,56 @@ if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Manual';
+% location of initial node [m] [x0;y0;z0]
+coord0 = [0;0;0];
+% number of space dimensions
+nsd = 1;
+% size of domain [m] [Lx;Ly;Lz]
+L = 1;
+% number of elements in each direction [nex; ney; nez]
+ne = 8;
 
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 8;
-        % column size [m]
-        L = 1;
-        
-        % solid displacement field
-        typeU = 'L2';
-        fieldU = 'u';
-        MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
-        
-        % fluid pressure field
-        typeP = 'L2';
-        fieldP = 'p';
-        MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
-        
-        MeshN = [];
-        
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        % build mesh displacement field
-        meshFileNameU = 'Mesh Files\Manufactured_finerQ4.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        % build mesh pressure field
-        meshFileNameP = 'Mesh Files\Manufactured_finerQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        MeshN = [];
+%%%% displacement mesh
+% element type ('Q4')
+typeU = 'L2';
+% variable field ('u', 'p', 'n')
+fieldU = 'u';
+MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
+
+%%%% pressure mesh
+% element type ('Q4')
+typeP = 'L2';
+% variable field ('u', 'p', 'n')
+fieldP = 'p';
+MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
+
+%%%% porosity mesh
+if contains(Control.PMmodel, 'UPN')
+    % element type ('Q4')
+    typeN = 'L2';
+    % variable field ('u', 'p', 'n')
+    fieldN = 'n';
+    MeshN = BuildMesh_structured(nsd, coord0, L, ne, typeN, fieldN, progress_on);
+else
+    MeshN = [];
 end
-
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
-
-%% Find nodes for prescribed BCs
-% find top and bottom nodes for displacement field
-BC.top_node_u = find(MeshU.coords == max(MeshU.coords));
-BC.bottom_node_u = find(MeshU.coords == min(MeshU.coords));
-
-% find top and bottom nodes for pressure field
-BC.top_node_p = find(MeshP.coords == max(MeshP.coords));
-BC.bottom_node_p = find(MeshP.coords == min(MeshP.coords));
 
 %% Dirichlet BCs - solid
 % prescribed displacement
 BC.fixed_u = 1:MeshU.nDOF;
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
-BC.p = @(x) x.^5 - x.^4;
+BC.p = @(x,t) x.^5 - x.^4;
 % column vector of prescribed pressure dof
-BC.fixed_p_dof1 = BC.top_node_p;
-BC.fixed_p_dof2 = BC.bottom_node_p;
+BC.fixed_p_dof1 = MeshP.left_nodes;
+BC.fixed_p_dof2 = MeshP.right_nodes;
 BC.fixed_p = [BC.fixed_p_dof1; BC.fixed_p_dof2];
 % prescribed pressure
 BC.fixed_p_value = zeros(length(BC.fixed_p),1);
-BC.fixed_p_value = BC.p(MeshP.coords(BC.fixed_p));
+BC.fixed_p_value = @(t) BC.p(MeshP.coords(BC.fixed_p),t);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -120,7 +94,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 BC.tractionNodes = [];
 
 % body force
-BC.b = @(x) [];
+BC.b = @(x,t) [];
 
 % point load [N]
 BC.pointLoad = [];
@@ -133,7 +107,7 @@ BC.pointFlux = [];
 BC.fluxNodes = [];
 
 % flux source
-BC.s = @(x) - Material.kf * (20 * x.^3 - 12 * x.^2); 
+BC.s = @(x,t) - Material.kf * (20 * x.^3 - 12 * x.^2);
 
 %% Quadrature order
 Control.nqU = 1;
@@ -145,17 +119,17 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 %% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
-Control.uncoupled = 1; 
+Control.uncoupled = 1;
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 1; % 1 = true; 0 = false
 
 % solution in u
-Control.u_an = zeros(MeshU.nDOF,1);
+Control.u_an = @(t) zeros(MeshU.nDOF,1);
 
 % solution in p
-Control.p_an = @(x) x.^5 - x.^4;
-Control.p_an = Control.p_an(MeshP.coords);
+Control.p_an_symb = @(x,t) x.^5 - x.^4;
+Control.p_an = @(t) Control.p_an_symb(MeshP.coords,t);
 
 %% Time step controls
 Control.dt = 1;  % time step

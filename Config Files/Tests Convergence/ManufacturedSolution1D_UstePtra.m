@@ -37,83 +37,61 @@ if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Manual';
+% location of initial node [m] [x0;y0;z0]
+coord0 = [0;0;0];
+% number of space dimensions
+nsd = 1;
+% size of domain [m] [Lx;Ly;Lz]
+L = 2;
+% number of elements in each direction [nex; ney; nez]
+ne = 128;
 
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 128;
-        % column size [m]
-        L = 2;
-        
-        % solid displacement field
-        typeU = 'L4';
-        fieldU = 'u';
-        MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
-        
-        % fluid pressure field
-        typeP = 'L3';
-        fieldP = 'p';
-        MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
-        
-        MeshN = [];
-        
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        % build mesh displacement field
-        meshFileNameU = 'Mesh Files\Manufactured_finerQ4.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        % build mesh pressure field
-        meshFileNameP = 'Mesh Files\Manufactured_finerQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        MeshN = [];
+%%%% displacement mesh
+% element type ('Q4')
+typeU = 'L4';
+% variable field ('u', 'p', 'n')
+fieldU = 'u';
+MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
+
+%%%% pressure mesh
+% element type ('Q4')
+typeP = 'L3';
+% variable field ('u', 'p', 'n')
+fieldP = 'p';
+MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
+
+%%%% porosity mesh
+if contains(Control.PMmodel, 'UPN')
+    % element type ('Q4')
+    typeN = 'L2';
+    % variable field ('u', 'p', 'n')
+    fieldN = 'n';
+    MeshN = BuildMesh_structured(nsd, coord0, L, ne, typeN, fieldN, progress_on);
+else
+    MeshN = [];
 end
 
 %% Initial conditions
-% displacement
-BC.initU = [];
-
 % pressure
 BC.initP = 50*ones(MeshP.nDOF,1);
 
-%% Find nodes for prescribed BCs
-% find top and bottom nodes for displacement field
-BC.top_node_u = find(MeshU.coords == max(MeshU.coords));
-BC.bottom_node_u = find(MeshU.coords == min(MeshU.coords));
-
-% find top and bottom nodes for pressure field
-BC.top_node_p = find(MeshP.coords == max(MeshP.coords));
-BC.bottom_node_p = find(MeshP.coords == min(MeshP.coords));
-
 %% Dirichlet BCs - solid
-BC.ux = @(x) sin(x);
+BC.ux = @(x,t) sin(x);
 % column vector of prescribed displacement dof
-BC.fixed_u_dof1 = BC.top_node_u;
-BC.fixed_u_dof2 = BC.bottom_node_u;
+BC.fixed_u_dof1 = MeshU.left_nodes;
+BC.fixed_u_dof2 = MeshU.right_nodes;
 BC.fixed_u = [BC.fixed_u_dof1; BC.fixed_u_dof2];
 % prescribed displacement
 BC.fixed_u_value = zeros(length(BC.fixed_u),1);
-BC.fixed_u_value = BC.ux(MeshU.coords(BC.fixed_u));
+BC.fixed_u_value = @(t) BC.ux(MeshU.coords(BC.fixed_u),t);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
-%   pressure p=0 at the top
-BC.fixed_p = [BC.bottom_node_p; BC.top_node_p];
+% pressure p=0 at the top
+BC.fixed_p = [MeshP.left_nodes; MeshP.right_nodes];
 % fixed DOF values
-BC.fixed_p_value = [100; 0];
+BC.fixed_p_value = @(t) [100; 0];
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -122,7 +100,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 BC.tractionNodes = [];
 
 % body force
-BC.b = @(x) sin(x);
+BC.b = @(x,t) sin(x);
 
 % point load [N]
 BC.pointLoad = [];
@@ -135,7 +113,7 @@ BC.pointFlux = [];
 BC.fluxNodes = [];
 
 % flux source
-BC.s = @(x) [];
+BC.s = @(x,t) [];
 
 %% Quadrature order
 Control.nqU = 3;
@@ -143,6 +121,12 @@ Control.nqP = 3;
 
 %% Frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
+
+%% Time step controls
+Control.dt = 1e-2;  % time step
+Control.tend = 1;
+
+Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
 %% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
@@ -153,32 +137,27 @@ Control.uncoupled = 1;
 Control.plotansol = 1; % 1 = true; 0 = false
 
 % solution in u
-Control.uan_symb = @(x) sin(x);
-Control.u_an = Control.uan_symb(MeshU.coords);
+Control.uan_symb = @(x,t) sin(x);
+Control.u_an = @(t) Control.uan_symb(MeshU.coords,t);
 aux=0;
 syms x
 N=1000;
 for k=1:N
     aux = aux + (1/k)*exp(-Material.kf*k^2*pi()^2*Control.tend)*sin(k*pi()*x);
 end
-steady = (BC.fixed_p_value(2) - BC.fixed_p_value(1))*x/max(MeshP.coords) + BC.fixed_p_value(1);
+T0vec = BC.fixed_p_value(0);
+steady = (T0vec(2) - T0vec(1))*x/max(MeshP.coords) + T0vec(1);
 
 % solution in p
-Control.pan_symb = steady - (BC.fixed_p_value(1)/pi()) * aux; % transient solution
+Control.pan_symb = @(t) steady - (T0vec(1)/pi()) * aux; % transient solution
 aux=0;
 x = MeshP.coords;
 N=1000;
 for k=1:N
     aux = aux + (1/k)*exp(-Material.kf*k^2*pi()^2*Control.tend)*sin(k*pi()*x);
 end
-steady = (BC.fixed_p_value(2) - BC.fixed_p_value(1))*x/max(MeshP.coords) + BC.fixed_p_value(1);
-Control.p_an = steady - (BC.fixed_p_value(1)/pi()) * aux; % transient solution
-
-%% Time step controls
-Control.dt = 1e-3;  % time step
-Control.tend = 1;
-
-Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
+steady = (T0vec(2) - T0vec(1))*x/max(MeshP.coords) + T0vec(1);
+Control.p_an = @(t) steady - (T0vec(1)/pi()) * aux; % transient solution
 
 %% Plot data
 Control.plotu = round(MeshU.nn/2);
