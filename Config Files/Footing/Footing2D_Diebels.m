@@ -1,15 +1,14 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Footing2D_Diebels(config_dir, progress_on)
 % 2D simulation of footing problem
 % Configuration File
-% Based on Korsawe (2006) model
+% ------------------------------------------------------------------------
+% Based on Korsawe (2006) model for transient/quasi-steady case
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
 % - no acceleration terms for solid or fluid
 % - solid velocity is neglected
-% - fluid and solid grains are incompressible
-% - porosity is constant in space and varies over time
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
@@ -46,15 +45,15 @@ Material.n = 0.33;
 % Biot's coefficient
 Material.alpha = 1;
 % 1/Q (related to storage coefficient)
-% Material.Minv = 0;
+Material.Minv = 0;
 
-% alternative values of Kf, Ks for compressible materials (Boone, 1990)
-% fluid bulk modulus [GPa]
-Material.Kf = 3;
-% solid bulk modulus [GPa]
-Material.Ks = 36;
-% 1/Q (related to storage coefficient)
-Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
+% % alternative values of Kf, Ks for compressible materials (Boone, 1990)
+% % fluid bulk modulus [GPa]
+% Material.Kf = 3;
+% % solid bulk modulus [GPa]
+% Material.Ks = 36;
+% % 1/Q (related to storage coefficient)
+% Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;
@@ -75,77 +74,42 @@ n = 1; % return to Biot
 % n = Material.Ks/Material.Kf; % upper limit
  
 % porosity equation coefficients
-% Material.deltaF = 0;
-% Material.deltaS = Material.alpha - Material.n;
+Material.deltaF = 0;
+Material.deltaS = Material.alpha - Material.n;
 
-% alternative equations for compressible materials
-% modified storage coefficient (Muller, 2019)
-Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks; 
-Mstar = 1/Mstarinv;
-
-% porosity equation coefficients
-Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
-Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
+% % alternative equations for compressible materials
+% % modified storage coefficient (Muller, 2019)
+% Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks; 
+% Mstar = 1/Mstarinv;
+% 
+% % porosity equation coefficients
+% Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
+% Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
 
 %% Mesh parameters
 if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Gmsh';
-
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 10;
-        % column size [m]
-        L = 1;
-        %%%% solid displacement field
-        typeU = 'L3';
-        MeshU = Build1DMesh(nsd, ne, L, typeU);
-        %%%% fluid pressure field
-        typeP = 'L2';
-        MeshP = Build1DMesh(nsd, ne, L, typeP);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            typeN = 'L2';
-            MeshN = Build1DMesh(nsd, ne, L, typeN);
-        else
-            MeshN = [];
-        end
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        meshFileNameU = 'Mesh Files\Footing_DiebelsQ9uniformCoarse.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        meshFileNameP = 'Mesh Files\Footing_DiebelsQ4uniformCoarse.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            fieldN = 'n';
-            meshFileNameN = 'Mesh Files\Footing_DiebelsQ4uniformCoarse.msh';
-            MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
-        else
-            MeshN = [];
-        end
+% GMSH file Version 2 ASCII
+% number of space dimensions
+nsd = 2;
+%%%% displacement field
+fieldU = 'u';
+meshFileNameU = 'Mesh Files\Footing_DiebelsQ9uniformCoarse.msh';
+MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+%%%% pressure field
+fieldP = 'p';
+meshFileNameP = 'Mesh Files\Footing_DiebelsQ4uniformCoarse.msh';
+MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+%%%% porosity field
+if contains(Control.PMmodel, 'UPN')
+    fieldN = 'n';
+    meshFileNameN = 'Mesh Files\Footing_DiebelsQ4uniformCoarse.msh';
+    MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
+else
+    MeshN = [];
 end
-
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
 
 %% Load strip 
 % select nodes in the interval [(0,10) (5,10)] where the load is applied
@@ -184,8 +148,6 @@ BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
-% traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
-BC.tractionInterp = 0;
 % prescribed traction [GN/m2]
 BC.traction = -15e-6;
 BC.tractionNodes = nodesU;
