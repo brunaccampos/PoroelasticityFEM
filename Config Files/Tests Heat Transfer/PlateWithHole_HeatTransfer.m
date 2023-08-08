@@ -1,6 +1,6 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateWithHole_HeatTransfer(config_dir, progress_on)
-% Plate with hole 1/8 model
-% Heat transfer problem adapted from file Q4one8thModel
+% Plate with hole 1/8 model: Heat transfer problem adapted from file Q4one8thModel
+% Configuration file
 % ------------------------------------------------------------------------
 
 %% Material properties
@@ -18,7 +18,7 @@ Material.Minv = 0;
 % poroelasticity model
 Control.PMmodel = 'Tr1_Biot_UP';
 
-% thickness 
+% thickness
 % 1D: cross sectional area [m2]
 % 2D: out of plane thickness [m]
 Material.t = 1;
@@ -32,101 +32,71 @@ if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Manual';
-
-switch MeshType
-    case 'Manual'
-    % Manual 2D mesh
-        MeshU.nsd = 2; % number of spatial directions
-        MeshU.nn = 7; % number of nodes
-        MeshU.ne = 3; % number of elements
-        MeshU.type = 'Q4'; % element type
-        MeshU.field = 'u'; % field type
-        MeshU.nne = 4; % nodes per element
-        MeshU.nDOFe = MeshU.nne*MeshU.nsd; % DOFs per element
-        MeshU.nDOF = MeshU.nn*MeshU.nsd; % total number of DOFs
-        for sd = 1:MeshU.nsd
-            MeshU.DOF(:,sd) = (sd : MeshU.nsd : (MeshU.nDOF-(MeshU.nsd-sd)))';
-        end
-        MeshU.coords = zeros(MeshU.nn, 2); % nodal coordinates
-        % x coordinates
-        x1 = -9/4; x2 = -1/4; x3=-1/4*cos(pi/4); x4 = -9/4;
-        x5 = 1/2*(x3+x4); x6 =1/2*(x1+x2); x7 = -9/4;
-        MeshU.coords(:,1) = [x1;x2;x3;x4;x5;x6;x7];
-        % y coordinates
-        y1 =0; y2=0; y3 = 1/4*sin(pi/4) ; y4=9/4; 
-        y5=1/2*(y3+y4); y6=1/2*(y5+y1); y7 = y6;
-        MeshU.coords(:,2) = [y1;y2;y3;y4;y5;y6;y7];
-
-        MeshU.conn = [1,2,6,7; 
-                    2,3,5,6;
-                    7,6,5,4]; % elements connectivity
-                
-                
-        % mesh for fluid field
-        MeshP.nsd = 2; % number of spatial directions
-        MeshP.nn = 7; % number of nodes
-        MeshP.ne = 3; % number of elements
-        MeshP.type = 'Q4'; % element type
-        MeshP.field = 'p'; % field type
-        MeshP.nne = 4; % nodes per element
-        MeshP.nDOFe = MeshP.nne; % DOFs per element
-        MeshP.nDOF = MeshP.nn; % total number of DOFs
-        MeshP.DOF = (1:MeshP.nDOF).'; % DOFs
-        MeshP.coords = zeros(MeshP.nn, 2); % nodal coordinates
-        % x coordinates
-        x1 = -9/4; x2 = -1/4; x3=-1/4*cos(pi/4); x4 = -9/4;
-        x5 = 1/2*(x3+x4); x6 =1/2*(x1+x2); x7 = -9/4;
-        MeshP.coords(:,1) = [x1;x2;x3;x4;x5;x6;x7];
-        % y coordinates
-        y1 =0; y2=0; y3 = 1/4*sin(pi/4) ; y4=9/4; 
-        y5=1/2*(y3+y4); y6=1/2*(y5+y1); y7 = y6;
-        MeshP.coords(:,2) = [y1;y2;y3;y4;y5;y6;y7];
-
-        MeshP.conn = [1,2,6,7; 
-                    2,3,5,6;
-                    7,6,5,4]; % elements connectivity
-
-        % mesh for porosity field
-        MeshN = [];
-% ------------------------------------------------------------------------
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        meshFileNameU = 'PlateWithHoleQ4.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        meshFileNameP = 'PlateWithHoleQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            fieldN = 'n';
-            meshFileNameN = 'PlateWithHoleQ4.msh';
-            MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
-        else
-            MeshN = [];
-        end
+% Manual 2D mesh
+MeshU.nsd = 2; % number of spatial directions
+MeshU.nn = 7; % number of nodes
+MeshU.ne = 3; % number of elements
+MeshU.type = 'Q4'; % element type
+MeshU.field = 'u'; % field type
+MeshU.nne = 4; % nodes per element
+MeshU.nDOFe = MeshU.nne*MeshU.nsd; % DOFs per element
+MeshU.nDOF = MeshU.nn*MeshU.nsd; % total number of DOFs
+for sd = 1:MeshU.nsd
+    MeshU.DOF(:,sd) = (sd : MeshU.nsd : (MeshU.nDOF-(MeshU.nsd-sd)))';
 end
+MeshU.coords = zeros(MeshU.nn, 2); % nodal coordinates
+% x coordinates
+x1 = -9/4; x2 = -1/4; x3=-1/4*cos(pi/4); x4 = -9/4;
+x5 = 1/2*(x3+x4); x6 =1/2*(x1+x2); x7 = -9/4;
+MeshU.coords(:,1) = [x1;x2;x3;x4;x5;x6;x7];
+% y coordinates
+y1 =0; y2=0; y3 = 1/4*sin(pi/4) ; y4=9/4;
+y5=1/2*(y3+y4); y6=1/2*(y5+y1); y7 = y6;
+MeshU.coords(:,2) = [y1;y2;y3;y4;y5;y6;y7];
+
+MeshU.conn = [1,2,6,7;
+    2,3,5,6;
+    7,6,5,4]; % elements connectivity
+
+% mesh for fluid field
+MeshP.nsd = 2; % number of spatial directions
+MeshP.nn = 7; % number of nodes
+MeshP.ne = 3; % number of elements
+MeshP.type = 'Q4'; % element type
+MeshP.field = 'p'; % field type
+MeshP.nne = 4; % nodes per element
+MeshP.nDOFe = MeshP.nne; % DOFs per element
+MeshP.nDOF = MeshP.nn; % total number of DOFs
+MeshP.DOF = (1:MeshP.nDOF).'; % DOFs
+MeshP.coords = zeros(MeshP.nn, 2); % nodal coordinates
+% x coordinates
+x1 = -9/4; x2 = -1/4; x3=-1/4*cos(pi/4); x4 = -9/4;
+x5 = 1/2*(x3+x4); x6 =1/2*(x1+x2); x7 = -9/4;
+MeshP.coords(:,1) = [x1;x2;x3;x4;x5;x6;x7];
+% y coordinates
+y1 =0; y2=0; y3 = 1/4*sin(pi/4) ; y4=9/4;
+y5=1/2*(y3+y4); y6=1/2*(y5+y1); y7 = y6;
+MeshP.coords(:,2) = [y1;y2;y3;y4;y5;y6;y7];
+
+MeshP.conn = [1,2,6,7;
+    2,3,5,6;
+    7,6,5,4]; % elements connectivity
+
+% mesh for porosity field
+MeshN = [];
 
 %% Dirichlet BCs - solid
 % column vector of prescribed displacement dof
 BC.fixed_u = 1:MeshU.nDOF;
 % prescribed displacement for each dof [u1; u2; ...] [m]
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
 BC.fixed_p = [1;2;3;4;7]; % nodes at the inner circle and left boundary
 % fixed DOF values
-BC.fixed_p_value = [25;10;10;25;25];
+BC.fixed_p_value = @(t) [25;10;10;25;25];
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -138,7 +108,7 @@ BC.tractionNodes = [];
 BC.pointLoad = [];
 
 % body force [N/m3]
-BC.b = @(x)[];  
+BC.b = @(x,t)[];
 
 %% Neumann BCs - fluid
 % distributed flux [m/s]
@@ -148,7 +118,7 @@ BC.fluxNodes = [];
 BC.pointFlux = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x)[]; 
+BC.s = @(x,t)[];
 
 %% Quadrature order
 Control.nqU = 2;
@@ -160,7 +130,7 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 %% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
-Control.uncoupled = 0; 
+Control.uncoupled = 0;
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false

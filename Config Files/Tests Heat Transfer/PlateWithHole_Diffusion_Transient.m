@@ -1,6 +1,7 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateWithHole_Diffusion_Transient(config_dir, progress_on)
+% 2D diffusion problem - transient case
+% Configuration file
 % ------------------------------------------------------------------------
-% 2D diffusion problem - steady case
 % Adapted from: https://github.com/GCMLab
 % ------------------------------------------------------------------------
 
@@ -23,9 +24,6 @@ Material.alpha = 0;
 % poroelasticity model
 Control.PMmodel = 'Tr1_Biot_UP';
 
-% lumped mass matrix - 0: false, 1: true
-Material.lumpedMass = 0;
-
 % thickness 
 % 1D: cross sectional area [m2]
 % 2D: out of plane thickness [m]
@@ -40,66 +38,31 @@ if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Gmsh';
-
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 10;
-        % column size [m]
-        L = 10;
-        %%%% solid displacement field
-        typeU = 'L3';
-        MeshU = Build1DMesh(nsd, ne, L, typeU);
-        %%%% fluid pressure field
-        typeP = 'L2';
-        MeshP = Build1DMesh(nsd, ne, L, typeP);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            typeN = 'L2';
-            MeshN = Build1DMesh(nsd, ne, L, typeN);
-        else
-            MeshN = [];
-        end
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        meshFileNameU = 'Mesh Files\PlateWithHoleQ4.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        meshFileNameP = 'Mesh Files\PlateWithHoleQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            fieldN = 'n';
-            meshFileNameN = 'Mesh Files\PlateWithHoleQ4.msh';
-            MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
-        else
-            MeshN = [];
-        end
+% GMSH file Version 2 ASCII
+% number of space dimensions
+nsd = 2;
+%%%% displacement field
+fieldU = 'u';
+meshFileNameU = 'Mesh Files\PlateWithHoleQ4.msh';
+MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+%%%% pressure field
+fieldP = 'p';
+meshFileNameP = 'Mesh Files\PlateWithHoleQ4.msh';
+MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+%%%% porosity field
+if contains(Control.PMmodel, 'UPN')
+    fieldN = 'n';
+    meshFileNameN = 'Mesh Files\PlateWithHoleQ4.msh';
+    MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
+else
+    MeshN = [];
 end
-
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
 
 %% Dirichlet BCs - solid
 % column vector of prescribed displacement dof
 BC.fixed_u = 1:MeshU.nDOF;
 % prescribed displacement for each dof [u1; u2; ...] [m]
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
@@ -107,7 +70,7 @@ BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 T = 100;
 BC.fixed_p = [1; 5; 6; 7; 8; 9; 10; 11; 12]; % nodes at the inner circle
 % fixed DOF values
-BC.fixed_p_value = T*ones(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) T*ones(length(BC.fixed_p),1);
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -120,7 +83,7 @@ BC.tractionForce = zeros(length(BC.tractionNodes),2);
 BC.pointLoad = [];
 
 % body force [N/m3]
-BC.b = @(x)[];  
+BC.b = @(x,t)[];  
 
 %% Neumann BCs - fluid
 % distributed flux [m/s]
@@ -130,7 +93,7 @@ BC.fluxNodes = [];
 BC.pointFlux = [];
 
 % flux source [N/m3]
-BC.s = @(x)[]; 
+BC.s = @(x,t)[]; 
 
 %% Quadrature order
 Control.nqU = 2;
