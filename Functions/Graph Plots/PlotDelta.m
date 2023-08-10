@@ -14,6 +14,7 @@ figure;
 plot(n, deltaF, 'LineWidth', 1.5);
 hold on
 plot(n, deltaS, 'LineWidth', 1.5);
+grid on
 xline(1, '--', 'LineWidth', 1.5);
 xlabel('n');
 ylabel('\delta');

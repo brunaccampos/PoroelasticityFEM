@@ -8,6 +8,7 @@ tiledlayout(2,3);
 nexttile
 plot(Plot.time, Plot.p_time*10^9.*Material.t,'k','LineWidth',2);
 hold on
+grid on
 xlabel('Time [s]');
 ylabel('p [Pa]');
 title(sprintf('Pressure at x = %.2f m', MeshP.coords(Control.plotp,1)));
@@ -34,6 +35,7 @@ end
 nexttile
 plot(Plot.time, Plot.u_time, 'b', 'LineWidth',2);
 hold on
+grid on
 xlabel('Time [s]');
 ylabel('u (solid) [m]');
 title(sprintf('Solid displacement at x = %.2f m', MeshU.coords(Control.plotu,1)));
@@ -60,6 +62,7 @@ end
 nexttile
 plot(Plot.time, Plot.udot_time,'r','LineWidth',2);
 hold on
+grid on
 xlabel('Time [s]');
 ylabel('udot (solid) [m/s]');
 title(sprintf('Solid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
@@ -77,6 +80,7 @@ end
 nexttile
 plot(MeshP.coords, Solution.p*10^9.*Material.t,'k','LineWidth',2);
 hold on
+grid on
 xlabel('Column depth [m]');
 ylabel('p [Pa]');
 title(sprintf('Pressure at t = %.1d s', Control.tend));
@@ -103,6 +107,7 @@ end
 nexttile
 plot(MeshU.coords, Solution.u,'b','LineWidth',2);
 hold on
+grid on
 xlabel('Column depth [m]');
 ylabel('u (solid) [m]');
 title(sprintf('Solid displacement at t = %.1d s', Control.tend));
@@ -129,6 +134,7 @@ end
 nexttile
 plot(MeshU.coords, Solution.udot,'r','LineWidth',2);
 hold on
+grid on
 xlabel('Column depth [m]');
 ylabel('udot (solid) [m]');
 title(sprintf('Solid velocity at t = %.1d s', Control.tend));
@@ -148,6 +154,7 @@ if contains(Control.PMmodel, 'UPN')
     %% porosity vs depth
     nexttile
     semilogx(MeshN.coords, (Solution.n-Material.n) ./ Material.n,'g','LineWidth',2);
+    grid on
     hold on
     xlabel('Column depth [m]');
     ylabel('Change in porosity normalized [-]');
@@ -161,6 +168,7 @@ if contains(Control.PMmodel, 'UPN')
     nexttile
     semilogx(Plot.time, (Plot.n_time-Material.n) ./ Material.n,'g','LineWidth',2);
     hold on
+    grid on
     xlabel('Time [s]');
     ylabel('Change in porosity normalized [-]');
     title(sprintf('Porosity norm at x = %.2f m', MeshN.coords(Control.plotp,1)));

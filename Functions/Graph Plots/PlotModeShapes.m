@@ -48,6 +48,7 @@ for mode = 1:6
     plot(MeshU.coords, modeshapeu(:,mode), 'b', 'LineWidth', 2);
     hold on
     plot(MeshP.coords, modeshapep(:,mode), 'k', 'LineWidth', 2);
+    grid on
     xlabel('Length (m)');
     ylabel('Shape');
     legend('u', 'p');
@@ -70,6 +71,7 @@ for mode = 1:6
     subplot(2,3, mode);
     plot(MeshU.coords, modeshapeu(:,mode), 'b', 'LineWidth', 2);
     hold on
+    grid on
     plot(MeshP.coords, modeshapep(:,mode), 'k', 'LineWidth', 2);
     xlabel('Length (m)');
     ylabel('Shape');

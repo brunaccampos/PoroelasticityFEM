@@ -30,6 +30,7 @@ subplot(1,2,1);
 plot(n, hi1, 'LineWidth', 1.5);
 hold on
 plot(n, hi2, 'LineWidth', 1.5);
+grid on
 xline(1, '--', 'LineWidth', 1.5);
 xlabel('n');
 ylabel('\zeta');
@@ -42,6 +43,7 @@ subplot(1,2,2);
 plot(n, hi1norm, 'LineWidth', 1.5);
 hold on
 plot(n, hi2norm, 'LineWidth', 1.5);
+grid on
 xline(1, '--', 'LineWidth', 1.5);
 xlabel('n');
 ylabel('\zeta / \zeta(n=1)');

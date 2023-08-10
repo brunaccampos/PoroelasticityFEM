@@ -7,6 +7,7 @@ tiledlayout(2,4);
 nexttile
 plot(Plot.time, Plot.p_time*10^9.*Material.t,'k','LineWidth',2);
 hold on
+grid on
 xlabel('Time [s]');
 ylabel('p [Pa]');
 title(sprintf('Pressure at x = %.2f m', MeshP.coords(Control.plotp,1)));
@@ -24,6 +25,7 @@ end
 nexttile
 plot(Plot.time, Plot.u_time,'b','LineWidth',2);
 hold on
+grid on
 xlabel('Time [s]');
 ylabel('u (solid) [m]');
 title(sprintf('Solid displacement at x = %.2f m', MeshU.coords(Control.plotu,1)));
@@ -41,6 +43,7 @@ end
 nexttile
 plot(Plot.time, Plot.udot_time,'r','LineWidth',2);
 hold on
+grid on
 xlabel('Time [s]');
 ylabel('udot (solid) [m/s]');
 title(sprintf('Solid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
@@ -58,6 +61,7 @@ end
 nexttile
 plot(Plot.time, Plot.u2dot_time,'Color', [0.9290 0.6940 0.1250], 'LineWidth',2);
 hold on
+grid on
 xlabel('Time [s]');
 ylabel('u2dot (solid) [m/s]');
 title(sprintf('Solid acceleration at x = %.2f m', MeshU.coords(Control.plotu,1)));
@@ -70,6 +74,7 @@ end
 nexttile
 plot(MeshP.coords, Solution.p*10^9.*Material.t,'k','LineWidth',2);
 hold on
+grid on
 xlabel('Column depth [m]');
 ylabel('p [Pa]');
 title(sprintf('Pressure at t = %.1d s', Control.tend));
@@ -87,6 +92,7 @@ end
 nexttile
 plot(MeshU.coords, Solution.u,'b','LineWidth',2);
 hold on
+grid on
 xlabel('Column depth [m]');
 ylabel('u (solid) [m]');
 title(sprintf('Solid displacement at t = %.1d s', Control.tend));
@@ -104,6 +110,7 @@ end
 nexttile
 plot(MeshU.coords, Solution.udot,'r','LineWidth',2);
 hold on
+grid on
 xlabel('Column depth [m]');
 ylabel('udot (solid) [m]');
 title(sprintf('Solid velocity at t = %.1d s', Control.tend));
@@ -121,6 +128,7 @@ end
 nexttile
 plot(MeshU.coords, Solution.u2dot,'Color', [0.9290 0.6940 0.1250], 'LineWidth',2);
 hold on
+grid on
 xlabel('Column depth [m]');
 ylabel('u2dot (solid) [m]');
 title(sprintf('Solid acceleration at t = %.1d s', Control.tend));
@@ -136,6 +144,7 @@ if contains(Control.PMmodel, 'UPN')
     nexttile
     plot(MeshN.coords, Solution.n ./ Material.n,'g','LineWidth',2);
     hold on
+    grid on
     xlabel('Column depth [m]');
     ylabel('Porosity normalized [-]');
     title(sprintf('Porosity norm at t = %.1d s', Control.tend));
@@ -148,6 +157,7 @@ if contains(Control.PMmodel, 'UPN')
     nexttile
     plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
     hold on
+    grid on
     xlabel('Time [s]');
     ylabel('Porosity normalized [-]');
     title(sprintf('Porosity norm at x = %.2f m', MeshN.coords(Control.plotp,1)));
@@ -164,6 +174,7 @@ if contains(Control.PMmodel, 'UPU')
     nexttile
     plot(Plot.time, Plot.uf_time,'m','LineWidth',2);
     hold on
+    grid on
     xlabel('Time [s]');
     ylabel('u (fluid) [m]');
     title(sprintf('Fluid displacement at x = %.2f m', MeshU.coords(Control.plotu,1)));
@@ -176,6 +187,7 @@ if contains(Control.PMmodel, 'UPU')
     nexttile
     plot(Plot.time, Plot.ufdot_time,'c','LineWidth',2);
     hold on
+    grid on
     xlabel('Time [s]');
     ylabel('udot (fluid) [m/s]');
     title(sprintf('Fluid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
@@ -188,6 +200,7 @@ if contains(Control.PMmodel, 'UPU')
     nexttile
     plot(Plot.time, Plot.uf2dot_time,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
     hold on
+    grid on
     xlabel('Time [s]');
     ylabel('u2dot (fluid) [m/s]');
     title(sprintf('Fluid acceleration at x = %.2f m', MeshU.coords(Control.plotu,1)));
@@ -200,6 +213,7 @@ if contains(Control.PMmodel, 'UPU')
     nexttile
     plot(MeshU.coords, Solution.uf,'m','LineWidth',2);
     hold on
+    grid on
     xlabel('Column depth [m]');
     ylabel('u (fluid) [m]');
     title(sprintf('Fluid displacement at t = %.1d s', Control.tend));
@@ -212,6 +226,7 @@ if contains(Control.PMmodel, 'UPU')
     nexttile
     plot(MeshU.coords, Solution.ufdot,'c','LineWidth',2);
     hold on
+    grid on
     xlabel('Column depth [m]');
     ylabel('udot (fluid) [m]');
     title(sprintf('Fluid velocity at t = %.1d s', Control.tend));
@@ -224,6 +239,7 @@ if contains(Control.PMmodel, 'UPU')
     nexttile
     plot(MeshU.coords, Solution.uf2dot,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
     hold on
+    grid on
     xlabel('Column depth [m]');
     ylabel('u2dot (fluid) [m]');
     title(sprintf('Fluid acceleration at t = %.1d s', Control.tend));
