@@ -178,18 +178,21 @@ Control.nqP = 3;
 
 %% Frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
+% plot f/fc range for frequency dependent BC
+range = 3; % 1: seismic, 2: acoustic, 3: ultrasonic
+PlotFreqRange(Material, f, range);
 
 %% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
-Control.uncoupled = 0; 
+Control.uncoupled = 0;
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
 Control.dt = 1e-5;  % time step
-Control.tend = 3e-3;   % final simulation time
+Control.tend = 1.5e-3;   % final simulation time
 
 % Newmark method
 Control.beta = 0.7;
