@@ -43,7 +43,7 @@ Control.t = 0;
 % initialize video file
 if saveVideo_on
     myVideo = VideoWriter('myVideoFile'); %open video file
-    myVideo.FrameRate = 10;
+    myVideo.FrameRate = 20;
     open(myVideo)
 end
 
@@ -69,17 +69,19 @@ while Control.t < Control.tend
     [Solution] = SolverDyn_UP(Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
 
     % plot solution over time
-%     figure(1);
-%     subplot(1,2,1);
-%     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
-%     title('Displacement');
-%     subplot(1,2,2);
-%     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
-%     title('Velocity');
-%     pause(0.001);
-%     frame = getframe(gcf); %get frame
-%     writeVideo(myVideo, frame);
-
+    figure(1);
+    subplot(1,2,1);
+    plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
+    title('Displacement');
+    subplot(1,2,2);
+    plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
+    title('Velocity');
+    pause(0.001);
+    if saveVideo_on
+        frame = getframe(gcf); %get frame
+        writeVideo(myVideo, frame);
+    end
+    
     % solution in the frequency domain
     if Control.freqDomain
         [SolutionFreq] = SolverFreqDyn_UP(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
