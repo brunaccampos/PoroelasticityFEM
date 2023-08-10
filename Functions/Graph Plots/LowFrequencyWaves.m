@@ -75,7 +75,7 @@ figure;
 subplot(3,2,1);
 plot(f_range, vR, 'b', 'LineWidth', 2);
 hold on
-xlabel('Frequency range');
+xlabel('Frequency range f/f_c');
 ylabel('Velocity');
 title('Rotational waves - Phase velocity');
 hold off
@@ -84,7 +84,7 @@ hold off
 subplot(3,2,2);
 plot(f_range, attR, 'm', 'LineWidth', 2);
 hold on
-xlabel('Frequency range');
+xlabel('Frequency range f/f_c');
 ylabel('Attenuation');
 title('Rotational waves - Attenuation');
 hold off
@@ -93,7 +93,7 @@ hold off
 subplot(3,2,3);
 plot(f_range, vD1, 'b', 'LineWidth', 2);
 hold on
-xlabel('Frequency range');
+xlabel('Frequency range f/f_c');
 ylabel('Velocity');
 title('Dilatational waves I - Phase velocity');
 hold off
@@ -102,7 +102,7 @@ hold off
 subplot(3,2,4);
 plot(f_range, attD1, 'm', 'LineWidth', 2);
 hold on
-xlabel('Frequency range');
+xlabel('Frequency range f/f_c');
 ylabel('Attenuation');
 title('Dilatational waves I - Attenuation');
 hold off
@@ -111,7 +111,7 @@ hold off
 subplot(3,2,5);
 plot(f_range, vD2, 'b', 'LineWidth', 2);
 hold on
-xlabel('Frequency range');
+xlabel('Frequency range f/f_c');
 ylabel('Velocity');
 title('Dilatational waves II - Phase velocity');
 hold off
@@ -120,7 +120,7 @@ hold off
 subplot(3,2,6);
 plot(f_range, attD2, 'm', 'LineWidth', 2);
 hold on
-xlabel('Frequency range');
+xlabel('Frequency range f/f_c');
 ylabel('Attenuation');
 title('Dilatational waves II - Attenuation');
 hold off
