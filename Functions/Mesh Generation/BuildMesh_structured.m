@@ -258,38 +258,28 @@ elseif strcmp(Mesh.type,'Q4')
     end
 elseif strcmp(Mesh.type,'Q9')
     e = 1; % element counter
-    % fix lood in case ny>nx
-    if ne(2)> ne(1)
-        n1st = ne(1);
-        n2nd = ne(2);
-        pos = 2;
-    else
-        n1st = ne(2);
-        n2nd = ne(1);
-        pos = 1;
-    end
     % run through the elements in the y-direction
-    for ny = 1:n1st
+    for ny = 1:ne(2)
         % run through the elements in the x-direction
-        for nx = 1:n2nd
+        for nx = 1:ne(1)
             % starting node
-            L1 = 2*(ny-1)*nnx(pos) + 2*(nx-1) + 1;
-
+            L1 = 2*(nx-1)*nnx(2) + 2*(ny-1) + 1;
+            
             Mesh.conn(e,1) = L1;
-            Mesh.conn(e,2) = L1 + 2;
-            Mesh.conn(e,3) = L1 + 2 + 2*nnx(pos);
-            Mesh.conn(e,4) = L1 + 2*nnx(pos);
-            Mesh.conn(e,5) = L1 + 1;
-            Mesh.conn(e,6) = L1 + 2 + nnx(pos);
-            Mesh.conn(e,7) = L1 + 1 + 2*nnx(pos);
-            Mesh.conn(e,8) = L1 + nnx(pos);
-            Mesh.conn(e,9) = L1 + 1 + nnx(pos);
-
-            Mesh.eneighbours(e,1) = e - ne(pos);
+            Mesh.conn(e,2) = L1 + 2*nnx(2);
+            Mesh.conn(e,3) = L1 + 2 + 2*nnx(2);
+            Mesh.conn(e,4) = L1 + 2;
+            Mesh.conn(e,5) = L1 + nnx(2);
+            Mesh.conn(e,6) = L1 + 1 + 2*nnx(2);
+            Mesh.conn(e,7) = L1 + 2 + nnx(2);
+            Mesh.conn(e,8) = L1 + 1;
+            Mesh.conn(e,9) = L1 + 1 + nnx(2);
+            
+            Mesh.eneighbours(e,1) = e - ne(1);
             Mesh.eneighbours(e,2) = e + 1;
-            Mesh.eneighbours(e,3) = e + ne(pos);
+            Mesh.eneighbours(e,3) = e + ne(1);
             Mesh.eneighbours(e,4) = e - 1;
-
+            
             e = e + 1;
 
             % Set non-existent neighbours to zero (for edge elements)
