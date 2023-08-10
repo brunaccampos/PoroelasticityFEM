@@ -14,7 +14,7 @@ disp([num2str(toc),': Assembling System Matrices...']);
 %% Solve eigenproblem
 if Control.freqDomain
     disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
-    [phi_u, omega2_u, phi_p, omega2_p, phi_uf, omega2_uf] = EigenDyn_UPU(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, MeshU, MeshP, BC, Control);
+    [phi_u, omega2_u, phi_p, omega2_p, phi_uf, omega2_uf] = EigenDyn_UPU(Kss, Ksp, Mss, Kpf, Kps, Kpp, Kfp, Mff, Msf, Mfs, MeshU, MeshP, BC, Control);
 else
     phi_u = [];
     phi_p = [];

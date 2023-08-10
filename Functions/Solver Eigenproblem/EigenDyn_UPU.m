@@ -1,4 +1,4 @@
-function [phi_u, omega2_u, phi_p, omega2_p, phi_uf, omega2_uf] = EigenDyn_UPU(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, MeshU, MeshP, BC, Control)
+function [phi_u, omega2_u, phi_p, omega2_p, phi_uf, omega2_uf] = EigenDyn_UPU(Kss, Ksp, Mss, Kpf, Kps, Kpp, Kfp, Mff, Msf, Mfs, MeshU, MeshP, BC, Control)
 % solve eigenproblem for dynamic systems considering Biot theory
 % ------------------------------------------------------------------------
 
@@ -25,8 +25,6 @@ ZppFF = sparse(length(BC.free_p), length(BC.free_p));
 [phi_u, omega2_u] = eig(full(KssFF), full(MssFF));
 % pressure uncoupled
 [phi_p, omega2_p] = eig(full(KppFF));
-% fluid displacement uncoupled
-[phi_uf, omega2_uf] = eig(full(MffFF));
 
 %% Coupled problem
 % coupled matrix
