@@ -42,7 +42,7 @@ DirFolder = 'Config Files';
 % File = 'Column1D_Dynamic_Sandstone';
 
 % -------------------- 2D wave propagation
-% File = 'Column1D_Dynamic_Pulse';
+File = 'Column1D_Dynamic_Pulse';
 
 % -------------------- 1D dynamic velocity impact
 % File = 'VelocityImpact1D_Ham';
@@ -85,18 +85,17 @@ DirFolder = 'Config Files';
 % File = 'VelocityImpact2D_Dynamic_Plate';
 
 % -------------------- 2D wave propagation
-File = 'WaveProp_Dynamic_Quiroga';
+% File = 'WaveProp_Dynamic_Quiroga';
 % File = 'WaveProp_Dynamic_Komijani';
 
 % -------------------- 2D tests: elasticity
 % File = 'PlateWithHole_Elasticity';
-% File = 'PlateWithHole_HeatTransfer';
 % File = 'Beam_Dynamic';
 % File = 'Beam_Dynamic_v2';
-% File = 'PlateWithHole_Elasticity_Stress';
 % File = 'Plate2D_KirschTest';
 
 % -------------------- 2D tests: diffusion
+% File = 'PlateWithHole_HeatTransfer';
 % File = 'PlateWithHole_Diffusion';
 % File = 'PlateWithHole_Diffusion_Transient';
 % File = 'PlateDiffusionSteady';
