@@ -1,17 +1,14 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Column2D_Steady_Zheng(config_dir, progress_on)
-% Column Consolidation 1D simulation
+% Column Consolidation 2D simulation
 % Configuration File
-% Based on Korsawe (2006) model
+% ------------------------------------------------------------------------
+% Based on Korsawe (2006) model for transient/quasi-steady case
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
 % - no acceleration terms for solid or fluid
 % - solid velocity is neglected
-% - fluid and solid grains are incompressible
-% - porosity is constant in space and varies over time
-% ------------------------------------------------------------------------
-% column top at x=L, column bottom at x=0
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
@@ -51,9 +48,6 @@ Material.n = 0.2;
 Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
 % fluid bulk viscosity [GPa s]
 Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
-
-% lumped mass matrix - 0: false, 1: true
-Material.lumpedMass = 0;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -130,18 +124,11 @@ switch MeshType
         end
 end
 
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
-
 %% Dirichlet BCs - solid
 % displacement u=0 at bottom (y), left (x), and right (x)
 BC.fixed_u = [MeshU.left_dofx; MeshU.right_dofx; MeshU.bottom_dofy];
 % fixed DOF values
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
@@ -149,13 +136,11 @@ BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 % pressure p=0 at top
 BC.fixed_p = [MeshP.top_dof];
 % fixed DOF values
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
-% traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
-BC.tractionInterp = 0;
 % prescribed traction [GN/m2]
 BC.traction = -4e-3;
 BC.tractionNodes = MeshU.top_nodes;
@@ -182,7 +167,7 @@ BC.tractionForce(righttopnode,2) = BC.tractionForce(righttopnode,2)/2;
 BC.pointLoad = [];
 
 % body force [GN/m3]
-BC.b = @(x)[];  
+BC.b = @(x,t)[];  
 
 %% Neumann BCs - fluid
 % distributed flux [m/s]
@@ -194,7 +179,7 @@ BC.fluxValue = zeros(length(BC.fluxNodes),1);
 BC.pointFlux = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x)[]; 
+BC.s = @(x,t)[]; 
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')
@@ -220,7 +205,7 @@ Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
 Control.dt = 1e-2;  % time step
-Control.tend = 10;   % final simulation time
+Control.tend = 1;   % final simulation time
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
