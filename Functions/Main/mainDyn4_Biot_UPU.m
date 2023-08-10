@@ -43,15 +43,10 @@ end
 % initialize time variable
 Control.t = 0;
 
-% check if HHT method is used
-if ~isfield(Control, 'alpha')
-    Control.alpha = 0;
-end
-
 % initialize video file
 if saveVideo_on
     myVideo = VideoWriter('myVideoFile'); %open video file
-    myVideo.FrameRate = 10;
+    myVideo.FrameRate = 20;
     open(myVideo)
 end
 

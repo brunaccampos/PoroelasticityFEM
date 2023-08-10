@@ -57,4 +57,9 @@ if ~isfield(Control, 'plotSyntheticsON')
     Control.plotSyntheticsON = 0;
 end
 
+% check if HHT method is used: default false
+if ~isfield(Control, 'alpha')
+    Control.alpha = 0;
+end
+
 end
