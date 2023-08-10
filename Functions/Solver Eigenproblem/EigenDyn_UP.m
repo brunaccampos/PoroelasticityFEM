@@ -59,6 +59,25 @@ for mode = 1:6
 end
 hold off
 
+% energy displacement field
+figure;
+subplot(1,2,1);
+plot(omega2_u_sorted, 'b', 'LineWidth', 2);
+hold on
+xlabel('Mode number');
+ylabel('\omega_u^2');
+title('Energy of modes: solid displacement');
+hold off
+
+% energy pressure field
+subplot(1,2,2);
+plot(omega2_p_sorted, 'k', 'LineWidth', 2);
+hold on
+xlabel('Mode number');
+ylabel('\omega_p^2');
+title('Energy of modes: fluid pressure');
+hold off
+
 %% Plots coupled
 % coupled modes selection
 phi_ucoupl = phi_coupled(1:length(BC.free_u), 1:length(BC.free_u));
