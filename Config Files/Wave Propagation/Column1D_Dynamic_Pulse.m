@@ -1,14 +1,12 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Pulse(config_dir, progress_on)
-% Column Consolidation 1D simulation
+% Pulse propagation in 1D simulation
 % Configuration File
-% Based on Zienkiewicz (1982) model
+% ------------------------------------------------------------------------
+% Based on Zienkiewicz (1982) model for dynamic case
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
-% - only solid acceleration is considered (undrained condition; no motions
-% of the fluid relative to the solid skeleton can occur)
-% - solid grains and fluid are incompressible
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
@@ -55,7 +53,7 @@ Material.rho_s = 2600e-9;
 % average density of the medium
 Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
 
-% thickness 
+% thickness
 % 1D: cross sectional area [m2]
 % 2D: out of plane thickness [m]
 Material.t = 1;
@@ -77,100 +75,72 @@ n = 1; % return to Biot
 % n = Material.Ks/Material.Kf; % upper limit
 
 % modified storage coefficient (Muller, 2019)
-Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks; 
+Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks;
 Mstar = 1/Mstarinv;
 
 % porosity equation coefficients
 Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
 Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
 
-% plot deltaS and deltaF
-% PlotDelta(Material);
-
-% plot coefficients from dimensionless pressure equation
-% PlotNDPressureEqCoef(Material);
-
 %% Mesh parameters
 if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Manual';
+% location of initial node [m] [x0;y0;z0]
+coord0 = [0;0;0];
+% number of space dimensions
+nsd = 1;
+% size of domain [m] [Lx;Ly;Lz]
+L = 10;
+% number of elements in each direction [nex; ney; nez]
+ne = 100;
 
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 100;
-        % column size [m]
-        L = 10;
-        %%%% solid displacement field
-        typeU = 'L3';
-        fieldU = 'u';
-        MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
-        %%%% fluid pressure field
-        typeP = 'L2';
-        fieldP = 'p';
-        MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            typeN = 'L2';
-            fieldN = 'n';
-            MeshN = Build1DMesh(nsd, ne, L, typeN, fieldN);
-        else
-            MeshN = [];
-        end
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        meshFileNameU = 'Column2DQ9.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        meshFileNameP = 'Column2DQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            fieldN = 'n';
-            meshFileNameN = 'Column2DQ4.msh';
-            MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
-        else
-            MeshN = [];
-        end
+%%%% displacement mesh
+% element type ('Q4')
+typeU = 'L3';
+% variable field ('u', 'p', 'n')
+fieldU = 'u';
+MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
+
+%%%% pressure mesh
+% element type ('Q4')
+typeP = 'L2';
+% variable field ('u', 'p', 'n')
+fieldP = 'p';
+MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
+
+%%%% porosity mesh
+if contains(Control.PMmodel, 'UPN')
+    % element type ('Q4')
+    typeN = 'L2';
+    % variable field ('u', 'p', 'n')
+    fieldN = 'n';
+    MeshN = BuildMesh_structured(nsd, coord0, L, ne, typeN, fieldN, progress_on);
+else
+    MeshN = [];
 end
 
-%% Find nodes for prescribed BCs
-% find top and bottom nodes for displacement field
-BC.top_node_u = find(MeshU.coords == min(MeshU.coords));
-BC.bottom_node_u = find(MeshU.coords == max(MeshU.coords));
-
-% find top and bottom nodes for pressure field
-BC.top_node_p = find(MeshP.coords == min(MeshP.coords));
-BC.bottom_node_p = find(MeshP.coords == max(MeshP.coords));
-
 %% Dirichlet BCs - solid
-% displacement at the bottom u=0
-BC.fixed_u1 = BC.bottom_node_u;
-% displacement at the top (sinusoidal)
-BC.fixed_u2 = BC.top_node_u;
+% displacement at u=L
+% BC.fixed_u1 = MeshU.right_nodes;
+BC.fixed_u1 = [MeshU.right_nodes; MeshU.left_nodes];
+% displacement at u=0 (sinusoidal)
+% BC.fixed_u2 = MeshU.left_nodes;
+BC.fixed_u2 = ceil(length(MeshU.coords)/2);
 BC.fixed_u = [BC.fixed_u1; BC.fixed_u2];
 % amplitude [GPa]
 P0 = 100e-6;
 % frequency [Hz]
-f = 20e3;
-BC.fixed_u_value = @(t) [0; P0*sin(2*pi*f*t)].*(t<1/f);
+f = 1e3;
+% BC.fixed_u_value = @(t) [0; P0*sin(pi*f*t)].*(t<1/f);
+% BC.fixed_u_value = @(t) [0; 0; P0*sin(pi*f*t)].*(t<1/f);
+BC.fixed_u_value = @(t) [0; 0; P0*(sin(pi*(t)*f) - 0.5*sin(2*pi*(t)*f))].*(t<1/f);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
-BC.fixed_p = [BC.bottom_node_p; BC.top_node_p];
+BC.fixed_p = [MeshP.left_nodes; MeshP.right_nodes];
 BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
@@ -183,7 +153,7 @@ BC.pointLoad = [];
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.b = @(x,t)[];  
+BC.b = @(x,t)[];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
@@ -193,7 +163,7 @@ BC.pointFlux = [];
 BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x,t)[]; 
+BC.s = @(x,t)[];
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')
@@ -248,6 +218,7 @@ Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 % Plot in a row
 Control.fixedDepthPlotON = 1; % 0: false, 1: true
 
+% Nodes to plot in a row (all nodes for 1D case)
 Control.ploturow = MeshU.DOF;
 Control.plotprow = MeshP.DOF;
 
