@@ -1,20 +1,34 @@
-clear
-clc
-clear vars
-close all
+function PlotFreqRange(Material, f0, range)
+% Plot frequency range for given material parameters
+% ------------------------------------------------------------------------
+
+%% Range to plot
+switch range
+    case 1 % seismic
+        f_min = 1;
+        f_max = 100;
+    case 2 % acoustic
+        f_min = 20;
+        f_max = 20e3;
+    case 3 % ultrasonic
+        f_min = 20e3;
+        f_max = 2e6;
+end
+% frequency vector
+f = (f_min:f_max);
 
 %% Material parameters
-n = 0.19; % porosity [-]
-k = 1.88e-13; % intrinsic permeability [m2]
-Kf = 3300e6; % fluid bulk modulus [Pa]
-Ks = 36000e6; % solid bulk modulus [Pa]
-mu = 1e-3; % dynamic viscosity [Pa s]
-rhos = 2600; % solid density [kg/m^3]
-rhof = 1000; % fluid density [kg/m^3]
+n = Material.n; % porosity [-]
+k = Material.k; % intrinsic permeability [m2]
+Kf = Material.Kf; % fluid bulk modulus [Pa]
+Ks = Material.Ks; % solid bulk modulus [Pa]
+mu = Material.mu; % dynamic viscosity [Pa s]
+rhos = Material.rho_s; % solid density [kg/m^3]
+rhof = Material.rho_f; % fluid density [kg/m^3]
 
 %% Spanos parameters
-deltaF = n*(1-n)/(Ks*(n/Kf + (1-n)/Ks));
-deltaS = n*(1-n)/(Kf*(n/Kf + (1-n)/Ks));
+deltaF = Material.deltaF;
+deltaS = Material.deltaS;
 
 %% Biot parameters
 A = (1-n-deltaS) * Ks - (1-n)*mu*2/3; % Lamé constant
@@ -37,9 +51,12 @@ gamma12 = 0;
 
 % characteristic frequency
 fc = mu*n^2/(k*2*pi*rho*(gamma12+gamma22));
-f_min = 20e3;
-f_max = 2e6;
-f = (f_min:f_max);
+
+% current frequency ratio
+ratio = f0/fc;
+fprintf('Current frequency: %.2f Hz \n', f0);
+fprintf('Characteristic frequency: %.2f Hz \n', fc);
+fprintf('Ratio f/fc = %.2f \n', ratio);
 
 a = sigma11*sigma22-sigma12^2;
 b = -(sigma22*gamma11 + sigma11*gamma22 - 2*sigma12*gamma12);
@@ -51,7 +68,6 @@ zeta1 = z(1,1) - 1;
 zeta2 = z(2,1) - 1;
 
 % frequency range
-% f = (0:0.001:0.15);
 f_range = f/fc;
 
 % phase velocity - rotational wave
@@ -72,8 +88,9 @@ attD2 = sqrt(0.5*f_range * (gamma12 + gamma22)/(sigma11 * sigma22 - sigma12^2));
 %% Plots
 % velocity - rotational
 figure;
-subplot(3,2,1);
-plot(f_range, vR, 'b', 'LineWidth', 2);
+subplot(2,3,1);
+loglog(f_range, vR, 'b', 'LineWidth', 2);
+grid on
 hold on
 xlabel('Frequency range f/f_c');
 ylabel('Velocity');
@@ -81,8 +98,9 @@ title('Rotational waves - Phase velocity');
 hold off
 
 % attenuation - rotational
-subplot(3,2,2);
-plot(f_range, attR, 'm', 'LineWidth', 2);
+subplot(2,3,4);
+loglog(f_range, attR, 'm', 'LineWidth', 2);
+grid on
 hold on
 xlabel('Frequency range f/f_c');
 ylabel('Attenuation');
@@ -90,8 +108,9 @@ title('Rotational waves - Attenuation');
 hold off
 
 % velocity - dilatational 1st
-subplot(3,2,3);
-plot(f_range, vD1, 'b', 'LineWidth', 2);
+subplot(2,3,2);
+loglog(f_range, vD1, 'b', 'LineWidth', 2);
+grid on
 hold on
 xlabel('Frequency range f/f_c');
 ylabel('Velocity');
@@ -99,8 +118,9 @@ title('Dilatational waves I - Phase velocity');
 hold off
 
 % attenuation - dilatational 1st
-subplot(3,2,4);
-plot(f_range, attD1, 'm', 'LineWidth', 2);
+subplot(2,3,5);
+loglog(f_range, attD1, 'm', 'LineWidth', 2);
+grid on
 hold on
 xlabel('Frequency range f/f_c');
 ylabel('Attenuation');
@@ -108,8 +128,9 @@ title('Dilatational waves I - Attenuation');
 hold off
 
 % velocity - dilatational 2nd
-subplot(3,2,5);
-plot(f_range, vD2, 'b', 'LineWidth', 2);
+subplot(2,3,3);
+loglog(f_range, vD2, 'b', 'LineWidth', 2);
+grid on
 hold on
 xlabel('Frequency range f/f_c');
 ylabel('Velocity');
@@ -117,10 +138,13 @@ title('Dilatational waves II - Phase velocity');
 hold off
 
 % attenuation - dilatational 2nd
-subplot(3,2,6);
-plot(f_range, attD2, 'm', 'LineWidth', 2);
+subplot(2,3,6);
+loglog(f_range, attD2, 'm', 'LineWidth', 2);
+grid on
 hold on
 xlabel('Frequency range f/f_c');
 ylabel('Attenuation');
 title('Dilatational waves II - Attenuation');
 hold off
+
+end
