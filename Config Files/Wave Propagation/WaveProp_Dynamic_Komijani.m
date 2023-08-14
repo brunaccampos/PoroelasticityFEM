@@ -1,17 +1,12 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_Komijani(config_dir, progress_on)
-% Column Consolidation 1D simulation
+% Wave propagation in 2D
 % Configuration File
-% Based on Korsawe (2006) model
+% ------------------------------------------------------------------------
+% Based on Zienkiewicz (1982) model for dynamic case
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
-% - no acceleration terms for solid or fluid
-% - solid velocity is neglected
-% - fluid and solid grains are incompressible
-% - porosity is constant in space and varies over time
-% ------------------------------------------------------------------------
-% column top at x=0, column bottom at x=L
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
@@ -62,63 +57,25 @@ if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Gmsh';
-
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 10;
-        % column size [m]
-        L = 1;
-        %%%% solid displacement field
-        typeU = 'L3';
-        fieldU = 'u';
-        MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
-        %%%% fluid pressure field
-        typeP = 'L2';
-        fieldP = 'p';
-        MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            typeN = 'L2';
-            fieldN = 'n';
-            MeshN = Build1DMesh(nsd, ne, L, typeN, fieldN);
-        else
-            MeshN = [];
-        end
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        meshFileNameU = 'Mesh Files\WavePropPlate_100x150cmQ4.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        meshFileNameP = 'Mesh Files\WavePropPlate_100x150cmQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            fieldN = 'n';
-            meshFileNameN = 'Mesh Files\WavePropPlate_100x150cmQ4.msh';
-            MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
-        else
-            MeshN = [];
-        end
+% GMSH file Version 2 ASCII
+% number of space dimensions
+nsd = 2;
+%%%% displacement field
+fieldU = 'u';
+meshFileNameU = 'Mesh Files\WavePropPlate_100x150cmQ4.msh';
+MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+%%%% pressure field
+fieldP = 'p';
+meshFileNameP = 'Mesh Files\WavePropPlate_100x150cmQ4.msh';
+MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+%%%% porosity field
+if contains(Control.PMmodel, 'UPN')
+    fieldN = 'n';
+    meshFileNameN = 'Mesh Files\WavePropPlate_100x150cmQ4.msh';
+    MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
+else
+    MeshN = [];
 end
-
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
 
 %% Dirichlet BCs - solid
 % displacement fixed at central node in y
@@ -133,7 +90,7 @@ BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 %   pressure p=0 at the top
 BC.fixed_p = 1:MeshP.nDOF;
 % fixed DOF values
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -145,7 +102,7 @@ BC.pointLoad = [];
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.b = @(x)[];  
+BC.b = @(x,t)[];  
 
 %% Neumann BCs - fluid
 % point flux [m/s]
@@ -155,7 +112,7 @@ BC.pointFlux = [];
 BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x)[]; 
+BC.s = @(x,t)[]; 
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')

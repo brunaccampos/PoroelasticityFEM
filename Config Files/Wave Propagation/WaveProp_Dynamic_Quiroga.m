@@ -2,13 +2,11 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_Quiroga
 % Wave propagation in 2D
 % Configuration File
 % ------------------------------------------------------------------------
-% Based on Korsawe (2006) model for transient/quasi-steady case
+% Based on Zienkiewicz (1982) model for dynamic case
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
-% - no acceleration terms for solid or fluid
-% - solid velocity is neglected
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
