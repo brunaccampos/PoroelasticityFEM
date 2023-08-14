@@ -24,87 +24,78 @@ curDir = pwd;
 % Config files folder
 DirFolder = 'Config Files';
 % Config file to run
-% -------------------- 1D steady/transient column consolidation
-% File = 'Column1D_Steady_Korsawe';
+% -------------------- Consolidation 1D - quasi-steady
 % File = 'Column1D_Steady_Boone';
-% File = 'Column1D_Steady_Quiroga';
-% File = 'Column1D_Steady_Zheng';
 % File = 'Column1D_Steady_Ferronato';
+% File = 'Column1D_Steady_Korsawe';
 % File = 'Column1D_Steady_Tasiop';
 
-% -------------------- 1D dynamic column consolidation
-% File = 'Column1D_Dynamic_Komijani';
+% -------------------- Consolidation 1D - dynamic
+% File = 'Column1D_Dynamic_Boone';
+% File = 'Column1D_Dynamic_Diebels';
 % File = 'Column1D_Dynamic_Gajo';
+% File = 'Column1D_Dynamic_Komijani';
+% File = 'Column1D_Dynamic_Sandstone';
 % File = 'Column1D_Dynamic_Tasiop';
 % File = 'Column1D_Dynamic_Zienck';
-% File = 'Column1D_Dynamic_Diebels';
-% File = 'Column1D_Dynamic_Boone';
-% File = 'Column1D_Dynamic_Sandstone';
 
-% -------------------- 2D wave propagation
-File = 'Column1D_Dynamic_Pulse';
+% -------------------- Consolidation 2D - quasi-steady
+% File = 'Column2D_Steady_Ferronato';
+% File = 'Column2D_Steady_Zheng';
 
-% -------------------- 1D dynamic velocity impact
-% File = 'VelocityImpact1D_Ham';
-% File = 'VelocityImpact1D_Idesman';
-% File = 'VelocityImpact1D_Dynamic_Komijani';
+% -------------------- Consolidation 2D - dynamic
+% File = 'Column2D_Dynamic_Komijani';
 
-% -------------------- 1D harmonic oscillation
-% File = 'Harmonic1D';
+% -------------------- Footing
+% File = 'Footing2D_Diebels';
+% File = 'Footing2D_Korsawe';
 
-% -------------------- 1D tests
-% File = 'HeatConduction_1D_Transient';
+% -------------------- Injection well
+% File = 'Injection2D_Plate';
+% File = 'InjectionWellPoint_Dynamic_Komijani';
+% File = 'InjectionWells2D_15x15';
+% File = 'Plate_Dynamic_Komijani';
+% File = 'PlatePointInjection_Dynamic';
+% File = 'PlatePointInjection_Dynamic_Komijani';
+
+% -------------------- Tests Convergence
 % File = 'ManufacturedSolution1D_Biot';
 % File = 'ManufacturedSolution1D_Pste';
 % File = 'ManufacturedSolution1D_UstePste';
 % File = 'ManufacturedSolution1D_UstePtra';
 % File = 'ManufacturedSolution1D_UtraPtra';
 
-% -------------------- 2D steady/transient column consolidation
-% File = 'Column2D_Steady_Korsawe';
-% File = 'Column2D_Steady_Boone';
-% File = 'Column2D_Steady_Zheng';
-% File = 'Column2D_Steady_Ferronato';
-
-% -------------------- 2D dynamic column consolidation
-% File = 'Column2D_Dynamic_Komijani';
-% File = 'Plate_Dynamic_Komijani';
-
-% -------------------- 2D injection wells
-% File = 'InjectionWells2D_15x15';
-% File = 'InjectionWellPoint_Dynamic_Komijani';
-% File = 'PlatePointInjection_Dynamic_Komijani';
-% File = 'PlatePointInjection_Dynamic';
-
-% -------------------- 2D footing
-% File = 'Footing2D_Korsawe';
-% File = 'Footing2D_Diebels';
-
-% -------------------- 2D dynamic velocity impact
-% File = 'VelocityImpact2D_Dynamic_Komijani';
-% File = 'VelocityImpact2D_Dynamic_Plate';
-
-% -------------------- 2D wave propagation
-% File = 'WaveProp_Dynamic_Quiroga';
-% File = 'WaveProp_Dynamic_Komijani';
-
-% -------------------- 2D tests: elasticity
-% File = 'PlateWithHole_Elasticity';
+% -------------------- Tests Elasticity
 % File = 'Beam_Dynamic';
 % File = 'Beam_Dynamic_v2';
 % File = 'Plate2D_KirschTest';
+% File = 'PlateWithHole_Elasticity';
+% File = 'VelocityImpact1D_Ham';
+% File = 'VelocityImpact1D_Idesman';
 
-% -------------------- 2D tests: diffusion
-% File = 'PlateWithHole_HeatTransfer';
-% File = 'PlateWithHole_Diffusion';
-% File = 'PlateWithHole_Diffusion_Transient';
-% File = 'PlateDiffusionSteady';
-% File = 'PlateDiffusionDynamic';
-% File = 'PlateDiffusionDynamic_Point';
+% -------------------- Tests Heat Transfer
 % File = 'HeatConduction1D_Dynamic';
 % File = 'HeatConduction2D';
-% File = 'HeatConduction2D_TempBC';
 % File = 'HeatConduction2D_PointFluxBC';
+% File = 'HeatConduction2D_TempBC';
+% File = 'PlateDiffusionDynamic';
+% File = 'PlateDiffusionDynamic_Point';
+% File = 'PlateDiffusionSteady';
+% File = 'PlateWithHole_Diffusion';
+% File = 'PlateWithHole_Diffusion_Transient';
+% File = 'PlateWithHole_HeatTransfer';
+
+% -------------------- Velocity Impact
+% File = 'VelocityImpact2D_Dynamic_Komijani';
+% File = 'VelocityImpact2D_Dynamic_Plate';
+
+% -------------------- Wave Propagation
+% File = 'Column1D_Dynamic_Pulse';
+File = 'Plate2D_Dynamic_Pulse';
+% File = 'WaveProp_Dynamic_Komijani';
+% File = 'WaveProp_Dynamic_Quiroga';
+
+% ------------------------------------------------------------------------
 
 % Directory for VTK file
 % VTKFolder ='C:\Users\bu_ca\Downloads\PoroelasticityFEM\Results';
