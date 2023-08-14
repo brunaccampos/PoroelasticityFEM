@@ -63,7 +63,7 @@ Material.constLaw = 'PlaneStrain';
 %% Injection data
 % water density [kg/m3]
 Material.rhof = 1000e-9;
-% overburden density [kg/m3]
+% overburden density [10^9 kg/m3]
 Material.rho_Top = 2300e-9;
 % gravitational acceleration [m/s2]
 Material.g = 9.81;
