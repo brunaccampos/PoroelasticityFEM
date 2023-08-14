@@ -1,16 +1,12 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Column2D_Dynamic_Komijani(config_dir, progress_on)
 % Column Consolidation 2D simulation
 % Configuration File
-% Based on Zienkiewicz (1982) model
+% ------------------------------------------------------------------------
+% Based on Zienkiewicz (1982) model for dynamic case
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
-% - only solid acceleration is considered (undrained condition; no motions
-% of the fluid relative to the solid skeleton can occur)
-% - solid grains and fluid are incompressible
-% ------------------------------------------------------------------------
-% column top at x=L, column bottom at x=0
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
@@ -136,13 +132,6 @@ switch MeshType
         end
 end
 
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
-
 %% Dirichlet BCs - solid
 % displacement u=0 at bottom (y), left (x), and right (x)
 BC.fixed_u = [MeshU.left_dofx; MeshU.right_dofx; MeshU.bottom_dofy];
@@ -153,15 +142,13 @@ BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
 % pressure p=0 at top
-BC.fixed_p = [MeshP.top_dof];
+BC.fixed_p = MeshP.top_dof;
 % fixed DOF values
 BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
-% traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
-BC.tractionInterp = 0;
 % prescribed traction [GN/m2]
 BC.traction = -3000e-9;
 BC.tractionNodes = MeshU.top_nodes;
@@ -210,8 +197,8 @@ if contains(Control.PMmodel, 'UPN')
 end
 
 %% Quadrature order
-Control.nqU = 2;
-Control.nqP = 2;
+Control.nqU = 3;
+Control.nqP = 3;
 
 %% Frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
@@ -244,7 +231,7 @@ Control.lambda = 0.7;
 
 %% Plot data
 % DOF to plot graphs
-Control.plotu = 184; % dof y of node 92 (x = 0.05m, y = 5m)
-Control.plotp = 52; % dof of node 52 (x = 0.05m, y = 5m)
+Control.plotu = find(MeshU.coords(:,1) == 0.05 & MeshU.coords(:,2) == 5)*2; % dof y of node at x = 0.05m, y = 5m
+Control.plotp = find(MeshP.coords(:,1) == 0.05 & MeshP.coords(:,2) == 5); % dof at x = 0.05m, y = 5m
 
 end

@@ -1,17 +1,14 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_Quiroga(config_dir, progress_on)
-% Column Consolidation 1D simulation
+% Wave propagation in 2D
 % Configuration File
-% Based on Korsawe (2006) model
+% ------------------------------------------------------------------------
+% Based on Korsawe (2006) model for transient/quasi-steady case
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
 % - no acceleration terms for solid or fluid
 % - solid velocity is neglected
-% - fluid and solid grains are incompressible
-% - porosity is constant in space and varies over time
-% ------------------------------------------------------------------------
-% column top at x=0, column bottom at x=L
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
@@ -89,64 +86,40 @@ if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Gmsh';
+% location of initial node [m] [x0;y0;z0]
+coord0 = [0;0;0];
+% number of space dimensions
+nsd = 2;
+% size of domain [m] [Lx;Ly;Lz]
+L = [15; 15];
+% number of elements in each direction [nex; ney; nez]
+ne = [64; 64];
 
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 10;
-        % column size [m]
-        L = 1;
-        %%%% solid displacement field
-        typeU = 'L3';
-        fieldU = 'u';
-        MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
-        %%%% fluid pressure field
-        typeP = 'L2';
-        fieldP = 'p';
-        MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            typeN = 'L2';
-            fieldN = 'n';
-            MeshN = Build1DMesh(nsd, ne, L, typeN, fieldN);
-        else
-            MeshN = [];
-        end
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        meshFileNameU = 'Mesh Files\Plate_15x15Q4finer.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        meshFileNameP = 'Mesh Files\Plate_15x15Q4finer.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            fieldN = 'n';
-            meshFileNameN = 'Mesh Files\Plate_15x15Q4finer.msh';
-            MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
-        else
-            MeshN = [];
-        end
+%%%% displacement mesh
+% element type ('Q4')
+typeU = 'Q4';
+% variable field ('u', 'p', 'n')
+fieldU = 'u';
+MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
+
+%%%% pressure mesh
+% element type ('Q4')
+typeP = 'Q4';
+% variable field ('u', 'p', 'n')
+fieldP = 'p';
+MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
+
+%%%% porosity mesh
+if contains(Control.PMmodel, 'UPN')
+    % element type ('Q4')
+    typeN = 'Q4';
+    % variable field ('u', 'p', 'n')
+    fieldN = 'n';
+    MeshN = BuildMesh_structured(nsd, coord0, L, ne, typeN, fieldN, progress_on);
+else
+    MeshN = [];
 end
-
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
-
+        
 %% Dirichlet BCs - solid
 % central node
 node = find(MeshU.coords(:,1) == 7.5 & MeshU.coords(:,2) == 7.5);
@@ -156,7 +129,6 @@ BC.fixed_u = node*2;
 t0 = 1e-3;
 % fixed DOF values
 BC.fixed_u_value = @(t) (sin(2*pi*(t)/t0) - 0.5*sin(4*pi*(t)/t0)).*(t<t0);
-% BC.fixed_u_value = @(t) (-(t0/2/pi)*cos(2*pi*(t)/t0) + (t0/8/pi)*cos(4*pi*(t)/t0)).*(t<t0);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
@@ -195,8 +167,8 @@ if contains(Control.PMmodel, 'UPN')
 end
 
 %% Quadrature order
-Control.nqU = 2;
-Control.nqP = 2;
+Control.nqU = 3;
+Control.nqP = 3;
 
 %% Frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
