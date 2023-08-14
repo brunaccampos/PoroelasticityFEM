@@ -2,7 +2,7 @@ function PlotGraphs2D_Dyn(MeshU, MeshP, MeshN, Control, Plot, Material, saveGrap
 
 % initialize figure
 figure;
-tiledlayout(2,2);
+tiledlayout(2,4);
 
 %% pressure vs time
 nexttile
@@ -22,13 +22,13 @@ if saveGraphs_on
     exportgraphics(gcf,'Press_time.png','Resolution',300)
 end
 
-%% displacement vs time
+%% solid displacement vs time
 nexttile
 plot(Plot.time, Plot.u_time,'b','LineWidth',2);
 hold on
 grid on
 xlabel('Time [s]');
-ylabel('u [m]');
+ylabel('u (solid) [m]');
 title(sprintf('Solid displacement at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
 % frequency domain solution
 if Control.freqDomain
@@ -37,17 +37,17 @@ if Control.freqDomain
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'Displ_time.png','Resolution',300)
+    exportgraphics(gcf,'DisplSolid_time.png','Resolution',300)
 end
 
-%% velocity vs time
+%% solid velocity vs time
 nexttile
 plot(Plot.time, Plot.udot_time,'r','LineWidth',2);
 hold on
 grid on
 xlabel('Time [s]');
-ylabel('udot [m/s]');
-title(sprintf('Solid skeleton velocity at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
+ylabel('udot (solid) [m/s]');
+title(sprintf('Solid velocity at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
 % frequency domain solution
 if Control.freqDomain
     plot(Plot.time, Plot.uFdot,'m--','LineWidth',2);
@@ -55,7 +55,20 @@ if Control.freqDomain
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'Vel_time.png','Resolution',300)
+    exportgraphics(gcf,'VelSolid_time.png','Resolution',300)
+end
+
+%% solid acceleration vs time
+nexttile
+plot(Plot.time, Plot.u2dot_time,'Color', [0.9290 0.6940 0.1250], 'LineWidth',2);
+hold on
+grid on
+xlabel('Time [s]');
+ylabel('u2dot (solid) [m/s2]');
+title(sprintf('Solid acceleration at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
+hold off
+if saveGraphs_on
+    exportgraphics(gcf,'AccSolid_time.png','Resolution',300)
 end
 
 %% porosity vs time
@@ -70,6 +83,47 @@ if contains(Control.PMmodel, 'UPN')
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'Poros_time.png','Resolution',300)
+    end
+end
+
+if contains(Control.PMmodel, 'UPU')
+    %% fluid displacement vs time
+    nexttile
+    plot(Plot.time, Plot.uf_time,'m','LineWidth',2);
+    hold on
+    grid on
+    xlabel('Time [s]');
+    ylabel('u (fluid) [m]');
+    title(sprintf('Fluid displacement at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'DisplFluid_time.png','Resolution',300)
+    end
+    
+    %% fluid velocity vs time
+    nexttile
+    plot(Plot.time, Plot.ufdot_time,'c','LineWidth',2);
+    hold on
+    grid on
+    xlabel('Time [s]');
+    ylabel('udot (fluid) [m/s]');
+    title(sprintf('Fluid velocity at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'VelFluid_time.png','Resolution',300)
+    end
+    
+    %% fluid acceleration vs time
+    nexttile
+    plot(Plot.time, Plot.uf2dot_time,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
+    hold on
+    grid on
+    xlabel('Time [s]');
+    ylabel('u2dot (fluid) [m/s]');
+    title(sprintf('Fluid acceleration at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'AccFluid_time.png','Resolution',300)
     end
 end
 

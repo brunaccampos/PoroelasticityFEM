@@ -1,5 +1,6 @@
 function PlotGraphs1D_Dyn(Solution, SolutionFreq, MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on)
 
+% initialize figure
 figure;
 tiledlayout(2,4);
 
@@ -63,7 +64,7 @@ plot(Plot.time, Plot.u2dot_time,'Color', [0.9290 0.6940 0.1250], 'LineWidth',2);
 hold on
 grid on
 xlabel('Time [s]');
-ylabel('u2dot (solid) [m/s]');
+ylabel('u2dot (solid) [m/s2]');
 title(sprintf('Solid acceleration at x = %.2f m', MeshU.coords(Control.plotu,1)));
 hold off
 if saveGraphs_on
