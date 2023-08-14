@@ -92,6 +92,7 @@ subplot(2,3,1);
 loglog(f_range, vR, 'b', 'LineWidth', 2);
 grid on
 hold on
+xline(ratio, '--', 'LineWidth', 1.5);
 xlabel('Frequency range f/f_c');
 ylabel('Velocity');
 title('Rotational waves - Phase velocity');
@@ -102,6 +103,7 @@ subplot(2,3,4);
 loglog(f_range, attR, 'm', 'LineWidth', 2);
 grid on
 hold on
+xline(ratio, '--', 'LineWidth', 1.5);
 xlabel('Frequency range f/f_c');
 ylabel('Attenuation');
 title('Rotational waves - Attenuation');
@@ -112,6 +114,7 @@ subplot(2,3,2);
 loglog(f_range, vD1, 'b', 'LineWidth', 2);
 grid on
 hold on
+xline(ratio, '--', 'LineWidth', 1.5);
 xlabel('Frequency range f/f_c');
 ylabel('Velocity');
 title('Dilatational waves I - Phase velocity');
@@ -122,6 +125,7 @@ subplot(2,3,5);
 loglog(f_range, attD1, 'm', 'LineWidth', 2);
 grid on
 hold on
+xline(ratio, '--', 'LineWidth', 1.5);
 xlabel('Frequency range f/f_c');
 ylabel('Attenuation');
 title('Dilatational waves I - Attenuation');
@@ -132,6 +136,7 @@ subplot(2,3,3);
 loglog(f_range, vD2, 'b', 'LineWidth', 2);
 grid on
 hold on
+xline(ratio, '--', 'LineWidth', 1.5);
 xlabel('Frequency range f/f_c');
 ylabel('Velocity');
 title('Dilatational waves II - Phase velocity');
@@ -142,6 +147,7 @@ subplot(2,3,6);
 loglog(f_range, attD2, 'm', 'LineWidth', 2);
 grid on
 hold on
+xline(ratio, '--', 'LineWidth', 1.5);
 xlabel('Frequency range f/f_c');
 ylabel('Attenuation');
 title('Dilatational waves II - Attenuation');
