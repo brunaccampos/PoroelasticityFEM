@@ -284,6 +284,7 @@ if Control.fixedDepthPlotON
     title('Solid displacement in domain over time');
     hold off
     
+    %% fluid pressure over depth over time (3D plot)
     % waterfall plot
     figure;
     waterfall(MeshP.coords, Plot.time, Plot.p_synthetic);
