@@ -188,7 +188,7 @@ Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
 Control.dt = 1e-5;  % time step
-Control.tend = 2e-3;   % final simulation time
+Control.tend = 1.5e-3;   % final simulation time
 
 % Newmark method
 Control.beta = 0.7;
@@ -209,9 +209,10 @@ Control.alpha = 0;
 
 %% Plot data
 % DOF to plot graphs
-node = find(MeshU.coords(:,1) == 6 & MeshU.coords(:,2) == 5);
-Control.plotu = node*2; % dof y at x = 6m, y = 5m
-Control.plotp = node; % dof y x = 6m, y = 5m
+nodeU = find(MeshU.coords(:,1) == 6 & MeshU.coords(:,2) == 5);
+nodeP = find(MeshP.coords(:,1) == 6 & MeshP.coords(:,2) == 5);
+Control.plotu = nodeU*2; % dof y at x = 6m, y = 5m
+Control.plotp = nodeP; % dof y x = 6m, y = 5m
 
 % Plot synthetics
 Control.plotSyntheticsON = 1; % 0: false, 1: true
@@ -226,10 +227,10 @@ Control.depthDir = 2; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 switch Control.depthDir
     case 1
         rowofnodes_u = find(MeshU.coords(:,2) == Control.depthplot);
-        rowofnodes_p = find(MeshP.coords(:,2) == Control.depthplot); 
+        rowofnodes_p = find(MeshP.coords(:,2) == Control.depthplot);
     case 2
-        rowofnodes_u = find(MeshU.coords(:,1) == Control.depthplot); 
-        rowofnodes_p = find(MeshP.coords(:,1) == Control.depthplot); 
+        rowofnodes_u = find(MeshU.coords(:,1) == Control.depthplot);
+        rowofnodes_p = find(MeshP.coords(:,1) == Control.depthplot);
 end
 
 nodes_u = [MeshU.coords(rowofnodes_u,Control.depthDir), rowofnodes_u]; % matrix with node numbering and variable coord
