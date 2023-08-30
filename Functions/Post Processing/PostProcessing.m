@@ -31,108 +31,150 @@ if nsd == 1
     xdofs_u = MeshU.DOF(:,1); % DOFs
     
     %% Storing data for solid media - 1D case
-    % displacement
-    scalardataU(1).name = 'disp_u';
-    scalardataU(1).data = Solution.u(xdofs_u);
-    scalardataU(1).type = 'float';
-    % velocity
-    scalardataU(2).name = 'vel_u';
-    scalardataU(2).data = Solution.udot(xdofs_u);
-    scalardataU(2).type = 'float';
-    % strain
-    scalardataU(3).name = 'exx';     scalardataU(3).data = strainU(:,1);
-    scalardataU(3).type = 'float';
-    % stress
-    scalardataU(4).name = 'Sxx';     scalardataU(4).data = stressU(:,1);
-    scalardataU(4).type = 'float';
     % fixed DOFs
-    scalardataU(5).name = 'fixedU';  scalardataU(5).data = fixedU(MeshU.DOF);
-    scalardataU(5).type = 'int';
+    scalardataU(1).name = 'fixed_us';
+    scalardataU(1).data = fixedU(MeshU.DOF);
+    scalardataU(1).type = 'int';
+    % displacement
+    scalardataU(end+1).name = 'disp_us';
+    scalardataU(end).data = Solution.u(xdofs_u);
+    scalardataU(end).type = 'float';
+    % velocity
+    scalardataU(end+1).name = 'vel_us';
+    scalardataU(end).data = Solution.udot(xdofs_u);
+    scalardataU(end).type = 'float';
+       
     if contains(Control.PMmodel, 'Dyn')
         % acceleration
-        scalardataU(6).name = 'acc_u';
-        scalardataU(6).data = Solution.u2dot(xdofs_u);
-        scalardataU(6).type = 'float';
+        scalardataU(end+1).name = 'acc_us';
+        scalardataU(end).data = Solution.u2dot(xdofs_u);
+        scalardataU(end).type = 'float';
     end
+    
+    % strain
+    scalardataU(end+1).name = 'exx_us';
+    scalardataU(end).data = strainU(:,1);
+    scalardataU(end).type = 'float';
+    % stress
+    scalardataU(end+1).name = 'Sxx_us';
+    scalardataU(end).data = stressU(:,1);
+    scalardataU(end).type = 'float';
+    
     vectordataU = [];
     
     %% Storing data for fluid media - 1D case
     if contains(Control.PMmodel, 'UPU')
-        % displacement
-        scalardataUf(1).name = 'disp_uf';
-        scalardataUf(1).data = Solution.uf(xdofs_u);
-        scalardataUf(1).type = 'float';
-        % velocity
-        scalardataUf(2).name = 'vel_uf';
-        scalardataUf(2).data = Solution.ufdot(xdofs_u);
-        scalardataUf(2).type = 'float';
         % fixed DOFs
-        scalardataUf(3).name = 'fixedUf';  scalardataUf(3).data = fixedUf(MeshU.DOF);
-        scalardataUf(3).type = 'int';
+        scalardataUf(1).name = 'fixed_uf';
+        scalardataUf(1).data = fixedUf(MeshU.DOF);
+        scalardataUf(1).type = 'int';
+        % displacement
+        scalardataUf(end+1).name = 'disp_uf';
+        scalardataUf(end).data = Solution.uf(xdofs_u);
+        scalardataUf(end).type = 'float';
+        % velocity
+        scalardataUf(end+1).name = 'vel_uf';
+        scalardataUf(end).data = Solution.ufdot(xdofs_u);
+        scalardataUf(end).type = 'float';
+        
         if contains(Control.PMmodel, 'Dyn')
             % acceleration
-            scalardataUf(4).name = 'acc_uf';
-            scalardataUf(4).data = Solution.uf2dot(xdofs_u);
-            scalardataUf(4).type = 'float';
+            scalardataUf(end+1).name = 'acc_uf';
+            scalardataUf(end).data = Solution.uf2dot(xdofs_u);
+            scalardataUf(end).type = 'float';
         end
         vectordataUf = [];
     end
+    
 elseif nsd == 2
     xdofs_u = MeshU.DOF(:,1); % DOFs in x
     ydofs_u = MeshU.DOF(:,2); % DOFs in y
     
     %% Storing data for solid media - 2D case
+    % fixed DOFs
+    scalardataU(1).name = 'fixed_us';
+    scalardataU(1).data = fixedU(MeshU.DOF);
+    scalardataU(1).type = 'int';
     % displacement
-    vectordataU(1).name = 'disp_u';
+    vectordataU(1).name = 'disp_us';
     vectordataU(1).data = [Solution.u(xdofs_u) Solution.u(ydofs_u) zeros(length(xdofs_u),1)];
     vectordataU(1).type = 'float';
     % velocity
-    vectordataU(2).name = 'vel_u';
-    vectordataU(2).data = [Solution.udot(xdofs_u) Solution.udot(ydofs_u) zeros(length(xdofs_u),1)];
-    vectordataU(2).type = 'float';
+    vectordataU(end+1).name = 'vel_us';
+    vectordataU(end).data = [Solution.udot(xdofs_u) Solution.udot(ydofs_u) zeros(length(xdofs_u),1)];
+    vectordataU(end).type = 'float';
+    
     if contains(Control.PMmodel, 'Dyn')
         % acceleration
-        vectordataU(3).name = 'acc_u';
-        vectordataU(3).data = [Solution.u2dot(xdofs_u) Solution.u2dot(ydofs_u) zeros(length(xdofs_u),1)];
-        vectordataU(3).type = 'float';
+        vectordataU(end+1).name = 'acc_us';
+        vectordataU(end).data = [Solution.u2dot(xdofs_u) Solution.u2dot(ydofs_u) zeros(length(xdofs_u),1)];
+        vectordataU(end).type = 'float';
     end
-    % strain
-    scalardataU(1).name = 'exx';     scalardataU(1).data = strainU(:,1);
-    scalardataU(1).type = 'float';
-    scalardataU(2).name = 'eyy';     scalardataU(2).data = strainU(:,2);
-    scalardataU(2).type = 'float';
-    scalardataU(3).name = 'exy';     scalardataU(3).data = stressU(:,3);
-    scalardataU(3).type = 'float';
-    % stress
-    scalardataU(4).name = 'Sxx';     scalardataU(4).data = stressU(:,1);
-    scalardataU(4).type = 'float';
-    scalardataU(5).name = 'Syy';     scalardataU(5).data = stressU(:,2);
-    scalardataU(5).type = 'float';
-    scalardataU(6).name = 'Sxy';     scalardataU(6).data = stressU(:,3);
-    scalardataU(6).type = 'float';
-    % fixed DOFs
-    scalardataU(7).name = 'fixedU';  scalardataU(7).data = fixedU(MeshU.DOF);
-    scalardataU(7).type = 'int';
+    
+    % strain xx
+    scalardataU(end+1).name = 'exx_us';
+    scalardataU(end).data = strainU(:,1);
+    scalardataU(end).type = 'float';
+    % strain yy
+    scalardataU(end+1).name = 'eyy_us';
+    scalardataU(end).data = strainU(:,2);
+    scalardataU(end).type = 'float';
+    % strain xy
+    scalardataU(end+1).name = 'exy_us';
+    scalardataU(end).data = stressU(:,3);
+    scalardataU(end).type = 'float';
+    % stress xx
+    scalardataU(end+1).name = 'Sxx_us';
+    scalardataU(end).data = stressU(:,1);
+    scalardataU(end).type = 'float';
+    % stress yy
+    scalardataU(end+1).name = 'Syy_us';
+    scalardataU(end).data = stressU(:,2);
+    scalardataU(end).type = 'float';
+    % stress xy
+    scalardataU(end+1).name = 'Sxy_us';
+    scalardataU(end).data = stressU(:,3);
+    scalardataU(end).type = 'float';
+   
+    % displacement in x (scalar)
+    scalardataU(end+1).name = 'disp_usx';
+    scalardataU(end).data = Solution.u(xdofs_u);
+    scalardataU(end).type = 'float';
+    % displacement in y (scalar)
+    scalardataU(end+1).name = 'disp_usy';
+    scalardataU(end).data = Solution.u(ydofs_u);
+    scalardataU(end).type = 'float';
+    % velocity in x (scalar)
+    scalardataU(end+1).name = 'vel_usx';
+    scalardataU(end).data = Solution.udot(xdofs_u);
+    scalardataU(end).type = 'float';
+    % velocity in y (scalar)
+    scalardataU(end+1).name = 'vel_usy';
+    scalardataU(end).data = Solution.udot(ydofs_u);
+    scalardataU(end).type = 'float';
     
     %% Storing data for fluid media - 2D case
     if contains(Control.PMmodel, 'UPU')
+        % fixed DOFs
+        scalardataUf(1).name = 'fixed_uf';
+        scalardataUf(1).data = fixedUf(MeshU.DOF);
+        scalardataUf(1).type = 'int';
         % displacement
         vectordataUf(1).name = 'disp_uf';
         vectordataUf(1).data = [Solution.uf(xdofs_u) Solution.uf(ydofs_u) zeros(length(xdofs_u),1)];
         vectordataUf(1).type = 'float';
         % velocity
-        vectordataUf(2).name = 'vel_uf';
-        vectordataUf(2).data = [Solution.ufdot(xdofs_u) Solution.ufdot(ydofs_u) zeros(length(xdofs_u),1)];
-        vectordataUf(2).type = 'float';
+        vectordataUf(end+1).name = 'vel_uf';
+        vectordataUf(end).data = [Solution.ufdot(xdofs_u) Solution.ufdot(ydofs_u) zeros(length(xdofs_u),1)];
+        vectordataUf(end).type = 'float';
+        
         if contains(Control.PMmodel, 'Dyn')
             % acceleration
-            vectordataUf(3).name = 'acc_uf';
-            vectordataUf(3).data = [Solution.uf2dot(xdofs_u) Solution.uf2dot(ydofs_u) zeros(length(xdofs_u),1)];
-            vectordataUf(3).type = 'float';
+            vectordataUf(end+1).name = 'acc_uf';
+            vectordataUf(end).data = [Solution.uf2dot(xdofs_u) Solution.uf2dot(ydofs_u) zeros(length(xdofs_u),1)];
+            vectordataUf(end).type = 'float';
         end
-        % fixed DOFs
-        scalardataUf(1).name = 'fixedUf';  scalardataUf(1).data = fixedUf(MeshU.DOF);
-        scalardataUf(1).type = 'int';
+        
     end 
 end
 
@@ -142,14 +184,15 @@ scalardataP(1).name = 'pressure';
 scalardataP(1).data = Solution.p;
 scalardataP(1).type = 'float';
 % fixed DOFs
-scalardataP(2).name = 'fixedP';  scalardataP(2).data = fixedP(MeshP.DOF);
-scalardataP(2).type = 'int';
+scalardataP(end+1).name = 'fixedP';
+scalardataP(end).data = fixedP(MeshP.DOF);
+scalardataP(end).type = 'int';
 
 if nsd == 1
     % fluid flux in 1D
-    scalardataP(4).name = 'q';
-    scalardataP(4).data = q;
-    scalardataP(4).type = 'float';
+    scalardataP(end+1).name = 'q';
+    scalardataP(end).data = q;
+    scalardataP(end).type = 'float';
     vectordataP = [];
 elseif nsd == 2
     % fluid flux in 2D
@@ -171,20 +214,20 @@ end
 %% Write to VTK
 % solid
 description = config_name; % config file name
-nameU = 'Solution_U.vtk.';
+nameU = 'Solution_us.vtk.';
 filenameU = fullfile(vtk_dir, [nameU, num2str(step)]);
 WriteMesh2VTK(filenameU, description, MeshU, scalardataU, vectordataU);
 
 % fluid
 description = config_name; % config file name
-nameP = 'Solution_P.vtk.';
+nameP = 'Solution_p.vtk.';
 filenameP = fullfile(vtk_dir, [nameP, num2str(step)]);
 WriteMesh2VTK(filenameP, description, MeshP, scalardataP, vectordataP);
 
 % porosity
 if contains(Control.PMmodel, 'UPN')
     description = config_name; % config file name
-    nameN = 'Solution_N.vtk.';
+    nameN = 'Solution_n.vtk.';
     filenameN = fullfile(vtk_dir, [nameN, num2str(step)]);
     WriteMesh2VTK(filenameN, description, MeshN, scalardataN, []);
 end
@@ -192,7 +235,7 @@ end
 % fluid (u-p-U)
 if contains(Control.PMmodel, 'UPU')
     description = config_name; % config file name
-    nameUf = 'Solution_Uf.vtk.';
+    nameUf = 'Solution_uf.vtk.';
     filenameUf = fullfile(vtk_dir, [nameUf, num2str(step)]);
     WriteMesh2VTK(filenameUf, description, MeshU, scalardataUf, vectordataUf);
 end
