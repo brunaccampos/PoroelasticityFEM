@@ -15,7 +15,7 @@ switch range
         f_max = 2e6;
 end
 % frequency vector
-f = (f_min:f_max);
+f = (f_min:10:f_max);
 
 %% Material parameters
 n = Material.n; % porosity [-]
@@ -93,8 +93,8 @@ loglog(f_range, vR, 'b', 'LineWidth', 2);
 grid on
 hold on
 xline(ratio, '--', 'LineWidth', 1.5);
-xlabel('Frequency range f/f_c');
-ylabel('Velocity');
+xlabel('Frequency range f/f_c [-]');
+ylabel('Velocity [-]');
 title('Rotational waves - Phase velocity');
 hold off
 
@@ -104,8 +104,8 @@ loglog(f_range, attR, 'm', 'LineWidth', 2);
 grid on
 hold on
 xline(ratio, '--', 'LineWidth', 1.5);
-xlabel('Frequency range f/f_c');
-ylabel('Attenuation');
+xlabel('Frequency range f/f_c [-]');
+ylabel('Attenuation [-]');
 title('Rotational waves - Attenuation');
 hold off
 
@@ -115,8 +115,8 @@ loglog(f_range, vD1, 'b', 'LineWidth', 2);
 grid on
 hold on
 xline(ratio, '--', 'LineWidth', 1.5);
-xlabel('Frequency range f/f_c');
-ylabel('Velocity');
+xlabel('Frequency range f/f_c [-]');
+ylabel('Velocity [-]');
 title('Dilatational waves I - Phase velocity');
 hold off
 
@@ -126,8 +126,8 @@ loglog(f_range, attD1, 'm', 'LineWidth', 2);
 grid on
 hold on
 xline(ratio, '--', 'LineWidth', 1.5);
-xlabel('Frequency range f/f_c');
-ylabel('Attenuation');
+xlabel('Frequency range f/f_c [-]');
+ylabel('Attenuation [-]');
 title('Dilatational waves I - Attenuation');
 hold off
 
@@ -137,8 +137,8 @@ loglog(f_range, vD2, 'b', 'LineWidth', 2);
 grid on
 hold on
 xline(ratio, '--', 'LineWidth', 1.5);
-xlabel('Frequency range f/f_c');
-ylabel('Velocity');
+xlabel('Frequency range f/f_c [-]');
+ylabel('Velocity [-]');
 title('Dilatational waves II - Phase velocity');
 hold off
 
@@ -148,8 +148,8 @@ loglog(f_range, attD2, 'm', 'LineWidth', 2);
 grid on
 hold on
 xline(ratio, '--', 'LineWidth', 1.5);
-xlabel('Frequency range f/f_c');
-ylabel('Attenuation');
+xlabel('Frequency range f/f_c [-]');
+ylabel('Attenuation [-]');
 title('Dilatational waves II - Attenuation');
 hold off
 
