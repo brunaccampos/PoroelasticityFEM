@@ -130,8 +130,8 @@ BC.fixed_u = node*2;
 P0 = 100e-6;
 % frequency [Hz]
 f = 1e3;
-% BC.fixed_u_value = @(t) (P0*(sin(pi*(t)*f) - 0.5*sin(2*pi*(t)*f))).*(t<1/f);
-BC.fixed_u_value = @(t) (P0*(sin(2*pi*(t)*f) - 0.5*sin(4*pi*(t)*f))).*(t<1/f);
+BC.fixed_u_value = @(t) (P0*(sin(pi*(t)*f) - 0.5*sin(2*pi*(t)*f))).*(t<1/f);
+% BC.fixed_u_value = @(t) (P0*(sin(2*pi*(t)*f) - 0.5*sin(4*pi*(t)*f))).*(t<1/f);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
