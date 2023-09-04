@@ -64,6 +64,7 @@ DirFolder = 'Config Files';
 % File = 'ManufacturedSolution1D_UstePste';
 % File = 'ManufacturedSolution1D_UstePtra';
 % File = 'ManufacturedSolution1D_UtraPtra';
+% File = 'ManufacturedSolution1Dupu_Biot';
 
 % -------------------- Tests Elasticity
 % File = 'Beam_Dynamic';
