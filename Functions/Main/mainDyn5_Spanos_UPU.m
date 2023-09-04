@@ -91,6 +91,7 @@ while Control.t < Control.tend
 
     % update external forces vectors
     fu(BC.fixed_u) = Solution.fuE;
+    fp(BC.fixed_p) = Solution.fpE;
 	ff(BC.fixed_u) = Solution.ffE;
     
     % post processing: compute stress/flux, export VTK file
