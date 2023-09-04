@@ -149,6 +149,8 @@ fuF = fu(BC.free_u) + MssFF * (1/(beta*dt^2) * u_old(BC.free_u) + 1/(beta*dt) * 
     CsfFF * (-xi/(lambda*dt) * uf_old(BC.free_u) - (xi/lambda-1) * ufdot_old(BC.free_u) - dt*(xi/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
     CssFF * (gamma/(beta*dt) * u_old(BC.free_u) +(gamma/beta-1) * udot_old(BC.free_u) + dt*(gamma/(2*lambda)-1) * u2dot_old(BC.free_u));
 
+fpF = fp(BC.free_p);
+
 ffF = ff(BC.free_u) + MffFF * (1/(lambda*dt^2) * uf_old(BC.free_u) + 1/(lambda*dt)*ufdot_old(BC.free_u) + (1/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
     MfsFF * (1/(beta*dt^2) * u_old(BC.free_u) + 1/(beta*dt) * udot_old(BC.free_u) + (1/(2*beta) -1) * u2dot_old(BC.free_u)) + ...
     CffFF * (xi/(lambda*dt) * uf_old(BC.free_u) + (xi/lambda-1) * ufdot_old(BC.free_u) + dt*(xi/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
@@ -156,15 +158,18 @@ ffF = ff(BC.free_u) + MffFF * (1/(lambda*dt^2) * uf_old(BC.free_u) + 1/(lambda*d
 
 
 fuE = fu(BC.fixed_u);
+fpE = fp(BC.fixed_p);
 ffE = ff(BC.fixed_u);
 
 uE = BC.fixed_u_value(Control.t);
-ufE = zeros(length(uE),1);
-pE = zeros(length(BC.fixed_p),1);
+% ufE = zeros(length(uE),1);
+ufE = BC.fixed_u_value(Control.t);
+% pE = zeros(length(BC.fixed_p),1);
+pE = BC.fixed_p_value(Control.t);
 
 dE = [uE; pE; ufE];
-fE = [fuE; zeros(length(BC.fixed_p),1); ffE];
-fF = [fuF; zeros(length(BC.free_p),1); ffF];
+fE = [fuE; fpE; ffE];
+fF = [fuF; fpF; ffF];
 
 %% Solve linear system
 % solve for displacement and pressure
