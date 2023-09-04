@@ -295,4 +295,21 @@ if Control.fixedDepthPlotON
     title('Fluid pressure in domain over time');
     hold off
 
+    %% solid velocity vs time - FFT
+figure
+y = fft(Plot.udot_time);
+f_min = 0;
+f_max = 1000;
+f = linspace(f_min, f_max, length(Plot.udot_time));
+plot(f, y,'r','LineWidth',2);
+hold on
+grid on
+xlabel('Frequency spectrum [Hz]');
+ylabel('Amplitude spectrum [m/s]');
+title(sprintf('FFT - Solid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
+hold off
+if saveGraphs_on
+    exportgraphics(gcf,'FFTVelSolid_time.png','Resolution',300)
+end
+
 end
