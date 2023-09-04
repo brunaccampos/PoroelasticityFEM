@@ -68,6 +68,28 @@ while Control.t < Control.tend
     % system load vectors
     [fu, fp, ff] = ComputeLoads_UPU(BC, MeshU, MeshP, Control, Material, QuadU, QuadP);
     
+    % analytical solution for 1D case
+    if Control.plotansol
+        if Control.uncoupled
+            p_an = Control.p_an(Control.t);
+            u_an = Control.u_an(Control.t);
+        else
+            if any(Material.Minv)
+                [p_an, u_an] = getAnalyticResult_Comp(Material, MeshU, MeshP, BC, Control);
+            else % 1/M = 0
+                [~, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control);
+            end
+        end
+       
+        % store variables over length
+        Plot.pan_space = p_an;
+        Plot.uan_space = u_an;
+
+        % store variables over time
+        Plot.uan_time(Control.step,:) = u_an(Control.plotu, 1);
+        Plot.pan_time(Control.step,:) = p_an(Control.plotp, 1);
+    end
+    
     % linear solver
     [Solution] = SolverDyn_UPU(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, fp, ff, BC, Control, Iteration);
 
