@@ -43,7 +43,7 @@ Material.xif = 2.8e-12;
 % material porosity
 Material.n = 0.25;
 % shear modulus [GPa]
-Material.G = (1-Material.n)*23;
+Material.G = 4.9;
 % elasticity modulus [GPa]
 Material.E = 2 * Material.G * (1 + Material.nu);
 % 1/Q (related to storage coefficient)
@@ -55,7 +55,7 @@ Material.rho_s = 2650e-9;
 % average density of the medium
 Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
 % added mass [10^9 kg/m3]
-% Material.rho12 = -83e-9;
+Material.rho12 = -83e-9;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -91,7 +91,7 @@ nsd = 2;
 % size of domain [m] [Lx;Ly;Lz]
 L = [15; 15];
 % number of elements in each direction [nex; ney; nez]
-ne = [64; 64];
+ne = [100; 100];
 
 %%%% displacement mesh
 % element type ('Q4')
@@ -126,7 +126,8 @@ BC.fixed_u = node*2;
 % period [ms]
 t0 = 1e-3;
 % fixed DOF values
-BC.fixed_u_value = @(t) (sin(2*pi*(t)/t0) - 0.5*sin(4*pi*(t)/t0)).*(t<t0);
+% BC.fixed_u_value = @(t) (sin(2*pi*(t)/t0) - 0.5*sin(4*pi*(t)/t0)).*(t<t0);
+BC.fixed_u_value = @(t) (-t0/(2*pi)*cos(2*pi*(t)/t0) + t0/(8*pi)*cos(4*pi*(t)/t0)).*(t<t0);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
@@ -181,7 +182,7 @@ Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
 Control.dt = 1e-5;  % time step
-Control.tend = 2e-3;   % final simulation time
+Control.tend = 3e-3;   % final simulation time
 
 % Newmark method
 Control.beta = 0.7;
