@@ -51,9 +51,9 @@ Kssbar = Kss + Mss./(beta*dt^2) + Css*(gamma/beta/dt);
 Kspbar = -Ksp;
 Ksfbar = Msf./(lambda*dt^2) - Csf*(xi/lambda/dt);
 
-Kpsbar = -Kps;
-Kppbar = -Kpp;
-Kpfbar = -Kpf;
+Kpsbar = Kps;
+Kppbar = Kpp;
+Kpfbar = Kpf;
 
 Kfsbar = Mfs./(beta*dt^2) - Cfs*(gamma/beta/dt);
 Kfpbar = -Kfp;
@@ -185,6 +185,8 @@ ufF = dF(length(BC.free_u) + length(BC.free_p) + 1 : end,1);
 %% Store u/p/uf
 % force reactions
 fuE = rE(1:length(BC.fixed_u),1);
+% flux reactions
+fpE = rE(length(BC.fixed_u) + 1: length(BC.fixed_u) + length(BC.fixed_p));
 % force reactions
 ffE = rE(length(BC.fixed_u) + length(BC.fixed_p) + 1: end,1);
 
@@ -216,6 +218,7 @@ Solution.uf = uf;
 Solution.ufdot = ufdot;
 Solution.uf2dot = uf2dot;
 Solution.fuE = fuE;
+Solution.fpE = fpE;
 Solution.ffE = ffE;
 
 end
