@@ -159,7 +159,7 @@ fuE = fu(BC.fixed_u);
 ffE = ff(BC.fixed_u);
 
 uE = BC.fixed_u_value(Control.t);
-ufE = BC.fixed_u_value(Control.t);
+ufE = zeros(length(uE),1);
 pE = zeros(length(BC.fixed_p),1);
 
 dE = [uE; pE; ufE];
