@@ -86,7 +86,7 @@ while Control.t < Control.tend
 
     % solution in the frequency domain
     if Control.freqDomain
-%         [SolutionFreq] = SolverDynamicFreq_Biot(phi_u, omega2_u, phi_p, omega2_p, Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
+        [SolutionFreq] = SolverFreqDyn_UPU(phi_u, omega2_u, phi_p, omega2_p, phi_uf, omega_uf, Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, ff, BC, Control, Iteration);
     end
 
     % update external forces vectors
