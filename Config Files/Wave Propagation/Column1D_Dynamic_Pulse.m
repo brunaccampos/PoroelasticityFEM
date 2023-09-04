@@ -123,19 +123,16 @@ end
 
 %% Dirichlet BCs - solid
 % displacement at u=L
-% BC.fixed_u1 = MeshU.right_nodes;
 BC.fixed_u1 = [MeshU.right_nodes; MeshU.left_nodes];
 % displacement at u=0 (sinusoidal)
-% BC.fixed_u2 = MeshU.left_nodes;
 BC.fixed_u2 = ceil(length(MeshU.coords)/2);
 BC.fixed_u = [BC.fixed_u1; BC.fixed_u2];
 % amplitude [GPa]
 P0 = 100e-6;
 % frequency [Hz]
 f = 1e3;
-% BC.fixed_u_value = @(t) [0; P0*sin(pi*f*t)].*(t<1/f);
-% BC.fixed_u_value = @(t) [0; 0; P0*sin(pi*f*t)].*(t<1/f);
 BC.fixed_u_value = @(t) [0; 0; P0*(sin(pi*(t)*f) - 0.5*sin(2*pi*(t)*f))].*(t<1/f);
+% BC.fixed_u_value = @(t) [0; 0; P0*(sin(2*pi*(t)*f) - 0.5*sin(4*pi*(t)*f))].*(t<1/f);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
@@ -179,7 +176,7 @@ Control.nqP = 3;
 %% Frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
 % plot f/fc range for frequency dependent BC
-range = 3; % 1: seismic, 2: acoustic, 3: ultrasonic
+range = 2; % 1: seismic, 2: acoustic, 3: ultrasonic
 PlotFreqRange(Material, f, range);
 
 %% Analytical solution
@@ -213,9 +210,10 @@ Control.alpha = 0;
 
 %% Plot data
 % DOF to plot graphs
-node = find(MeshU.coords == 3); % x = 5m
-Control.plotu = node;
-Control.plotp = node;
+nodeU = find(MeshU.coords == 6); % x = 6m
+nodeP = find(MeshP.coords == 6); % x = 6m
+Control.plotu = nodeU;
+Control.plotp = nodeP;
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 
 % Plot in a row
