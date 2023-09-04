@@ -95,12 +95,35 @@ while Control.t < Control.tend
 
     % plot solution over time
     figure(1);
-    subplot(1,2,1);
+    % solid displacement
+    subplot(2,3,1);
     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
-    title('Displacement');
-    subplot(1,2,2);
+    title('Solid displacement');
+    hold on
+    plot(MeshU.coords, Plot.uan_space, 'k--', 'LineWidth', 1.5);
+    hold off
+    % solid velocity
+    subplot(2,3,2);
     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
-    title('Velocity');
+    title('Solid velocity');
+    % fluid pressure
+    subplot(2,3,3);
+    plot(MeshP.coords, Solution.p, 'g', 'LineWidth', 1.5);
+    title('Pressure');
+    hold on
+    plot(MeshP.coords, Plot.pan_space, 'k--', 'LineWidth', 1.5);
+    hold off
+    % fluid displacement
+    subplot(2,3,4);
+    plot(MeshU.coords, Solution.uf, 'm', 'LineWidth', 1.5);
+    title('Fluid displacement');
+    hold on
+    plot(MeshU.coords, Plot.uan_space, 'k--', 'LineWidth', 1.5);
+    hold off
+    % fluid velocity
+    subplot(2,3,5);
+    plot(MeshU.coords, Solution.ufdot, 'b', 'LineWidth', 1.5);
+    title('Fluid velocity');
     pause(0.001);
     if saveVideo_on
         frame = getframe(gcf); %get frame
