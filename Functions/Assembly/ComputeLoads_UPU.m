@@ -1,4 +1,4 @@
-function [fs, ff] = ComputeLoads_UPU(BC, MeshU, MeshP, Control, Material, QuadU, QuadP)
+function [fs, fp, ff] = ComputeLoads_UPU(BC, MeshU, MeshP, Control, Material, QuadU, QuadP)
 % Compute system load force vectors
 % ------------------------------------------------------------------------
 %   Input
@@ -28,16 +28,17 @@ nqP = QuadP.nq;
 
 % global vectors
 fs = zeros(MeshU.nDOF, 1);
+fp = zeros(MeshP.nDOF, 1);
 ff = zeros(MeshU.nDOF, 1);
 
 %% Return zeros if no applied loads
+% verifying if there are body forces
 if isempty(BC.tractionNodes) && strcmp(func2str(BC.b),'@(x,t)[]') && isempty(BC.pointLoad) ...
         && isempty(BC.fluxNodes) && strcmp(func2str(BC.s),'@(x,t)[]') && isempty(BC.pointFlux)
     return
 end
 
-%% Traction vector
-% veryfing if there are applied loads
+% verifying if there are distributed forces
 if ~isempty(BC.tractionNodes)
     % traction nodes
     tractionNodes = BC.tractionNodes;
@@ -49,6 +50,7 @@ else
     tractionNodes = [];
 end
 
+%% Body force for u-U fields, traction for u field
 % loop over elements
 for e = 1:ne
     % element connectivity
@@ -61,8 +63,9 @@ for e = 1:ne
     % element load matrix
     fu_e = zeros(MeshU.nDOFe,1);
     % element body force matrix
-    fb_e = zeros(MeshU.nDOFe,1);
-
+    fbs_e = zeros(MeshU.nDOFe,1);
+    fbf_e = zeros(MeshU.nDOFe,1);
+    
     % loop over IPs if there are body forces
     if ~strcmp(func2str(BC.b),'@(x,t)[]')
         for ip = 1:nqU
@@ -79,8 +82,11 @@ for e = 1:ne
             % Jacobian determinant
             Jdet = det(J);
             
-            % body force
-            fb_e = fb_e + (1-Material.n) * Material.rho_s * NVoigt.' * BC.b(ipcoords, Control.t) * Jdet * QuadU.w(ip,1);
+            % body force 1st equation
+            fbs_e = fbs_e + (1-Material.n) * Material.rho_s * NVoigt.' * BC.b(ipcoords, Control.t) * Jdet * QuadU.w(ip,1);
+
+            % body force 3rd equation
+            fbf_e = fbf_e + Material.n * Material.rho_f * NVoigt.' * BC.bf(ipcoords, Control.t) * Jdet * QuadU.w(ip,1);
         end
     end
     
@@ -118,8 +124,9 @@ for e = 1:ne
         end
     end
 
-    % assemble global load vector
-    fs(dofe) = fs(dofe) + fu_e + fb_e;
+    % assemble global load vectors
+    fs(dofe) = fs(dofe) + fu_e + fbs_e;
+    ff(dofe) = ff(dofe) + fbf_e;
 end
 
 % apply step load gradualy
@@ -130,7 +137,7 @@ if Control.rampLoad
     end
 end
     
-% adding point loads
+%% Point load u field
 if ~isempty(BC.pointLoad)
     if isa(BC.pointLoad,'function_handle')
         fs = fs + BC.pointLoad(Control.t);
@@ -164,7 +171,7 @@ for e = 1:ne
     % element flux matrix
     fp_e = zeros(MeshP.nDOFe,1);
     % element flux source matrix
-    fb_e = zeros(MeshP.nDOFe,1);
+    fg_e = zeros(MeshP.nDOFe,1);
 
     % loop over IPs if there are flux sources
     if ~strcmp(func2str(BC.s),'@(x,t)[]')
@@ -183,7 +190,7 @@ for e = 1:ne
             Jdet = det(J);
             
             % flux source
-            fb_e = fb_e + NVoigt.' * BC.s(ipcoords, Control.t) * Jdet * QuadP.w(ip,1);
+            fg_e = fg_e + NVoigt.' * BC.s(ipcoords, Control.t) * Jdet * QuadP.w(ip,1);
         end
     end
     
@@ -206,7 +213,7 @@ for e = 1:ne
     end
 
     % assemble global flux vector
-    ff(dofe) = ff(dofe) + fp_e + fb_e;
+    fp(dofe) = fp(dofe) + fg_e;
 end
 
 % adding point loads
