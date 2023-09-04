@@ -17,6 +17,11 @@ if Control.freqDomain
     plot(Plot.time, Plot.pF*10^9.*Material.t,'r--','LineWidth',2);
     legend('Time', 'Frequency');
 end
+% analytical solution
+if Control.plotansol
+    plot(Plot.time, Plot.pan_time*10^9.*Material.t,'k:','LineWidth',2);
+    legend('Numerical', 'Analytical');
+end
 hold off
 if saveGraphs_on
     exportgraphics(gcf,'Press_time.png','Resolution',300)
@@ -34,6 +39,11 @@ title(sprintf('Solid displacement at x = %.2f m', MeshU.coords(Control.plotu,1))
 if Control.freqDomain
     plot(Plot.time, Plot.uF,'m--','LineWidth',2);
     legend('Time', 'Frequency');
+end
+% analytical solution
+if Control.plotansol
+    plot(Plot.time, Plot.uan_time,'k:','LineWidth',2);
+    legend('Numerical', 'Analytical');
 end
 hold off
 if saveGraphs_on
@@ -84,6 +94,11 @@ if Control.freqDomain
     plot(MeshP.coords, SolutionFreq.pF*10^9.*Material.t,'r--','LineWidth',2);
     legend('Time', 'Frequency');
 end
+% analytical solution
+if Control.plotansol
+    plot(MeshP.coords, Plot.pan_space*10^9.*Material.t,'k:','LineWidth',2);
+    legend('Numerical', 'Analytical');
+end
 hold off
 if saveGraphs_on
     exportgraphics(gcf,'Press_depth.png','Resolution',300)
@@ -101,6 +116,11 @@ title(sprintf('Solid displacement at t = %.1d s', Control.tend));
 if Control.freqDomain
     plot(MeshU.coords, SolutionFreq.uF,'m--','LineWidth',2);
     legend('Time', 'Frequency');
+end
+% analytical solution
+if Control.plotansol
+    plot(MeshU.coords, Plot.uan_space,'k:','LineWidth',2);
+    legend('Numerical', 'Analytical');
 end
 hold off
 if saveGraphs_on
@@ -179,6 +199,11 @@ if contains(Control.PMmodel, 'UPU')
     xlabel('Time [s]');
     ylabel('u (fluid) [m]');
     title(sprintf('Fluid displacement at x = %.2f m', MeshU.coords(Control.plotu,1)));
+    % analytical solution
+    if Control.plotansol
+        plot(Plot.time, Plot.uan_time,'k:','LineWidth',2);
+        legend('Numerical', 'Analytical');
+    end
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'DisplFluid_time.png','Resolution',300)
@@ -218,6 +243,11 @@ if contains(Control.PMmodel, 'UPU')
     xlabel('Column depth [m]');
     ylabel('u (fluid) [m]');
     title(sprintf('Fluid displacement at t = %.1d s', Control.tend));
+    % analytical solution
+    if Control.plotansol
+        plot(MeshU.coords, Plot.uan_space,'k:','LineWidth',2);
+        legend('Numerical', 'Analytical');
+    end
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'DisplFluid_depth.png','Resolution',300)
