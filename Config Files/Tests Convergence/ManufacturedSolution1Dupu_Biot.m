@@ -140,11 +140,10 @@ BC.pointLoad = [];
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.b = @(x,t) -(Material.E/(1-Material.n)/Material.rho_s)*t*cos(x*t) - ...
-    ((Material.alpha-Material.n)/(1-Material.n)/Material.rho_s)*t*sin(x*t) - ...
-    x.^2 * sin(x*t);
+BC.b = @(x,t) - Material.E*t*cos(x*t)-(Material.alpha-Material.n)*t*sin(x*t) - ...
+    (1-Material.n)*Material.rho_s* x^2 * sin(x*t);
 
-BC.bf = @(x,t) -(1/Material.rho_f)*t*sin(x*t) - x^2 * sin(x*t);
+BC.bf = @(x,t) - Material.n*t*sin(x*t) - Material.n*Material.rho_f* x^2 * sin(x*t);
 
 %% Neumann BCs - fluid
 % point flux [m/s]

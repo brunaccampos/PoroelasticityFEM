@@ -83,10 +83,10 @@ for e = 1:ne
             Jdet = det(J);
             
             % body force 1st equation
-            fbs_e = fbs_e + (1-Material.n) * Material.rho_s * NVoigt.' * BC.b(ipcoords, Control.t) * Jdet * QuadU.w(ip,1);
+            fbs_e = fbs_e + NVoigt.' * BC.b(ipcoords, Control.t) * Jdet * QuadU.w(ip,1);
 
             % body force 3rd equation
-            fbf_e = fbf_e + Material.n * Material.rho_f * NVoigt.' * BC.bf(ipcoords, Control.t) * Jdet * QuadU.w(ip,1);
+            fbf_e = fbf_e + NVoigt.' * BC.bf(ipcoords, Control.t) * Jdet * QuadU.w(ip,1);
         end
     end
     
