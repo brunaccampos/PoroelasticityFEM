@@ -159,6 +159,8 @@ else
     fluxNodes = [];
 end
 
+count = zeros(size(BC.fixed_p));
+
 % loop over elements
 for e = 1:ne
     % element connectivity
@@ -172,7 +174,9 @@ for e = 1:ne
     fp_e = zeros(MeshP.nDOFe,1);
     % element flux source matrix
     fg_e = zeros(MeshP.nDOFe,1);
-
+    
+    faux_e = zeros(MeshP.nDOFe,1);
+    
     % loop over IPs if there are flux sources
     if ~strcmp(func2str(BC.s),'@(x,t)[]')
         for ip = 1:nqP
@@ -212,8 +216,31 @@ for e = 1:ne
         end
     end
 
+    % loop over prescribed pressure
+    for j = 1:length(BC.fixed_p)
+        % check if flux is applied to current element
+        if ~isempty(find(connp_e == BC.fixed_p(j),1)) && count(j) == 0
+            % current node
+            node = find(connp_e == BC.fixed_p(j),1);
+            % node parent coordinates
+            coord = getParentCoords(node, MeshP.type);
+            % node shape functions
+            [N,~] = lagrange_basis(MeshP, coord);
+            Nvoigt = getNVoigt(MeshP, N');
+            % element load vector
+            vec = BC.fixed_p_value(Control.t);
+            faux_e = faux_e + Nvoigt.' * vec(j,:)';
+            % update counting
+            count(j) = 1;
+        end
+    end
+    
     % assemble global flux vector
     fp(dofe) = fp(dofe) + fg_e;
+    
+    fs(dofe*2-1) = fs(dofe*2-1) - (Material.alpha-Material.n) * faux_e;
+    ff(dofe*2-1) = ff(dofe*2-1) - Material.n * faux_e;
+    
 end
 
 % adding point loads
