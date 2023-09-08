@@ -70,10 +70,10 @@ Ksp_EF = Kspbar(BC.fixed_u, BC.free_p);
 Ksp_FE = Kspbar(BC.free_u, BC.fixed_p);
 Ksp_FF = Kspbar(BC.free_u, BC.free_p);
 
-Ksf_EE = Ksfbar(BC.fixed_u, BC.fixed_u);
-Ksf_EF = Ksfbar(BC.fixed_u, BC.free_u);
-Ksf_FE = Ksfbar(BC.free_u, BC.fixed_u);
-Ksf_FF = Ksfbar(BC.free_u, BC.free_u);
+Ksf_EE = Ksfbar(BC.fixed_u, BC.fixed_uf);
+Ksf_EF = Ksfbar(BC.fixed_u, BC.free_uf);
+Ksf_FE = Ksfbar(BC.free_u, BC.fixed_uf);
+Ksf_FF = Ksfbar(BC.free_u, BC.free_uf);
 
 Kps_EE = Kpsbar(BC.fixed_p, BC.fixed_u);
 Kps_EF = Kpsbar(BC.fixed_p, BC.free_u);
@@ -85,25 +85,25 @@ Kpp_EF = Kppbar(BC.fixed_p, BC.free_p);
 Kpp_FE = Kppbar(BC.free_p, BC.fixed_p);
 Kpp_FF = Kppbar(BC.free_p, BC.free_p);
 
-Kpf_EE = Kpfbar(BC.fixed_p, BC.fixed_u);
-Kpf_EF = Kpfbar(BC.fixed_p, BC.free_u);
-Kpf_FE = Kpfbar(BC.free_p, BC.fixed_u);
-Kpf_FF = Kpfbar(BC.free_p, BC.free_u);
+Kpf_EE = Kpfbar(BC.fixed_p, BC.fixed_uf);
+Kpf_EF = Kpfbar(BC.fixed_p, BC.free_uf);
+Kpf_FE = Kpfbar(BC.free_p, BC.fixed_uf);
+Kpf_FF = Kpfbar(BC.free_p, BC.free_uf);
 
-Kfs_EE = Kfsbar(BC.fixed_u, BC.fixed_u);
-Kfs_EF = Kfsbar(BC.fixed_u, BC.free_u);
-Kfs_FE = Kfsbar(BC.free_u, BC.fixed_u);
-Kfs_FF = Kfsbar(BC.free_u, BC.free_u);
+Kfs_EE = Kfsbar(BC.fixed_uf, BC.fixed_u);
+Kfs_EF = Kfsbar(BC.fixed_uf, BC.free_u);
+Kfs_FE = Kfsbar(BC.free_uf, BC.fixed_u);
+Kfs_FF = Kfsbar(BC.free_uf, BC.free_u);
 
-Kfp_EE = Kfpbar(BC.fixed_u, BC.fixed_p);
-Kfp_EF = Kfpbar(BC.fixed_u, BC.free_p);
-Kfp_FE = Kfpbar(BC.free_u, BC.fixed_p);
-Kfp_FF = Kfpbar(BC.free_u, BC.free_p);
+Kfp_EE = Kfpbar(BC.fixed_uf, BC.fixed_p);
+Kfp_EF = Kfpbar(BC.fixed_uf, BC.free_p);
+Kfp_FE = Kfpbar(BC.free_uf, BC.fixed_p);
+Kfp_FF = Kfpbar(BC.free_uf, BC.free_p);
 
-Kff_EE = Kffbar(BC.fixed_u, BC.fixed_u);
-Kff_EF = Kffbar(BC.fixed_u, BC.free_u);
-Kff_FE = Kffbar(BC.free_u, BC.fixed_u);
-Kff_FF = Kffbar(BC.free_u, BC.free_u);
+Kff_EE = Kffbar(BC.fixed_uf, BC.fixed_uf);
+Kff_EF = Kffbar(BC.fixed_uf, BC.free_uf);
+Kff_FE = Kffbar(BC.free_uf, BC.fixed_uf);
+Kff_FF = Kffbar(BC.free_uf, BC.free_uf);
 
 % matrices reassemble
 KEE = [Kss_EE, Ksp_EE, Ksf_EE;
@@ -121,51 +121,64 @@ KFF = [Kss_FF, Ksp_FF, Ksf_FF;
 
 % matrices for unknown DOFs
 MssFF = Mss(BC.free_u, BC.free_u);
-MffFF = Mff(BC.free_u, BC.free_u);
-MsfFF = Msf(BC.free_u, BC.free_u);
-MfsFF = Mfs(BC.free_u, BC.free_u);
+MffFF = Mff(BC.free_uf, BC.free_uf);
+MsfFF = Msf(BC.free_u, BC.free_uf);
+MfsFF = Mfs(BC.free_uf, BC.free_u);
 
 CssFF = Css(BC.free_u, BC.free_u);
-CsfFF = Csf(BC.free_u, BC.free_u);
-CfsFF = Cfs(BC.free_u, BC.free_u);
-CffFF = Cff(BC.free_u, BC.free_u);
+CsfFF = Csf(BC.free_u, BC.free_uf);
+CfsFF = Cfs(BC.free_uf, BC.free_u);
+CffFF = Cff(BC.free_uf, BC.free_uf);
 
 KssFF = Kss(BC.free_u, BC.free_u);
 KspFF = Ksp(BC.free_u, BC.free_p);
-KfpFF = Kfp(BC.free_u, BC.free_p);
+KfpFF = Kfp(BC.free_uf, BC.free_p);
 
 % at first step: compute solid acceleration and pressure gradient
 if Control.step == 1
-    aux = [MssFF, MsfFF; MfsFF, MffFF] \...
-        ([fu(BC.free_u); ff(BC.free_u)] - [CssFF, -CsfFF; -CfsFF, CffFF] * [udot_old(BC.free_u); ufdot_old(BC.free_u)]...
-        - [KssFF, -KspFF; zeros(length(KssFF), length(KssFF)), -KfpFF] * [u_old(BC.free_u); p_old(BC.free_p)]);
-    u2dot_old(BC.free_u) = aux(1:length(u2dot_old(BC.free_u)));
-    uf2dot_old(BC.free_u) = aux(length(u2dot_old(BC.free_u))+1:end);
+    aux = [Mss, Msf; Mfs, Mff] \([fu; ff] - [Css, -Csf; -Cfs, Cff] * [udot_old; ufdot_old]...
+        - [Kss, -Ksp; zeros(length(Kss), length(Kss)), -Kfp] * [u_old; p_old]);
+    u2dot_old = aux(1:length(u2dot_old));
+%     uf2dot_old = aux(length(u2dot_old)+1:end);
+    uf2dot_old = zeros(length(u2dot_old),1);
 end
 
 % auxiliar terms for external forces vector
-fuF = fu(BC.free_u) + MssFF * (1/(beta*dt^2) * u_old(BC.free_u) + 1/(beta*dt) * udot_old(BC.free_u) + (1/(2*beta) -1) * u2dot_old(BC.free_u)) + ...
-    MsfFF * (1/(lambda*dt^2) * uf_old(BC.free_u) + 1/(lambda*dt) * ufdot_old(BC.free_u) + (1/(2*lambda) -1) * uf2dot_old(BC.free_u)) + ...
-    CsfFF * (-xi/(lambda*dt) * uf_old(BC.free_u) - (xi/lambda-1) * ufdot_old(BC.free_u) - dt*(xi/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
-    CssFF * (gamma/(beta*dt) * u_old(BC.free_u) +(gamma/beta-1) * udot_old(BC.free_u) + dt*(gamma/(2*lambda)-1) * u2dot_old(BC.free_u));
+% fuF = fu(BC.free_u) + MssFF * (1/(beta*dt^2) * u_old(BC.free_u) + 1/(beta*dt) * udot_old(BC.free_u) + (1/(2*beta) -1) * u2dot_old(BC.free_u)) + ...
+%     MsfFF * (1/(lambda*dt^2) * uf_old(BC.free_u) + 1/(lambda*dt) * ufdot_old(BC.free_u) + (1/(2*lambda) -1) * uf2dot_old(BC.free_u)) + ...
+%     CsfFF * (-xi/(lambda*dt) * uf_old(BC.free_u) - (xi/lambda-1) * ufdot_old(BC.free_u) - dt*(xi/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
+%     CssFF * (gamma/(beta*dt) * u_old(BC.free_u) +(gamma/beta-1) * udot_old(BC.free_u) + dt*(gamma/(2*lambda)-1) * u2dot_old(BC.free_u));
+% 
+% fpF = fp(BC.free_p);
+% 
+% ffF = ff(BC.free_u) + MffFF * (1/(lambda*dt^2) * uf_old(BC.free_u) + 1/(lambda*dt)*ufdot_old(BC.free_u) + (1/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
+%     MfsFF * (1/(beta*dt^2) * u_old(BC.free_u) + 1/(beta*dt) * udot_old(BC.free_u) + (1/(2*beta) -1) * u2dot_old(BC.free_u)) + ...
+%     CffFF * (xi/(lambda*dt) * uf_old(BC.free_u) + (xi/lambda-1) * ufdot_old(BC.free_u) + dt*(xi/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
+%     CfsFF * (-gamma/(beta*dt) * u_old(BC.free_u) - (gamma/beta-1) * udot_old(BC.free_u) - dt*(gamma/(2*beta)-1) * u2dot_old(BC.free_u));
 
-fpF = fp(BC.free_p);
+fubar = fu + Mss * (1/(beta*dt^2) * u_old + 1/(beta*dt) * udot_old + (1/(2*beta) -1) * u2dot_old) + ...
+    Msf * (1/(lambda*dt^2) * uf_old + 1/(lambda*dt) * ufdot_old + (1/(2*lambda) -1) * uf2dot_old) + ...
+    Csf * (-xi/(lambda*dt) * uf_old - (xi/lambda-1) * ufdot_old - dt*(xi/(2*lambda)-1) * uf2dot_old) + ...
+    Css * (gamma/(beta*dt) * u_old +(gamma/beta-1) * udot_old + dt*(gamma/(2*lambda)-1) * u2dot_old);
 
-ffF = ff(BC.free_u) + MffFF * (1/(lambda*dt^2) * uf_old(BC.free_u) + 1/(lambda*dt)*ufdot_old(BC.free_u) + (1/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
-    MfsFF * (1/(beta*dt^2) * u_old(BC.free_u) + 1/(beta*dt) * udot_old(BC.free_u) + (1/(2*beta) -1) * u2dot_old(BC.free_u)) + ...
-    CffFF * (xi/(lambda*dt) * uf_old(BC.free_u) + (xi/lambda-1) * ufdot_old(BC.free_u) + dt*(xi/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
-    CfsFF * (-gamma/(beta*dt) * u_old(BC.free_u) - (gamma/beta-1) * udot_old(BC.free_u) - dt*(gamma/(2*beta)-1) * u2dot_old(BC.free_u));
+fpbar = fp;
 
+ffbar = ff + Mff * (1/(lambda*dt^2) * uf_old + 1/(lambda*dt)*ufdot_old + (1/(2*lambda)-1) * uf2dot_old) + ...
+    Mfs * (1/(beta*dt^2) * u_old + 1/(beta*dt) * udot_old + (1/(2*beta) -1) * u2dot_old) + ...
+    Cff * (xi/(lambda*dt) * uf_old + (xi/lambda-1) * ufdot_old + dt*(xi/(2*lambda)-1) * uf2dot_old) + ...
+    Cfs * (-gamma/(beta*dt) * u_old - (gamma/beta-1) * udot_old - dt*(gamma/(2*beta)-1) * u2dot_old);
 
-fuE = fu(BC.fixed_u);
-fpE = fp(BC.fixed_p);
-ffE = ff(BC.fixed_u);
+fuF = fubar(BC.free_u);
+fpF = fpbar(BC.free_p);
+ffF = ffbar(BC.free_uf);
+
+fuE = fubar(BC.fixed_u);
+fpE = fpbar(BC.fixed_p);
+ffE = ffbar(BC.fixed_uf);
 
 uE = BC.fixed_u_value(Control.t);
-% ufE = zeros(length(uE),1);
-ufE = BC.fixed_u_value(Control.t);
-% pE = zeros(length(BC.fixed_p),1);
 pE = BC.fixed_p_value(Control.t);
+ufE = BC.fixed_uf_value(Control.t);
 
 dE = [uE; pE; ufE];
 fE = [fuE; fpE; ffE];
@@ -194,8 +207,8 @@ u(BC.fixed_u, 1) = uE;
 u(BC.free_u, 1) = uF;
 p(BC.fixed_p, 1) = pE;
 p(BC.free_p, 1) = pF;
-uf(BC.fixed_u, 1) = ufE;
-uf(BC.free_u, 1) = ufF;
+uf(BC.fixed_uf, 1) = ufE;
+uf(BC.free_uf, 1) = ufF;
 
 %% Velocity and acceleration
 udot = (u - u_old)*gamma/(beta*dt) - udot_old * (gamma/beta -1) - u2dot_old * dt * (gamma/(2*beta)-1);
