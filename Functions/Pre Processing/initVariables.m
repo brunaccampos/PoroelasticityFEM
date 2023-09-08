@@ -41,6 +41,7 @@ if contains(Control.PMmodel, 'UPU')
     Plot.uf_time = zeros(length(Plot.time), 1); % fluid displacement
     Plot.ufdot_time = zeros(length(Plot.time), 1); % fluid velocity
     Plot.uf2dot_time = zeros(length(Plot.time), 1); % fluid acceleration
+    Plot.ufan_time = zeros(length(Plot.time),1); % analytic fluid displacement
 end
 
 %% Plot arrays - synthetic plots
@@ -116,6 +117,27 @@ if ~isempty(BC.initP)
     Iteration.p_old = BC.initP;
     Plot.p_time(1,1) = BC.initP(Control.plotp,1);
     Plot.pF(1,1) = BC.initP(Control.plotp,1);
+end
+
+% fluid displacement
+if ~isempty(BC.initUf)
+    Iteration.uf_old = BC.initUf;
+    Plot.uf_time(1,1) = BC.initUf(Control.plotu,1);
+    Plot.ufF(1,1) = BC.initUf(Control.plotu,1);
+end
+
+% dynamic problems
+if contains(Control.PMmodel, 'Dyn')
+    % solid velocity
+    if ~isempty(BC.initUdot)
+        Iteration.udot_old = BC.initUdot;
+        Plot.udot_time(1,1) = BC.initUdot(Control.plotu,1);
+    end
+    % fluid velocity
+    if ~isempty(BC.initUfdot)
+        Iteration.ufdot_old = BC.initUfdot;
+        Plot.ufdot_time(1,1) = BC.initUfdot(Control.plotu,1);
+    end
 end
 
 % porosity

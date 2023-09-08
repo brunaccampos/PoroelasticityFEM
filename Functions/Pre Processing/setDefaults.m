@@ -35,6 +35,21 @@ if ~isfield(BC, 'initP')
     BC.initP = [];
 end
 
+% initial condition for fluid displacement field
+if contains(Control.PMmodel, 'UPU') && ~isfield(BC, 'initUf')
+    BC.initUf = [];
+end
+
+% initial condition for solid velocity field
+if contains(Control.PMmodel, 'Dyn') && ~isfield(BC, 'initUdot')
+    BC.initUdot = [];
+end
+
+% initial condition for fluid velocity field
+if contains(Control.PMmodel, 'Dyn') && ~isfield(BC, 'initUfdot')
+    BC.initUfdot = [];
+end
+
 % traction interpolation (needed for traction applied in circular
 % geometries)
 if ~isfield(BC,'tractionInterp')
