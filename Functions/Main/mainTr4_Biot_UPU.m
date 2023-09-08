@@ -96,6 +96,7 @@ while Control.t < Control.tend
     figure(1);
     % solid displacement
     subplot(2,3,1);
+    grid on
     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
     title('Solid displacement');
     hold on
@@ -103,6 +104,7 @@ while Control.t < Control.tend
     hold off
     % fluid pressure
     subplot(2,3,2);
+    grid on
     plot(MeshP.coords, Solution.p, 'g', 'LineWidth', 1.5);
     title('Pressure');
     hold on
@@ -110,6 +112,7 @@ while Control.t < Control.tend
     hold off
     % fluid displacement
     subplot(2,3,3);
+    grid on
     plot(MeshU.coords, Solution.uf, 'm', 'LineWidth', 1.5);
     title('Fluid displacement');
     hold on

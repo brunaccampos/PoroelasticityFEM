@@ -73,6 +73,7 @@ while Control.t < Control.tend
         if Control.uncoupled
             p_an = Control.p_an(Control.t);
             u_an = Control.u_an(Control.t);
+            uf_an = Control.uf_an(Control.t);
         else
             if any(Material.Minv)
                 [p_an, u_an] = getAnalyticResult_Comp(Material, MeshU, MeshP, BC, Control);
@@ -84,10 +85,12 @@ while Control.t < Control.tend
         % store variables over length
         Plot.pan_space = p_an;
         Plot.uan_space = u_an;
-
+        Plot.ufan_space = uf_an;
+        
         % store variables over time
         Plot.uan_time(Control.step,:) = u_an(Control.plotu, 1);
         Plot.pan_time(Control.step,:) = p_an(Control.plotp, 1);
+        Plot.ufan_time(Control.step,:) = uf_an(Control.plotu, 1);
     end
     
     % linear solver
@@ -100,17 +103,20 @@ while Control.t < Control.tend
     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
     title('Solid displacement');
     hold on
+    grid on
     plot(MeshU.coords, Plot.uan_space, 'k--', 'LineWidth', 1.5);
     hold off
     % solid velocity
     subplot(2,3,2);
     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
+    grid on
     title('Solid velocity');
     % fluid pressure
     subplot(2,3,3);
     plot(MeshP.coords, Solution.p, 'g', 'LineWidth', 1.5);
     title('Pressure');
     hold on
+    grid on
     plot(MeshP.coords, Plot.pan_space, 'k--', 'LineWidth', 1.5);
     hold off
     % fluid displacement
@@ -118,11 +124,13 @@ while Control.t < Control.tend
     plot(MeshU.coords, Solution.uf, 'm', 'LineWidth', 1.5);
     title('Fluid displacement');
     hold on
-    plot(MeshU.coords, Plot.uan_space, 'k--', 'LineWidth', 1.5);
+    grid on
+    plot(MeshU.coords, Plot.ufan_space, 'k--', 'LineWidth', 1.5);
     hold off
     % fluid velocity
     subplot(2,3,5);
     plot(MeshU.coords, Solution.ufdot, 'b', 'LineWidth', 1.5);
+    grid on
     title('Fluid velocity');
     pause(0.001);
     if saveVideo_on
