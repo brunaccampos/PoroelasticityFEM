@@ -75,6 +75,7 @@ if saveMatData_on && Control.plotansol
     % compute strain and stress
     [strain, stress] = ComputeSolidStress(Material, MeshU, Solution.u);
     [strain_an, stress_an] = ComputeSolidStress(Material, MeshU, Plot.uan_space);
+    
     % store results
     Solution.strain = strain;
     Solution.stress = stress;
@@ -84,14 +85,32 @@ if saveMatData_on && Control.plotansol
     % compute flux
     [gradp, flux] = ComputeFluidFlux(Material, MeshP, Solution.p);
     [gradp_an, flux_an] = ComputeFluidFlux(Material, MeshP, Plot.pan_space);
+    
     % store results
     Solution.gradp = gradp;
     Solution.flux = flux;
     Solution.gradp_an = gradp_an;
     Solution.flux_an = flux_an;
    
+    if contains(Control.PMmodel, 'UPU')
+        % compute strain and stress
+        [strainf, stressf] = ComputeSolidStress(Material, MeshU, Solution.uf);
+        [strainf_an, stressf_an] = ComputeSolidStress(Material, MeshU, Plot.ufan_space);
+        
+        % store results
+        Solution.strainf = strainf;
+        Solution.stressf = stressf;
+        Solution.strainf_an = strainf_an;
+        Solution.stressf_an = stressf_an;
+    end
+
     % error
-    [ErrorComp] = ComputeMeshSizeError(MeshU, MeshP, Solution, Plot, Control);
+    if contains(Control.PMmodel, 'UPU')
+        [ErrorComp] = ComputeMeshSizeError_UPU(MeshU, MeshP, Solution, Plot, Control);
+    else
+        [ErrorComp] = ComputeMeshSizeError_UP(MeshU, MeshP, Solution, Plot, Control);
+    end
+
     % save results
     save('Results.mat', 'ErrorComp');
 end
