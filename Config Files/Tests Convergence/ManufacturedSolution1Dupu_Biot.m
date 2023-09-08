@@ -2,8 +2,8 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dup
 % ------------------------------------------------------------------------
 % Manufactured solution in 1D
 % us = sin(xt)
-% uf = sin(xt)
-% p = cos(xt)
+% uf = cos(xt)
+% p = sin(xt)cos(xt)
 % ------------------------------------------------------------------------
 % Based on Korsawe (2006) model for transient/quasi-steady case
 % ------------------------------------------------------------------------
@@ -44,17 +44,17 @@ Material.alpha = 1;
 % fluid bulk modulus [GPa]
 Material.Kf = 1;
 % solid bulk modulus [GPa]
-Material.Ks = 10;
+Material.Ks = 1;
 % material porosity
-Material.n = 0.19;
+Material.n = 0.2;
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
 % fluid bulk viscosity [GPa s]
 Material.xif = 1e-3; % (Quiroga-Goode, 2005)
 % fluid density [10^9 kg/m3]
-Material.rho_f = 1e-6;
+Material.rho_f = 2e-6;
 % solid density [10^9 kg/m3]
-Material.rho_s = 2.6e-6;
+Material.rho_s = 2e-6;
 % average density of the medium
 Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
 
@@ -73,7 +73,7 @@ Material.t = 1;
 
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
-Material.constLaw = 'PlaneStrain';
+Material.constLaw = 'PlaneStress';
 
 %% Mesh parameters
 if progress_on
@@ -115,8 +115,10 @@ else
 end
 
 %% Initial conditions
-% pressure p=1
-BC.initP = ones(MeshP.nDOF,1);
+% uf = 1
+BC.initUf = ones(MeshU.nDOF,1);
+% usdot = x
+BC.initUdot = MeshU.coords;
 
 %% Dirichlet BCs - solid
 % displacement prescribed on the left and right
@@ -125,10 +127,17 @@ BC.fixed_u_value = @(t) [zeros(length(MeshU.left_nodes),1); sin(L*t)*ones(length
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
-%% Dirichlet BCs - fluid
+%% Dirichlet BCs - fluid displacement
+% displacement prescribed on the left and right
+BC.fixed_uf = [MeshU.left_nodes; MeshU.right_nodes];
+BC.fixed_uf_value = @(t) [ones(length(MeshU.left_nodes),1); cos(L*t)*ones(length(MeshU.right_nodes),1)];
+% free displacement nodes
+BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
+
+%% Dirichlet BCs - fluid pressure
 % pressure prescribed on the left and right
 BC.fixed_p = [MeshP.left_nodes; MeshP.right_nodes];
-BC.fixed_p_value = @(t) [ones(length(MeshP.left_nodes),1); cos(L*t)*ones(length(MeshP.right_nodes),1)];
+BC.fixed_p_value = @(t) [zeros(length(MeshP.left_nodes),1); sin(L*t)*cos(L*t)*ones(length(MeshP.right_nodes),1)];
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -140,10 +149,10 @@ BC.pointLoad = [];
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.b = @(x,t) - Material.E*t*cos(x*t)-(Material.alpha-Material.n)*t*sin(x*t) - ...
-    (1-Material.n)*Material.rho_s* x^2 * sin(x*t);
-
-BC.bf = @(x,t) - Material.n*t*sin(x*t) - Material.n*Material.rho_f* x^2 * sin(x*t);
+BC.bs = @(x,t) Material.E*t^2*sin(x*t)+(Material.alpha-Material.n)*t*(cos(x*t)^2-sin(x*t)^2) - ...
+    (1-Material.n)*Material.rho_s*x^2*sin(x*t) + (Material.mu*Material.n^2/Material.k)*x*(sin(x*t)+cos(x*t));
+BC.bf = @(x,t) Material.n*t*(cos(x*t)^2-sin(x*t)^2) - Material.n*Material.rho_f*x^2*cos(x*t) -...
+    (Material.mu*Material.n^2/Material.k)*x*(sin(x*t)+cos(x*t));
 
 %% Neumann BCs - fluid
 % point flux [m/s]
@@ -153,7 +162,8 @@ BC.pointFlux = [];
 BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x,t) Material.alpha*t*cos(x*t) + Material.Minv*cos(x*t);
+BC.s = @(x,t) -Material.n*t*sin(x*t) + (Material.alpha-Material.n)*t*cos(x*t) + ...
+    Material.Minv*sin(x*t)*cos(x*t);
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')
@@ -181,19 +191,22 @@ Control.plotansol = 1; % 1 = true; 0 = false
 Control.uan_symb = @(x,t) sin(x*t);
 Control.u_an = @(t) Control.uan_symb(MeshU.coords,t);
 
+Control.ufan_symb = @(x,t) cos(x*t);
+Control.uf_an = @(t) Control.ufan_symb(MeshU.coords,t);
+
 % solution in p
-Control.pan_symb = @(x,t) cos(x*t);
+Control.pan_symb = @(x,t) sin(x*t).*cos(x*t);
 Control.p_an = @(t) Control.pan_symb(MeshP.coords,t);
 
 %% Time step controls
-Control.dt = 1e-2;  % time step [s]
+Control.dt = 1e-3;  % time step [s]
 Control.tend = 1;   % final simulation time [s]
 
 % Newmark method
-Control.beta = 0.7;
-Control.gamma = 0.7;
-Control.theta = 0.7;
-Control.lambda = 0.7;
+Control.beta = 0.6;
+Control.gamma = 0.6;
+Control.theta = 0.6;
+Control.lambda = 0.6;
 
 %% Plot data
 % DOF to plot graphs
@@ -201,7 +214,7 @@ Control.plotu = round(length(MeshU.coords)/2);
 Control.plotp = round(length(MeshP.coords)/2);
 
 % Plot in a row
-Control.fixedDepthPlotON = 1; % 0: false, 1: true
+Control.fixedDepthPlotON = 0; % 0: false, 1: true
 
 % Nodes to plot in a row (all nodes for 1D case)
 Control.ploturow = MeshU.DOF;
