@@ -33,8 +33,8 @@ ff = zeros(MeshU.nDOF, 1);
 
 %% Return zeros if no applied loads
 % verifying if there are body forces
-if isempty(BC.tractionNodes) && strcmp(func2str(BC.b),'@(x,t)[]') && isempty(BC.pointLoad) ...
-        && isempty(BC.fluxNodes) && strcmp(func2str(BC.s),'@(x,t)[]') && isempty(BC.pointFlux)
+if isempty(BC.tractionNodes) && strcmp(func2str(BC.bs),'@(x,t)[]') && strcmp(func2str(BC.bf),'@(x,t)[]') && ...
+    isempty(BC.pointLoad) && isempty(BC.fluxNodes) && strcmp(func2str(BC.s),'@(x,t)[]') && isempty(BC.pointFlux)
     return
 end
 
@@ -50,7 +50,7 @@ else
     tractionNodes = [];
 end
 
-%% Body force for u-U fields, traction for u field
+%% Body force for us-uf fields, traction for us field
 % loop over elements
 for e = 1:ne
     % element connectivity
@@ -63,11 +63,11 @@ for e = 1:ne
     % element load matrix
     fu_e = zeros(MeshU.nDOFe,1);
     % element body force matrix
-    fbs_e = zeros(MeshU.nDOFe,1);
-    fbf_e = zeros(MeshU.nDOFe,1);
+    fbs_e = zeros(MeshU.nDOFe,1); % solid eq.
+    fbf_e = zeros(MeshU.nDOFe,1); % fluid eq.
     
-    % loop over IPs if there are body forces
-    if ~strcmp(func2str(BC.b),'@(x,t)[]')
+    % loop over IPs if there are body forces - solid equation
+    if ~strcmp(func2str(BC.bs),'@(x,t)[]')
         for ip = 1:nqU
             % N matrices
             N = getN(MeshU, QuadU, ip);
@@ -82,10 +82,28 @@ for e = 1:ne
             % Jacobian determinant
             Jdet = det(J);
             
-            % body force 1st equation
-            fbs_e = fbs_e + NVoigt.' * BC.b(ipcoords, Control.t) * Jdet * QuadU.w(ip,1);
-
-            % body force 3rd equation
+            % body force solid equation
+            fbs_e = fbs_e + NVoigt.' * BC.bs(ipcoords, Control.t) * Jdet * QuadU.w(ip,1);
+        end
+    end
+    
+    % loop over IPs if there are body forces - fluid equation
+    if ~strcmp(func2str(BC.bf),'@(x,t)[]')
+        for ip = 1:nqU
+            % N matrices
+            N = getN(MeshU, QuadU, ip);
+            % N derivatives
+            dN = getdN(MeshU, QuadU, ip);
+            % change to Voigt form
+            NVoigt = getNVoigt(MeshU, N);
+            % quadrature point in phyisical coordinates
+            ipcoords = gcoords' * N.';
+            % Jacobian matrix
+            J = dN*gcoords;
+            % Jacobian determinant
+            Jdet = det(J);
+            
+            % body force fluid equation
             fbf_e = fbf_e + NVoigt.' * BC.bf(ipcoords, Control.t) * Jdet * QuadU.w(ip,1);
         end
     end
@@ -146,19 +164,8 @@ if ~isempty(BC.pointLoad)
     end
 end
 
-%% Flux vector
-% veryfing if there are applied fluxed
-if ~isempty(BC.fluxNodes)
-    % traction nodes
-    fluxNodes = BC.fluxNodes;
-    % traction values
-    fluxValue = BC.fluxValue;
-    % counter
-    count = zeros(size(fluxNodes));
-else
-    fluxNodes = [];
-end
-
+%% Source/sink term, p vector
+% counter for pressure BC nodes
 count = zeros(size(BC.fixed_p));
 
 % loop over elements
@@ -174,7 +181,7 @@ for e = 1:ne
     fp_e = zeros(MeshP.nDOFe,1);
     % element flux source matrix
     fg_e = zeros(MeshP.nDOFe,1);
-    
+    % auxiliar matrix for p vector
     faux_e = zeros(MeshP.nDOFe,1);
     
     % loop over IPs if there are flux sources
@@ -198,24 +205,6 @@ for e = 1:ne
         end
     end
     
-    % loop over flux values
-    for j = 1:length(fluxNodes)
-        % check if flux is applied to current element
-        if ~isempty(find(connp_e == fluxNodes(j),1)) && count(j) == 0
-            % current node
-            node = find(connp_e == fluxNodes(j),1);
-            % node parent coordinates
-            coord = getParentCoords(node, MeshP.type);
-            % node shape functions
-            [N,~] = lagrange_basis(MeshP, coord);
-            Nvoigt = getNVoigt(MeshP, N');
-            % element load vector
-            fp_e = fp_e - Nvoigt.' * fluxValue(j,:)';
-            % update counting
-            count(j) = 1;
-        end
-    end
-
     % loop over prescribed pressure
     for j = 1:length(BC.fixed_p)
         % check if flux is applied to current element
@@ -237,24 +226,10 @@ for e = 1:ne
     
     % assemble global flux vector
     fp(dofe) = fp(dofe) + fg_e;
-    
+    % add pressure vector contributions (valid for P2/P1 meshes)
     fs(dofe*2-1) = fs(dofe*2-1) - (Material.alpha-Material.n) * faux_e;
     ff(dofe*2-1) = ff(dofe*2-1) - Material.n * faux_e;
     
 end
-
-% adding point loads
-if ~isempty(BC.pointFlux)
-    % change vector size
-    ff_point = zeros(MeshU.nDOF,1);
-    if isa(BC.pointFlux,'function_handle')
-        ff_point(1:2:end) = BC.pointFlux(Control.t);
-    else
-        ff_point(1:2:end) = BC.pointFlux;
-    end
-    ff = ff - Material.n * ff_point;
-    % add contribution to fs
-    fs = fs - (Material.alpha-Material.n) * ff_point;
-end
-    
+   
 end
