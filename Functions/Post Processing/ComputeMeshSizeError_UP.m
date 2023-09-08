@@ -1,4 +1,4 @@
-function [ErrorComp] = ComputeMeshSizeError(MeshU, MeshP, Solution, Plot, Control)
+function [ErrorComp] = ComputeMeshSizeError_UP(MeshU, MeshP, Solution, Plot, Control)
 % ------------------------------------------------------------------------
 % Compute displacement and pressure errors related to the mesh size in 1D
 % L2-norm: uses displacement / pressure
