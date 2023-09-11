@@ -120,10 +120,12 @@ if ~isempty(BC.initP)
 end
 
 % fluid displacement
-if ~isempty(BC.initUf)
-    Iteration.uf_old = BC.initUf;
-    Plot.uf_time(1,1) = BC.initUf(Control.plotu,1);
-    Plot.ufF(1,1) = BC.initUf(Control.plotu,1);
+if contains(Control.PMmodel, 'UPU')
+    if ~isempty(BC.initUf)
+        Iteration.uf_old = BC.initUf;
+        Plot.uf_time(1,1) = BC.initUf(Control.plotu,1);
+        Plot.ufF(1,1) = BC.initUf(Control.plotu,1);
+    end
 end
 
 % dynamic problems
@@ -134,9 +136,11 @@ if contains(Control.PMmodel, 'Dyn')
         Plot.udot_time(1,1) = BC.initUdot(Control.plotu,1);
     end
     % fluid velocity
-    if ~isempty(BC.initUfdot)
-        Iteration.ufdot_old = BC.initUfdot;
-        Plot.ufdot_time(1,1) = BC.initUfdot(Control.plotu,1);
+    if contains(Control.PMmodel, 'UPU')
+        if ~isempty(BC.initUfdot)
+            Iteration.ufdot_old = BC.initUfdot;
+            Plot.ufdot_time(1,1) = BC.initUfdot(Control.plotu,1);
+        end
     end
 end
 
