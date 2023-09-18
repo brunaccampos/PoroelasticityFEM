@@ -178,4 +178,30 @@ if contains(Control.PMmodel, 'UPN')
     end
 end
 
+if Control.fixedDepthPlotON
+    %% solid displacement over depth over time (3D plot)
+    figure;
+    waterfall(MeshU.coords, Plot.time, Plot.u_synthetic.*10^7);
+    hold on
+    xlabel('x (m)','interpreter','latex');
+    ylabel('Time (s)','interpreter','latex');
+    zlabel('Displacement ($\times 10^{-7}$ m)','interpreter','latex');
+    title('Solid displacement in domain over time','interpreter','latex');
+    view(135, 30);
+    hold off
+    exportgraphics(gcf,'Waterfall_Displacement.png','Resolution',300)
+
+    %% fluid pressure over depth over time (3D plot)
+    figure;
+    waterfall(MeshP.coords, Plot.time, Plot.p_synthetic.*10^9);
+    hold on
+    xlabel('x (m)','interpreter','latex');
+    ylabel('Time (s)','interpreter','latex');
+    zlabel('Pressure (Pa)','interpreter','latex');
+    title('Fluid pressure in domain over time','interpreter','latex');
+    view(135, 30);
+    hold off
+    exportgraphics(gcf,'Waterfall_Pressure.png','Resolution',300)
+end
+
 end
