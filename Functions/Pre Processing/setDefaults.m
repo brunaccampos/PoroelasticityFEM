@@ -56,6 +56,16 @@ if ~isfield(BC,'tractionInterp')
     BC.tractionInterp = 0;
 end
 
+% body force in fluid motion equation (upU model)
+if ~isfield(BC,'bf')
+    BC.bf = @(x,t) [];
+end
+
+% body force in solid motion equation (upU model)
+if ~isfield(BC,'bs')
+    BC.bs = @(x,t) [];
+end
+
 %% Control options
 % ramp applied load in the beginning of simulation: default false
 if ~isfield(Control, 'rampLoad')
