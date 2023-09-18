@@ -126,6 +126,7 @@ pENuf = polyfit(log(h), log(eENuf),1);
 m_ENuf = pENuf(1);
 
 %% Plots
+figure;
 tiledlayout(2,3);
 % L2 norm solid displacement
 nexttile;
