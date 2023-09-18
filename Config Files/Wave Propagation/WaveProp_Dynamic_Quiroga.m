@@ -131,6 +131,13 @@ BC.fixed_u_value = @(t) (-t0/(2*pi)*cos(2*pi*(t)/t0) + t0/(8*pi)*cos(4*pi*(t)/t0
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
+%% Dirichlet BCs - fluid displacement
+% displacement prescribed on the left and right
+BC.fixed_uf = [];
+BC.fixed_uf_value = @(t) [zeros(length(BC.fixed_uf),1)];
+% free displacement nodes
+BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
+
 %% Dirichlet BCs - fluid
 BC.fixed_p = [];
 % fixed DOF values
@@ -146,7 +153,8 @@ BC.pointLoad = [];
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.b = @(x,t)[];  
+BC.bs = @(x,t)[];  
+BC.bf = @(x,t)[];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
