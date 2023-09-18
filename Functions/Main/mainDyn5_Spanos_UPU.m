@@ -67,18 +67,71 @@ while Control.t < Control.tend
     % system load vectors
     [fu, fp, ff] = ComputeLoads_UPU(BC, MeshU, MeshP, Control, Material, QuadU, QuadP);
     
+    % analytical solution for 1D case
+    if Control.plotansol
+        if Control.uncoupled
+            p_an = Control.p_an(Control.t);
+            u_an = Control.u_an(Control.t);
+            uf_an = Control.uf_an(Control.t);
+        else
+            if any(Material.Minv)
+                [p_an, u_an] = getAnalyticResult_Comp(Material, MeshU, MeshP, BC, Control);
+            else % 1/M = 0
+                [~, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control);
+            end
+        end
+       
+        % store variables over length
+        Plot.pan_space = p_an;
+        Plot.uan_space = u_an;
+        Plot.ufan_space = uf_an;
+        
+        % store variables over time
+        Plot.uan_time(Control.step,:) = u_an(Control.plotu, 1);
+        Plot.pan_time(Control.step,:) = p_an(Control.plotp, 1);
+        Plot.ufan_time(Control.step,:) = uf_an(Control.plotu, 1);
+    end
+    
     % linear solver
     [Solution] = SolverDyn_UPU(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, fp, ff, BC, Control, Iteration);
 
-    % plot solution over time
-    figure(1);
-    subplot(1,2,1);
-    plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
-    title('Displacement');
-    subplot(1,2,2);
-    plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
-    title('Velocity');
-    pause(0.001);
+%     % plot solution over time
+%     figure(1);
+%     % solid displacement
+%     subplot(2,3,1);
+%     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
+%     title('Solid displacement');
+%     hold on
+%     grid on
+%     plot(MeshU.coords, Plot.uan_space, 'k--', 'LineWidth', 1.5);
+%     hold off
+%     % solid velocity
+%     subplot(2,3,2);
+%     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
+%     grid on
+%     title('Solid velocity');
+%     % fluid pressure
+%     subplot(2,3,3);
+%     plot(MeshP.coords, Solution.p, 'g', 'LineWidth', 1.5);
+%     title('Pressure');
+%     hold on
+%     grid on
+%     plot(MeshP.coords, Plot.pan_space, 'k--', 'LineWidth', 1.5);
+%     hold off
+%     % fluid displacement
+%     subplot(2,3,4);
+%     plot(MeshU.coords, Solution.uf, 'm', 'LineWidth', 1.5);
+%     title('Fluid displacement');
+%     hold on
+%     grid on
+%     plot(MeshU.coords, Plot.ufan_space, 'k--', 'LineWidth', 1.5);
+%     hold off
+%     % fluid velocity
+%     subplot(2,3,5);
+%     plot(MeshU.coords, Solution.ufdot, 'b', 'LineWidth', 1.5);
+%     grid on
+%     title('Fluid velocity');
+%     pause(0.001);
     if saveVideo_on
         frame = getframe(gcf); %get frame
         writeVideo(myVideo, frame);
