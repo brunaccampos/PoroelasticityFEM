@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dupu_Biot(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dupu_Spanos(config_dir, progress_on)
 % ------------------------------------------------------------------------
 % Manufactured solution in 1D
 % us = sin(F1*x + F2*t)
@@ -26,7 +26,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dup
 %           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
 %           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
 %                                   porosity perturbation equation
-Control.PMmodel = 'Dyn4_Biot_UPU';
+Control.PMmodel = 'Dyn5_Spanos_UPU';
 
 %% Material properties - Boone (1990)
 % elasticity modulus [GPa]
@@ -173,10 +173,14 @@ BC.tractionNodes = [];
 % body force [GN/m3]
 BC.bs = @(x,t) (Material.E*F1^2*sin(F1*x+F2*t) + (Material.alpha-Material.n)*F1*cos(F1*x)- ...
     (1-Material.n)*Material.rho_s*F2^2*sin(F1*x+F2*t) + ...
-    (Material.mu*Material.n^2/Material.k)*F2*(sin(F1*x+F2*t)+cos(F1*x+F2*t)))./1000;
+    (Material.mu*Material.n^2/Material.k)*F2*(sin(F1*x+F2*t)+cos(F1*x+F2*t)) + ...
+    (4*Material.n*Material.mu/3+Material.n*Material.xif-Material.xif*Material.deltaF)*F1^2*F2*sin(F1*x+F2*t) - ...
+    Material.xif*Material.deltaS*F1^2*F2*cos(F1*x+F2*t))./1000;
 
 BC.bf = @(x,t) (Material.n*F1*cos(F1*x) - Material.n*Material.rho_f*F2^2*cos(F1*x+F2*t) -...
-    (Material.mu*Material.n^2/Material.k)*F2*(sin(F1*x+F2*t)+cos(F1*x+F2*t)))./1000;
+    (Material.mu*Material.n^2/Material.k)*F2*(sin(F1*x+F2*t)+cos(F1*x+F2*t)) - ...
+    (4*Material.n*Material.mu/3+Material.n*Material.xif-Material.xif*Material.deltaF)*F1^2*F2*sin(F1*x+F2*t) + ...
+    Material.xif*Material.deltaS*F1^2*F2*cos(F1*x+F2*t))./1000;
 
 %% Neumann BCs - fluid
 % point flux [m/s]
@@ -186,8 +190,8 @@ BC.pointFlux = [];
 BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x,t) (-Material.n*F1*sin(F1*x+F2*t) + (Material.alpha-Material.n)*F1*cos(F1*x+F2*t) +...
-    Material.Minv*(sin(F1*x)+sin(F2*t)))./1000;
+BC.s = @(x,t) (Material.deltaS*F1/Material.n*cos(F1*x+F2*t) - (1-Material.deltaF/Material.n)*F1*sin(F1*x+F2*t) +...
+    (1/Material.Kf)*(sin(F1*x)+sin(F2*t)))./1000;
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')
