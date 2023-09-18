@@ -197,4 +197,11 @@ Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; 
 Control.plotu = round(length(MeshU.coords)/2);
 Control.plotp = round(length(MeshP.coords)/2);
 
+% Plot in a row
+Control.fixedDepthPlotON = 1; % 0: false, 1: true
+
+% Nodes to plot in a row (all nodes for 1D case)
+Control.ploturow = MeshU.DOF;
+Control.plotprow = MeshP.DOF;
+
 end
