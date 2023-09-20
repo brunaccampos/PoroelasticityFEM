@@ -112,5 +112,5 @@ if saveMatData_on && Control.plotansol
     end
 
     % save results
-    save('Results.mat', 'ErrorComp');
+    save('Results.mat', 'ErrorComp', 'Control', 'Plot');
 end
