@@ -1,4 +1,4 @@
-function ComputeTimeStepError()
+function ComputeTimeStepError_UP()
 % ------------------------------------------------------------------------
 % Compute error using the L2 norm of the time discretization
 % ------------------------------------------------------------------------
