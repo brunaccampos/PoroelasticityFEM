@@ -1,13 +1,13 @@
 function ComputeTimeStepError()
 % ------------------------------------------------------------------------
-% Compute error using the Le norm of the displacements
+% Compute error using the L2 norm of the time discretization
 % ------------------------------------------------------------------------
 
 clearvars
 clear, clc
 
 %% Initialize variables
-nsims = 3; % number of simulations
+nsims = 4; % number of simulations
 h = zeros(nsims,1); % time step
 
 % discretization of time domain
@@ -17,110 +17,123 @@ field = 'p'; % equivalent to scalar field
 
 %% Mesh 1
 % load file
-load Results_m1ManUtraPtra_beta1.mat
-
+load Results_m76ManUPUSpanosdt.mat
 L = Control.tend; % final simulation time
-beta = Control.beta; % beta method parameter
-
 % discretization of time domain
 ne = round(Control.tend/Control.dt); % number of elements
 % generate mesh
 Mesh1 = Build1DMesh(nsd, ne, L, type, field);
 % pressure values
-d1 = Plot.p_time;
+dp1 = Plot.p_time;
+% solid displacement values
+dus1 = Plot.u_time;
 % time step
 h(1) = Control.dt;
 
 %% Mesh 2
-load Results_m2ManUtraPtra_beta1.mat
-
+load Results_m77ManUPUSpanosdt.mat
 % discretization of time domain
 ne = round(Control.tend/Control.dt); % number of elements
 % generate mesh
 Mesh2 = Build1DMesh(nsd, ne, L, type, field);
 % pressure values
-d2 = Plot.p_time;
+dp2 = Plot.p_time;
+% solid displacement values
+dus2 = Plot.u_time;
 % time step
 h(2) = Control.dt;
 
 %% Mesh 3
-load Results_m3ManUtraPtra_beta1.mat
-
+load Results_m78ManUPUSpanosdt.mat
 % discretization of time domain
 ne = round(Control.tend/Control.dt); % number of elements
 % generate mesh
 Mesh3 = Build1DMesh(nsd, ne, L, type, field);
 % pressure values
-d3 = Plot.p_time;
+dp3 = Plot.p_time;
+% solid displacement values
+dus3 = Plot.u_time;
 % time step
 h(3) = Control.dt;
 
 %% Mesh 4
-% load Results_m4ManUtraPtra_beta1.mat
-% 
-% % discretization of time domain
-% ne = round(Control.tend/Control.dt); % number of elements
-% % generate mesh
-% Mesh4 = Build1DMesh(nsd, ne, L, type, field);
-% % pressure values
-% d4 = Plot.p_time;
-% % time step
-% h(4) = Control.dt;
+load Results_m79ManUPUSpanosdt.mat
+% discretization of time domain
+ne = round(Control.tend/Control.dt); % number of elements
+% generate mesh
+Mesh4 = Build1DMesh(nsd, ne, L, type, field);
+% pressure values
+dp4 = Plot.p_time;
+% solid displacement values
+dus4 = Plot.u_time;
+% time step
+h(4) = Control.dt;
 
 %% Reference mesh in time
 % load ref results
-load Results_m4ManUtraPtra_beta1.mat
-
+load Results_m80ManUPUSpanosdt.mat
 % discretization of time domain
 nsd = 1; % number of dimensions
-L = Control.tend; % final simulation time
+% discretization of time domain
 ne = round(Control.tend/Control.dt); % number of elements
-type = 'L2'; % element type
-field = 'p'; %scalar field
-
-% pressure values
-d_exact = Plot.p_time;
-
 % generate mesh
 Mesh_Exact = Build1DMesh(nsd, ne, L, type, field);
+% pressure values
+dp_exact = Plot.p_time;
+% solid displacement values
+dus_exact = Plot.u_time;
+
+%% Beta parameter
+beta = Control.beta;
 
 %% Compute L2 error norm
 % initialize variables
-eL2 = zeros(nsims,1);
+eL2p = zeros(nsims,1);
+eL2us = zeros(nsims,1);
 
 % loop over meshes
 for sim = 1:nsims
     switch sim
         case 1
-            d = d1;
+            dp = dp1;
+            dus = dus1;
             Mesh = Mesh1;
         case 2
-            d = d2;
+            dp = dp2;
+            dus = dus2;
             Mesh = Mesh2;
         case 3
-            d = d3;
+            dp = dp3;
+            dus = dus3;
             Mesh = Mesh3;
         case 4
-            d = d4;
+            dp = dp4;
+            dus = dus4;
             Mesh = Mesh4;
         case 5
-            d = d5;
+            dp = d5;
+            dus = dus5;
             Mesh = Mesh5;
         case 6
-            d = d6;
+            dp = d6;
+            dus = dus6;
             Mesh = Mesh6;
     end
         
     % Calculate error norm
-    eL2_num = 0;
-    eL2_den = 0;
+    eL2p_num = 0;
+    eL2p_den = 0;
+    
+    eL2us_num = 0;
+    eL2us_den = 0;
     
     % higher quadrature definition
     Control.nqP = 8;
     Quad = GlobalQuad(Mesh, Control);
 
     % interpolate 'approx.' mesh at 'exact' mesh nodes
-    d_interp = zeros(Mesh_Exact.nn,1);
+    dp_interp = zeros(Mesh_Exact.nn,1);
+    dus_interp = zeros(Mesh_Exact.nn,1);
     
     % loop over exact mesh nodes
     for i = 1:Mesh_Exact.nn
@@ -134,12 +147,15 @@ for sim = 1:nsims
            % check in which element of the approx mesh the exact mesh node is located
            if coords_ap(1) <= coord_ex && coord_ex <= coords_ap(2)
                % nodal values (pressure)
-               d_ap = d(conn_ap);
+               dp_ap = dp(conn_ap);
+               % nodal values (solid displacement)
+               dus_ap = dus(conn_ap);
                % exact mesh node in parent coords
                coord_ex_parent = (2*coord_ex-coords_ap(2)-coords_ap(1))/(coords_ap(2)-coords_ap(1));
                % approx mesh element shape functions
                N = lagrange_basis(Mesh, coord_ex_parent);
-               d_interp(i) = N'*d_ap;
+               dp_interp(i) = N'*dp_ap;
+               dus_interp(i) = N'*dus_ap;
            end
        end
     end
@@ -163,29 +179,53 @@ for sim = 1:nsims
             Jdet = det(J);
             
             % approximated displacement at quadrature point
-            uh = N*d_interp(Mesh_Exact.xdofs(conn_e));
+            uph = N*dp_interp(Mesh_Exact.xdofs(conn_e));
             % exact displacement at quadrature point
-            ue = N*d_exact(Mesh_Exact.xdofs(conn_e));
+            upe = N*dp_exact(Mesh_Exact.xdofs(conn_e));
+            
+            % approximated displacement at quadrature point
+            ush = N*dus_interp(Mesh_Exact.xdofs(conn_e));
+            % exact displacement at quadrature point
+            use = N*dus_exact(Mesh_Exact.xdofs(conn_e));
             
             % L2 norm
-            eL2_num = eL2_num + ((uh - ue).^2) * Quad.w(ip,1) * Jdet;
-            eL2_den = eL2_den + (ue.^2) * Quad.w(ip,1) * Jdet;
+            eL2p_num = eL2p_num + ((uph - upe).^2) * Quad.w(ip,1) * Jdet;
+            eL2p_den = eL2p_den + (upe.^2) * Quad.w(ip,1) * Jdet;
+            
+            eL2us_num = eL2us_num + ((ush - use).^2) * Quad.w(ip,1) * Jdet;
+            eL2us_den = eL2us_den + (use.^2) * Quad.w(ip,1) * Jdet;
         end
     end
     
-    eL2(sim) = sqrt(eL2_num/eL2_den);
+    eL2p(sim) = sqrt(eL2p_num/eL2p_den);
+    eL2us(sim) = sqrt(eL2us_num/eL2us_den);
 end
 
 % Determine slope of L2 norm
-pL2 = polyfit(log(h), log(eL2),1);
-m_L2 = pL2(1);
+pL2p = polyfit(log(h), log(eL2p),1);
+m_L2p = pL2p(1);
+
+pL2us = polyfit(log(h), log(eL2us),1);
+m_L2us = pL2us(1);
 
 figure;
-loglog(h,eL2,'g-o', 'LineWidth', 1.5);
+loglog(h,eL2p,'g*', 'LineWidth', 1.5);
+hold on
+loglog(h,exp(pL2p(2))*h.^pL2p(1),'g', 'LineWidth', 1.5);
+grid on
 xlabel('Mesh size (m)');
 ylabel('L2-norm');
-title(sprintf('Convergence for time beta = %.2f, order %.4f', beta, m_L2));
+title(sprintf('Time - p Convergence beta = %.2f, order %.4f', beta, m_L2p));
+hold off
 
-
+figure;
+loglog(h,eL2us,'m*', 'LineWidth', 1.5);
+hold on
+loglog(h,exp(pL2us(2))*h.^pL2us(1),'m', 'LineWidth', 1.5);
+grid on
+xlabel('Mesh size (m)');
+ylabel('L2-norm');
+title(sprintf('Time - us Convergence beta = %.2f, order %.4f', beta, m_L2us));
+hold off
 
 end
