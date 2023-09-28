@@ -21,41 +21,41 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_Quiroga
 %           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
 %           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
 %                                   porosity perturbation equation
-Control.PMmodel = 'Dyn4_Biot_UPU';
+Control.PMmodel = 'Dyn5_Spanos_UPU';
 
 %% Material properties - Quiroga-Goode (2005)
 % Poisson's ratio
 Material.nu = 0.2;
-% dynamic viscosity [GPa s]
-Material.mu = 1e-12;
+% dynamic viscosity [Pa s]
+Material.mu = 1e-3;
 % intrinsic permeability [m2]
 Material.k = 1e-13;
-% porous media permeability [m2/GPa s]
+% porous media permeability [m2/Pa s]
 Material.kf = Material.k / Material.mu;
 % Biot's coefficient
-Material.alpha = 1;
-% fluid bulk modulus [GPa]
-Material.Kf = 2.2;
-% solid bulk modulus [GPa]
-Material.Ks = 33;
-% fluid bulk viscosity [GPa s]
-Material.xif = 2.8e-12;
+Material.alpha = 0.78;
+% fluid bulk modulus [Pa]
+Material.Kf = 2.2e9;
+% solid bulk modulus [Pa]
+Material.Ks = 33e9;
+% fluid bulk viscosity [Pa s]
+Material.xif = 2.8e-3;
 % material porosity
 Material.n = 0.25;
-% shear modulus [GPa]
-Material.G = 4.9;
-% elasticity modulus [GPa]
+% shear modulus [Pa]
+Material.G = 4.9e9;
+% elasticity modulus [Pa]
 Material.E = 2 * Material.G * (1 + Material.nu);
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
-% fluid density [10^9 kg/m3]
-Material.rho_f = 1000e-9;
-% solid density [10^9 kg/m3]
-Material.rho_s = 2650e-9;
+% fluid density [kg/m3]
+Material.rho_f = 1000;
+% solid density [kg/m3]
+Material.rho_s = 2650;
 % average density of the medium
 Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
-% added mass [10^9 kg/m3]
-Material.rho12 = -83e-9;
+% added mass [kg/m3]
+Material.rho12 = -83;
 
 % thickness 
 % 1D: cross sectional area [m2]
