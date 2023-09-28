@@ -175,6 +175,23 @@ elseif nsd == 2
             vectordataUf(end).type = 'float';
         end
         
+        % displacement in x (scalar)
+        scalardataUf(end+1).name = 'disp_ufx';
+        scalardataUf(end).data = Solution.uf(xdofs_u);
+        scalardataUf(end).type = 'float';
+        % displacement in y (scalar)
+        scalardataUf(end+1).name = 'disp_ufy';
+        scalardataUf(end).data = Solution.uf(ydofs_u);
+        scalardataUf(end).type = 'float';
+        % velocity in x (scalar)
+        scalardataUf(end+1).name = 'vel_ufx';
+        scalardataUf(end).data = Solution.ufdot(xdofs_u);
+        scalardataUf(end).type = 'float';
+        % velocity in y (scalar)
+        scalardataUf(end+1).name = 'vel_ufy';
+        scalardataUf(end).data = Solution.ufdot(ydofs_u);
+        scalardataUf(end).type = 'float';
+        
     end 
 end
 
