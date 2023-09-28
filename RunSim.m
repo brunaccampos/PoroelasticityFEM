@@ -65,6 +65,7 @@ DirFolder = 'Config Files';
 % File = 'ManufacturedSolution1D_UstePtra';
 % File = 'ManufacturedSolution1D_UtraPtra';
 % File = 'ManufacturedSolution1Dupu_Biot';
+% File = 'ManufacturedSolution1Dupu_Spanos';
 
 % -------------------- Tests Elasticity
 % File = 'Beam_Dynamic';
@@ -92,9 +93,10 @@ DirFolder = 'Config Files';
 
 % -------------------- Wave Propagation
 % File = 'Column1D_Dynamic_Pulse';
-File = 'Plate2D_Dynamic_Pulse';
+% File = 'Plate2D_Dynamic_Pulse';
 % File = 'WaveProp_Dynamic_Komijani';
-% File = 'WaveProp_Dynamic_Quiroga';
+File = 'WaveProp_Dynamic_Quiroga';
+% File = 'WaveProp_Dynamic_Injection';
 
 % ------------------------------------------------------------------------
 
