@@ -12,33 +12,35 @@ close all
 
 %% Material parameters - fixed
 rhof = 1050; % fluid density [kg/m3]
-etaf = 1e-3; % fluid dynamic viscosity [Pa s]
-xif = 2.8e-3; % fluid bulk viscosity [Pa s]
+muf = 1e-3; % fluid dynamic viscosity [Pa s]
 Kf = 2.2e9; % fluid bulk modulus [Pa]
+xif = 2.8e-3; % fluid bulk viscosity [Pa s]
+
 rhos = 2650; % solid density [kg/m3]
 mus = 23e9; % solid shear modulus [Pa]
 Ks = 33e9; % solid bulk modulus [Pa]
+
 rho12 = -83; % coupled density [kg/m3]
 
 %% Material parameters - study variation
-phi = 0.15; % porosity [-]
-k = 10*1e-15; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
+eta0 = 0.15; % porosity [-]
+k = 10*9.8692331e-16; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
 
 %% Frequency array
-w = 1e2:1000:1e8; % frequency [Hz]
+w = 1e2:100:1e7; % frequency [Hz]
 
 %% Auxiliar constants
 c2 = Kf/rhof;
 vps2 = (Ks+4*mus/3)/rhos;
-aps = etaf*phi^2/(k*rhos*(1-phi));
-apf = (xif+4*etaf/3)/rhof;
-bpf = etaf*phi/k/rhof;
-cps = rho12/(1-phi)/rhos;
-cpf = rho12/phi/rhof;
+aps = muf*eta0^2/(k*rhos*(1-eta0));
+apf = (xif+4*muf/3)/rhof;
+bpf = muf*eta0/k/rhof;
+cps = rho12/(1-eta0)/rhos;
+cpf = rho12/eta0/rhof;
 css = mus/rhos;
-csf = etaf/rhof;
-dss = etaf*phi^2/(k*rhos*(1-phi));
-dsf = etaf*phi/k/rhof;
+csf = muf/rhof;
+dss = muf*eta0^2/(k*rhos*(1-eta0));
+dsf = muf*eta0/k/rhof;
 
 %% Compressional P wave
 % coefficients
@@ -49,7 +51,7 @@ Z = zeros(length(w),1);
 % polynomial 4th order
 pol_p = [Ap' Z Bp' Z Cp'];
 % initialize matrices
-roots_p = zeros(length(w), 4);
+roots_p = zeros(length(w),4);
 kp = zeros(length(w),2);
 % loop over frequency values
 for i = 1:length(w)
@@ -71,7 +73,7 @@ Z = zeros(length(w),1);
 % polynomial 4th order
 pol_s = [As' Z Bs' Z Cs'];
 % initialize matrices
-roots_s = zeros(length(w), 4);
+roots_s = zeros(length(w),4);
 ks = zeros(length(w),2);
 % loop over frequency values
 for i = 1:length(w)
@@ -85,12 +87,14 @@ vs = w'./real(ks);
 % attenuations
 atts = abs(2*imag(ks)./real(ks));
 
-%% Plots phase velocity
+% initialize figure
 figure;
-tiledlayout(2,2);
+tiledlayout(2,4);
+
+%% Plots phase velocity
 % first P wave
 nexttile;
-semilogx(w,vp(:,1),'b', 'LineWidth', 1.5);
+semilogx(w,vp(:,2),'b--', 'LineWidth', 1.5);
 hold on
 grid on
 xlabel('Frequency [Hz]');
@@ -100,7 +104,7 @@ hold off
 
 % second P wave
 nexttile;
-semilogx(w,vp(:,2), 'g', 'LineWidth', 1.5);
+semilogx(w,vp(:,1), 'g--', 'LineWidth', 1.5);
 hold on
 grid on
 xlabel('Frequency [Hz]');
@@ -110,7 +114,7 @@ hold off
 
 % first S wave
 nexttile;
-semilogx(w,vs(:,1), 'k', 'LineWidth', 1.5);
+semilogx(w,vs(:,2), 'k--', 'LineWidth', 1.5);
 hold on
 grid on
 xlabel('Frequency [Hz]');
@@ -120,7 +124,7 @@ hold off
 
 % second S wave
 nexttile;
-semilogx(w,vs(:,2), 'r', 'LineWidth', 1.5);
+semilogx(w,vs(:,1), 'r--', 'LineWidth', 1.5);
 hold on
 grid on
 xlabel('Frequency [Hz]');
@@ -129,11 +133,9 @@ title('Second S wave');
 hold off
 
 %% Plots attenuation
-figure;
-tiledlayout(2,2);
 % first P wave
 nexttile;
-semilogx(w,attp(:,1),'b', 'LineWidth', 1.5);
+semilogx(w,attp(:,2),'b', 'LineWidth', 1.5);
 hold on
 grid on
 xlabel('Frequency [Hz]');
@@ -143,7 +145,7 @@ hold off
 
 % second P wave
 nexttile;
-semilogx(w,attp(:,2), 'g', 'LineWidth', 1.5);
+semilogx(w,attp(:,1), 'g', 'LineWidth', 1.5);
 hold on
 grid on
 xlabel('Frequency [Hz]');
@@ -153,7 +155,7 @@ hold off
 
 % first S wave
 nexttile;
-semilogx(w,atts(:,1), 'k', 'LineWidth', 1.5);
+semilogx(w,atts(:,2), 'k', 'LineWidth', 1.5);
 hold on
 grid on
 xlabel('Frequency [Hz]');
@@ -163,7 +165,7 @@ hold off
 
 % second S wave
 nexttile;
-semilogx(w,atts(:,2), 'r', 'LineWidth', 1.5);
+semilogx(w,atts(:,1), 'r', 'LineWidth', 1.5);
 hold on
 grid on
 xlabel('Frequency [Hz]');
