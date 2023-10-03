@@ -23,7 +23,34 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_Tian(co
 %                                   porosity perturbation equation
 Control.PMmodel = 'Dyn4_Biot_UPU';
 
-%% Material properties - Quiroga-Goode (2005)
+%% Material properties - Tian (2023)
+vps = 3000; %  P wave solid velocity [m/s]
+vss = 1732; % S wave solid velocity [m/s]
+vpf = 1500; % P wave fluid velocity [m/s]
+eta0 = 0.15; % porosity [-]
+rhos = 2588;
+rhof = 952;
+rho12 = 0.5*(eta0-1)*rhof;
+
+Ks = rhos*(vps^2-4*vss^2/3);
+Kf = rhof*vpf^2;
+mus = rhos*vss^2;
+
+e = mus*(9*Ks+8*mus)/6/(Ks+2*mus);
+Kd = (4*mus*Ks*(1-eta0))/(4*mus+3*eta0*Ks);
+mud = e*mus*(1-eta0)/(e+eta0*mus);
+Kk = Kd + (1-Kd/Ks)^2/(eta0/Kf+(1-eta0/Ks-Kd/Ks^2));
+L = 1/((1-eta0-Kk/Ks)/Ks+eta0/Kf);
+K = (1-Kk/Ks)*L;
+H = (1-Kk/Ks)^2*L+Kk+4*mud/3;
+
+A = H-2*K*eta0+L*eta0^2-2*mud;
+N = mud;
+Q = K*eta0-L*eta0^2;
+R = L*eta0^2;
+
+alpha = (Q/R+1)*eta0;
+
 % Poisson's ratio
 Material.nu = 0.2;
 % dynamic viscosity [Pa s]
@@ -33,29 +60,29 @@ Material.k = 1e-13;
 % porous media permeability [m2/Pa s]
 Material.kf = Material.k / Material.mu;
 % Biot's coefficient
-Material.alpha = 0.78;
+Material.alpha = alpha;
 % fluid bulk modulus [Pa]
-Material.Kf = 2.2e9;
+Material.Kf = Kf;
 % solid bulk modulus [Pa]
-Material.Ks = 33e9;
+Material.Ks = Ks;
 % fluid bulk viscosity [Pa s]
 Material.xif = 2.8e-3;
 % material porosity
-Material.n = 0.25;
+Material.n = eta0;
 % shear modulus [Pa]
-Material.G = 4.9e9;
+Material.G = N;
 % elasticity modulus [Pa]
 Material.E = 2 * Material.G * (1 + Material.nu);
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
 % fluid density [kg/m3]
-Material.rho_f = 1000;
+Material.rho_f = rhof;
 % solid density [kg/m3]
-Material.rho_s = 2650;
+Material.rho_s = rhos;
 % average density of the medium
 Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
 % added mass [kg/m3]
-Material.rho12 = -83;
+Material.rho12 = rho12;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -89,9 +116,9 @@ coord0 = [0;0;0];
 % number of space dimensions
 nsd = 2;
 % size of domain [m] [Lx;Ly;Lz]
-L = [15; 15];
+L = [5000; 5000];
 % number of elements in each direction [nex; ney; nez]
-ne = [150; 150];
+ne = [100; 100];
 
 %%%% displacement mesh
 % element type ('Q4')
@@ -120,7 +147,7 @@ end
         
 %% Dirichlet BCs - solid
 % central node
-node = find(MeshU.coords(:,1) == 7.5 & MeshU.coords(:,2) == 7.5);
+node = find(MeshU.coords(:,1) == 2500 & MeshU.coords(:,2) == 2500);
 % central node y DOF
 BC.fixed_u = node*2;
 % period [s]
@@ -208,7 +235,7 @@ Control.plotSyntheticsON = 1; % 0: false, 1: true
 % Plot in a row
 Control.fixedDepthPlotON = 1; % 0: false, 1: true
 
-Control.depthplot = 7.5; % fixed coordinate
+Control.depthplot = 2500; % fixed coordinate
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 
 % node numbering
