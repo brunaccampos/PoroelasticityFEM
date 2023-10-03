@@ -98,7 +98,7 @@ ne = 100;
 
 %%%% displacement mesh
 % element type ('Q4')
-typeU = 'L3';
+typeU = 'L2';
 % variable field ('u', 'p', 'n')
 fieldU = 'u';
 MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
@@ -135,6 +135,13 @@ BC.fixed_u_value = @(t) [0; 0; P0*(sin(pi*(t)*f) - 0.5*sin(2*pi*(t)*f))].*(t<1/f
 % BC.fixed_u_value = @(t) [0; 0; P0*(sin(2*pi*(t)*f) - 0.5*sin(4*pi*(t)*f))].*(t<1/f);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
+
+%% Dirichlet BCs - fluid displacement
+% displacement prescribed on the left and right
+BC.fixed_uf = [];
+BC.fixed_uf_value = @(t) zeros(length(BC.fixed_uf),1);
+% free displacement nodes
+BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
 
 %% Dirichlet BCs - fluid
 BC.fixed_p = [MeshP.left_nodes; MeshP.right_nodes];
@@ -177,7 +184,7 @@ Control.nqP = 3;
 Control.freqDomain = 0;  % 1 = true; 0 = false
 % plot f/fc range for frequency dependent BC
 range = 2; % 1: seismic, 2: acoustic, 3: ultrasonic
-PlotFreqRange(Material, f, range);
+% PlotFreqRange(Material, f, range);
 
 %% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
