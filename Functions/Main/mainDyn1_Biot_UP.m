@@ -69,14 +69,14 @@ while Control.t < Control.tend
     [Solution] = SolverDyn_UP(Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
 
     % plot solution over time
-    figure(1);
-    subplot(1,2,1);
-    plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
-    title('Displacement');
-    subplot(1,2,2);
-    plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
-    title('Velocity');
-    pause(0.001);
+%     figure(1);
+%     subplot(1,2,1);
+%     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
+%     title('Displacement');
+%     subplot(1,2,2);
+%     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
+%     title('Velocity');
+%     pause(0.001);
     if saveVideo_on
         frame = getframe(gcf); %get frame
         writeVideo(myVideo, frame);
