@@ -150,10 +150,14 @@ end
 node = find(MeshU.coords(:,1) == 2500 & MeshU.coords(:,2) == 2500);
 % central node y DOF
 BC.fixed_u = node*2;
-% period [s]
-t0 = 1e-3;
+% peak frequency [Hz]
+f = 10;
+% peak location [s]
+t0 = 1/f;
 % fixed DOF values
-BC.fixed_u_value = @(t) (-t0/(2*pi)*cos(2*pi*(t)/t0) + t0/(8*pi)*cos(4*pi*(t)/t0) + 3*t0/8/pi).*(t<t0);
+BC.fixed_u_value = @(t) (1-2*(pi*f*(t-t0)).^2) .* exp(-(pi*f*(t-t0)).^2);
+t = 0:0.001:0.5;
+plot(t, BC.fixed_u_value(t));
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
