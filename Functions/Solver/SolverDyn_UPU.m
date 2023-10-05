@@ -119,43 +119,15 @@ KFF = [Kss_FF, Ksp_FF, Ksf_FF;
     Kps_FF, Kpp_FF, Kpf_FF;
     Kfs_FF, Kfp_FF, Kff_FF];
 
-% matrices for unknown DOFs
-MssFF = Mss(BC.free_u, BC.free_u);
-MffFF = Mff(BC.free_uf, BC.free_uf);
-MsfFF = Msf(BC.free_u, BC.free_uf);
-MfsFF = Mfs(BC.free_uf, BC.free_u);
-
-CssFF = Css(BC.free_u, BC.free_u);
-CsfFF = Csf(BC.free_u, BC.free_uf);
-CfsFF = Cfs(BC.free_uf, BC.free_u);
-CffFF = Cff(BC.free_uf, BC.free_uf);
-
-KssFF = Kss(BC.free_u, BC.free_u);
-KspFF = Ksp(BC.free_u, BC.free_p);
-KfpFF = Kfp(BC.free_uf, BC.free_p);
-
 % at first step: compute solid acceleration and pressure gradient
 if Control.step == 1
     aux = [Mss, Msf; Mfs, Mff] \([fu; ff] - [Css, -Csf; -Cfs, Cff] * [udot_old; ufdot_old]...
         - [Kss, -Ksp; zeros(length(Kss), length(Kss)), -Kfp] * [u_old; p_old]);
     u2dot_old = aux(1:length(u2dot_old));
-%     uf2dot_old = aux(length(u2dot_old)+1:end);
-    uf2dot_old = zeros(length(u2dot_old),1);
+    uf2dot_old = aux(length(u2dot_old)+1:end);
 end
 
 % auxiliar terms for external forces vector
-% fuF = fu(BC.free_u) + MssFF * (1/(beta*dt^2) * u_old(BC.free_u) + 1/(beta*dt) * udot_old(BC.free_u) + (1/(2*beta) -1) * u2dot_old(BC.free_u)) + ...
-%     MsfFF * (1/(lambda*dt^2) * uf_old(BC.free_u) + 1/(lambda*dt) * ufdot_old(BC.free_u) + (1/(2*lambda) -1) * uf2dot_old(BC.free_u)) + ...
-%     CsfFF * (-xi/(lambda*dt) * uf_old(BC.free_u) - (xi/lambda-1) * ufdot_old(BC.free_u) - dt*(xi/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
-%     CssFF * (gamma/(beta*dt) * u_old(BC.free_u) +(gamma/beta-1) * udot_old(BC.free_u) + dt*(gamma/(2*lambda)-1) * u2dot_old(BC.free_u));
-% 
-% fpF = fp(BC.free_p);
-% 
-% ffF = ff(BC.free_u) + MffFF * (1/(lambda*dt^2) * uf_old(BC.free_u) + 1/(lambda*dt)*ufdot_old(BC.free_u) + (1/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
-%     MfsFF * (1/(beta*dt^2) * u_old(BC.free_u) + 1/(beta*dt) * udot_old(BC.free_u) + (1/(2*beta) -1) * u2dot_old(BC.free_u)) + ...
-%     CffFF * (xi/(lambda*dt) * uf_old(BC.free_u) + (xi/lambda-1) * ufdot_old(BC.free_u) + dt*(xi/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
-%     CfsFF * (-gamma/(beta*dt) * u_old(BC.free_u) - (gamma/beta-1) * udot_old(BC.free_u) - dt*(gamma/(2*beta)-1) * u2dot_old(BC.free_u));
-
 fubar = fu + Mss * (1/(beta*dt^2) * u_old + 1/(beta*dt) * udot_old + (1/(2*beta) -1) * u2dot_old) + ...
     Msf * (1/(lambda*dt^2) * uf_old + 1/(lambda*dt) * ufdot_old + (1/(2*lambda) -1) * uf2dot_old) + ...
     Csf * (-xi/(lambda*dt) * uf_old - (xi/lambda-1) * ufdot_old - dt*(xi/(2*lambda)-1) * uf2dot_old) + ...
