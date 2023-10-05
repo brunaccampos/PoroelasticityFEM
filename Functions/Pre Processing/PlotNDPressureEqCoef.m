@@ -15,12 +15,12 @@ deltaS = (Material.alpha - Material.n) * Material.n / Material.Kf ./ (Material.M
 index = find (n == 1);
 
 % coefficient for Kps
-hi1 = deltaS * Material.Kf / (Material.n * Material.E);
+hi1 = deltaS/Material.n;
 % values normalized with n=1
 hi1norm = hi1./hi1(index);
 
 % coefficient for Kpf
-hi2 = (1 - deltaF/Material.n) * Material.Kf / Material.E;
+hi2 = (1 - deltaF/Material.n);
 % normalized values
 hi2norm = hi2./hi2(index);
 
