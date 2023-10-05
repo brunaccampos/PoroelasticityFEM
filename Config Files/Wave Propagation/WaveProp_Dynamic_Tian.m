@@ -28,13 +28,13 @@ vps = 3000; %  P wave solid velocity [m/s]
 vss = 1732; % S wave solid velocity [m/s]
 vpf = 1500; % P wave fluid velocity [m/s]
 eta0 = 0.15; % porosity [-]
-rhos = 2588;
-rhof = 952;
-rho12 = 0.5*(eta0-1)*rhof;
+rhos = 2588; % solid density [kg/m3]
+rhof = 952; % fluid density [kg/m3]
+rho12 = 0.5*(eta0-1)*rhof; % added mass [kg/m3]
 
-Ks = rhos*(vps^2-4*vss^2/3);
-Kf = rhof*vpf^2;
-mus = rhos*vss^2;
+Ks = rhos*(vps^2-4*vss^2/3); % solid bulk modulus [Pa]
+Kf = rhof*vpf^2; % fluid bulk modulus [Pa]
+mus = rhos*vss^2; % solid shear modulus [Pa]
 
 e = mus*(9*Ks+8*mus)/6/(Ks+2*mus);
 Kd = (4*mus*Ks*(1-eta0))/(4*mus+3*eta0*Ks);
