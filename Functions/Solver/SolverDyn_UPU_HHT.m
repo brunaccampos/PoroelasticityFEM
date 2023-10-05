@@ -1,4 +1,4 @@
-function [Solution] = SolverDyn_UPU_HHT(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, fu, ff, BC, Control, Iteration)
+function [Solution] = SolverDyn_UPU_HHT(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, fu, fp, ff, BC, Control, Iteration)
 % ------------------------------------------------------------------------
 % Solve linear system for dynamic case
 % Input parameters: coupled matrices, BC, Control, Iteration
@@ -140,43 +140,44 @@ KppFF = Kpp(BC.free_p, BC.free_p);
 
 % at first step: compute solid acceleration and pressure gradient
 if Control.step == 1
-    u2dot_old(BC.free_u) = MssFF\(fu(BC.free_u) - KssFF*u_old(BC.free_u) + ...
-        KspFF*p_old(BC.free_p) + CsfFF*ufdot_old(BC.free_u) - CssFF*udot_old(BC.free_u));
-    uf2dot_old(BC.free_u) = MffFF\(ff(BC.free_u) + KfpFF*p_old(BC.free_p) - ...
-        CffFF*ufdot_old(BC.free_u) + CfsFF*udot_old(BC.free_u));
+    u2dot_old = Mss\(fu - Kss*u_old + Ksp*p_old + Csf*ufdot_old - Css*udot_old);
+    uf2dot_old = Mff\(ff + Kfp*p_old - Cff*ufdot_old + Cfs*udot_old);
 end
 
 % auxiliar terms for external forces vector
-fuF = fu(BC.free_u) + MssFF * (1/(beta*dt^2) * u_old(BC.free_u) + 1/(beta*dt) * udot_old(BC.free_u) + ...
-    (1/(2*beta) -1) * u2dot_old(BC.free_u)) + (1+alpha)*CsfFF * (-xi/(lambda*dt) * uf_old(BC.free_u) - ...
-    (xi/lambda-1) * ufdot_old(BC.free_u) - dt*(xi/(2*lambda)-1) * uf2dot_old(BC.free_u)) - alpha*CsfFF * ufdot_old(BC.free_u) + ...
-    (1+alpha)*CssFF * (gamma/(beta*dt) * u_old(BC.free_u) +(gamma/beta-1) * udot_old(BC.free_u) + ...
-    dt*(gamma/(2*lambda)-1) * u2dot_old(BC.free_u)) + alpha*CssFF * udot_old(BC.free_u) + alpha*KssFF * u_old(BC.free_u) - ...
-    alpha*KspFF * p_old(BC.free_p);
+fubar = fu + Mss*(1/(beta*dt^2) * u_old + 1/(beta*dt) * udot_old + (1/(2*beta) -1) * u2dot_old) +...
+    (1+alpha)*Csf* (-xi/(lambda*dt) * uf_old - (xi/lambda-1) * ufdot_old - dt*(xi/(2*lambda)-1) * uf2dot_old) -...
+    alpha*Csf * ufdot_old + (1+alpha)*Css * (gamma/(beta*dt) * u_old +(gamma/beta-1) * udot_old + ...
+    dt*(gamma/(2*lambda)-1) * u2dot_old) + alpha*Css * udot_old + alpha*Kss * u_old - ...
+    alpha*Ksp * p_old;
 
-fpF = -alpha*KpsFF * u_old(BC.free_u) - alpha*KppFF * p_old(BC.free_p) - alpha*KpfFF * uf_old(BC.free_u);
+fpbar = fp -alpha*KpsFF * u_old(BC.free_u) - alpha*KppFF * p_old(BC.free_p) - alpha*KpfFF * uf_old(BC.free_u);
 
-ffF = ff(BC.free_u) + MffFF * (1/(lambda*dt^2) * uf_old(BC.free_u) + 1/(lambda*dt)*ufdot_old(BC.free_u) + ...
-    (1/(2*lambda)-1) * uf2dot_old(BC.free_u)) + (1+alpha)*CffFF * (xi/(lambda*dt) * uf_old(BC.free_u) + ...
-    (xi/lambda-1) * ufdot_old(BC.free_u) + dt*(xi/(2*lambda)-1) * uf2dot_old(BC.free_u)) + ...
-    (1+alpha)*CfsFF * (-gamma/(beta*dt) * u_old(BC.free_u) - (gamma/beta-1) * udot_old(BC.free_u) - ...
-    dt*(gamma/(2*beta)-1) * u2dot_old(BC.free_u)) + alpha*CffFF * ufdot_old(BC.free_u) - alpha*CfsFF * udot_old(BC.free_u) - ...
-    alpha*KfpFF * p_old(BC.free_p);
+ffbar = ff + Mff * (1/(lambda*dt^2) * uf_old + 1/(lambda*dt)*ufdot_old + ...
+    (1/(2*lambda)-1) * uf2dot_old) + (1+alpha)*Cff * (xi/(lambda*dt) * uf_old + ...
+    (xi/lambda-1) * ufdot_old + dt*(xi/(2*lambda)-1) * uf2dot_old) + ...
+    (1+alpha)*Cfs * (-gamma/(beta*dt) * u_old - (gamma/beta-1) * udot_old - ...
+    dt*(gamma/(2*beta)-1) * u2dot_old) + alpha*Cff * ufdot_old - alpha*Cfs * udot_old - ...
+    alpha*Kfp * p_old;
 
+fuF = fubar(BC.free_u);
+fpF = fpbar(BC.free_p);
+ffF = ffbar(BC.free_uf);
 
-fuE = fu(BC.fixed_u);
-ffE = ff(BC.fixed_u);
+fuE = fubar(BC.fixed_u);
+fpE = fpbar(BC.fixed_p);
+ffE = ffbar(BC.fixed_uf);
 
 uE = BC.fixed_u_value(Control.t);
-pE = zeros(length(BC.fixed_p),1);
-ufE = BC.fixed_u_value(Control.t);
+pE = BC.fixed_p_value(Control.t);
+ufE = BC.fixed_uf_value(Control.t);
 
 % uncomment for velocity impact problem (1D)
 % uE(end) = uE(end)*Control.t;
 % ufE(end) = ufE(end)*Control.t;
 
 dE = [uE; pE; ufE];
-fE = [fuE; zeros(length(BC.fixed_p),1); ffE];
+fE = [fuE; fpE; ffE];
 fF = [fuF; fpF; ffF];
 
 %% Solve linear system

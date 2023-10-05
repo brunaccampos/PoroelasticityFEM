@@ -78,7 +78,7 @@ fpbar = Kpu./dt * u_old + (S./dt + (beta-1) * Kpp) * p_old + (1-beta) * fp_old +
 fuF = fubar(BC.free_u);
 fpF = fpbar(BC.free_p);
 
-fuE = fu(BC.fixed_u);
+fuE = fubar(BC.fixed_u);
 fpE = fpbar(BC.fixed_p);
 
 uE = BC.fixed_u_value(Control.t);

@@ -75,28 +75,22 @@ KFE = [Kuu_FE, Kup_FE;
 KFF = [Kuu_FF, Kup_FF;
     Kpu_FF, Kpp_FF];
 
-% matrices for unknown DOFs
-MFF = M(BC.free_u, BC.free_u);
-KuuFF = Kuu(BC.free_u, BC.free_u);
-KupFF = Kup(BC.free_u, BC.free_p);
-KpuFF = Kpu(BC.free_p, BC.free_u);
-KppFF = Kpp(BC.free_p, BC.free_p);
-MhatFF = Mhat(BC.free_p, BC.free_u);
-SFF = S(BC.free_p, BC.free_p);
-
 % at first step: compute solid acceleration and pressure gradient
 if Control.step == 1
-    u2dot_old(BC.free_u) = MFF\(-KuuFF*u_old(BC.free_u) + KupFF*p_old(BC.free_p) + fu(BC.free_u));
-    pdot_old(BC.free_p) = SFF\(MhatFF*u2dot_old(BC.free_u) - KpuFF*udot_old(BC.free_u) -KppFF*p_old(BC.free_p) + fp(BC.free_p));
+    u2dot_old = M\(-Kuu*u_old + Kup*p_old + fu);
+    pdot_old = S\(Mhat*u2dot_old - Kpu*udot_old -Kpp*p_old + fp);
 end
 
 % auxiliar terms for external forces vector
-fuF = fu(BC.free_u) + MFF./(beta*dt^2) * u_old(BC.free_u) + MFF/(beta*dt) * udot_old(BC.free_u) + MFF * (1/(2*beta) -1) * u2dot_old(BC.free_u);
-fpF = fp(BC.free_p) + (KpuFF * gamma/(beta*dt) - MhatFF /(beta*dt^2)) * u_old(BC.free_u) + (KpuFF * (gamma/beta -1) - MhatFF/(beta*dt))* udot_old(BC.free_u)  +...
-    (KpuFF * dt * (gamma/(2*beta) -1) - MhatFF *(1/(2*beta)-1)) * u2dot_old(BC.free_u) + SFF * p_old(BC.free_p) /(theta *dt) + SFF * (1/theta -1) * pdot_old(BC.free_p);
+fubar = fu + M./(beta*dt^2) * u_old + M/(beta*dt) * udot_old + M*(1/(2*beta) -1) * u2dot_old;
+fpbar = fp + (Kpu*gamma/(beta*dt) - Mhat/(beta*dt^2)) * u_old + (Kpu*(gamma/beta -1) - Mhat/(beta*dt))* udot_old +...
+    (Kpu*dt*(gamma/(2*beta) -1) - Mhat*(1/(2*beta)-1)) * u2dot_old + S./(theta *dt)*p_old + S*(1/theta -1) * pdot_old;
 
-fuE = fu(BC.fixed_u);
-fpE = fp(BC.fixed_p);
+fuF = fubar(BC.free_u);
+fpF = fpbar(BC.free_p);
+
+fuE = fubar(BC.fixed_u);
+fpE = fpbar(BC.fixed_p);
 
 uE = BC.fixed_u_value(Control.t);
 pE = BC.fixed_p_value(Control.t);

@@ -115,27 +115,11 @@ KFF = [Kuu_FF, Kup_FF, Kun_FF;
     Kpu_FF, Kpp_FF, Kpn_FF;
     Knu_FF, Knp_FF, Knn_FF];
 
-% matrices for unknown DOFs
-MuuFF = Muu(BC.free_u, BC.free_u);
-KuuFF = Kuu(BC.free_u, BC.free_u);
-KupFF = Kup(BC.free_u, BC.free_p);
-
-KnnFF = Knn(BC.free_n, BC.free_n);
-MnuFF = Mnu(BC.free_n, BC.free_u);
-KnuFF = Knu(BC.free_n, BC.free_u);
-KnpFF = Knp(BC.free_n, BC.free_p);
-
-SFF = S(BC.free_p, BC.free_p);
-MpuFF = Mpu(BC.free_p, BC.free_u);
-KpuFF = Kpu(BC.free_p, BC.free_u);
-KppFF = Kpp(BC.free_p, BC.free_p);
-KpnFF = Kpn(BC.free_p, BC.free_n);
-
 % at first step: compute solid acceleration and pressure gradient
 if Control.step == 1
-    u2dot_old(BC.free_u) = MuuFF\(fu(BC.free_u) - KuuFF*u_old(BC.free_u) + KupFF*p_old(BC.free_p));
-    ndot_old(BC.free_n) = KnnFF\(fn(BC.free_n) + MnuFF*u2dot_old(BC.free_u) - KnuFF*udot_old(BC.free_u) - KnpFF*p_old(BC.free_p));
-    pdot_old(BC.free_p) = SFF\(fp(BC.free_p) + MpuFF*u2dot_old(BC.free_u) - KpuFF*udot_old(BC.free_u) - KppFF*p_old(BC.free_p) - KpnFF*ndot_old(BC.free_n));
+    u2dot_old = Muu\(fu - Kuu*u_old + Kup*p_old);
+    ndot_old = Knn\(fn + Mnu*u2dot_old - Knu*udot_old - Knp*p_old);
+    pdot_old = S\(fp + Mpu*u2dot_old - Kpu*udot_old - Kpp*p_old - Kpn*ndot_old);
 end
 
 % auxiliar terms for external forces vector
@@ -159,9 +143,6 @@ fnE = fnbar(BC.fixed_n);
 uE = BC.fixed_u_value(Control.t);
 pE = BC.fixed_p_value(Control.t);
 nE = BC.fixed_n_value;
-
-% uncomment for velocity impact problem
-% uE(end-length(BC.fixed_u2)+1:end) = uE(end-length(BC.fixed_u2)+1:end)*Control.t;
 
 dE = [uE; pE; nE];
 fF = [fuF; fpF; fnF];
