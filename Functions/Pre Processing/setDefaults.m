@@ -87,4 +87,9 @@ if ~isfield(Control, 'alpha')
     Control.alpha = 0;
 end
 
+% parallel processing pool
+if ~isfield(Control, 'parallel')
+    Control.parallel = 1;
+end
+
 end
