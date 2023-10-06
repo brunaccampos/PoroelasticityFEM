@@ -122,7 +122,7 @@ KFF = [Kss_FF, Ksp_FF, Ksf_FF;
 % at first step: compute solid acceleration and pressure gradient
 if Control.step == 1
     aux = [Mss, Msf; Mfs, Mff] \([fu; ff] - [Css, -Csf; -Cfs, Cff] * [udot_old; ufdot_old]...
-        - [Kss, -Ksp; zeros(length(Kss), length(Kss)), -Kfp] * [u_old; p_old]);
+        - [Kss, -Ksp; sparse(length(Kss), length(Kss)), -Kfp] * [u_old; p_old]);
     u2dot_old = aux(1:length(u2dot_old));
     uf2dot_old = aux(length(u2dot_old)+1:end);
 end
