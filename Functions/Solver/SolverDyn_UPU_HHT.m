@@ -122,22 +122,6 @@ KFF = [Kss_FF, Ksp_FF, Ksf_FF;
     Kps_FF, Kpp_FF, Kpf_FF;
     Kfs_FF, Kfp_FF, Kff_FF];
 
-% matrices for unknown DOFs
-MssFF = Mss(BC.free_u, BC.free_u);
-MffFF = Mff(BC.free_u, BC.free_u);
-
-CssFF = Css(BC.free_u, BC.free_u);
-CsfFF = Csf(BC.free_u, BC.free_u);
-CfsFF = Cfs(BC.free_u, BC.free_u);
-CffFF = Cff(BC.free_u, BC.free_u);
-
-KssFF = Kss(BC.free_u, BC.free_u);
-KspFF = Ksp(BC.free_u, BC.free_p);
-KpsFF = Kps(BC.free_p, BC.free_u);
-KfpFF = Kfp(BC.free_u, BC.free_p);
-KpfFF = Kpf(BC.free_p, BC.free_u);
-KppFF = Kpp(BC.free_p, BC.free_p);
-
 % at first step: compute solid acceleration and pressure gradient
 if Control.step == 1
     u2dot_old = Mss\(fu - Kss*u_old + Ksp*p_old + Csf*ufdot_old - Css*udot_old);
@@ -151,7 +135,7 @@ fubar = fu + Mss*(1/(beta*dt^2) * u_old + 1/(beta*dt) * udot_old + (1/(2*beta) -
     dt*(gamma/(2*lambda)-1) * u2dot_old) + alpha*Css * udot_old + alpha*Kss * u_old - ...
     alpha*Ksp * p_old;
 
-fpbar = fp -alpha*KpsFF * u_old(BC.free_u) - alpha*KppFF * p_old(BC.free_p) - alpha*KpfFF * uf_old(BC.free_u);
+fpbar = fp - alpha*Kps * u_old - alpha*Kpp * p_old - alpha*Kpf * uf_old;
 
 ffbar = ff + Mff * (1/(lambda*dt^2) * uf_old + 1/(lambda*dt)*ufdot_old + ...
     (1/(2*lambda)-1) * uf2dot_old) + (1+alpha)*Cff * (xi/(lambda*dt) * uf_old + ...
