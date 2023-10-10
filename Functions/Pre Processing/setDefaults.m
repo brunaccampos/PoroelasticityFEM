@@ -50,6 +50,13 @@ if contains(Control.PMmodel, 'Dyn') && ~isfield(BC, 'initUfdot')
     BC.initUfdot = [];
 end
 
+% boundary condition for fluid displacement
+if contains(Control.PMmodel, 'UPU') && ~isfield(BC, 'fixed_uf')
+    BC.fixed_uf = [];
+    BC.fixed_uf_value = @(t) zeros(length(BC.fixed_uf),1);
+    BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
+end
+
 % traction interpolation (needed for traction applied in circular
 % geometries)
 if ~isfield(BC,'tractionInterp')
