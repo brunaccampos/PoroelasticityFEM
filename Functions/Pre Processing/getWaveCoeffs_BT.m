@@ -11,7 +11,6 @@ function [Ap_BT, Bp_BT, Cp_BT, As_BT, Bs_BT, Cs_BT] = getWaveCoeffs_BT(Material,
 rhof = Material.rhof; % fluid density
 muf = Material.muf; % fluid dynamic viscosity
 Kf = Material.Kf; % fluid bulk modulus
-xif = 0; % fluid bulk viscosity
 rhos = Material.rhos; % solid density 
 mus = Material.mus; % solid shear modulus
 Ks = Material.Ks; % solid bulk modulus
@@ -37,7 +36,6 @@ hpf = Kf*deltaf/rhof/eta0;
 css = mus/rhos;
 dss = muf*eta0^2/(k*rhos*(1-eta0));
 dsf = muf*eta0/k/rhof;
-
 
 %% Compressional P wave
 Ap_BT = (c2*vps2-vps2*hpf-dps*c2+dps*hpf-hps*dpf)*ones(1,length(w));

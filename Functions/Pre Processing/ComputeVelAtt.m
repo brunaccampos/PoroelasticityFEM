@@ -47,7 +47,7 @@ Material.deltas = (Material.alpha-Material.eta0)*Material.eta0*Mstar/Material.Kf
 Material.deltaf = (Material.alpha-Material.eta0)*Material.eta0*Mstar*Material.n/Material.Ks;
 
 %% Frequency array
-w = 1e2:100:1e7; % frequency [Hz]
+w = 1e2:1e3:1e8; % frequency [Hz]
 
 %% Compute polynomial constants
 % Biot (BT) theory
@@ -102,9 +102,10 @@ for m = 1:3
     % loop over frequency values
     for i = 1:length(w)
         % roots
-        roots_s(i,:) = roots(pol_s(i,:));
+        aux = roots(pol_s(i,:));
+        roots_s(i,1:length(aux)) = aux;
         % physical solutions
-        ks(i,:) = roots_s(i, real(roots_s(i,:))>0);
+        ks(i,1:length(aux)/2) = roots_s(i, real(roots_s(i,:))>0);
     end
     % phase velocities
     vs(:, 2*m-1:2*m) = w'./real(ks);
@@ -145,7 +146,7 @@ hold off
 
 % first S wave
 nexttile;
-semilogx(w,vs(:,2), 'k-', 'LineWidth', 1.5); % BT
+semilogx(w,vs(:,1), 'k-', 'LineWidth', 1.5); % BT
 hold on
 grid on
 xlabel('Frequency [Hz]');
@@ -158,15 +159,14 @@ hold off
 
 % second S wave
 nexttile;
-semilogx(w,vs(:,1), 'k-', 'LineWidth', 1.5); % BT
+semilogx(w,vs(:,3), 'b--', 'LineWidth', 1.5); % ZH
 hold on
 grid on
 xlabel('Frequency [Hz]');
 ylabel('Velocity [m/s]');
 title('Second S wave');
-semilogx(w,vs(:,3), 'b--', 'LineWidth', 1.5); % ZH
 semilogx(w,vs(:,5), 'r:', 'LineWidth', 1.5); % dCS
-legend('BT', 'ZH', 'dCS');
+legend('ZH', 'dCS');
 hold off
 
 %% Plots attenuation
@@ -198,7 +198,7 @@ hold off
 
 % first S wave
 nexttile;
-semilogx(w,atts(:,2), 'k-', 'LineWidth', 1.5); % BT
+semilogx(w,atts(:,1), 'k-', 'LineWidth', 1.5); % BT
 hold on
 grid on
 xlabel('Frequency [Hz]');
@@ -211,15 +211,14 @@ hold off
 
 % second S wave
 nexttile;
-semilogx(w,atts(:,1), 'k-', 'LineWidth', 1.5); % BT
+semilogx(w,atts(:,3), 'b--', 'LineWidth', 1.5); % ZH
 hold on
 grid on
 xlabel('Frequency [Hz]');
 ylabel('Attenuation');
 title('Second S wave');
-semilogx(w,atts(:,3), 'b--', 'LineWidth', 1.5); % ZH
 semilogx(w,atts(:,5), 'r:', 'LineWidth', 1.5); % dCS
-legend('BT', 'ZH', 'dCS');
+legend('ZH', 'dCS');
 hold off
 
 end
