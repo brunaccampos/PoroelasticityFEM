@@ -22,7 +22,7 @@ fixedU = zeros(MeshU.nDOF,1);
 fixedU(BC.fixed_u) = 1;
 % fixed DOFs fluid displacement
 fixedUf = zeros(MeshU.nDOF,1);
-fixedUf(BC.fixed_u) = 1;
+fixedUf(BC.fixed_uf) = 1;
 % fixed DOFs pressure
 fixedP = zeros(MeshP.nDOF,1);
 fixedP(BC.fixed_p) = 1;
