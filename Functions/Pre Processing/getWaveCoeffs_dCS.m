@@ -22,41 +22,36 @@ eta0 = Material.eta0; % porosity
 k = Material.k; % intrinsic permeability
 
 %% Auxiliar constants
-aps = rhos-rho12/(1-eta0);
-bps = rho12/(1-eta0);
-cps = Ks*deltas/(1-eta0)-Ks-4*mus/3;
-dps = Ks*deltaf/(1-eta0);
-hps = muf*eta0^2/k/(1-eta0);
+vps2 = (Ks+4*mus/3)/rhos;
+aps = muf*eta0^2/(k*rhos*(1-eta0));
+cps = rho12/(1-eta0)/rhos;
+dps = Ks*deltas/rhos/(1-eta0);
+hps = Ks*deltaf/rhos/(1-eta0);
 
-apf = rhof-rho12/eta0;
-bpf = rho12/eta0;
-cpf = Kf*deltaf/eta0-Kf;
-dpf = Kf*deltas/eta0;
-hpf = xif*deltaf/eta0-xif-4*muf/3;
-mpf = xif*deltas/eta0;
-rpf = muf*eta0/k;
+c2 = Kf/rhof;
+bpf = muf*eta0/k/rhof;
+cpf = rho12/eta0/rhof;
+dpf = Kf*deltas/rhof/eta0;
+hpf = Kf*deltaf/rhof/eta0;
+mpf = xif*deltaf/rhof/eta0-xif/rhof-4*muf/3/rhof; % new in dCS
+rpf = xif*deltas/rhof/eta0; % new in dCS
 
-ass = rhos-rho12/(1-eta0);
-bss = rho12/(1-eta0);
-css = muf*eta0^2/k/(1-eta0);
-dss = mus;
+css = mus/rhos;
+dss = muf*eta0^2/(k*rhos*(1-eta0));
 
-asf = rhof-rho12/eta0;
-bsf = rho12/eta0;
-csf = muf*eta0/k;
-dsf = muf;
+dsf = muf*eta0/k/rhof;
+csf = muf/rhof; % new in dCS
 
 %% Compressional P wave
-Ap_dCS = cps*cpf - dps*dpf + (-cps*hpf + dps*mpf)*1i*w; 
-Bp_dCS = (aps*cpf + hps*hpf + bps*dpf + dps*bpf - hps*mpf)*w.^2 +...
-    (-aps*hpf - bps*mpf)*1i*w.^3 + ...
-    (cps*apf + cps*rpf + hps*cpf - dps*rpf - hps*dpf)*1i*w;
-Cp_dCS = -bps*bpf*w.^4 - hps*apf*w.^2 + ...
-    + (aps*apf + aps*rpf + bps*rpf + hps*bpf)*1i*w.^3;
+Ap_dCS = c2*vps2-vps2*hpf-dps*c2+dps*hpf-hps*dpf + (vps2*mpf-dps*mpf+hps*rpf)*1i*w;
+Bp_dCS = (-c2+hpf-vps2+vps2*cpf+dps-dps*cpf+cps*c2-cps*hpf+hps*cpf+cps*dpf+aps*mpf-aps*rpf)*w.^2 + ...
+    (-vps2*bpf+dps*bpf-aps*c2+aps*hpf-hps*bpf-aps*dpf)*1i*w + ...
+    (cps*mpf+cps*rpf-mpf)*1i*w.^3;
+Cp_dCS = (1-cps-cpf)*w.^4+1i*(aps+bpf)*w.^3;
 
 %% Shear S wave
-As_dCS = -dss*dsf*1i*w;
-Bs_dCS = -(css*dsf+dss*asf)*w.^2 + ass*dsf*1i*w.^3 - dss*csf*1i*w;
-Cs_dCS = (ass*asf - bss*bsf)*w.^4 + (ass*csf + css*asf + bss*csf + css*bsf)*1i*w.^3;
+As_dCS = -css*csf*1i*w;
+Bs_dCS = (-css+css*cpf-dss*csf)*w.^2-dsf*css*1i*w+(csf-cps*csf)*1i*w.^3;
+Cs_dCS = (1-cps-cpf)*w.^4+(dss+dsf)*1i*w.^3;
 
 end
