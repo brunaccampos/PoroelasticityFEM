@@ -39,13 +39,13 @@ dsf = muf*eta0/k/rhof;
 
 %% Compressional P wave
 Ap_BT = (c2*vps2-vps2*hpf-dps*c2+dps*hpf-hps*dpf)*ones(1,length(w));
-Bp_BT = (-c2*aps-bpf*vps2+dps*bpf+aps*hpf-hps*bpf-aps*dpf)*1i*w +...
-    (-vps2-c2+c2*cps+cpf*vps2+hpf+dps-dps*cpf-cps*hpf+hps*cpf+cps*dpf)*w.^2;
+Bp_BT = (-c2+hpf-vps2+vps2*cpf+dps-dps*cpf+cps*c2-cps*hpf+hps*cpf+cps*dpf)*w.^2 + ...
+    (-vps2*bpf+dps*bpf-aps*c2+aps*hpf-hps*bpf-aps*dpf)*1i*w;
 Cp_BT = (1-cps-cpf)*w.^4+1i*(aps+bpf)*w.^3;
 
 %% Shear S wave
 As_BT = zeros(1,length(w));
-Bs_BT = -(css-css*cpf)*w.^2-1i*dsf*css*w;
-Cs_BT = (1-cps-cpf)*w.^4+1i*(dss+dsf)*w.^3;
+Bs_BT = (-css+css*cpf)*w.^2-dsf*css*1i*w;
+Cs_BT = (1-cps-cpf)*w.^4+(dss+dsf)*1i*w.^3;
 
 end
