@@ -96,8 +96,9 @@ DirFolder = 'Config Files';
 % File = 'Plate2D_Dynamic_Pulse';
 % File = 'WaveProp_Dynamic_Komijani';
 % File = 'WaveProp_Dynamic_Quiroga';
-File = 'WaveProp_Dynamic_Tian';
-% File = 'WaveProp_Dynamic_Injection';
+% File = 'WaveProp_Dynamic_Tian';
+% File = 'WaveProp_Dynamic_InjectionPress';
+File = 'WaveProp_Dynamic_InjectionFlux';
 
 % ------------------------------------------------------------------------
 
