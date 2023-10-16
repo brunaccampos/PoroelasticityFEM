@@ -118,7 +118,7 @@ nsd = 2;
 % size of domain [m] [Lx;Ly;Lz]
 L = [5000; 5000];
 % number of elements in each direction [nex; ney; nez]
-ne = [100; 100];
+ne = [150; 150];
 
 %%%% displacement mesh
 % element type ('Q4')
@@ -219,8 +219,8 @@ Control.uncoupled = 0;
 Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
-Control.dt = 1e-5;  % time step
-Control.tend = 3e-3;   % final simulation time
+Control.dt = 8e-3;  % time step
+Control.tend = 0.8;   % final simulation time
 
 % Newmark method
 Control.beta = 0.7;
