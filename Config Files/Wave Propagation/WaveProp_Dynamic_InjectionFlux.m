@@ -62,14 +62,6 @@ Material.t = 1;
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
 Material.constLaw = 'PlaneStrain';
 
-%% Injection data
-% gravitational acceleration [m/s2]
-Material.g = 9.81;
-% depth of the domain [m]
-depth = 400;
-% hydrostatic pressure [GPa]
-p0 = Material.rho_f * Material.g * depth;
-
 %% Spanos material parameters
 % porosity effective pressure coefficient (Spanos, 1989)
 % n = 0; % lower limit
@@ -110,37 +102,53 @@ else
 end
 
 %% Dirichlet BCs - solid
-% displacement u=0 at left, right, top, and bottom boundaries
-BC.fixed_u = [MeshU.bottom_dofy; MeshU.top_dofy; MeshU.left_dofx; MeshU.right_dofx];
+% displacement u=0 normal to all boundaries
+BC.fixed_u = [MeshU.left_dofx; MeshU.right_dofx; MeshU.top_dofy; MeshU.bottom_dofy];
 % fixed DOF values
 BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid displacement
-% displacement prescribed on the left and right
-BC.fixed_uf = [MeshU.bottom_dofy; MeshU.top_dofy; MeshU.left_dofx; MeshU.right_dofx];
-BC.fixed_uf_value = @(t) zeros(length(BC.fixed_uf),1);
-% free displacement nodes
-BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
+% displacement u=0 normal to all boundaries
+% BC.fixed_uf = [MeshU.left_dofx; MeshU.right_dofx; MeshU.top_dofy; MeshU.bottom_dofy];
+% BC.fixed_uf_value = @(t) zeros(length(BC.fixed_uf),1);
 
-%% Dirichlet BCs - fluid
-% nodes at injection well
-% MeshP.nodesWell = 4:24; % coarse
-% MeshP.nodesWell = 4:44; % fine
-% MeshP.nodesWell = 4:40; % not transfinite
-% MeshP.nodesWell = 4:76; % not transfinite, fine
-MeshP.nodesWell = 4:148; % not transfinite, finer
-% fixed DOFs 
-BC.fixed_p = MeshP.nodesWell;
+% nodesWell = 4:40;
+nodesWell = 4:148; % not transfinite, finer
 % peak frequency [Hz]
 f = 20;
 % peak location [s]
 t0 = 1/f;
 % amplitude [N]
-a0 = 1e5;
-% fixed DOF values
-BC.fixed_p_value = @(t) a0*(1-2*(pi*f*(t-t0)).^2) .* exp(-(pi*f*(t-t0)).^2)*ones(length(BC.fixed_p),1);
+a0 = 1e3;
+BC.fixed_uf = [nodesWell*2-1, nodesWell*2];
+BC.fixed_uf_value = @(t) a0*(t-t0).*exp(-(pi*f*(t-t0)).^2).*ones(length(BC.fixed_uf),1);
+t = 0:0.001:0.5;
+plot(t, BC.fixed_uf_value(t));
+% free displacement nodes
+BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
+
+%% Dirichlet BCs - fluid
+% % nodes at injection well
+% % % MeshP.nodesWell = 4:24; % coarse
+% % % MeshP.nodesWell = 4:44; % fine
+% MeshP.nodesWell = 4:40; % not transfinite
+% % % MeshP.nodesWell = 4:76; % not transfinite, fine
+% % % MeshP.nodesWell = 4:148; % not transfinite, finer
+% % fixed DOFs 
+% BC.fixed_p = MeshP.nodesWell;
+% % peak frequency [Hz]
+% f = 20;
+% % peak location [s]
+% t0 = 1/f;
+% % amplitude [N]
+% a0 = 1;
+% % fixed DOF values
+% BC.fixed_p_value = @(t) a0*(1-2*(pi*f*(t-t0)).^2) .* exp(-(pi*f*(t-t0)).^2)*ones(length(BC.fixed_p),1);
+
+BC.fixed_p = [MeshP.right_nodes; MeshP.top_nodes];
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -187,8 +195,8 @@ Control.uncoupled = 0;
 Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
-Control.dt = 1e-2;  % time step [s]
-Control.tend = 1;   % final simulation time [s]
+Control.dt = 1e-4;  % time step [s]
+Control.tend = 5e-1;   % final simulation time [s]
 
 % Newmark method
 Control.beta = 0.7;
@@ -198,12 +206,13 @@ Control.lambda = 0.7;
 
 %% Plot data
 % DOF to plot graphs
-% node = 10; % node at the well
-% node = 25;
-% node = 14;
-% node = 40;
-node = 72;
-Control.plotu = node*2; % point at x=7.46, y=7.45
-Control.plotp = node; % point at x=7.46, y=7.45
+% node = 10; % corase
+% node = 25; % fine
+% node = 14; % not transfinite
+% node = 40; % not transfinite, fine
+node = 72; % not transfinite, finer
+
+Control.plotu = node*2; % node at the well
+Control.plotp = node; % node at the well
 
 end
