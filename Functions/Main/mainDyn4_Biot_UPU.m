@@ -96,10 +96,11 @@ while Control.t < Control.tend
     % linear solver
     [Solution] = SolverDyn_UPU(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, fp, ff, BC, Control, Iteration);
 
-%     % plot solution over time
+    % plot solution over time
 %     figure(1);
+%     tiledlayout(2,3);
 %     % solid displacement
-%     subplot(2,3,1);
+%     nexttile
 %     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
 %     title('Solid displacement');
 %     hold on
@@ -107,12 +108,12 @@ while Control.t < Control.tend
 % %     plot(MeshU.coords, Plot.uan_space, 'k--', 'LineWidth', 1.5);
 %     hold off
 %     % solid velocity
-%     subplot(2,3,2);
+%     nexttile
 %     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
 %     grid on
 %     title('Solid velocity');
 %     % fluid pressure
-%     subplot(2,3,3);
+%     nexttile
 %     plot(MeshP.coords, Solution.p, 'g', 'LineWidth', 1.5);
 %     title('Pressure');
 %     hold on
@@ -120,7 +121,7 @@ while Control.t < Control.tend
 % %     plot(MeshP.coords, Plot.pan_space, 'k--', 'LineWidth', 1.5);
 %     hold off
 %     % fluid displacement
-%     subplot(2,3,4);
+%     nexttile
 %     plot(MeshU.coords, Solution.uf, 'm', 'LineWidth', 1.5);
 %     title('Fluid displacement');
 %     hold on
@@ -128,7 +129,7 @@ while Control.t < Control.tend
 % %     plot(MeshU.coords, Plot.ufan_space, 'k--', 'LineWidth', 1.5);
 %     hold off
 %     % fluid velocity
-%     subplot(2,3,5);
+%     nexttile
 %     plot(MeshU.coords, Solution.ufdot, 'b', 'LineWidth', 1.5);
 %     grid on
 %     title('Fluid velocity');
