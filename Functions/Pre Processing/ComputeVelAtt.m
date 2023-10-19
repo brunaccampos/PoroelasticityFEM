@@ -11,26 +11,75 @@ function ComputeVelAtt()
 %   dissipation terms
 % ------------------------------------------------------------------------
 
-clear vars
-clc
-close all
+% clear vars
+% clc
+% close all
 
-%% Material parameters - fixed
-Material.rhof = 1050; % fluid density [kg/m3]
-Material.muf = 1e-3; % fluid dynamic viscosity [Pa s]
-Material.Kf = 2.2e9; % fluid bulk modulus [Pa]
-Material.xif = 2.8e-3; % fluid bulk viscosity [Pa s]
+%% Material parameters (Zhao 2020)
+% Material.rhof = 1050; % fluid density [kg/m3]
+% Material.muf = 1e-3; % fluid dynamic viscosity [Pa s]
+% Material.Kf = 2.2e9; % fluid bulk modulus [Pa]
+% Material.xif = 2.8e-3; % fluid bulk viscosity [Pa s]
+% 
+% Material.rhos = 2650; % solid density [kg/m3]
+% Material.mus = 23e9; % solid shear modulus [Pa]
+% Material.Ks = 33e9; % solid bulk modulus [Pa]
+% 
+% Material.rho12 = -83; % coupled density [kg/m3]
+% Material.alpha = 0.79; % Biot coefficient [-]
+% Material.eta0 = 0.15; % porosity [-]
+% Material.k = 10*9.8692331e-16; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
+
+%% Material parameters (Detournay 1993)
+% Material.rhof = 1000; % fluid density [kg/m3]
+% Material.muf = 1e-3; % fluid dynamic viscosity [Pa s]
+% Material.Kf = 3.3e9; % fluid bulk modulus [Pa]
+% Material.xif = 2.8e-3; % fluid bulk viscosity [Pa s]
+% 
+% Material.rhos = 2600; % solid density [kg/m3]
+% Material.mus = 27e9; % solid shear modulus [Pa]
+% Material.Ks = 36e9; % solid bulk modulus [Pa]
+% 
+% Material.rho12 = 0; % coupled density [kg/m3]
+% Material.alpha = 0.79; % Biot coefficient [-]
+% Material.eta0 = 0.19; % porosity [-]
+% Material.k = 1.88e-13; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
+
+%% Material parameters (Spanos 1985)
+Material.rhof = 750; % fluid density [kg/m3]
+Material.muf = 1e4; % fluid dynamic viscosity [Pa s]
+Material.Kf = 3.34e10*9807e-9; % fluid bulk modulus [Pa] Note: nT/m2 = 9807e-9 Pa
+Material.xif = 0; % fluid bulk viscosity [Pa s]
 
 Material.rhos = 2650; % solid density [kg/m3]
-Material.mus = 23e9; % solid shear modulus [Pa]
-Material.Ks = 33e9; % solid bulk modulus [Pa]
+Material.mus = 1.5e10*9807e-9; % solid shear modulus [Pa] Note: nT/m2 = 9807e-9 Pa
+Material.Ks = 3; % solid bulk modulus [Pa]
 
-Material.rho12 = -83; % coupled density [kg/m3]
-Material.alpha = 0.79; % Biot coefficient [-]
+Material.rho12 = 0; % coupled density [kg/m3]
+Material.eta0 = 0.30; % porosity [-]
+Material.k = 1e-8; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
 
-%% Material parameters - study variation
-Material.eta0 = 0.15; % porosity [-]
-Material.k = 10*9.8692331e-16; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
+% converting parameters
+R = 8.96e8*9807e-9;
+Q = 4.008e7*9807e-9;
+M = R/Material.eta0^2;
+
+Material.alpha = Q/(Material.eta0*M)+Material.eta0; % Biot coefficient [-]
+
+%% Material parameters (Tian 2023)
+% Material.rhof = 952; % fluid density [kg/m3]
+% Material.muf = 1e-3; % fluid dynamic viscosity [Pa s]
+% Material.Kf = 2.1420e9; % fluid bulk modulus [Pa]
+% Material.xif = 2.8e-3; % fluid bulk viscosity [Pa s]
+% 
+% Material.rhos = 2588; % solid density [kg/m3]
+% Material.mus = 5.771e9/(1-0.15); % solid shear modulus [Pa]
+% Material.Ks = 1.2941e10; % solid bulk modulus [Pa]
+% 
+% Material.rho12 = -404.60; % coupled density [kg/m3]
+% Material.alpha = 0.2842; % Biot coefficient [-]
+% Material.eta0 = 0.15; % porosity [-]
+% Material.k = 1e-13; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
 
 %% Material parameters - dCS model
 % porosity effective pressure coefficient (Spanos, 1989)
