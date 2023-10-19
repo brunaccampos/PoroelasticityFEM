@@ -41,7 +41,7 @@ dsf = muf*eta0/k/rhof;
 Ap_BT = (c2*vps2-vps2*hpf-dps*c2+dps*hpf-hps*dpf)*ones(1,length(w));
 Bp_BT = (-c2+hpf-vps2+vps2*cpf+dps-dps*cpf+cps*c2-cps*hpf+hps*cpf+cps*dpf)*w.^2 + ...
     (-vps2*bpf+dps*bpf-aps*c2+aps*hpf-hps*bpf-aps*dpf)*1i*w;
-Cp_BT = (1-cps-cpf)*w.^4+1i*(aps+bpf)*w.^3;
+Cp_BT = (1-cps-cpf)*w.^4+(aps+bpf)*1i*w.^3;
 
 %% Shear S wave
 As_BT = zeros(1,length(w));

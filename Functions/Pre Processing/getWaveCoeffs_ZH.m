@@ -19,26 +19,29 @@ eta0 = Material.eta0; % porosity
 k = Material.k; % intrinsic permeability
 
 %% Auxiliar constants
-c2 = Kf/rhof;
 vps2 = (Ks+4*mus/3)/rhos;
 aps = muf*eta0^2/(k*rhos*(1-eta0));
-apf = (xif+4*muf/3)/rhof;
-bpf = muf*eta0/k/rhof;
 cps = rho12/(1-eta0)/rhos;
+
+c2 = Kf/rhof;
+bpf = muf*eta0/k/rhof;
 cpf = rho12/eta0/rhof;
+mpf = (xif+4*muf/3)/rhof;
+
 css = mus/rhos;
-csf = muf/rhof;
 dss = muf*eta0^2/(k*rhos*(1-eta0));
+
 dsf = muf*eta0/k/rhof;
+csf = muf/rhof;
 
 %% Compressional P wave
-Ap_ZH = c2*vps2-1i*apf*vps2*w;
-Bp_ZH = -1i*(c2*aps+bpf*vps2)*w-(vps2+c2-c2*cps+apf*aps-cpf*vps2)*w.^2+1i*(apf-apf*cps)*w.^3;
-Cp_ZH = (1-cps-cpf)*w.^4+1i*(aps+bpf)*w.^3;
+Ap_ZH = c2*vps2-mpf*vps2*1i*w;
+Bp_ZH = -(c2*aps+bpf*vps2)*1i*w+(-vps2-c2+c2*cps-mpf*aps+cpf*vps2)*w.^2+(mpf-mpf*cps)*1i*w.^3;
+Cp_ZH = (1-cps-cpf)*w.^4+(aps+bpf)*1i*w.^3;
 
 %% Shear S wave
-As_ZH = -1i*csf*css*w;
-Bs_ZH = -(css+csf*dss-css*cpf)*w.^2+1i*(csf-csf*cps)*w.^3-1i*dsf*css*w;
-Cs_ZH = (1-cps-cpf)*w.^4+1i*(dss+dsf)*w.^3;
+As_ZH = -csf*css*1i*w;
+Bs_ZH = (-css-csf*dss+css*cpf)*w.^2+(csf-csf*cps)*1i*w.^3-dsf*css*1i*w;
+Cs_ZH = (1-cps-cpf)*w.^4+(dss+dsf)*1i*w.^3;
 
 end

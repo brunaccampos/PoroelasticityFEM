@@ -46,7 +46,7 @@ csf = muf/rhof; % new in dCS
 Ap_dCS = c2*vps2-vps2*hpf-dps*c2+dps*hpf-hps*dpf + (vps2*mpf-dps*mpf+hps*rpf)*1i*w;
 Bp_dCS = (-c2+hpf-vps2+vps2*cpf+dps-dps*cpf+cps*c2-cps*hpf+hps*cpf+cps*dpf+aps*mpf-aps*rpf)*w.^2 + ...
     (-vps2*bpf+dps*bpf-aps*c2+aps*hpf-hps*bpf-aps*dpf)*1i*w + ...
-    (cps*mpf+cps*rpf-mpf)*1i*w.^3;
+    (cps*mpf-cps*rpf-mpf)*1i*w.^3;
 Cp_dCS = (1-cps-cpf)*w.^4+1i*(aps+bpf)*w.^3;
 
 %% Shear S wave
