@@ -141,7 +141,8 @@ for m = 1:3
     % phase velocities
     vp(:, 2*m-1:2*m) = w'./real(kp);
     % attenuations
-    attp(:, 2*m-1:2*m) = abs(2*imag(kp)./real(kp));
+    attp(:, 2*m-1:2*m) = -2*imag(kp)./real(kp);
+%     attp(:, 2*m-1:2*m) = -imag(kp);
     
     % polynomial 4th order S wave
     pol_s = [As(m,:)' Z Bs(m,:)' Z Cs(m,:)'];
@@ -159,7 +160,8 @@ for m = 1:3
     % phase velocities
     vs(:, 2*m-1:2*m) = w'./real(ks);
     % attenuations
-    atts(:, 2*m-1:2*m) = abs(2*imag(ks)./real(ks));   
+    atts(:, 2*m-1:2*m) = -2*imag(ks)./real(ks);
+%     atts(:, 2*m-1:2*m) = -imag(ks);
 end
 
 % initialize figure
