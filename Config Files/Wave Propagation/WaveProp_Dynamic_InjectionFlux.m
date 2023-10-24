@@ -116,20 +116,58 @@ BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 % nodesWell = 4:76; % not transfinite, fine
 % nodesWell = 4:148; % not transfinite, finer
 nodesWell = 4:148; % not transfinite, finer
+
 % peak frequency [Hz]
 f = 20;
 % peak location [s]
 t0 = 1/f;
 % amplitude [N]
 a0 = 1e5;
-BC.fixed_uf = [nodesWell*2-1, nodesWell*2];
-% BC.fixed_uf_value = @(t) a0*(t-t0).*exp(-(pi*f*(t-t0)).^2).*ones(length(BC.fixed_uf),1);
-% sin function test
-t0=1/f;
-% BC.fixed_uf_value = @(t) a0*(-t0/(2*pi)*cos(2*pi*(t)/t0) + t0/(8*pi)*cos(4*pi*(t)/t0) + 3*t0/8/pi).*ones(length(BC.fixed_uf),1).*(t<t0);
-BC.fixed_uf_value = @(t) a0*(sin(2*pi*(t)*f) - 0.5*sin(4*pi*(t)*f)).*ones(length(BC.fixed_uf),1).*(t<t0);
+% fixed DOFs in x and y
+fixed_ufx = nodesWell*2-1;
+fixed_ufy = nodesWell*2;
+BC.fixed_uf = sort([fixed_ufx, fixed_ufy]);
+% fixed DOF values
+BC.fixed_uf_value = @(t) zeros(length(BC.fixed_uf),1);
+% source = @(t) a0*(t-t0).*exp(-(pi*f*(t-t0)).^2).*ones(length(BC.fixed_uf),1);
+source = @(t) a0*(sin(2*pi*(t)*f) - 0.5*sin(4*pi*(t)*f)).*ones(length(BC.fixed_uf),1).*(t<t0);
 t = 0:0.001:0.2;
-plot(t, BC.fixed_uf_value(t));
+plot(t, source(t));
+
+% well centre coordinates
+o = [0, 0];
+
+% array of angles
+theta_vec = zeros(length(nodesWell),1);
+
+% loop over well nodes
+for i = 1:length(nodesWell)
+    % find node coord
+    node = MeshU.coords(nodesWell(i),:);
+    % distance to origin
+    a = node(1) - o(1);
+    b = node(2) - o(2);
+    % compute angles from both sides
+    theta1 = atan(-a/b);
+    theta2 = atan2(-a,b);
+    % find angle depending on the quadrant
+    if (a > 0 && b >= 0) % 1st quadrant
+        theta = pi()+ theta2;
+    elseif (a <= 0 && b > 0) % 2nd quadrant
+        theta = pi()+ theta2;
+    elseif (a < 0 && b <= 0) % 3rd quadrant
+        theta = pi() + theta2;
+    elseif (a >= 0 && b < 0) % 4th quadrant
+        theta = theta1;
+    end
+    % store angle
+    theta_vec(i) = theta;
+end
+
+x = sin(theta_vec);
+y = -cos(theta_vec);
+BC.fixed_uf_value = @(t) a0*(sin(2*pi*(t)*f) - 0.5*sin(4*pi*(t)*f))*[x; y].*(t<t0);
+
 % free displacement nodes
 BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
 
