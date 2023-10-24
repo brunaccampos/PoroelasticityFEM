@@ -62,14 +62,6 @@ Material.t = 1;
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
 Material.constLaw = 'PlaneStrain';
 
-%% Injection data
-% gravitational acceleration [m/s2]
-Material.g = 9.81;
-% depth of the domain [m]
-depth = 400;
-% hydrostatic pressure [GPa]
-p0 = Material.rho_f * Material.g * depth;
-
 %% Spanos material parameters
 % porosity effective pressure coefficient (Spanos, 1989)
 % n = 0; % lower limit
@@ -138,7 +130,7 @@ f = 20;
 % peak location [s]
 t0 = 1/f;
 % amplitude [N]
-a0 = 1e5;
+a0 = 1e3;
 % fixed DOF values
 BC.fixed_p_value = @(t) a0*(1-2*(pi*f*(t-t0)).^2) .* exp(-(pi*f*(t-t0)).^2)*ones(length(BC.fixed_p),1);
 % free nodes
@@ -187,8 +179,8 @@ Control.uncoupled = 0;
 Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
-Control.dt = 1e-2;  % time step [s]
-Control.tend = 1;   % final simulation time [s]
+Control.dt = 1e-4;  % time step [s]
+Control.tend = 2e-1;   % final simulation time [s]
 
 % Newmark method
 Control.beta = 0.7;
