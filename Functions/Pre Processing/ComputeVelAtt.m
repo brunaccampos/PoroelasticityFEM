@@ -15,6 +15,9 @@ function ComputeVelAtt()
 % clc
 % close all
 
+%% Frequency array
+w = 1e0:1e4:1e8; % frequency [Hz]
+
 %% Material parameters (Zhao 2020)
 % Material.rhof = 1050; % fluid density [kg/m3]
 % Material.muf = 1e-3; % fluid dynamic viscosity [Pa s]
@@ -94,9 +97,6 @@ Mstar = 1/Mstarinv;
 % porosity equation coefficients
 Material.deltas = (Material.alpha-Material.eta0)*Material.eta0*Mstar/Material.Kf;
 Material.deltaf = (Material.alpha-Material.eta0)*Material.eta0*Mstar*Material.n/Material.Ks;
-
-%% Frequency array
-w = 1e2:1e3:1e8; % frequency [Hz]
 
 %% Compute polynomial constants
 % Biot (BT) theory
