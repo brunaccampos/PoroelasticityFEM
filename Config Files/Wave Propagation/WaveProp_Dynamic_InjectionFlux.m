@@ -110,44 +110,33 @@ BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid displacement
-% displacement u=0 normal to all boundaries
-% BC.fixed_uf = [MeshU.left_dofx; MeshU.right_dofx; MeshU.top_dofy; MeshU.bottom_dofy];
-% BC.fixed_uf_value = @(t) zeros(length(BC.fixed_uf),1);
-
-% nodesWell = 4:40;
+% nodesWell = 4:24; % coarse
+% nodesWell = 4:44; % fine
+% nodesWell = 4:40; % not transfinite
+% nodesWell = 4:76; % not transfinite, fine
+% nodesWell = 4:148; % not transfinite, finer
 nodesWell = 4:148; % not transfinite, finer
 % peak frequency [Hz]
 f = 20;
 % peak location [s]
 t0 = 1/f;
 % amplitude [N]
-a0 = 1e3;
+a0 = 1e5;
 BC.fixed_uf = [nodesWell*2-1, nodesWell*2];
-BC.fixed_uf_value = @(t) a0*(t-t0).*exp(-(pi*f*(t-t0)).^2).*ones(length(BC.fixed_uf),1);
-t = 0:0.001:0.5;
+% BC.fixed_uf_value = @(t) a0*(t-t0).*exp(-(pi*f*(t-t0)).^2).*ones(length(BC.fixed_uf),1);
+% sin function test
+t0=1/f;
+% BC.fixed_uf_value = @(t) a0*(-t0/(2*pi)*cos(2*pi*(t)/t0) + t0/(8*pi)*cos(4*pi*(t)/t0) + 3*t0/8/pi).*ones(length(BC.fixed_uf),1).*(t<t0);
+BC.fixed_uf_value = @(t) a0*(sin(2*pi*(t)*f) - 0.5*sin(4*pi*(t)*f)).*ones(length(BC.fixed_uf),1).*(t<t0);
+t = 0:0.001:0.2;
 plot(t, BC.fixed_uf_value(t));
 % free displacement nodes
 BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
 
 %% Dirichlet BCs - fluid
-% % nodes at injection well
-% % % MeshP.nodesWell = 4:24; % coarse
-% % % MeshP.nodesWell = 4:44; % fine
-% MeshP.nodesWell = 4:40; % not transfinite
-% % % MeshP.nodesWell = 4:76; % not transfinite, fine
-% % % MeshP.nodesWell = 4:148; % not transfinite, finer
-% % fixed DOFs 
-% BC.fixed_p = MeshP.nodesWell;
-% % peak frequency [Hz]
-% f = 20;
-% % peak location [s]
-% t0 = 1/f;
-% % amplitude [N]
-% a0 = 1;
-% % fixed DOF values
-% BC.fixed_p_value = @(t) a0*(1-2*(pi*f*(t-t0)).^2) .* exp(-(pi*f*(t-t0)).^2)*ones(length(BC.fixed_p),1);
-
+% fixed DOFs 
 BC.fixed_p = [MeshP.right_nodes; MeshP.top_nodes];
+% fixed DOF values
 BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
@@ -196,7 +185,7 @@ Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
 Control.dt = 1e-4;  % time step [s]
-Control.tend = 5e-1;   % final simulation time [s]
+Control.tend = 2e-1;   % final simulation time [s]
 
 % Newmark method
 Control.beta = 0.7;
