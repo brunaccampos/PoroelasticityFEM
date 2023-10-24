@@ -21,7 +21,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_Tian(co
 %           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
 %           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
 %                                   porosity perturbation equation
-Control.PMmodel = 'Dyn4_Biot_UPU';
+Control.PMmodel = 'Dyn5_Spanos_UPU';
 
 %% Material properties - Tian (2023)
 vps = 3000; %  P wave solid velocity [m/s]
@@ -118,7 +118,7 @@ nsd = 2;
 % size of domain [m] [Lx;Ly;Lz]
 L = [5000; 5000];
 % number of elements in each direction [nex; ney; nez]
-ne = [150; 150];
+ne = [500; 500];
 
 %%%% displacement mesh
 % element type ('Q4')
@@ -156,8 +156,8 @@ f = 10;
 t0 = 1/f;
 % fixed DOF values
 BC.fixed_u_value = @(t) (1-2*(pi*f*(t-t0)).^2) .* exp(-(pi*f*(t-t0)).^2);
-t = 0:0.001:0.5;
-plot(t, BC.fixed_u_value(t));
+% t = 0:0.001:0.5;
+% plot(t, BC.fixed_u_value(t));
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
@@ -219,8 +219,8 @@ Control.uncoupled = 0;
 Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
-Control.dt = 8e-3;  % time step
-Control.tend = 0.8;   % final simulation time
+Control.dt = 8e-4;  % time step
+Control.tend = 8e-1;   % final simulation time
 
 % Newmark method
 Control.beta = 0.7;
@@ -259,5 +259,7 @@ Control.ploturow = [nodes_u_sorted(:,2) .* 2 - 1; nodes_u_sorted(:,2) .* 2];
 nodes_p = [MeshP.coords(rowofnodes_p,Control.depthDir), rowofnodes_p]; % matrix with node numbering and variable coord
 nodes_p_sorted = sortrows(nodes_p); % order in terms of variable coord
 Control.plotprow = nodes_p_sorted(:,2);
+
+Control.parallel = 6;
 
 end
