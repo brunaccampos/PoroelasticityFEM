@@ -189,7 +189,8 @@ if Control.fixedDepthPlotON
     title('Solid displacement in domain over time','interpreter','latex');
     view(135, 30);
     hold off
-    exportgraphics(gcf,'Waterfall_Displacement.png','Resolution',300)
+    exportgraphics(gcf,'SolidDisp_3D.png','Resolution',300);
+    exportgraphics(gcf,'SolidDisp_3D.m','Resolution',300);
 
     %% fluid pressure over depth over time (3D plot)
     figure;
@@ -201,7 +202,8 @@ if Control.fixedDepthPlotON
     title('Fluid pressure in domain over time','interpreter','latex');
     view(135, 30);
     hold off
-    exportgraphics(gcf,'Waterfall_Pressure.png','Resolution',300)
+    exportgraphics(gcf,'Pressure_3D.png','Resolution',300);
+    exportgraphics(gcf,'Pressure_3D.m','Resolution',300);
 end
 
 end

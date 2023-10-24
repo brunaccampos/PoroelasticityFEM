@@ -282,29 +282,7 @@ if contains(Control.PMmodel, 'UPU')
 end
 
 if Control.fixedDepthPlotON
-    figure;
-    %% solid displacement over depth over time (3D plot)
-    for t = 1:numel(Plot.time)
-        plot3(MeshU.coords, ones(length(MeshU.coords),1)*Plot.time(t), Plot.u_synthetic(t,:), 'k');
-        hold on
-    end
-    xlabel('x [m]');
-    ylabel('Time [s]');
-    zlabel('u [m]');
-    title('Solid displacement in domain over time');
-    hold off
-    
-    % surface plot
-    figure;
-    surf(MeshU.coords, Plot.time, Plot.u_synthetic);
-    hold on
-    xlabel('x [m]');
-    ylabel('Time [s]');
-    zlabel('u [m]');
-    title('Solid displacement in domain over time');
-    hold off
-    
-    % waterfall plot
+    %% solid displacement over depth over time (3D plot)       
     figure;
     waterfall(MeshU.coords, Plot.time, Plot.u_synthetic);
     hold on
@@ -312,10 +290,12 @@ if Control.fixedDepthPlotON
     ylabel('Time [s]');
     zlabel('u [m]');
     title('Solid displacement in domain over time');
+    view(135, 30);
     hold off
+    exportgraphics(gcf,'SolidDisp_3D.png','Resolution',300);
+    exportgraphics(gcf,'SolidDisp_3D.m','Resolution',300);
     
     %% fluid pressure over depth over time (3D plot)
-    % waterfall plot
     figure;
     waterfall(MeshP.coords, Plot.time, Plot.p_synthetic);
     hold on
@@ -323,8 +303,11 @@ if Control.fixedDepthPlotON
     ylabel('Time [s]');
     zlabel('p [m]');
     title('Fluid pressure in domain over time');
+    view(135, 30);
     hold off
-
+    exportgraphics(gcf,'Pressure_3D.png','Resolution',300);
+    exportgraphics(gcf,'Pressure_3D.m','Resolution',300);
+    
     %% solid velocity vs time - FFT
 % figure
 % y = fft(Plot.udot_time);

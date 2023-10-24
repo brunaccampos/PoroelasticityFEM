@@ -143,6 +143,8 @@ if Control.fixedDepthPlotON
     xlabel('Coordinate [m]');
     ylabel('u [m]');
     title(sprintf('Solid displ. in x at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
+    hold off
+    exportgraphics(gcf,'Synthetics_SolidDispx.m','Resolution',300);
     
     %% velocity in x for fixed coord
     nexttile
@@ -152,6 +154,8 @@ if Control.fixedDepthPlotON
     xlabel('Coordinate [m]');
     ylabel('udot [m]');
     title(sprintf('Solid vel. in x at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
+    hold off
+    exportgraphics(gcf,'Synthetics_SolidVelx.m','Resolution',300);
     
     %% pressure for fixed coord
     nexttile
@@ -161,6 +165,8 @@ if Control.fixedDepthPlotON
     xlabel('Coordinate [m]');
     ylabel('p [Pa]');
     title(sprintf('Press. at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
+    hold off
+    exportgraphics(gcf,'Synthetics_Press.m','Resolution',300);
     
     %% displacement in y for fixed coord
     nexttile
@@ -170,6 +176,8 @@ if Control.fixedDepthPlotON
     xlabel('Coordinate [m]');
     ylabel('u [m]');
     title(sprintf('Solid displ. in y at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
+    hold off
+    exportgraphics(gcf,'Synthetics_SolidDispy.m','Resolution',300);
     
     %% velocity in y for fixed coord
     nexttile
@@ -179,32 +187,12 @@ if Control.fixedDepthPlotON
     xlabel('Coordinate [m]');
     ylabel('udot [m]');
     title(sprintf('Solid vel. in y at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
+    hold off
+    exportgraphics(gcf,'Synthetics_SolidVely.m','Resolution',300);
 end
 
 if Control.fixedDepthPlotON
-    figure;
     %% solid displacement over depth over time (3D plot)
-    for t = 1:numel(Plot.time)
-        plot3(MeshU.coords((Control.ploturow(half+1:end))./2, Control.depthDir), ones(half,1)*Plot.time(t), Plot.u_synthetic(t,half+1:end), 'k');
-        hold on
-    end
-    xlabel('x [m]');
-    ylabel('Time [s]');
-    zlabel('u [m]');
-    title('Solid displacement in domain over time');
-    hold off
-    
-    % surface plot
-    figure;
-    surf(MeshU.coords((Control.ploturow(half+1:end))./2, Control.depthDir), Plot.time, Plot.u_synthetic(:,half+1:end));
-    hold on
-    xlabel('x [m]');
-    ylabel('Time [s]');
-    zlabel('u [m]');
-    title('Solid displacement in domain over time');
-    hold off
-    
-    % waterfall plot
     figure;
     waterfall(MeshU.coords((Control.ploturow(half+1:end))./2, Control.depthDir), Plot.time, Plot.u_synthetic(:,half+1:end));
     hold on
@@ -212,10 +200,12 @@ if Control.fixedDepthPlotON
     ylabel('Time [s]');
     zlabel('u [m]');
     title('Solid displacement in domain over time');
+    view(135, 30);
     hold off
+    exportgraphics(gcf,'SolidDisp_3D.png','Resolution',300);
+    exportgraphics(gcf,'SolidDisp_3D.m','Resolution',300);
     
     %% fluid pressure over depth over time (3D plot)
-    % waterfall plot
     figure;
     waterfall(MeshP.coords(Control.plotprow, Control.depthDir), Plot.time, Plot.p_synthetic);
     hold on
@@ -223,7 +213,10 @@ if Control.fixedDepthPlotON
     ylabel('Time [s]');
     zlabel('p [m]');
     title('Fluid pressure in domain over time');
+    view(135, 30);
     hold off
+    exportgraphics(gcf,'Pressure_3D.png','Resolution',300);
+    exportgraphics(gcf,'Pressure_3D.m','Resolution',300);
 
 end
 
