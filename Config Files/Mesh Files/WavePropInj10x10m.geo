@@ -45,7 +45,7 @@ Delete {
 Nx1 = 21; Rx1 = 1.00;
 Nx2 = 21; Rx2 = 1.00;
 Nx3 = 21; Rx3 = 1.00;
-Nx4 = 51; Rx4 = 0.95;
+Nx4 = 61; Rx4 = 0.95;
 
 // Curves
 Transfinite Curve {6, 15, 3} = Nx1 Using Progression Rx1;
