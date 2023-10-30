@@ -133,7 +133,7 @@ while Control.t < Control.tend
 %     plot(MeshU.coords, Solution.ufdot, 'b', 'LineWidth', 1.5);
 %     grid on
 %     title('Fluid velocity');
-%     pause(0.001);
+%     pause(0.0001);
     if saveVideo_on
         frame = getframe(gcf); %get frame
         writeVideo(myVideo, frame);
