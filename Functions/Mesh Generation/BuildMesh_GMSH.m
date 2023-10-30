@@ -92,6 +92,8 @@ function Mesh = BuildMesh_GMSH(meshFileName, field, nsd, config_dir, progress_on
     Mesh.field = field;
 
     switch Mesh.nne
+        case 2
+            Mesh.type = 'L2';
         case 3
             Mesh.type = 'T3';
         case 4
