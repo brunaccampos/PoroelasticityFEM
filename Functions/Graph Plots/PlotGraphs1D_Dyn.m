@@ -293,7 +293,7 @@ if Control.fixedDepthPlotON
     view(135, 30);
     hold off
     exportgraphics(gcf,'SolidDisp_3D.png','Resolution',300);
-    exportgraphics(gcf,'SolidDisp_3D.m','Resolution',300);
+    savefig(gcf,'SolidDisp_3D.fig');
     
     %% fluid pressure over depth over time (3D plot)
     figure;
@@ -306,7 +306,7 @@ if Control.fixedDepthPlotON
     view(135, 30);
     hold off
     exportgraphics(gcf,'Pressure_3D.png','Resolution',300);
-    exportgraphics(gcf,'Pressure_3D.m','Resolution',300);
+    savefig(gcf,'Pressure_3D.fig');
     
     %% solid velocity vs time - FFT
 % figure
