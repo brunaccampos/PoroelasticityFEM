@@ -25,31 +25,31 @@ Control.PMmodel = 'Dyn4_Biot_UPU';
 
 %% Material properties - Berea Sandstone (Detournay, 1993, p.26)
 % elasticity modulus [GPa]
-Material.E = 14.4e9;
+Material.E = 14.4;
 % Poisson's ratio
 Material.nu = 0.2;
 % intrinsic permeability [m2]
 Material.k = 1.88e-13;
 % dynamic viscosity [GPa s]
-Material.mu = 1e-3;
+Material.mu = 1e-12;
 % porous media permeability [m2/GPa s]
 Material.kf = Material.k/Material.mu;
 % Biot's coefficient
 Material.alpha = 0.79;
 % fluid bulk modulus [GPa]
-Material.Kf = 3.3e9;
+Material.Kf = 3.3;
 % solid bulk modulus [GPa]
-Material.Ks = 36e9;
+Material.Ks = 36;
 % material porosity
 Material.n = 0.19;
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
 % fluid bulk viscosity [GPa s]
-Material.xif = 2.8e-3; % (Quiroga-Goode, 2005)
+Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
 % fluid density [10^9 kg/m3]
-Material.rho_f = 1000;
+Material.rho_f = 1000e-9;
 % solid density [10^9 kg/m3]
-Material.rho_s = 2600;
+Material.rho_s = 2600e-9;
 % average density of the medium
 Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
 
