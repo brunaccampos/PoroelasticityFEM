@@ -93,12 +93,14 @@ DirFolder = 'Config Files';
 
 % -------------------- Wave Propagation
 % File = 'Column1D_Dynamic_Pulse';
+% File = 'Column1D_Dynamic_Pulse5000m';
 % File = 'Plate2D_Dynamic_Pulse';
 % File = 'WaveProp_Dynamic_Komijani';
 % File = 'WaveProp_Dynamic_Quiroga';
 % File = 'WaveProp_Dynamic_Tian';
-% File = 'WaveProp_Dynamic_InjectionPress';
-File = 'WaveProp_Dynamic_InjectionFlux';
+File = 'WaveProp_Dynamic_InjectionPress10m';
+% File = 'WaveProp_Dynamic_InjectionPress100m';
+% File = 'WaveProp_Dynamic_InjectionFlux';
 
 % ------------------------------------------------------------------------
 
