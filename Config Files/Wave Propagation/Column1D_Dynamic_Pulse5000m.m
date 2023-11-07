@@ -62,12 +62,6 @@ Material.t = 1;
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
 Material.constLaw = 'PlaneStrain';
 
-% lumped mass matrix - 0: false, 1: true
-Material.lumpedMass = 0;
-
-% lumped damping matrix - 0: false, 1: true
-Material.lumpedDamping = 0;
-
 %% Spanos material parameters
 % porosity effective pressure coefficient (Spanos, 1989)
 % n = 0; % lower limit
