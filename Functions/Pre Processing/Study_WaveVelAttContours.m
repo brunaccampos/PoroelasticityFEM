@@ -158,8 +158,11 @@ atts2_dCS = zeros(length(w), length(mat));
 %% Loop for material parameter range
 for i = 1:length(mat)
     % parameter
-    Material.k = mat(i);
+%     Material.k = mat(i);
 %     Material.eta0 = mat(i);
+%     Material.muf = mat(i);
+    Material.xif = mat(i);
+    
     % compute velocity and attenuation
     [vp, attp, vs, atts] = ComputeVelAtt(w, Material);
     % collect data for dCS model
