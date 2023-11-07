@@ -15,7 +15,7 @@
 % close all
 
 %% Frequency array
-w = 1e0:1e1:1e6; % frequency [Hz]
+w = logspace(0,6); % frequency [Hz]
 
 %% Material parameters (Zhao 2020)
 % Material.rhof = 1050; % fluid density [kg/m3]
