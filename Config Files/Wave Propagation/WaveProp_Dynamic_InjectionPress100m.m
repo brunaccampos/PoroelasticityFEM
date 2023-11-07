@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_InjectionPress(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_InjectionPress100m(config_dir, progress_on)
 % 2D simulation of injection at a well
 % Configuration File
 % ------------------------------------------------------------------------
@@ -86,20 +86,14 @@ end
 nsd = 2;
 %%%% displacement field
 fieldU = 'u';
-meshFileNameU = 'Mesh Files\WavePropInj10x10mQ4_finer.msh';
+meshFileNameU = 'Mesh Files\WavePropInj100x100m_NoBlocksQ9_fine.msh';
 MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
 %%%% pressure field
 fieldP = 'p';
-meshFileNameP = 'Mesh Files\WavePropInj10x10mQ4_finer.msh';
+meshFileNameP = 'Mesh Files\WavePropInj100x100m_NoBlocksQ4_fine.msh';
 MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
 %%%% porosity field
-if contains(Control.PMmodel, 'UPN')
-    fieldN = 'n';
-    meshFileNameN = 'Mesh Files\WavePropInj10x10mQ4_finer.msh';
-    MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
-else
-    MeshN = [];
-end
+MeshN = [];
 
 %% Dirichlet BCs - solid
 % displacement u=0 at left, right, top, and bottom boundaries
@@ -122,17 +116,27 @@ BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
 % MeshP.nodesWell = 4:44; % fine
 % MeshP.nodesWell = 4:40; % not transfinite
 % MeshP.nodesWell = 4:76; % not transfinite, fine
-MeshP.nodesWell = 4:148; % not transfinite, finer
+% MeshP.nodesWell = 4:148; % not transfinite, finer
+% MeshP.nodesWell = [1, 5, 12, 321:358]; % transfinite structured 10m
+% MeshP.nodesWell = [1, 5, 12, 327:364]; % transfinite structured 100m
+% MeshP.nodesWell = [1, 5, 12,410:467]; % transfinite structured 100m, refined
+% MeshP.nodesWell = [1, 2, 3, 512:569]; % transfinite structured 100m, refined, no blocks
+MeshP.nodesWell = [1, 2, 3, 802:879]; % transfinite structured 100m, refined, no blocks, finer
+
 % fixed DOFs 
 BC.fixed_p = MeshP.nodesWell;
+% period [s]
+t0 = 1e-3;
 % peak frequency [Hz]
-f = 20;
-% peak location [s]
-t0 = 1/f;
-% amplitude [N]
-a0 = 1e3;
+f = 1/t0;
+% amplitude [GN]
+a0 = 1e-2;
 % fixed DOF values
-BC.fixed_p_value = @(t) a0*(1-2*(pi*f*(t-t0)).^2) .* exp(-(pi*f*(t-t0)).^2)*ones(length(BC.fixed_p),1);
+% BC.fixed_p_value = @(t) a0*(1-2*(pi*f*(t-t0)).^2) .* exp(-(pi*f*(t-t0)).^2)*ones(length(BC.fixed_p),1);
+% BC.fixed_p_value = @(t) a0*exp(-(pi*f*(t-t0)).^2).*ones(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) a0*(1-cos(2*pi*f*t))/2.*ones(length(BC.fixed_p),1).*(t<t0);
+t = 0:1e-5:1e-3;
+plot(t, BC.fixed_p_value(t));
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -179,8 +183,8 @@ Control.uncoupled = 0;
 Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
-Control.dt = 1e-4;  % time step [s]
-Control.tend = 2e-1;   % final simulation time [s]
+Control.dt = 5e-5;  % time step [s]
+Control.tend = 3e-2;   % final simulation time [s]
 
 % Newmark method
 Control.beta = 0.7;
@@ -194,7 +198,10 @@ Control.lambda = 0.7;
 % node = 25;
 % node = 14;
 % node = 40;
-node = 72;
+% node = 72;
+% node = 12; % transfinite, structured
+node = 3;  % transfinite, structured, no blocks, 100m
+
 Control.plotu = node*2; % point at x=7.46, y=7.45
 Control.plotp = node; % point at x=7.46, y=7.45
 
