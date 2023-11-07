@@ -128,15 +128,19 @@ Material.deltas = (Material.alpha-Material.eta0)*Material.eta0*Mstar/Material.Kf
 Material.deltaf = (Material.alpha-Material.eta0)*Material.eta0*Mstar*Material.n/Material.Ks;
 
 %% Parameter to compare
-% permeability
-k_min = 1e-13;
-k_max = 1e-8;
-mat = linspace(k_min, k_max, 20);
+% permeability [m2]
+% mat = logspace(-13, -8);
 
 % porosity
 % eta0_min = 0.15;
 % eta0_max = 0.45;
 % mat = linspace(eta0_min, eta0_max, 20);
+
+% dynamic viscosity [Pa s]
+% mat = logspace(-3, 3);
+
+% bulk viscosity [Pa s]
+mat = logspace(-3, 3);
 
 %% Initialize variables
 vp1_dCS = zeros(length(w), length(mat));
