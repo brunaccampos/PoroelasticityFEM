@@ -62,7 +62,11 @@ for i = 1:nelem
             end
         case 1          % L2
             nne = 2;    % number of nodes per element
-            edg = 1;
+            if nsd == 1
+                edg = 0;
+            else
+                edg = 1;
+            end
         case 8          % L3
             nne = 3;    % number of nodes per element
             edg = 1;
