@@ -115,16 +115,30 @@ else
     MeshN = [];
 end
 
+% % Version 2 ASCII - GMSH File
+% % number of space dimensions
+% nsd = 1;
+% %%%% displacement field
+% fieldU = 'u';
+% meshFileNameU = 'Mesh Files\WaveProp_1DBiased_5000m.msh';
+% MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+% %%%% pressure field
+% fieldP = 'p';
+% meshFileNameP = 'Mesh Files\WaveProp_1DBiased_5000m.msh';
+% MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+% %%%% porosity field
+% MeshN = [];
+
 %% Dirichlet BCs - solid
 % displacement at u=L
 BC.fixed_u1 = [MeshU.right_nodes; MeshU.left_nodes];
 % displacement at u=0 (sinusoidal)
-BC.fixed_u2 = find(MeshU.coords == 2500);
+BC.fixed_u2 = round(length(MeshU.coords)/2);
 BC.fixed_u = [BC.fixed_u1; BC.fixed_u2];
 % amplitude [GPa]
-P0 = 100e-2;
+P0 = 1;
 % frequency [Hz]
-f = 1e1;
+f = 1e3;
 BC.fixed_u_value = @(t) [0; 0; P0*(sin(pi*(t)*f) - 0.5*sin(2*pi*(t)*f))].*(t<1/f);
 % BC.fixed_u_value = @(t) [0; 0; P0*(sin(2*pi*(t)*f) - 0.5*sin(4*pi*(t)*f))].*(t<1/f);
 % free displacement nodes
