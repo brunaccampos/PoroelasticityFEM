@@ -101,7 +101,7 @@ fF = [fuF; fpF];
 
 %% Solve linear system
 % solve for displacement and pressure
-dF = KFF\(fF - KFE *dE);
+dF = MatrixInvert(KFF, fF - KFE *dE, Control.parallel);
 
 % solve for reactions
 rE = KEE*dE + KEF*dF - fE;
