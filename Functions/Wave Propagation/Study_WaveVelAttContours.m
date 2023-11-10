@@ -136,11 +136,8 @@ Material.deltaf = (Material.alpha-Material.eta0)*Material.eta0*Mstar*Material.n/
 % eta0_max = 0.45;
 % mat = linspace(eta0_min, eta0_max, 20);
 
-% dynamic viscosity [Pa s]
-% mat = logspace(-3, 3);
-
-% bulk viscosity [Pa s]
-mat = logspace(-3, 3);
+% dynamic viscosity/ bulk viscosity [Pa s]
+mat = logspace(-3, 0);
 
 %% Initialize variables
 vp1_dCS = zeros(length(w), length(mat));
