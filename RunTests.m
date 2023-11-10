@@ -23,8 +23,8 @@ curDir = pwd;
 DirFolder = 'Test Files';
 
 % Directory for VTK file
-% VTKFolder ='C:\Users\bu_ca\OneDrive\Documents\Doutorado UWaterloo\Research\Poroelasticity codes\PorousMedia_v6\Results\';
-VTKFolder ='C:\Users\bccampos\OneDrive\Documents\Doutorado UWaterloo\Research\Matlab Codes\PorousMedia_v6\Results\';
+VTKFolder ='C:\Users\bu_ca\Downloads\Matlab Results\';
+% VTKFolder ='C:\Users\bccampos\Downloads\Matlab Results\';
 
 % output VTK file
 plot2vtk = 1;
