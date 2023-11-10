@@ -101,7 +101,7 @@ while Control.t < Control.tend
 %     tiledlayout(2,3);
 %     % solid displacement
 %     nexttile
-%     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
+%     plot(MeshU.coords(Control.ploturow), Solution.u(Control.ploturow), 'm', 'LineWidth', 1.5);
 %     title('Solid displacement');
 %     hold on
 %     grid on
@@ -109,12 +109,12 @@ while Control.t < Control.tend
 %     hold off
 %     % solid velocity
 %     nexttile
-%     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
+%     plot(MeshU.coords(Control.ploturow), Solution.udot(Control.ploturow), 'b', 'LineWidth', 1.5);
 %     grid on
 %     title('Solid velocity');
 %     % fluid pressure
 %     nexttile
-%     plot(MeshP.coords, Solution.p, 'g', 'LineWidth', 1.5);
+%     plot(MeshP.coords(Control.plotprow), Solution.p(Control.plotprow), 'g', 'LineWidth', 1.5);
 %     title('Pressure');
 %     hold on
 %     grid on
@@ -122,7 +122,7 @@ while Control.t < Control.tend
 %     hold off
 %     % fluid displacement
 %     nexttile
-%     plot(MeshU.coords, Solution.uf, 'm', 'LineWidth', 1.5);
+%     plot(MeshU.coords(Control.ploturow), Solution.uf(Control.ploturow), 'm', 'LineWidth', 1.5);
 %     title('Fluid displacement');
 %     hold on
 %     grid on
@@ -130,7 +130,7 @@ while Control.t < Control.tend
 %     hold off
 %     % fluid velocity
 %     nexttile
-%     plot(MeshU.coords, Solution.ufdot, 'b', 'LineWidth', 1.5);
+%     plot(MeshU.coords(Control.ploturow), Solution.ufdot(Control.ploturow), 'b', 'LineWidth', 1.5);
 %     grid on
 %     title('Fluid velocity');
 %     pause(0.0001);
