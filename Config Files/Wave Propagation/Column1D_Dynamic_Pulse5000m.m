@@ -225,17 +225,20 @@ Control.alpha = 0;
 
 %% Plot data
 % DOF to plot graphs
-nodeU = find(MeshU.coords == 2500); % x = 2500m
-nodeP = find(MeshP.coords == 2500); % x = 2500m
+nodeU = find(MeshU.coords == 500);
+nodeP = find(MeshP.coords == 500);
 Control.plotu = nodeU;
 Control.plotp = nodeP;
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 
 % Plot in a row
-Control.fixedDepthPlotON = 1; % 0: false, 1: true
+Control.fixedDepthPlotON = 0; % 0: false, 1: true
 
 % Nodes to plot in a row (all nodes for 1D case)
-Control.ploturow = MeshU.DOF;
-Control.plotprow = MeshP.DOF;
+[~, index_u] = sort(MeshU.coords);
+[~, index_p] = sort(MeshP.coords);
+
+Control.ploturow = index_u;
+Control.plotprow = index_p;
 
 end
