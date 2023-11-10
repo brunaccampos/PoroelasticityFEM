@@ -6,8 +6,6 @@ function PostProcessing(Solution, Material, MeshU, MeshP, MeshN, Control, BC, co
 
 %% Initialize variables
 step = Control.step; % time step number
-% step = 0; % for running patch tests
-
 nsd = MeshU.nsd; % number of spatial dimensions
 
 %% Compute solid stress
