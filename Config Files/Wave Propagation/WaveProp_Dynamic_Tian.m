@@ -260,6 +260,7 @@ nodes_p = [MeshP.coords(rowofnodes_p,Control.depthDir), rowofnodes_p]; % matrix 
 nodes_p_sorted = sortrows(nodes_p); % order in terms of variable coord
 Control.plotprow = nodes_p_sorted(:,2);
 
-Control.parallel = 6;
+% number of parallel solvers
+Control.parallel = 8;
 
 end
