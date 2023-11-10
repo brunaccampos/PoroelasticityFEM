@@ -1,4 +1,4 @@
-function [Material, BC, Control] = setDefaults(Material, BC, Control)
+function [Material, BC, Control] = setDefaults(Material, MeshU, BC, Control)
 % ------------------------------------------------------------------------
 % Set defaults for Material, BC, and Control structures
 % ------------------------------------------------------------------------
@@ -51,7 +51,7 @@ if contains(Control.PMmodel, 'Dyn') && ~isfield(BC, 'initUfdot')
 end
 
 % boundary condition for fluid displacement
-if contains(Control.PMmodel, 'UPU') && ~isfield(BC, 'fixed_uf')
+if ~isfield(BC, 'fixed_uf')
     BC.fixed_uf = [];
     BC.fixed_uf_value = @(t) zeros(length(BC.fixed_uf),1);
     BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
