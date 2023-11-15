@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Pulse5000m(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Pulse_k8(config_dir, progress_on)
 % Pulse propagation in 1D simulation
 % Configuration File
 % ------------------------------------------------------------------------
@@ -86,9 +86,9 @@ coord0 = [0;0;0];
 % number of space dimensions
 nsd = 1;
 % size of domain [m] [Lx;Ly;Lz]
-L = 1000;
+L = 5e2;
 % number of elements in each direction [nex; ney; nez]
-ne = 100000;
+ne = 5e4;
 
 %%%% displacement mesh
 % element type ('Q4')
@@ -138,7 +138,7 @@ BC.fixed_u = [BC.fixed_u1; BC.fixed_u2];
 % amplitude [GPa]
 P0 = 1;
 % frequency [Hz]
-f = 1e2;
+f = 1e3;
 BC.fixed_u_value = @(t) [0; 0; P0*(sin(pi*(t)*f) - 0.5*sin(2*pi*(t)*f))].*(t<1/f);
 % BC.fixed_u_value = @(t) [0; 0; P0*(sin(2*pi*(t)*f) - 0.5*sin(4*pi*(t)*f))].*(t<1/f);
 % free displacement nodes
@@ -190,9 +190,6 @@ Control.nqP = 3;
 
 %% Frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
-% plot f/fc range for frequency dependent BC
-range = 2; % 1: seismic, 2: acoustic, 3: ultrasonic
-% PlotFreqRange(Material, f, range);
 
 %% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
@@ -225,8 +222,8 @@ Control.alpha = 0;
 
 %% Plot data
 % DOF to plot graphs
-nodeU = find(MeshU.coords == 500);
-nodeP = find(MeshP.coords == 500);
+nodeU = find(MeshU.coords == 300); % x = 300m
+nodeP = find(MeshP.coords == 300); % x = 300m
 Control.plotu = nodeU;
 Control.plotp = nodeP;
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y

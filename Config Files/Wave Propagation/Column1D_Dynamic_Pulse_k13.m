@@ -92,9 +92,9 @@ coord0 = [0;0;0];
 % number of space dimensions
 nsd = 1;
 % size of domain [m] [Lx;Ly;Lz]
-L = 10;
+L = 5e2;
 % number of elements in each direction [nex; ney; nez]
-ne = 100;
+ne = 5e3;
 
 %%%% displacement mesh
 % element type ('Q4')
@@ -127,8 +127,8 @@ BC.fixed_u1 = [MeshU.right_nodes; MeshU.left_nodes];
 % displacement at u=0 (sinusoidal)
 BC.fixed_u2 = ceil(length(MeshU.coords)/2);
 BC.fixed_u = [BC.fixed_u1; BC.fixed_u2];
-% amplitude [GPa]
-P0 = 100e-6;
+% amplitude [GN]
+P0 = 1;
 % frequency [Hz]
 f = 1e3;
 BC.fixed_u_value = @(t) [0; 0; P0*(sin(pi*(t)*f) - 0.5*sin(2*pi*(t)*f))].*(t<1/f);
@@ -182,9 +182,6 @@ Control.nqP = 3;
 
 %% Frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
-% plot f/fc range for frequency dependent BC
-range = 2; % 1: seismic, 2: acoustic, 3: ultrasonic
-% PlotFreqRange(Material, f, range);
 
 %% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
@@ -196,7 +193,7 @@ Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
 Control.dt = 1e-5;  % time step
-Control.tend = 1.5e-3;   % final simulation time
+Control.tend = 5e-2;   % final simulation time
 
 % Newmark method
 Control.beta = 0.7;
@@ -217,14 +214,14 @@ Control.alpha = 0;
 
 %% Plot data
 % DOF to plot graphs
-nodeU = find(MeshU.coords == 6); % x = 6m
-nodeP = find(MeshP.coords == 6); % x = 6m
+nodeU = find(MeshU.coords == 300); % x = 300m
+nodeP = find(MeshP.coords == 300); % x = 300m
 Control.plotu = nodeU;
 Control.plotp = nodeP;
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 
 % Plot in a row
-Control.fixedDepthPlotON = 1; % 0: false, 1: true
+Control.fixedDepthPlotON = 0; % 0: false, 1: true
 
 % Nodes to plot in a row (all nodes for 1D case)
 Control.ploturow = MeshU.DOF;
