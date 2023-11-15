@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Pulse(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Pulse5000m(config_dir, progress_on)
 % Pulse propagation in 1D simulation
 % Configuration File
 % ------------------------------------------------------------------------
@@ -29,7 +29,7 @@ Material.E = 14.4;
 % Poisson's ratio
 Material.nu = 0.2;
 % intrinsic permeability [m2]
-Material.k = 1.88e-13;
+Material.k = 1e-8;
 % dynamic viscosity [GPa s]
 Material.mu = 1e-12;
 % porous media permeability [m2/GPa s]
@@ -62,12 +62,6 @@ Material.t = 1;
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
 Material.constLaw = 'PlaneStrain';
 
-% lumped mass matrix - 0: false, 1: true
-Material.lumpedMass = 0;
-
-% lumped damping matrix - 0: false, 1: true
-Material.lumpedDamping = 0;
-
 %% Spanos material parameters
 % porosity effective pressure coefficient (Spanos, 1989)
 % n = 0; % lower limit
@@ -92,9 +86,9 @@ coord0 = [0;0;0];
 % number of space dimensions
 nsd = 1;
 % size of domain [m] [Lx;Ly;Lz]
-L = 10;
+L = 1000;
 % number of elements in each direction [nex; ney; nez]
-ne = 100;
+ne = 100000;
 
 %%%% displacement mesh
 % element type ('Q4')
@@ -121,16 +115,30 @@ else
     MeshN = [];
 end
 
+% % Version 2 ASCII - GMSH File
+% % number of space dimensions
+% nsd = 1;
+% %%%% displacement field
+% fieldU = 'u';
+% meshFileNameU = 'Mesh Files\WaveProp_1DBiased_5000m.msh';
+% MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+% %%%% pressure field
+% fieldP = 'p';
+% meshFileNameP = 'Mesh Files\WaveProp_1DBiased_5000m.msh';
+% MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+% %%%% porosity field
+% MeshN = [];
+
 %% Dirichlet BCs - solid
 % displacement at u=L
 BC.fixed_u1 = [MeshU.right_nodes; MeshU.left_nodes];
 % displacement at u=0 (sinusoidal)
-BC.fixed_u2 = ceil(length(MeshU.coords)/2);
+BC.fixed_u2 = round(length(MeshU.coords)/2);
 BC.fixed_u = [BC.fixed_u1; BC.fixed_u2];
 % amplitude [GPa]
-P0 = 100e-6;
+P0 = 1;
 % frequency [Hz]
-f = 1e3;
+f = 1e2;
 BC.fixed_u_value = @(t) [0; 0; P0*(sin(pi*(t)*f) - 0.5*sin(2*pi*(t)*f))].*(t<1/f);
 % BC.fixed_u_value = @(t) [0; 0; P0*(sin(2*pi*(t)*f) - 0.5*sin(4*pi*(t)*f))].*(t<1/f);
 % free displacement nodes
@@ -196,7 +204,7 @@ Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
 Control.dt = 1e-5;  % time step
-Control.tend = 1.5e-3;   % final simulation time
+Control.tend = 5e-2;   % final simulation time
 
 % Newmark method
 Control.beta = 0.7;
@@ -217,17 +225,20 @@ Control.alpha = 0;
 
 %% Plot data
 % DOF to plot graphs
-nodeU = find(MeshU.coords == 6); % x = 6m
-nodeP = find(MeshP.coords == 6); % x = 6m
+nodeU = find(MeshU.coords == 500);
+nodeP = find(MeshP.coords == 500);
 Control.plotu = nodeU;
 Control.plotp = nodeP;
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 
 % Plot in a row
-Control.fixedDepthPlotON = 1; % 0: false, 1: true
+Control.fixedDepthPlotON = 0; % 0: false, 1: true
 
 % Nodes to plot in a row (all nodes for 1D case)
-Control.ploturow = MeshU.DOF;
-Control.plotprow = MeshP.DOF;
+[~, index_u] = sort(MeshU.coords);
+[~, index_p] = sort(MeshP.coords);
+
+Control.ploturow = index_u;
+Control.plotprow = index_p;
 
 end
