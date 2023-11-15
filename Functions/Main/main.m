@@ -11,7 +11,7 @@
 % ------------------------------------------------------------------------
 
 %% Delete past files
-if plot2vtk || plot2csv_on
+if plot2vtk
     if progress_on
         fprintf('%.2f: Deleting old vtk and csv files...\n', toc);
     end
