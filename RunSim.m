@@ -92,8 +92,8 @@ DirFolder = 'Config Files';
 % File = 'VelocityImpact2D_Dynamic_Plate';
 
 % -------------------- Wave Propagation
-% File = 'Column1D_Dynamic_Pulse';
-% File = 'Column1D_Dynamic_Pulse5000m';
+% File = 'Column1D_Dynamic_Pulse_k13';
+% File = 'Column1D_Dynamic_Pulse_k8';
 % File = 'Plate2D_Dynamic_Pulse';
 % File = 'WaveProp_Dynamic_Komijani';
 % File = 'WaveProp_Dynamic_Quiroga';
