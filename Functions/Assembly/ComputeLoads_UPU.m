@@ -43,7 +43,7 @@ if ~isempty(BC.tractionNodes)
     % traction nodes
     tractionNodes = BC.tractionNodes;
     % traction values
-    tractionForce = BC.tractionForce;
+    tractionForce = BC.tractionForce(Control.t);
     % counter
     count = zeros(size(tractionNodes));
 else
