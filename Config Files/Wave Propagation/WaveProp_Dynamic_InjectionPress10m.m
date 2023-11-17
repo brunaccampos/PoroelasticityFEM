@@ -112,12 +112,7 @@ BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
 
 %% Dirichlet BCs - fluid
 % nodes at injection well
-% MeshP.nodesWell = 4:24; % coarse
-% MeshP.nodesWell = 4:44; % fine
-% MeshP.nodesWell = 4:40; % not transfinite
-% MeshP.nodesWell = 4:76; % not transfinite, fine
-% MeshP.nodesWell = 4:148; % not transfinite, finer
-MeshP.nodesWell = [1, 5, 12, 321:358]; % transfinite structured 10m
+MeshP.nodesWell = [1, 5, 12, 321:358]; % transfinite, structured
 
 % fixed DOFs 
 BC.fixed_p = MeshP.nodesWell;
@@ -128,11 +123,7 @@ f = 1/t0;
 % amplitude [GN]
 a0 = 1e-2;
 % fixed DOF values
-% BC.fixed_p_value = @(t) a0*(1-2*(pi*f*(t-t0)).^2) .* exp(-(pi*f*(t-t0)).^2)*ones(length(BC.fixed_p),1);
-% BC.fixed_p_value = @(t) a0*exp(-(pi*f*(t-t0)).^2).*ones(length(BC.fixed_p),1);
 BC.fixed_p_value = @(t) a0*(1-cos(2*pi*f*t))/2.*ones(length(BC.fixed_p),1).*(t<t0);
-t = 0:1e-5:1e-3;
-plot(t, BC.fixed_p_value(t));
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -179,8 +170,8 @@ Control.uncoupled = 0;
 Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
-Control.dt = 3.5e-5;  % time step [s]
-Control.tend = 3.5e-3;   % final simulation time [s]
+Control.dt = 1e-5;  % time step [s]
+Control.tend = 3e-3;   % final simulation time [s]
 
 % Newmark method
 Control.beta = 0.7;
@@ -189,15 +180,10 @@ Control.theta = 0.7;
 Control.lambda = 0.7;
 
 %% Plot data
-% DOF to plot graphs
-% node = 10; % node at the well
-% node = 25;
-% node = 14;
-% node = 40;
-% node = 72;
+% DOF to plot graphs (node at the well)
 node = 12; % transfinite, structured
 
-Control.plotu = node*2; % point at x=7.46, y=7.45
-Control.plotp = node; % point at x=7.46, y=7.45
+Control.plotu = node*2; % y DOF
+Control.plotp = node;
 
 end
