@@ -1,7 +1,12 @@
-function [sigma_an, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control)
+function [p_an, u_an] = getAnSol_coupledIncomp(Control, Material, MeshU, MeshP, BC)
 % ------------------------------------------------------------------------
 % Analytical solution for column consolidation
 % Valid for incompressible solid and fluid materials
+% ------------------------------------------------------------------------
+% Reference: Korsawe, J., Starke, G., Wang, W., & Kolditz, O. (2006). 
+% Finite element analysis of poro-elastic consolidation in porous media: 
+% Standard and mixed approaches. Computer Methods in Applied Mechanics and 
+% Engineering, 195(9-12), 1096-1115.
 % ------------------------------------------------------------------------
 
 % dimensionless coordinates
@@ -33,10 +38,6 @@ end
 % displacement
 ud = 1 - xd_u - aux1;
 u_an = ud * BC.pointLoadValue * MeshU.L/(lambda + 2*G);
-
-% stress
-sigmad = -1 + aux2;
-sigma_an = sigmad * BC.pointLoadValue;
 
 % pressure
 pd = aux3;

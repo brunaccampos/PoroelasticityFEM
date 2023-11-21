@@ -1,9 +1,11 @@
-function [p_an, u_an] = getAnalyticResult_Comp_Symb(Material, MeshU, BC, Control)
+function [p_an, u_an] = getAnSol_coupledComp_Symb(Control, Material, MeshU, ~, BC)
 % ------------------------------------------------------------------------
 % Analytical solution for column consolidation (Terzaghi problem)
 % Valid for compressible solid and fluid materials
 % ------------------------------------------------------------------------
-% Reference: Ferronato (2010)
+% Reference: Ferronato, M., Castelletto, N., & Gambolati, G. (2010). A 
+% fully coupled 3-D mixed finite element model of Biot consolidation. 
+% Journal of Computational Physics, 229(12), 4813-4830.
 % ------------------------------------------------------------------------
 
 % column length
