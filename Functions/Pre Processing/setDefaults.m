@@ -89,6 +89,16 @@ if ~isfield(Control, 'plotSyntheticsON')
     Control.plotSyntheticsON = 0;
 end
 
+% compute analytical solution: default false
+if ~isfield(Control, 'plotansol')
+    Control.plotansol = 0;
+end
+
+% analytical solution for fluid displacement field
+if contains(Control.PMmodel, 'Tr') && ~contains(Control.PMmodel, 'UPU')
+   Control.uf_an = @(t) []; 
+end
+
 % check if HHT method is used: default false
 if ~isfield(Control, 'alpha')
     Control.alpha = 0;
