@@ -73,13 +73,13 @@ if contains(Control.PMmodel, 'UPN')
     end
 end
 
+% find half of array
+half = ceil(length(Control.ploturow)/2);
+
 if Control.fixedDepthPlotON
     % initialize figure
     figure;
-    tiledlayout(2,3);
-    
-    % find half of array
-    half = ceil(length(Control.ploturow)/2);
+    tiledlayout(2,3);   
     
     %% displacement in x for fixed coord
     nexttile

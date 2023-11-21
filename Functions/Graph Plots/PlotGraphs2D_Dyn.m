@@ -127,14 +127,14 @@ if contains(Control.PMmodel, 'UPU')
     end
 end
 
-if Control.plotSyntheticsON
+% find half of array
+half = ceil(length(Control.ploturow)/2);
+
+if Control.fixedDepthPlotON
     % initialize figure
     figure;
     tiledlayout(2,3);
-
-    % find half of array
-    half = ceil(length(Control.ploturow)/2);
-    
+   
     %% displacement in x for fixed coord
     nexttile
     plot(MeshU.coords((Control.ploturow(1:half)+1)./2, Control.depthDir), Plot.urow(1:half),'b','LineWidth',2);
