@@ -172,7 +172,7 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
-% plot analytical solution (valid for 1D problems with Material.Minv == 0)
+% plot analytical solution (valid for 1D problems)
 Control.plotansol = 1; % 1 = true; 0 = false
 
 % type of analytical solution to compute
