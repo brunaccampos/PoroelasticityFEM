@@ -27,27 +27,27 @@ end
 %% Boundary/Initial conditions
 % initial condition for solid displacement field
 if ~isfield(BC, 'initU')
-    BC.initU = [];
+    BC.initU = zeros(MeshU.nDOF,1);
 end
 
 % initial condition fluid pressure field
 if ~isfield(BC, 'initP')
-    BC.initP = [];
+    BC.initP = zeros(MeshP.nDOF,1);
+end
+
+% initial condition for solid velocity field
+if ~isfield(BC, 'initUdot')
+    BC.initUdot = zeros(MeshU.nDOF,1);
 end
 
 % initial condition for fluid displacement field
 if contains(Control.PMmodel, 'UPU') && ~isfield(BC, 'initUf')
-    BC.initUf = [];
-end
-
-% initial condition for solid velocity field
-if contains(Control.PMmodel, 'Dyn') && ~isfield(BC, 'initUdot')
-    BC.initUdot = [];
+    BC.initUf = zeros(MeshU.nDOF,1);
 end
 
 % initial condition for fluid velocity field
-if contains(Control.PMmodel, 'Dyn') && ~isfield(BC, 'initUfdot')
-    BC.initUfdot = [];
+if contains(Control.PMmodel, 'UPU') && ~isfield(BC, 'initUfdot')
+    BC.initUfdot = zeros(MeshU.nDOF,1);
 end
 
 % boundary condition for fluid displacement
