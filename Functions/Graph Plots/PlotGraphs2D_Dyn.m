@@ -127,7 +127,7 @@ if contains(Control.PMmodel, 'UPU')
     end
 end
 
-if Control.fixedDepthPlotON
+if Control.plotSyntheticsON
     % initialize figure
     figure;
     tiledlayout(2,3);
