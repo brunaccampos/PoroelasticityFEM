@@ -144,7 +144,7 @@ if Control.fixedDepthPlotON
     ylabel('u [m]');
     title(sprintf('Solid displ. in x at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
     hold off
-    exportgraphics(gcf,'Synthetics_SolidDispx.m','Resolution',300);
+    savefig(gcf,'Synthetics_SolidDispx.fig');
     
     %% velocity in x for fixed coord
     nexttile
@@ -155,7 +155,7 @@ if Control.fixedDepthPlotON
     ylabel('udot [m]');
     title(sprintf('Solid vel. in x at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
     hold off
-    exportgraphics(gcf,'Synthetics_SolidVelx.m','Resolution',300);
+    savefig(gcf,'Synthetics_SolidVelx.fig');
     
     %% pressure for fixed coord
     nexttile
@@ -166,7 +166,7 @@ if Control.fixedDepthPlotON
     ylabel('p [Pa]');
     title(sprintf('Press. at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
     hold off
-    exportgraphics(gcf,'Synthetics_Press.m','Resolution',300);
+    savefig(gcf,'Synthetics_Press.fig');
     
     %% displacement in y for fixed coord
     nexttile
@@ -177,7 +177,7 @@ if Control.fixedDepthPlotON
     ylabel('u [m]');
     title(sprintf('Solid displ. in y at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
     hold off
-    exportgraphics(gcf,'Synthetics_SolidDispy.m','Resolution',300);
+    savefig(gcf,'Synthetics_SolidDispy.fig');
     
     %% velocity in y for fixed coord
     nexttile
@@ -188,7 +188,7 @@ if Control.fixedDepthPlotON
     ylabel('udot [m]');
     title(sprintf('Solid vel. in y at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
     hold off
-    exportgraphics(gcf,'Synthetics_SolidVely.m','Resolution',300);
+    savefig(gcf,'Synthetics_SolidVely.fig');
 end
 
 if Control.fixedDepthPlotON
