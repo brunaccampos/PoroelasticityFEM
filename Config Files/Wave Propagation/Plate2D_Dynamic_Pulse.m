@@ -1,5 +1,5 @@
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_Dynamic_Pulse(config_dir, progress_on)
-% Pulse propagation in 1D simulation
+% Pulse propagation in 2D simulation
 % Configuration File
 % ------------------------------------------------------------------------
 % Based on Zienkiewicz (1982) model for dynamic case

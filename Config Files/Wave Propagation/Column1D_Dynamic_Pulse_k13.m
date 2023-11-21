@@ -124,7 +124,7 @@ end
 %% Dirichlet BCs - solid
 % displacement at u=L
 BC.fixed_u1 = [MeshU.right_nodes; MeshU.left_nodes];
-% displacement at u=0 (sinusoidal)
+% displacement at u=L/2 (sinusoidal)
 BC.fixed_u2 = ceil(length(MeshU.coords)/2);
 BC.fixed_u = [BC.fixed_u1; BC.fixed_u2];
 % amplitude [GN]
@@ -200,17 +200,6 @@ Control.beta = 0.7;
 Control.gamma = 0.7;
 Control.theta = 0.7;
 Control.lambda = 0.7;
-
-% HHT method (-1/3 < alpha < 0)
-Control.alpha = 0;
-
-% adaptive time step (optional)
-% Control.dtmin = 1e-3; % minimum time step
-% Control.tlim = 1; % limit to use dtmin
-
-% ramp load option (optional); uses tlim from adaptive time step
-% NOTE: only declare if true
-% Control.rampLoad = 1;
 
 %% Plot data
 % DOF to plot graphs
