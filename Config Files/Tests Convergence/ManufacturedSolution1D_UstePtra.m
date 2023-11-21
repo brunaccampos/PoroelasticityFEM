@@ -136,6 +136,14 @@ Control.uncoupled = 1;
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 1; % 1 = true; 0 = false
 
+% type of analytical solution to compute
+% 'getAnSol_uncoupled' = uncoupled problem (elasticity, heat transfer, etc)
+% 'getAnSol_coupledComp' = coupled porous media problem, compressible
+% materials
+% 'getAnSol_coupledIncomp' = coupled porous media problem, incompressible
+% materials (1/M=0)
+Control.ansol_type = 'getAnSol_uncoupled';
+
 % solution in u
 Control.uan_symb = @(x,t) sin(x);
 Control.u_an = @(t) Control.uan_symb(MeshU.coords,t);

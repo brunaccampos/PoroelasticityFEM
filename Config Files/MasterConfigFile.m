@@ -258,8 +258,16 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
-% plot analytical solution (valid for 1D problems with Material.Minv == 0)
+% plot analytical solution (valid for 1D problems)
 Control.plotansol = 0; % 1 = true; 0 = false
+
+% type of analytical solution to compute
+% 'getAnSol_uncoupled' = uncoupled problem (elasticity, heat transfer, etc)
+% 'getAnSol_coupledComp' = coupled porous media problem, compressible
+% materials
+% 'getAnSol_coupledIncomp' = coupled porous media problem, incompressible
+% materials (1/M=0)
+Control.ansol_type = 'getAnSol_uncoupled';
 
 %% Time step controls
 Control.dt = 1e-5;  % time step
