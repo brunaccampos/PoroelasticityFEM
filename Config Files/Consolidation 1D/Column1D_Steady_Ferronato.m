@@ -167,26 +167,35 @@ end
 Control.nqU = 2;
 Control.nqP = 2;
 
+%% Frequency domain
+Control.freqDomain = 0;  % 1 = true; 0 = false
+
 %% Solution parameters
 % tag used for computing analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
 % 0 = coupled problem (Biot, Spanos model)
 Control.uncoupled = 0; 
 
-% basic time step controls
+% plot analytical solution (valid for 1D problems with Material.Minv == 0)
+Control.plotansol = 1; % 1 = true; 0 = false
+
+% type of analytical solution to compute
+% 'getAnSol_uncoupled' = uncoupled problem (elasticity, heat transfer, etc)
+% 'getAnSol_coupledComp' = coupled porous media problem, compressible
+% materials
+% 'getAnSol_coupledIncomp' = coupled porous media problem, incompressible
+% materials (1/M=0)
+Control.ansol_type = 'getAnSol_coupledComp';
+
+%% Time step controls
 Control.dt = 0.1;  % time step [s]
 Control.tend = 60;   % final simulation time [s]
 
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
+%% Plot data
 % DOF to plot graphs
 Control.plotu = round(length(MeshU.coords)/2);
 Control.plotp = round(length(MeshP.coords)/2);
-
-% plot analytical solution (valid for 1D problems with Material.Minv == 0)
-Control.plotansol = 1; % 1 = true; 0 = false
-
-% solve in the frequency domain
-Control.freqDomain = 0;  % 1 = true; 0 = false
 
 end
