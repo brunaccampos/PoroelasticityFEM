@@ -111,6 +111,13 @@ while Control.t < Control.tend
             % plot velocity vs time
             Plot.uFdot(Control.step+1,:) = SolutionFreq.uFdot(Control.plotu, 1);
         end
+        
+         % synthetics
+        if Control.fixedDepthPlotON
+            Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
+            Plot.udot_synthetic(Control.step+1,:) = Solution.udot(Control.ploturow);
+            Plot.p_synthetic(Control.step+1,:) = Solution.p(Control.plotprow);
+        end
     end
 
     % store variables over space
