@@ -60,16 +60,7 @@ while Control.t < Control.tend
     
     % analytical solution for 1D case
     if Control.plotansol
-        if Control.uncoupled
-            p_an = Control.p_an(Control.t);
-            u_an = Control.u_an(Control.t);
-        else
-            if any(Material.Minv)
-                [p_an, u_an] = getAnalyticResult_Comp(Material, MeshU, MeshP, BC, Control);
-            else % 1/M = 0
-                [~, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control);
-            end
-        end
+        [p_an, u_an] = feval(Control.ansol_type, Control, Material, MeshU, MeshP, BC);
        
         % store variables over length
         Plot.pan_space = p_an;
