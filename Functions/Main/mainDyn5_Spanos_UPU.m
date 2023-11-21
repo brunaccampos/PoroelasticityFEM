@@ -40,8 +40,6 @@ if plot2vtk
     Control.step = 1;
 end
 
-% initialize time variable
-Control.t = 0;
 
 % initialize video file
 if saveVideo_on
@@ -51,7 +49,10 @@ if saveVideo_on
 end
 
 %% Solve system
-while Control.t < Control.tend
+for t = 1:length(Plot.time)
+    % current time
+    Control.t = Plot.time(t);
+    % print current time and step
     fprintf('\n Step %d, t = %d \n', Control.step, Control.t);
 
     if isfield(Control, 'dtmin') 
@@ -221,7 +222,6 @@ while Control.t < Control.tend
 
     % update time and step
     Control.step = Control.step + 1;
-    Control.t = Control.t + Control.dtc;
 end
  
 % plot variables in x for fixed y (2D case)

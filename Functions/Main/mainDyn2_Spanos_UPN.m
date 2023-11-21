@@ -40,11 +40,11 @@ if plot2vtk
     Control.step = 1;
 end
 
-% initialize time variable
-Control.t = 0;
-
 %% Solve system
-while Control.t < Control.tend
+for t = 1:length(Plot.time)
+    % current time
+    Control.t = Plot.time(t);
+    % print current time and step
     fprintf('\n Step %d, t = %d \n', Control.step, Control.t);
     
     % adapt time step size (dtc = dt current)
@@ -151,9 +151,8 @@ while Control.t < Control.tend
         Iteration.nFdot_old = SolutionFreq.nFdot; % porosity gradient
     end
 
-    % update time and step
+    % update time step
     Control.step = Control.step + 1;
-    Control.t = Control.t + Control.dtc;
 end
 
 % plot variables in x for fixed y (2D case)
