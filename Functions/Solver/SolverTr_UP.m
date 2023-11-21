@@ -26,8 +26,8 @@ else
     fp_old = zeros(length(Kpp),1);
 end
 
-% time step
-dt = Control.dt;
+% current time step
+dt = Control.dtc;
 
 % beta parameter
 beta = Control.beta;

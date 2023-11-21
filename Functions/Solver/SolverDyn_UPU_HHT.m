@@ -35,8 +35,8 @@ else
     uf2dot_old = zeros(length(Kff),1);
 end
 
-% time step
-dt = Control.dt;
+% current time step
+dt = Control.dtc;
 
 % time integration parameters
 beta = Control.beta;
