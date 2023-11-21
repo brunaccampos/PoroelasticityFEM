@@ -174,9 +174,6 @@ Control.nqP = 3;
 
 %% Frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
-% plot f/fc range for frequency dependent BC
-range = 2; % 1: seismic, 2: acoustic, 3: ultrasonic
-PlotFreqRange(Material, f, range);
 
 %% Analytical solution
 % 1 = uncoupled problem (elasticity, heat transfer, etc)
