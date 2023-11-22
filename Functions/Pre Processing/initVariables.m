@@ -52,6 +52,13 @@ Plot.u_time = zeros(length(Plot.time), 1); % solid displacement
 Plot.udot_time = zeros(length(Plot.time), 1); % solid velocity
 Plot.u2dot_time = zeros(length(Plot.time), 1); % solid acceleration
 
+if Control.plotansol
+    aux1 = Control.p_an(0);
+    aux2 = Control.u_an(0);
+    Plot.pan_time(1,1) = aux1(Control.plotp);
+    Plot.uan_time(1,1) = aux2(Control.plotu);
+end
+
 % store initial conditions
 Plot.u_time(1,1) = BC.initU(Control.plotu,1);
 Plot.p_time(1,1) = BC.initP(Control.plotp,1);
@@ -66,6 +73,10 @@ if contains(Control.PMmodel, 'UPU')
     % store initial conditions
     Plot.uf_time(1,1) = BC.initUf(Control.plotu,1);
     Plot.ufdot_time(1,1) = BC.initUfdot(Control.plotu,1);
+    if Control.plotansol
+        aux3 = Control.uf_an(0); 
+        Plot.ufan_time(1,1) = aux3(Control.plotu);
+    end
 end
 
 % porosity
