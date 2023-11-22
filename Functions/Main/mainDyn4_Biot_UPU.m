@@ -78,9 +78,12 @@ for t = 1:length(Plot.time)
         Plot.ufan_space = uf_an;
         
         % store variables over time
-        Plot.uan_time(Control.step+1,:) = u_an(Control.plotu, 1);
-        Plot.pan_time(Control.step+1,:) = p_an(Control.plotp, 1);
-        Plot.ufan_time(Control.step+1,:) = uf_an(Control.plotu, 1);
+        if Control.step < length(Plot.time)
+            % store variables over time
+            Plot.uan_time(Control.step+1,:) = u_an(Control.plotu, 1);
+            Plot.pan_time(Control.step+1,:) = p_an(Control.plotp, 1);
+            Plot.ufan_time(Control.step+1,:) = uf_an(Control.plotu, 1);
+        end
     end
     
     % linear solver
