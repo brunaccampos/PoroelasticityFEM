@@ -128,6 +128,13 @@ BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
+%% Dirichlet BCs - fluid displacement
+% displacement u=0 at the bottom
+BC.fixed_uf = MeshU.right_nodes;
+BC.fixed_uf_value = @(t) zeros(length(BC.fixed_u),1);
+% free displacement nodes
+BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
+
 %% Dirichlet BCs - fluid
 % pressure p=0 at the top
 BC.fixed_p = MeshP.left_nodes;
