@@ -112,12 +112,10 @@ for t = 1:length(Plot.time)
             Plot.uFdot(Control.step+1,:) = SolutionFreq.uFdot(Control.plotu, 1);
         end
         
-         % synthetics
-        if Control.fixedDepthPlotON
-            Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
-            Plot.udot_synthetic(Control.step+1,:) = Solution.udot(Control.ploturow);
-            Plot.p_synthetic(Control.step+1,:) = Solution.p(Control.plotprow);
-        end
+        % synthetics
+        Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
+        Plot.udot_synthetic(Control.step+1,:) = Solution.udot(Control.ploturow);
+        Plot.p_synthetic(Control.step+1,:) = Solution.p(Control.plotprow);
     end
 
     % store variables over space
@@ -147,9 +145,8 @@ for t = 1:length(Plot.time)
     Control.step = Control.step + 1;
 end
 
-% plot variables in x for fixed y (2D case)
-if isfield(Control, 'depthplot')
-    Plot.urow = Solution.u(Control.ploturow);
-    Plot.udotrow = Solution.udot(Control.ploturow);
-    Plot.prow = Solution.p(Control.plotprow);
-end
+% plot variables in length for fixed coordinate
+Plot.urow = Solution.u(Control.ploturow);
+Plot.udotrow = Solution.udot(Control.ploturow);
+Plot.prow = Solution.p(Control.plotprow);
+

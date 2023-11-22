@@ -172,13 +172,11 @@ for t = 1:length(Plot.time)
         end
 
         % synthetics
-        if Control.fixedDepthPlotON
-            Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
-            Plot.udot_synthetic(Control.step+1,:) = Solution.udot(Control.ploturow);
-            Plot.p_synthetic(Control.step+1,:) = Solution.p(Control.plotprow);
-            Plot.uf_synthetic(Control.step+1,:) = Solution.uf(Control.ploturow);
-            Plot.ufdot_synthetic(Control.step+1,:) = Solution.ufdot(Control.ploturow);
-        end
+        Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
+        Plot.udot_synthetic(Control.step+1,:) = Solution.udot(Control.ploturow);
+        Plot.p_synthetic(Control.step+1,:) = Solution.p(Control.plotprow);
+        Plot.uf_synthetic(Control.step+1,:) = Solution.uf(Control.ploturow);
+        Plot.ufdot_synthetic(Control.step+1,:) = Solution.ufdot(Control.ploturow);
     end
 
     % store variables over space
@@ -224,14 +222,12 @@ for t = 1:length(Plot.time)
     Control.step = Control.step + 1;
 end
  
-% plot variables in x for fixed y (2D case)
-if Control.fixedDepthPlotON
-    Plot.urow = Solution.u(Control.ploturow);
-    Plot.udotrow = Solution.udot(Control.ploturow);
-    Plot.prow = Solution.p(Control.plotprow);
-    Plot.ufrow = Solution.uf(Control.ploturow);
-    Plot.ufdotrow = Solution.ufdot(Control.ploturow);
-end
+% plot variables in length for fixed coordinate
+Plot.urow = Solution.u(Control.ploturow);
+Plot.udotrow = Solution.udot(Control.ploturow);
+Plot.prow = Solution.p(Control.plotprow);
+Plot.ufrow = Solution.uf(Control.ploturow);
+Plot.ufdotrow = Solution.ufdot(Control.ploturow);
 
 % close video file
 if saveVideo_on
