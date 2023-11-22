@@ -84,6 +84,19 @@ if ~isfield(Control, 'fixedDepthPlotON')
     Control.fixedDepthPlotON = 0;
 end
 
+% row of nodes to plot
+if ~isfield(Control, 'ploturow') && MeshU.nsd == 1
+    Control.ploturow = MeshU.DOF;
+elseif ~isfield(Control, 'ploturow') && MeshU.nsd == 2
+    sprintf('Row of nodes to plot needs to be predefined for 2D problems.');
+end
+
+if ~isfield(Control, 'plotprow') && MeshU.nsd == 1
+    Control.plotprow = MeshP.DOF;
+elseif ~isfield(Control, 'plotprow') && MeshU.nsd == 2
+    sprintf('Row of nodes to plot needs to be predefined for 2D problems.');
+end
+
 % plot synthetics: default false
 if ~isfield(Control, 'plotSyntheticsON')
     Control.plotSyntheticsON = 0;
