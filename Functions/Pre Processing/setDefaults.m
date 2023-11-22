@@ -88,13 +88,13 @@ end
 if ~isfield(Control, 'ploturow') && MeshU.nsd == 1
     Control.ploturow = MeshU.DOF;
 elseif ~isfield(Control, 'ploturow') && MeshU.nsd == 2
-    sprintf('Row of nodes to plot needs to be predefined for 2D problems.');
+    fprintf('Row of nodes to plot needs to be predefined for 2D problems. \n');
 end
 
 if ~isfield(Control, 'plotprow') && MeshU.nsd == 1
     Control.plotprow = MeshP.DOF;
 elseif ~isfield(Control, 'plotprow') && MeshU.nsd == 2
-    sprintf('Row of nodes to plot needs to be predefined for 2D problems.');
+    fprintf('Row of nodes to plot needs to be predefined for 2D problems. \n');
 end
 
 % plot synthetics: default false
