@@ -171,6 +171,9 @@ righttopnode  = find(MeshU.coords(BC.tractionNodes,1) == max(MeshU.coords(:,1)))
 BC.tractionForce(lefttopnode,2) = BC.tractionForce(lefttopnode,2)/2;
 BC.tractionForce(righttopnode,2) = BC.tractionForce(righttopnode,2)/2;
 
+% time dependent vector
+BC.tractionForce = @(t) BC.tractionForce;
+
 % point loads [GN]
 BC.pointLoad = [];
 
