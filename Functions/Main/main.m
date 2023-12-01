@@ -34,7 +34,7 @@ QuadP = GlobalQuad(MeshP, Control);
 
 %% Solution parameters
 Control.t = 0;  % initial simulation time
-Control.step = 0; % step counter
+Control.step = 1; % step counter
 
 %% Select model and evaluate main function
 [~,modeltype] = fileparts(Control.PMmodel);
