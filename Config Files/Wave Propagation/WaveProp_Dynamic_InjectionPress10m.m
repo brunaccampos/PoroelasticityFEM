@@ -113,6 +113,7 @@ BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
 %% Dirichlet BCs - fluid
 % nodes at injection well
 MeshP.nodesWell = [1, 5, 12, 321:358]; % transfinite, structured
+% MeshP.nodesWell = [1, 5, 12, 381:418]; % transfinite, structured, fine
 
 % fixed DOFs 
 BC.fixed_p = MeshP.nodesWell;
