@@ -28,6 +28,13 @@ if plot2vtk
     Control.step = 1;
 end
 
+% initialize video file
+if saveVideo_on
+    myVideo = VideoWriter('myVideoFile'); %open video file
+    myVideo.FrameRate = 20;
+    open(myVideo)
+end
+
 %% Solve system
 for t = 1:length(Plot.time)
     % current time
@@ -119,3 +126,7 @@ Plot.udotrow = Solution.udot(Control.ploturow);
 Plot.prow = Solution.p(Control.plotprow);
 Plot.nrow = Solution.n(Control.plotprow);
 
+% close video file
+if saveVideo_on
+    close(myVideo)
+end
