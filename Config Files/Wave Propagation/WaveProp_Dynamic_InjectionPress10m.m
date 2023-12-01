@@ -187,4 +187,7 @@ node = 12; % transfinite, structured
 Control.plotu = node*2; % y DOF
 Control.plotp = node;
 
+Control.ploturow = MeshU.bottom_dofy;
+Control.plotprow = MeshP.bottom_nodes;
+
 end
