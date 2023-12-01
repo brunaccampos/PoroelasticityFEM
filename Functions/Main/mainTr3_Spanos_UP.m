@@ -13,7 +13,7 @@ disp([num2str(toc),': Assembling System Matrices...']);
 [Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesTr3_Spanos_UP(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Initialize iteration variables
-[Iteration, Plot] = initVariables(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, BC);
+[Iteration, Plot] = initVariables(MeshU, MeshP, MeshN, Material, Control, BC);
 
 %% Initial condition file
 if plot2vtk
