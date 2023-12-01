@@ -10,17 +10,7 @@ disp([num2str(toc),': Model: Spanos u-p transient case']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
-
 [Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesTr3_Spanos_UP(Material, MeshU, MeshP, QuadU, QuadP);
-
-%% Solve eigenproblem
-if Control.freqDomain
-    disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
-    [phi_u, omega2_u, phi_p, omega2_p] = EigenTr_UP(Kuu, Kup, Kpp, S, MeshU, MeshP, BC, Control);
-else
-    phi_u = [];
-    phi_p = [];
-end
 
 %% Initialize iteration variables
 [Iteration, Plot] = initVariables(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, BC);
@@ -78,11 +68,6 @@ for t = 1:length(Plot.time)
     % linear solver
     [Solution] = SolverTr_UP(Kuu, Kup, Kpp, Kpu, S, fu, fp, BC, Control, Iteration);
     
-    % solution in the frequency domain
-    if Control.freqDomain
-        [SolutionFreq] = SolverFreqTr_UP(phi_u, phi_p, Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration);
-    end
-
     % update external forces vectors
     fu(BC.fixed_u) = Solution.fE;
     fp(BC.fixed_p) = Solution.qE;
@@ -101,16 +86,6 @@ for t = 1:length(Plot.time)
         Plot.u_time(Control.step+1,:) = Solution.u(Control.plotu, 1);
         % plot velocity vs time
         Plot.udot_time(Control.step+1,:) = Solution.udot(Control.plotu, 1);
-
-        % frequency domain
-        if Control.freqDomain
-            % plot pressure vs time
-            Plot.pF(Control.step+1,:) = SolutionFreq.pF(Control.plotp, 1);
-            % plot displacement vs time
-            Plot.uF(Control.step+1,:) = SolutionFreq.uF(Control.plotu, 1);
-            % plot velocity vs time
-            Plot.uFdot(Control.step+1,:) = SolutionFreq.uFdot(Control.plotu, 1);
-        end
         
         % synthetics
         Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
@@ -129,17 +104,6 @@ for t = 1:length(Plot.time)
     Iteration.p_old = Solution.p; % fluid pressure
     Iteration.fu_old = fu; % load vector
     Iteration.fp_old = fp; % flux vector
-
-    % update variables - frequency domain
-    if Control.freqDomain
-        Iteration.xuF_old = SolutionFreq.xuF;
-        Iteration.xuFdot_old = SolutionFreq.xuFdot;
-        Iteration.xpF_old = SolutionFreq.xpF;
-
-        Iteration.uF_old = SolutionFreq.uF; % solid displacement
-        Iteration.uFdot_old = SolutionFreq.uFdot; % solid velocity
-        Iteration.pF_old = SolutionFreq.pF; % fluid pressure
-    end
 
     % update time and step
     Control.step = Control.step + 1;
