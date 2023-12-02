@@ -10,10 +10,13 @@ disp([num2str(toc),': Model: Biot u-p-U transient case']);
 disp([num2str(toc),': Assembling System Matrices...']);
 [Kss, Ksp, Csf, Css, Kpf, Kps, Kpp, Kfp, Cff, Cfs] = ComputeMatricesTr4_Biot_UPU(Material, MeshU, MeshP, QuadU, QuadP);
 
-%% Initialize iteration variables
+%% Initial condition
+% print initial condition step
+fprintf('\n Step 1, t = 0 \n');
+
+% initialize variables (account for initial condition)
 [Iteration, Plot] = initVariables(MeshU, MeshP, MeshN, Material, Control, BC);
 
-%% Initial condition file
 if plot2vtk
     % time domain solution
     Solution.u = Iteration.u_old;
@@ -24,9 +27,6 @@ if plot2vtk
     
     % save vtk file
     PostProcessing(Solution, Material, MeshU, MeshP, MeshN, Control, BC, config_name, vtk_dir);
-   
-    % update time step
-    Control.step = 1;
 end
 
 % initialize video file
@@ -37,9 +37,12 @@ if saveVideo_on
 end
 
 %% Solve system
-for t = 1:length(Plot.time)
+% start at t=dt (t=0 covered in initial condition)
+for t = 2:length(Plot.time)
     % current time
     Control.t = Plot.time(t);
+    % update time step
+    Control.step = Control.step + 1;
     % print current time and step
     fprintf('\n Step %d, t = %d \n', Control.step, Control.t);
     
@@ -59,16 +62,7 @@ for t = 1:length(Plot.time)
     
     % analytical solution for 1D case
     if Control.plotansol
-        if Control.uncoupled
-            p_an = Control.p_an(Control.t);
-            u_an = Control.u_an(Control.t);
-        else
-            if any(Material.Minv)
-                [p_an, u_an] = getAnalyticResult_Comp(Material, MeshU, MeshP, BC, Control);
-            else % 1/M = 0
-                [~, p_an, u_an] = getAnalyticResult_Incomp(Material, MeshU, MeshP, BC, Control);
-            end
-        end
+        [p_an, u_an] = feval(Control.ansol_type, Control, Material, MeshU, MeshP, BC);
        
         % store variables over length
         Plot.pan_space = p_an;
@@ -124,27 +118,23 @@ for t = 1:length(Plot.time)
         PostProcessing(Solution, Material, MeshU, MeshP, MeshN, Control, BC, config_name, vtk_dir);
     end
 
-    % store variables over time
-    if Control.step < length(Plot.time)
-        % time domain
-        % plot pressure vs time
-        Plot.p_time(Control.step+1,:) = Solution.p(Control.plotp, 1);
-        % plot solid displacement vs time
-        Plot.u_time(Control.step+1,:) = Solution.u(Control.plotu, 1);
-        % plot solid velocity vs time
-        Plot.udot_time(Control.step+1,:) = Solution.udot(Control.plotu, 1);
-        % plot fluid displacement vs time
-        Plot.uf_time(Control.step+1,:) = Solution.uf(Control.plotu, 1);
-        % plot fluid velocity vs time
-        Plot.ufdot_time(Control.step+1,:) = Solution.ufdot(Control.plotu, 1);
-        
-        % synthetics
-        Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
-        Plot.udot_synthetic(Control.step+1,:) = Solution.udot(Control.ploturow);
-        Plot.p_synthetic(Control.step+1,:) = Solution.p(Control.plotprow);
-        Plot.uf_synthetic(Control.step+1,:) = Solution.uf(Control.ploturow);
-        Plot.ufdot_synthetic(Control.step+1,:) = Solution.ufdot(Control.ploturow);
-    end
+    % store pressure over time
+    Plot.p_time(Control.step,:) = Solution.p(Control.plotp, 1);
+    % store solid displacement over time
+    Plot.u_time(Control.step,:) = Solution.u(Control.plotu, 1);
+    % store solid velocity over time
+    Plot.udot_time(Control.step,:) = Solution.udot(Control.plotu, 1);
+    % store fluid displacement over time
+    Plot.uf_time(Control.step,:) = Solution.uf(Control.plotu, 1);
+    % store fluid velocity over time
+    Plot.ufdot_time(Control.step,:) = Solution.ufdot(Control.plotu, 1);
+
+    % store variables over time at fixed row
+    Plot.u_synthetic(Control.step,:) = Solution.u(Control.ploturow);
+    Plot.udot_synthetic(Control.step,:) = Solution.udot(Control.ploturow);
+    Plot.p_synthetic(Control.step,:) = Solution.p(Control.plotprow);
+    Plot.uf_synthetic(Control.step,:) = Solution.uf(Control.ploturow);
+    Plot.ufdot_synthetic(Control.step,:) = Solution.ufdot(Control.ploturow);
 
     % store variables over space
     Plot.p_space = Solution.p(Control.plotp);
@@ -156,22 +146,16 @@ for t = 1:length(Plot.time)
     % update variables - time domain
     Iteration.u_old = Solution.u; % solid displacement
     Iteration.udot_old = Solution.udot; % solid velocity
-   
     Iteration.p_old = Solution.p; % fluid pressure
     Iteration.pdot_old = Solution.pdot; % fluid pressure gradient
-    
     Iteration.uf_old = Solution.uf; % fluid displacement
     Iteration.ufdot_old = Solution.ufdot; % fluid velocity
-    
     Iteration.fu_old = fu; % load vector
     Iteration.fp_old = fp; % load vector
     Iteration.ff_old = ff; % load vector
-
-    % update time and step
-    Control.step = Control.step + 1;
 end
  
-% plot variables in length for fixed coordinate
+% store variables at fixed row
 Plot.urow = Solution.u(Control.ploturow);
 Plot.udotrow = Solution.udot(Control.ploturow);
 Plot.prow = Solution.p(Control.plotprow);

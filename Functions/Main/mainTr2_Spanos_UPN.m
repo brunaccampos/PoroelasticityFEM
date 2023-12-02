@@ -10,10 +10,13 @@ disp([num2str(toc),': Model: Spanos u-p-n transient case']);
 disp([num2str(toc),': Assembling System Matrices...']);
 [Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesTr2_Spanos_UPN(Material, MeshU, MeshP, MeshN, QuadU, QuadP);
 
-%% Initialize iteration variables
+%% Initial condition
+% print initial condition step
+fprintf('\n Step 1, t = 0 \n');
+
+% initialize variables (account for initial condition)
 [Iteration, Plot] = initVariables(MeshU, MeshP, MeshN, Material, Control, BC);
 
-%% Initial condition file
 if plot2vtk
     % time domain solution
     Solution.u = Iteration.u_old;
@@ -24,8 +27,6 @@ if plot2vtk
 
     % save vtk file
     PostProcessing(Solution, Material, MeshU, MeshP, MeshN, Control, BC, config_name, vtk_dir);
-    % update time step
-    Control.step = 1;
 end
 
 % initialize video file
@@ -36,9 +37,12 @@ if saveVideo_on
 end
 
 %% Solve system
-for t = 1:length(Plot.time)
+% start at t=dt (t=0 covered in initial condition)
+for t = 2:length(Plot.time)
     % current time
     Control.t = Plot.time(t);
+    % update time step
+    Control.step = Control.step + 1;
     % print current time and step
     fprintf('\n Step %d, t = %d \n', Control.step, Control.t);
 
@@ -65,10 +69,8 @@ for t = 1:length(Plot.time)
         Plot.uan_space = u_an;
 
         % store variables over time
-        if Control.step < length(Plot.time)
-            Plot.uan_time(Control.step+1,:) = u_an(Control.plotu, 1);
-            Plot.pan_time(Control.step+1,:) = p_an(Control.plotp, 1);
-        end
+        Plot.uan_time(Control.step,:) = u_an(Control.plotu, 1);
+        Plot.pan_time(Control.step,:) = p_an(Control.plotp, 1);
     end
 
     % linear solver
@@ -84,30 +86,26 @@ for t = 1:length(Plot.time)
         PostProcessing(Solution, Material, MeshU, MeshP, MeshN, Control, BC, config_name, vtk_dir);
     end
 
-    % store variables over time
-    if Control.step < length(Plot.time)
-        % time domain
-        % plot pressure vs time
-        Plot.p_time(Control.step+1,:) = Solution.p(Control.plotp, 1);
-        % plot displacement vs time
-        Plot.u_time(Control.step+1,:) = Solution.u(Control.plotu, 1);
-        % plot velocity vs time
-        Plot.udot_time(Control.step+1,:) = Solution.udot(Control.plotu, 1);
-        % plot porosity vs time
-        Plot.n_time(Control.step+1,:) = Solution.n(Control.plotp, 1);
-                
-         % synthetics
-         Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
-         Plot.udot_synthetic(Control.step+1,:) = Solution.udot(Control.ploturow);
-         Plot.p_synthetic(Control.step+1,:) = Solution.p(Control.plotprow);
-    end
+    % store pressure over time
+    Plot.p_time(Control.step,:) = Solution.p(Control.plotp, 1);
+    % store displacement over time
+    Plot.u_time(Control.step,:) = Solution.u(Control.plotu, 1);
+    % store velocity over time
+    Plot.udot_time(Control.step,:) = Solution.udot(Control.plotu, 1);
+    % store porosity over time
+    Plot.n_time(Control.step,:) = Solution.n(Control.plotp, 1);
+
+    % store variables over time at fixed row
+    Plot.u_synthetic(Control.step,:) = Solution.u(Control.ploturow);
+    Plot.udot_synthetic(Control.step,:) = Solution.udot(Control.ploturow);
+    Plot.p_synthetic(Control.step,:) = Solution.p(Control.plotprow);
 
     % store variables over space
     Plot.p_space = Solution.p(Control.plotp);
     Plot.u_space = Solution.u(Control.plotu);
     Plot.udot_space = Solution.udot(Control.plotu);
 
-    % update variables - time domain
+    % update variables
     Iteration.u_old = Solution.u; % solid displacement
     Iteration.udot_old = Solution.udot; % solid velocity
     Iteration.p_old = Solution.p; % fluid pressure
@@ -115,12 +113,9 @@ for t = 1:length(Plot.time)
     Iteration.fu_old = fu; % load vector
     Iteration.fp_old = fp; % flux vector  
     Iteration.fn_old = fn; % flux vector  
-    
-    % update time and step
-    Control.step = Control.step + 1;
 end
 
-% plot variables in length for fixed coordinate
+% store variables at fixed row
 Plot.urow = Solution.u(Control.ploturow);
 Plot.udotrow = Solution.udot(Control.ploturow);
 Plot.prow = Solution.p(Control.plotprow);
