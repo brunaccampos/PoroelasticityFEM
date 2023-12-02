@@ -77,32 +77,9 @@ for t = 2:length(Plot.time)
     [Solution] = SolverTr_UPU(Kss, Ksp, Csf, Css, Kpf, Kps, Kpp, Kfp, Cff, Cfs, fu, fp, ff, BC, Control, Iteration);
 
     % plot solution over time
-    figure(1);
-    % solid displacement
-    subplot(2,3,1);
-    grid on
-    plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
-    title('Solid displacement');
-    hold on
-    plot(MeshU.coords, Plot.uan_space, 'k--', 'LineWidth', 1.5);
-    hold off
-    % fluid pressure
-    subplot(2,3,2);
-    grid on
-    plot(MeshP.coords, Solution.p, 'g', 'LineWidth', 1.5);
-    title('Pressure');
-    hold on
-    plot(MeshP.coords, Plot.pan_space, 'k--', 'LineWidth', 1.5);
-    hold off
-    % fluid displacement
-    subplot(2,3,3);
-    grid on
-    plot(MeshU.coords, Solution.uf, 'm', 'LineWidth', 1.5);
-    title('Fluid displacement');
-    hold on
-    plot(MeshU.coords, Plot.uan_space, 'k--', 'LineWidth', 1.5);
-    hold off
-    pause(0.001);
+    PlotGraphsUPU_OverTime(MeshU, MeshP, Control, Solution);
+    pause(0.0001);
+
     if saveVideo_on
         frame = getframe(gcf); %get frame
         writeVideo(myVideo, frame);

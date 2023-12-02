@@ -81,43 +81,9 @@ for t = 2:length(Plot.time)
     [Solution] = SolverDyn_UPU(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, fp, ff, BC, Control, Iteration);
 
     % plot solution over time
-%     figure(1);
-%     tiledlayout(2,3);
-%     % solid displacement
-%     nexttile
-%     plot(MeshU.coords(Control.ploturow), Solution.u(Control.ploturow), 'm', 'LineWidth', 1.5);
-%     title('Solid displacement');
-%     hold on
-%     grid on
-% %     plot(MeshU.coords, Plot.uan_space, 'k--', 'LineWidth', 1.5);
-%     hold off
-%     % solid velocity
-%     nexttile
-%     plot(MeshU.coords(Control.ploturow), Solution.udot(Control.ploturow), 'b', 'LineWidth', 1.5);
-%     grid on
-%     title('Solid velocity');
-%     % fluid pressure
-%     nexttile
-%     plot(MeshP.coords(Control.plotprow), Solution.p(Control.plotprow), 'g', 'LineWidth', 1.5);
-%     title('Pressure');
-%     hold on
-%     grid on
-% %     plot(MeshP.coords, Plot.pan_space, 'k--', 'LineWidth', 1.5);
-%     hold off
-%     % fluid displacement
-%     nexttile
-%     plot(MeshU.coords(Control.ploturow), Solution.uf(Control.ploturow), 'm', 'LineWidth', 1.5);
-%     title('Fluid displacement');
-%     hold on
-%     grid on
-% %     plot(MeshU.coords, Plot.ufan_space, 'k--', 'LineWidth', 1.5);
-%     hold off
-%     % fluid velocity
-%     nexttile
-%     plot(MeshU.coords(Control.ploturow), Solution.ufdot(Control.ploturow), 'b', 'LineWidth', 1.5);
-%     grid on
-%     title('Fluid velocity');
-%     pause(0.0001);
+    PlotGraphsUPU_OverTime(MeshU, MeshP, Control, Solution);
+    pause(0.0001);
+
     if saveVideo_on
         frame = getframe(gcf); %get frame
         writeVideo(myVideo, frame);

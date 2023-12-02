@@ -63,14 +63,9 @@ for t = 2:length(Plot.time)
     [Solution] = SolverDyn_UP(Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
 
     % plot solution over time
-%     figure(1);
-%     subplot(1,2,1);
-%     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
-%     title('Displacement');
-%     subplot(1,2,2);
-%     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
-%     title('Velocity');
-%     pause(0.001);
+    PlotGraphsUP_OverTime(MeshU, MeshP, Control, Solution);
+    pause(0.0001);
+
     if saveVideo_on
         frame = getframe(gcf); %get frame
         writeVideo(myVideo, frame);
