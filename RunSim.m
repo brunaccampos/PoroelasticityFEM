@@ -70,7 +70,8 @@ DirFolder = 'Config Files';
 % -------------------- Tests Elasticity
 % File = 'Beam_Dynamic';
 % File = 'Beam_Dynamic_v2';
-% File = 'Plate2D_KirschTest';
+% File = 'Plate2D_KirschTest_BC1';
+% File = 'Plate2D_KirschTest_BC2';
 % File = 'PlateWithHole_Elasticity';
 % File = 'VelocityImpact1D_Ham';
 % File = 'VelocityImpact1D_Idesman';
