@@ -143,6 +143,7 @@ BC.pointLoadValue = 1e-6;
 BC.pointLoadNodes = MeshU.left_nodes;
 BC.pointLoad = zeros(MeshU.nDOF,1);
 BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
+BC.pointLoad = @(t) BC.pointLoad;
 
 % distributed load [GN/m2]
 BC.tractionNodes = [];
@@ -152,10 +153,7 @@ BC.b = @(x,t)[];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
-BC.pointFluxValue = 0;
-BC.pointFluxNodes = [];
-BC.pointFlux = zeros(MeshP.nDOF,1);
-BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
+BC.pointFlux = @(t) [];
 
 % distributed flux [m3/s]
 BC.fluxNodes = [];
