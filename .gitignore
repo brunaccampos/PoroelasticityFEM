@@ -4,6 +4,7 @@
 *.asv
 *.mat
 *.xls
+*.xlsx
 *.avi
 *.png
 *.fig
