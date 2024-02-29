@@ -8,20 +8,10 @@ disp([num2str(toc),': Model: Spanos u-p-U dynamic case']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
-
 [Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs] = ComputeMatricesDyn5_Spanos_UPU(Material, MeshU, MeshP, QuadU, QuadP);
 
-%% Solve eigenproblem
-if Control.freqDomain
-    disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
-%     [phi_u, omega2_u, phi_p, omega2_p] = SolveEigDynamic_Biot(Kuu, Kup, Kpp, Muu, Mpu, MeshU, MeshP, BC, Control);
-else
-    phi_u = [];
-    phi_p = [];
-end
-
 %% Initialize iteration variables
-[Iteration, Plot] = initVariables(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, BC);
+[Iteration, Plot] = initVariables(MeshU, MeshP, MeshN, Material, Control, BC);
 
 %% Initial condition file
 if plot2vtk
@@ -89,53 +79,6 @@ for t = 1:length(Plot.time)
     % linear solver
     [Solution] = SolverDyn_UPU(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, fp, ff, BC, Control, Iteration);
 
-%     % plot solution over time
-%     figure(1);
-%     % solid displacement
-%     subplot(2,3,1);
-%     plot(MeshU.coords, Solution.u, 'm', 'LineWidth', 1.5);
-%     title('Solid displacement');
-%     hold on
-%     grid on
-%     plot(MeshU.coords, Plot.uan_space, 'k--', 'LineWidth', 1.5);
-%     hold off
-%     % solid velocity
-%     subplot(2,3,2);
-%     plot(MeshU.coords, Solution.udot, 'b', 'LineWidth', 1.5);
-%     grid on
-%     title('Solid velocity');
-%     % fluid pressure
-%     subplot(2,3,3);
-%     plot(MeshP.coords, Solution.p, 'g', 'LineWidth', 1.5);
-%     title('Pressure');
-%     hold on
-%     grid on
-%     plot(MeshP.coords, Plot.pan_space, 'k--', 'LineWidth', 1.5);
-%     hold off
-%     % fluid displacement
-%     subplot(2,3,4);
-%     plot(MeshU.coords, Solution.uf, 'm', 'LineWidth', 1.5);
-%     title('Fluid displacement');
-%     hold on
-%     grid on
-%     plot(MeshU.coords, Plot.ufan_space, 'k--', 'LineWidth', 1.5);
-%     hold off
-%     % fluid velocity
-%     subplot(2,3,5);
-%     plot(MeshU.coords, Solution.ufdot, 'b', 'LineWidth', 1.5);
-%     grid on
-%     title('Fluid velocity');
-%     pause(0.001);
-    if saveVideo_on
-        frame = getframe(gcf); %get frame
-        writeVideo(myVideo, frame);
-    end
-
-    % solution in the frequency domain
-    if Control.freqDomain
-        [SolutionFreq] = SolverFreqDyn_UPU(phi_u, omega2_u, phi_p, omega2_p, phi_uf, omega_uf, Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, ff, BC, Control, Iteration);
-    end
-
     % update external forces vectors
     fu(BC.fixed_u) = Solution.fuE;
     fp(BC.fixed_p) = Solution.fpE;
@@ -164,16 +107,6 @@ for t = 1:length(Plot.time)
         % plot fluid acceleration vs time
         Plot.uf2dot_time(Control.step+1,:) = Solution.uf2dot(Control.plotu, 1);
         
-        % frequency domain
-        if Control.freqDomain
-            % plot pressure vs time
-            Plot.pF(Control.step+1,:) = SolutionFreq.pF(Control.plotp, 1);
-            % plot displacement vs time
-            Plot.uF(Control.step+1,:) = SolutionFreq.uF(Control.plotu, 1);
-            % plot velocity vs time
-            Plot.uFdot(Control.step+1,:) = SolutionFreq.uFdot(Control.plotu, 1);
-        end
-
         % synthetics
         Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
         Plot.udot_synthetic(Control.step+1,:) = Solution.udot(Control.ploturow);
@@ -206,21 +139,6 @@ for t = 1:length(Plot.time)
     Iteration.fu_old = fu; % load vector
     Iteration.ff_old = ff; % load vector
 
-    % update variables - frequency domain
-    if Control.freqDomain
-        Iteration.xuF_old = SolutionFreq.xuF;
-        Iteration.xuFdot_old = SolutionFreq.xuFdot;
-        Iteration.xpF_old = SolutionFreq.xpF;
-        Iteration.xuF2dot_old = SolutionFreq.xuF2dot;
-        Iteration.xpFdot_old = SolutionFreq.xpFdot;
-
-        Iteration.uF_old = SolutionFreq.uF; % solid displacement
-        Iteration.uFdot_old = SolutionFreq.uFdot; % solid velocity
-        Iteration.pF_old = SolutionFreq.pF; % fluid pressure
-        Iteration.uF2dot_old = SolutionFreq.uF2dot; % solid acceleration
-        Iteration.pFdot_old = SolutionFreq.pFdot; % fluid pressure gradient
-    end
-
     % update time and step
     Control.step = Control.step + 1;
 end
@@ -231,8 +149,3 @@ Plot.udotrow = Solution.udot(Control.ploturow);
 Plot.prow = Solution.p(Control.plotprow);
 Plot.ufrow = Solution.uf(Control.ploturow);
 Plot.ufdotrow = Solution.ufdot(Control.ploturow);
-
-% close video file
-if saveVideo_on
-    close(myVideo)
-end
