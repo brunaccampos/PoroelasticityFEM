@@ -3,9 +3,23 @@ function [Material, BC, Control] = setDefaults(Material, MeshU, MeshP, BC, Contr
 % Set defaults for Material, BC, and Control structures
 % ------------------------------------------------------------------------
 
+%% Output information
+err_message = sprintf('-------------------------------------------------\n');
+err_message = sprintf('%s\tfrom\t: setDefaults.m \n', err_message);
+war_message = sprintf('-------------------------------------------------\n');
+war_message = sprintf('%s\tfrom\t: setDefaults.m \n', war_message);
+
+err_count = 0; % counts number of errors (missing data)
+war_count = 0; % counts number of warnings (shows when a default parameter has been set)
+
 %% Material model
+err_mat = sprintf('\t\tMaterial \n');
+war_mat = sprintf('\t\tMaterial \n');
+
 % constitutive law: default plane stress
 if ~isfield(Material, 'constLaw')
+    war_count = war_count+1;
+    war_mat = sprintf('%s\t\t\tWarning #%d\t:\t Constitutive law not defined. Set to plane stress \n',war_mat,war_count);
     Material.constLaw = 'PlaneStress';
 end
 
@@ -25,6 +39,9 @@ if ~isfield(Material, 'rho12')
 end
 
 %% Boundary/Initial conditions
+err_BC = sprintf('\t\tBoundary conditions \n');
+war_BC = sprintf('\t\tBoundary conditions \n');
+
 % initial condition for solid displacement field
 if ~isfield(BC, 'initU')
     BC.initU = zeros(MeshU.nDOF,1);
@@ -74,6 +91,9 @@ if ~isfield(BC,'bs')
 end
 
 %% Control options
+err_control = sprintf('\t\tControl Parameters \n');
+war_control = sprintf('\t\tControl Parameters \n');
+
 % ramp applied load in the beginning of simulation: default false
 if ~isfield(Control, 'rampLoad')
    Control.rampLoad = 0; 
@@ -120,6 +140,38 @@ end
 % parallel processing pool
 if ~isfield(Control, 'parallel')
     Control.parallel = 1;
+end
+
+% row of nodes to plot
+if ~isfield(Control, 'ploturow') && MeshU.nsd == 1
+    Control.ploturow = MeshU.DOF;
+elseif ~isfield(Control, 'ploturow') && MeshU.nsd == 2
+    war_count = war_count+1;
+    war_control = sprintf('%s\t\t\tWarning #%d\t:\t Row of nodes to plot (u) not defined. Set as bottom y DOF \n',war_control,war_count);
+    Control.ploturow = MeshU.bottom_dofy;
+end
+
+if ~isfield(Control, 'plotprow') && MeshU.nsd == 1
+    Control.plotprow = MeshP.DOF;
+elseif ~isfield(Control, 'plotprow') && MeshU.nsd == 2
+    war_count = war_count+1;
+    war_control = sprintf('%s\t\t\tWarning #%d\t:\t Row of nodes to plot (p) not defined. Set as bottom nodes \n',war_control,war_count);
+    Control.plotprow = MeshP.bottom_nodes;
+end
+
+
+%% Output error/warning
+war_message = sprintf('%s %s %s %s %s', war_message, war_mat, war_BC, war_control);
+err_message = sprintf('%s %s %s %s %s', err_message, err_mat, err_BC, err_control);
+
+% check if there are any warnings
+if war_count > 0
+    warning('\n%s', war_message);
+end
+
+% check if there are any errors
+if err_count > 0 
+    error('\n%s', err_message);
 end
 
 end
