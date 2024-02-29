@@ -6,14 +6,18 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionL3_m
 % Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
 % ------------------------------------------------------------------------
 
-%% Poroelasticity
-% porous media permeability [m2/Pa s]
-Material.kf = 0;
-% 1/Q (related to storage coefficient)
-Material.Minv = 0;
-% Biot's coefficient
-Material.alpha = 0;
-% poroelasticity model
+%% Poroelasticity model
+% Options:  Tr1_Biot_UP -------- Biot model (u-p), transient
+%           Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient
+%           Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+%           Dyn1_Biot_UP -------- Biot model (u-p), dynamic
+%           Dyn2_Spanos_UPN ----- Spanos model (u-p-n), dynamic
+%           Dyn3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+%           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
+%           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
+%                                   porosity perturbation equation
 Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties
@@ -21,6 +25,12 @@ Control.PMmodel = 'Tr1_Biot_UP';
 Material.E = 2230;
 % Poisson's ratio
 Material.nu = 0.3;
+% porous media permeability [m2/Pa s]
+Material.kf = 0;
+% 1/Q (related to storage coefficient)
+Material.Minv = 0;
+% Biot's coefficient
+Material.alpha = 0;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -132,31 +142,39 @@ BC.s = @(x,t)[];
 Control.nqU = 3;
 Control.nqP = 2;
 
-%% Problem type
-% 1 = quasi-steady/transient problem (no acceleration and pressure change)
-% 0 = dynamic problem (acceleration/intertia terms included)
-Control.steady = 1;
+%% Analytical solution
+% 1 = uncoupled problem (elasticity, heat transfer, etc)
+% 0 = coupled problem (Biot, Spanos model)
+Control.uncoupled = 0; 
 
-%% Solution parameters
-Control.dt = 1;  % time step
-Control.t = 0; % time variable
-Control.step = 1; % total simulation time
-
-Control.beta = 1;
-
-% analytical solution
-Control.pan_symb = @(x) zeros(MeshP.nDOF,1);
-Control.p_an = Control.pan_symb(MeshP.coords);
-Control.uan_symb = @(x) x.^5 - x.^4;
-Control.u_an = Control.uan_symb(MeshU.coords);
-
-Control.plotu = 2;
-Control.plotp = 2;
-
-% plot analytical solution (valid for 1D problems with Material.Minv == 0)
+% plot analytical solution (valid for 1D problems)
 Control.plotansol = 1; % 1 = true; 0 = false
 
-% solve in the frequency domain
-Control.freqDomain = 0;  % 1 = true; 0 = false
+% type of analytical solution to compute
+% 'getAnSol_uncoupled' = uncoupled problem (elasticity, heat transfer, etc)
+% 'getAnSol_coupledComp' = coupled porous media problem, compressible
+% materials
+% 'getAnSol_coupledIncomp' = coupled porous media problem, incompressible
+% materials (1/M=0)
+Control.ansol_type = 'getAnSol_uncoupled';
+
+% analytical solution
+Control.pan_symb = @(x,t) zeros(MeshP.nDOF,1);
+Control.p_an = @(t) Control.pan_symb(MeshP.coords,t);
+Control.uan_symb = @(x,t) x.^5 - x.^4;
+Control.u_an = @(t) Control.uan_symb(MeshU.coords,t);
+
+%% Time step controls
+Control.dt = 1;  % time step
+Control.tend = 1; % final simulation time
+
+% Beta method
+% beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
+Control.beta = 1; 
+
+%% Plot data
+% DOF to plot graphs
+Control.plotu = 1;
+Control.plotp = 1;
 
 end
