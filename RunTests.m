@@ -23,13 +23,15 @@ curDir = pwd;
 DirFolder = 'Test Files';
 
 % Directory for VTK file
-VTKFolder ='C:\Users\bu_ca\Downloads\Matlab Results\';
-% VTKFolder ='C:\Users\bccampos\Downloads\Matlab Results\';
+VTKFolder ='C:\Users\bu_ca\Downloads\PoroelasticityFEM\Results';
+% VTKFolder ='C:\Users\bccampos\Downloads\PoroelasticityFEM\Results';
 
 % output VTK file
 plot2vtk = 1;
 % export Matlab images
 saveGraphs_on = 0;
+% export Matlab files
+saveMatData_on = 0;
 % output progress messages
 progress_on = 1;
 
