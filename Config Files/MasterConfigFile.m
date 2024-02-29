@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = MasterConfigFile(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = MasterConfigFile(config_dir, progress_on,~)
 % [PROBLEM TYPE, e.g., column consolidation]
 % Configuration File
 
