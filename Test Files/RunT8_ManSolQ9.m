@@ -68,13 +68,14 @@ end
 
 %% Step 3 - Output results
 if test_pass
-    fprintf('\nPASS\n')
+    fprintf('\nPASS Convergence Test Q9\n')
 else
-    fprintf('\n\nFAIL\n')
+    fprintf('\n\nFAIL Convergence Test Q9\n')
 end
 testpasssummary(8) = test_pass;
 
 %% Step 4 - Cleanup
 clearvars -except  curDir  ConfigDir ...
     ntests testpasssummary...
-    plot2vtk VTKFolder progress_on
+    plot2vtk VTKFolder progress_on...
+    saveGraphs_on saveMatData_on
