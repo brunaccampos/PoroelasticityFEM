@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_InjectionPress100m(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_InjectionPress100m(config_dir, progress_on,~)
 % 2D simulation of injection at a well
 % Configuration File
 % ------------------------------------------------------------------------
