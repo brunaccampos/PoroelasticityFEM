@@ -119,6 +119,8 @@ saveMatData_on = 0;
 progress_on = 1;
 % export video
 saveVideo_on = 0;
+% mesh file name
+meshfilename = '';
 
 %% Directories
 VTKFolder = fullfile(VTKFolder, DirFolder);
@@ -141,7 +143,7 @@ clearvars -except VTKDir ConfigFile...
     exit_when_done print_log ...
     plot2vtk progress_on ...
     saveGraphs_on saveMatData_on ...
-    saveVideo_on
+    saveVideo_on meshfilename
 
 clearvars -global
 
