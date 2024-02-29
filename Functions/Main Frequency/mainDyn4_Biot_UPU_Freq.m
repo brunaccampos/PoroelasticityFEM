@@ -1,10 +1,10 @@
 % Biot poroelasticity model
-% Dynamic case
+% Dynamic case - Mode superposition
 % December 2022
 % ------------------------------------------------------------------------
 
 %% Model name and type
-disp([num2str(toc),': Model: Biot u-p-U dynamic case']);
+disp([num2str(toc),': Model: Biot u-p-U dynamic case, mode superposition']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
@@ -12,16 +12,11 @@ disp([num2str(toc),': Assembling System Matrices...']);
 [Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs] = ComputeMatricesDyn4_Biot_UPU(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Solve eigenproblem
-if Control.freqDomain
-    disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
-    [phi_u, omega2_u, phi_p, omega2_p, phi_uf, omega2_uf] = EigenDyn_UPU(Kss, Ksp, Mss, Kpf, Kps, Kpp, Kfp, Mff, Msf, Mfs, MeshU, MeshP, BC, Control);
-else
-    phi_u = [];
-    phi_p = [];
-end
+disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
+[phi_u, omega2_u, phi_p, omega2_p, phi_uf, omega2_uf] = EigenDyn_UPU(Kss, Ksp, Mss, Kpf, Kps, Kpp, Kfp, Mff, Msf, Mfs, MeshU, MeshP, BC, Control);
 
 %% Initialize iteration variables
-[Iteration, Plot] = initVariables(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, BC);
+[Iteration, Plot] = initVariabless_Freq(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, BC);
 
 %% Initial condition file
 if plot2vtk
@@ -38,13 +33,6 @@ if plot2vtk
     PostProcessing(Solution, Material, MeshU, MeshP, MeshN, Control, BC, config_name, vtk_dir);
     % update time step
     Control.step = 1;
-end
-
-% initialize video file
-if saveVideo_on
-    myVideo = VideoWriter('myVideoFile'); %open video file
-    myVideo.FrameRate = 20;
-    open(myVideo)
 end
 
 %% Solve system
@@ -88,54 +76,9 @@ for t = 1:length(Plot.time)
     
     % linear solver
     [Solution] = SolverDyn_UPU(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, fp, ff, BC, Control, Iteration);
-
-    % plot solution over time
-%     figure(1);
-%     tiledlayout(2,3);
-%     % solid displacement
-%     nexttile
-%     plot(MeshU.coords(Control.ploturow), Solution.u(Control.ploturow), 'm', 'LineWidth', 1.5);
-%     title('Solid displacement');
-%     hold on
-%     grid on
-% %     plot(MeshU.coords, Plot.uan_space, 'k--', 'LineWidth', 1.5);
-%     hold off
-%     % solid velocity
-%     nexttile
-%     plot(MeshU.coords(Control.ploturow), Solution.udot(Control.ploturow), 'b', 'LineWidth', 1.5);
-%     grid on
-%     title('Solid velocity');
-%     % fluid pressure
-%     nexttile
-%     plot(MeshP.coords(Control.plotprow), Solution.p(Control.plotprow), 'g', 'LineWidth', 1.5);
-%     title('Pressure');
-%     hold on
-%     grid on
-% %     plot(MeshP.coords, Plot.pan_space, 'k--', 'LineWidth', 1.5);
-%     hold off
-%     % fluid displacement
-%     nexttile
-%     plot(MeshU.coords(Control.ploturow), Solution.uf(Control.ploturow), 'm', 'LineWidth', 1.5);
-%     title('Fluid displacement');
-%     hold on
-%     grid on
-% %     plot(MeshU.coords, Plot.ufan_space, 'k--', 'LineWidth', 1.5);
-%     hold off
-%     % fluid velocity
-%     nexttile
-%     plot(MeshU.coords(Control.ploturow), Solution.ufdot(Control.ploturow), 'b', 'LineWidth', 1.5);
-%     grid on
-%     title('Fluid velocity');
-%     pause(0.0001);
-    if saveVideo_on
-        frame = getframe(gcf); %get frame
-        writeVideo(myVideo, frame);
-    end
     
-    % solution in the frequency domain
-    if Control.freqDomain
-        [SolutionFreq] = SolverFreqDyn_UPU(phi_u, omega2_u, phi_p, omega2_p, phi_uf, omega_uf, Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, ff, BC, Control, Iteration);
-    end
+    % solution using mode superposition
+    [SolutionFreq] = SolverFreqDyn_UPU(phi_u, omega2_u, phi_p, omega2_p, phi_uf, omega_uf, Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, ff, BC, Control, Iteration);
 
     % update external forces vectors
     fu(BC.fixed_u) = Solution.fuE;
@@ -165,15 +108,13 @@ for t = 1:length(Plot.time)
         % plot fluid acceleration vs time
         Plot.uf2dot_time(Control.step+1,:) = Solution.uf2dot(Control.plotu, 1);
         
-        % frequency domain
-        if Control.freqDomain
-            % plot pressure vs time
-            Plot.pF(Control.step+1,:) = SolutionFreq.pF(Control.plotp, 1);
-            % plot displacement vs time
-            Plot.uF(Control.step+1,:) = SolutionFreq.uF(Control.plotu, 1);
-            % plot velocity vs time
-            Plot.uFdot(Control.step+1,:) = SolutionFreq.uFdot(Control.plotu, 1);
-        end
+        % mode superposition
+        % plot pressure vs time
+        Plot.pF(Control.step+1,:) = SolutionFreq.pF(Control.plotp, 1);
+        % plot displacement vs time
+        Plot.uF(Control.step+1,:) = SolutionFreq.uF(Control.plotu, 1);
+        % plot velocity vs time
+        Plot.uFdot(Control.step+1,:) = SolutionFreq.uFdot(Control.plotu, 1);
 
         % synthetics
         Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
@@ -207,20 +148,18 @@ for t = 1:length(Plot.time)
     Iteration.fu_old = fu; % load vector
     Iteration.ff_old = ff; % load vector
 
-    % update variables - frequency domain
-    if Control.freqDomain
-        Iteration.xuF_old = SolutionFreq.xuF;
-        Iteration.xuFdot_old = SolutionFreq.xuFdot;
-        Iteration.xpF_old = SolutionFreq.xpF;
-        Iteration.xuF2dot_old = SolutionFreq.xuF2dot;
-        Iteration.xpFdot_old = SolutionFreq.xpFdot;
+    % update variables - mode superposition
+    Iteration.xuF_old = SolutionFreq.xuF;
+    Iteration.xuFdot_old = SolutionFreq.xuFdot;
+    Iteration.xpF_old = SolutionFreq.xpF;
+    Iteration.xuF2dot_old = SolutionFreq.xuF2dot;
+    Iteration.xpFdot_old = SolutionFreq.xpFdot;
 
-        Iteration.uF_old = SolutionFreq.uF; % solid displacement
-        Iteration.uFdot_old = SolutionFreq.uFdot; % solid velocity
-        Iteration.pF_old = SolutionFreq.pF; % fluid pressure
-        Iteration.uF2dot_old = SolutionFreq.uF2dot; % solid acceleration
-        Iteration.pFdot_old = SolutionFreq.pFdot; % fluid pressure gradient
-    end
+    Iteration.uF_old = SolutionFreq.uF; % solid displacement
+    Iteration.uFdot_old = SolutionFreq.uFdot; % solid velocity
+    Iteration.pF_old = SolutionFreq.pF; % fluid pressure
+    Iteration.uF2dot_old = SolutionFreq.uF2dot; % solid acceleration
+    Iteration.pFdot_old = SolutionFreq.pFdot; % fluid pressure gradient
 
     % update time step
     Control.step = Control.step + 1;
@@ -232,8 +171,3 @@ Plot.udotrow = Solution.udot(Control.ploturow);
 Plot.prow = Solution.p(Control.plotprow);
 Plot.ufrow = Solution.uf(Control.ploturow);
 Plot.ufdotrow = Solution.ufdot(Control.ploturow);
-
-% close video file
-if saveVideo_on
-    close(myVideo)
-end
