@@ -94,6 +94,11 @@ end
 err_control = sprintf('\t\tControl Parameters \n');
 war_control = sprintf('\t\tControl Parameters \n');
 
+% frequency domain (mode superposition) tag: default false
+if ~isfield(Control, 'freqDomain')
+    Control.freqDomain = 0;
+end
+
 % ramp applied load in the beginning of simulation: default false
 if ~isfield(Control, 'rampLoad')
    Control.rampLoad = 0; 
@@ -129,7 +134,7 @@ if ~isfield(Control, 'parallel')
     Control.parallel = 1;
 end
 
-% row of nodes to plot
+% row of nodes to plot: default plot bottom nodes (DOF y) for u
 if ~isfield(Control, 'ploturow') && MeshU.nsd == 1
     Control.ploturow = MeshU.DOF;
 elseif ~isfield(Control, 'ploturow') && MeshU.nsd == 2
@@ -138,6 +143,7 @@ elseif ~isfield(Control, 'ploturow') && MeshU.nsd == 2
     Control.ploturow = MeshU.bottom_dofy;
 end
 
+% row of nodes to plot: default plot bottom nodes for p
 if ~isfield(Control, 'plotprow') && MeshU.nsd == 1
     Control.plotprow = MeshP.DOF;
 elseif ~isfield(Control, 'plotprow') && MeshU.nsd == 2
@@ -146,6 +152,15 @@ elseif ~isfield(Control, 'plotprow') && MeshU.nsd == 2
     Control.plotprow = MeshP.bottom_nodes;
 end
 
+% node to plot: default plot node 1 in u
+if ~isfield(Control,'plotu')
+    Control.plotu = 1;
+end
+
+% node to plot: default plot node 1 in p
+if ~isfield(Control,'plotp')
+    Control.plotp = 1;
+end
 
 %% Output error/warning
 war_message = sprintf('%s %s %s %s %s', war_message, war_mat, war_BC, war_control);
