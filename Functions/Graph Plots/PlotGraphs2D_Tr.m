@@ -17,6 +17,15 @@ if Control.freqDomain
     plot(Plot.time, Plot.pF*10^9,'r--','LineWidth',2);
     legend('Time', 'Frequency');
 end
+% analytical solution
+if Control.plotansol
+    plot(Plot.time, Plot.pan_time*10^9.*Material.t,'k:','LineWidth',2);
+    legend('Numerical', 'Analytical');
+end
+% adapt legend if both frequency and analytical solutions are plotted
+if Control.freqDomain && Control.plotansol
+    legend('Time', 'Frequency', 'Analytical');
+end
 hold off
 if saveGraphs_on
     exportgraphics(gcf,'Press_time.png','Resolution',300)
@@ -34,6 +43,15 @@ title(sprintf('Solid displacement at x = %.2f m, y = %.2f m', MeshU.coords(round
 if Control.freqDomain
     plot(Plot.time, Plot.uF,'m--','LineWidth',2);
     legend('Time', 'Frequency');
+end
+% analytical solution
+if Control.plotansol
+    plot(Plot.time, Plot.uan_time,'k:','LineWidth',2);
+    legend('Numerical', 'Analytical');
+end
+% adapt legend if both frequency and analytical solutions are plotted
+if Control.freqDomain && Control.plotansol
+    legend('Time', 'Frequency', 'Analytical');
 end
 hold off
 if saveGraphs_on
