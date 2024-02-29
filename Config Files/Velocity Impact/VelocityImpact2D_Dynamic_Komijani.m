@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = VelocityImpact2D_Dynamic_Komijani(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = VelocityImpact2D_Dynamic_Komijani(config_dir, progress_on,~)
 % Column Consolidation 2D simulation
 % Configuration File
 % Based on Zienkiewicz (1982) model
