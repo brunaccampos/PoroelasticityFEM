@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateWithHole_Elasticity(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateWithHole_Elasticity(config_dir, progress_on,~)
 % 2D elasticity problem - steady case
 % Configuration file
 % ------------------------------------------------------------------------
