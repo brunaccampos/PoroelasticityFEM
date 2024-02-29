@@ -10,14 +10,18 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = PatchTestC(config_dir, p
 % Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
 % ------------------------------------------------------------------------
 
-%% Poroelasticity
-% porous media permeability [m2/Pa s]
-Material.kf = 0;
-% 1/Q (related to storage coefficient)
-Material.Minv = 0;
-% Biot's coefficient
-Material.alpha = 0;
-% poroelasticity model
+%% Poroelasticity model
+% Options:  Tr1_Biot_UP -------- Biot model (u-p), transient
+%           Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient
+%           Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+%           Dyn1_Biot_UP -------- Biot model (u-p), dynamic
+%           Dyn2_Spanos_UPN ----- Spanos model (u-p-n), dynamic
+%           Dyn3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+%           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
+%           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
+%                                   porosity perturbation equation
 Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties
@@ -25,6 +29,12 @@ Control.PMmodel = 'Tr1_Biot_UP';
 Material.E = 2540;
 % Poisson's ratio
 Material.nu = 0.3;
+% porous media permeability [m2/Pa s]
+Material.kf = 0;
+% 1/Q (related to storage coefficient)
+Material.Minv = 0;
+% Biot's coefficient
+Material.alpha = 0;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -142,6 +152,9 @@ topleftnode  = find(MeshU.coords(BC.tractionNodes,1) == min(MeshU.coords(:,1)));
 BC.tractionForce(botrightnode,1) = BC.tractionForce(botrightnode,1)/2;
 BC.tractionForce(topleftnode,2) = BC.tractionForce(topleftnode,2)/2;
 
+% time dependent vector
+BC.tractionForce = @(t) BC.tractionForce;
+
 % point load [N]
 BC.pointLoad = [];
 
@@ -162,16 +175,17 @@ BC.s = @(x,t)[];
 Control.nqU = 2;
 Control.nqP = 2;
 
-%% Problem type
-% 1 = quasi-steady/transient problem (no acceleration and pressure change)
-% 0 = dynamic problem (acceleration/intertia terms included)
-Control.steady = 1;
-
-%% Solution parameters
+%% Time step controls
 Control.dt = 1;  % time step
-Control.t = 0; % time variable
-Control.step = 1; % total simulation time
+Control.tend = 1; % final simulation time
 
-Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
+% Beta method
+% beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
+Control.beta = 1; 
+
+%% Plot data
+% DOF to plot graphs
+Control.plotu = 1;
+Control.plotp = 1;
 
 end
