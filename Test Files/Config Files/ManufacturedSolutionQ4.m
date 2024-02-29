@@ -9,14 +9,18 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionQ4(c
 % Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
 % ------------------------------------------------------------------------
 
-%% Poroelasticity
-% porous media permeability [m2/Pa s]
-Material.kf = 0;
-% 1/Q (related to storage coefficient)
-Material.Minv = 0;
-% Biot's coefficient
-Material.alpha = 0;
-% poroelasticity model
+%% Poroelasticity model
+% Options:  Tr1_Biot_UP -------- Biot model (u-p), transient
+%           Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient
+%           Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+%           Dyn1_Biot_UP -------- Biot model (u-p), dynamic
+%           Dyn2_Spanos_UPN ----- Spanos model (u-p-n), dynamic
+%           Dyn3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
+%                                   porosity perturbation equation
+%           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
+%           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
+%                                   porosity perturbation equation
 Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties
@@ -24,6 +28,12 @@ Control.PMmodel = 'Tr1_Biot_UP';
 Material.E = 2230;
 % Poisson's ratio
 Material.nu = 0.3;
+% porous media permeability [m2/Pa s]
+Material.kf = 0;
+% 1/Q (related to storage coefficient)
+Material.Minv = 0;
+% Biot's coefficient
+Material.alpha = 0;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -115,21 +125,12 @@ BC.tractionNodes = MeshU.right_nodes;
 Fnode = 1/(length(BC.tractionNodes) - 1);
 BC.tractionForce = Fnode*[zeros(size(BC.tractionNodes)), zeros(size(BC.tractionNodes))];
 
-% NOTE: point loads at any of the element nodes can also be
-% added as a traction.
-
-% magnitude of distributed body force [N/m] [bx;by] according to
-% the manufactured solution:
-% bx = -E / (1-v^2) * ( 20x^3 + 3vy^2          + (1-v)/2*[ 6xy - 30y^4 + 3y^2 ])
-% by = -E/  (1-v^2) * ( (1-v)/2*[3y^2 + 20x^3] +           3vy^2 + 6xy - 30y^4 )
-% 1D: [N/m], 2D: [N/m2]
-% NOTE: if no body force, use '@(x)[]'
-% NOTE: anonymous functions is defined with respect to the
-%      variable x,  which is a vector [x(1) x(2)] = [x y]
-E = Material.E;
-nu = Material.nu;
+% time dependent force
+BC.tractionForce = @(t) BC.tractionForce;
 
 % body force
+E = Material.E;
+nu = Material.nu;
 BC.b = @(x,t)[-E / (1-nu^2)  * ( 20*x(1).^3 + 3*nu*x(2).^2              + (1-nu)/2*( 6*x(1).*x(2) - 30*x(2).^4 + 3*x(2).^2));
     -E / (1-nu^2)  * ( (1-nu)/2*( 3*x(2).^2  + 20*x(1).^3)    + 3*nu*x(2).^2 + 6*x(1).*x(2) - 30*x(2).^4 )];
 
@@ -150,16 +151,12 @@ BC.s = @(x,t)[];
 Control.nqU = 2;
 Control.nqP = 2;
 
-%% Problem type
-% 1 = quasi-steady/transient problem (no acceleration and pressure change)
-% 0 = dynamic problem (acceleration/intertia terms included)
-Control.steady = 1;
-
-%% Solution parameters
+%% Time step controls
 Control.dt = 1;  % time step
-Control.t = 0; % time variable
-Control.step = 1; % total simulation time
+Control.tend = 1; % final simulation time
 
-Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
+% Beta method
+% beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
+Control.beta = 1; 
 
 end
