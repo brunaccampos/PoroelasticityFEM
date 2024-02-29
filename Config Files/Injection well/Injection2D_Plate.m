@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Injection2D_Plate(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Injection2D_Plate(config_dir, progress_on,~)
 % 2D simulation of flux injection in 2D domain
 % Configuration File
 % Based on Korsawe (2006) model

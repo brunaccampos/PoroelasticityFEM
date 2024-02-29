@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = InjectionWells2D_15x15(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = InjectionWells2D_15x15(config_dir, progress_on,~)
 % 2D simulation of hydraulic dilation stimulation of SADG well pair
 % Configuration File
 % Based on Korsawe (2006) model
