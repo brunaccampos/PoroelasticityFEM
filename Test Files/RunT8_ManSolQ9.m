@@ -26,7 +26,7 @@ config_name = 'ManufacturedSolutionQ9';
 
 % Run coarse mesh
 meshfilename = 'Mesh Files\Manufactured_coarseQ9.msh';
-mainTests
+main
 % store variables coarse mesh
 d_coarse = Solution.u;
 stress_coarse = stress;
@@ -35,7 +35,7 @@ Mesh_coarse = MeshU;
 
 % Run fine mesh
 meshfilename = 'Mesh Files\Manufactured_fineQ9.msh';
-mainTests
+main
 % store variables fine mesh
 d_fine = Solution.u;
 stress_fine = stress;
@@ -44,7 +44,7 @@ Mesh_fine = MeshU;
 
 % Run finer mesh
 meshfilename = 'Mesh Files\Manufactured_finerQ9.msh';
-mainTests
+main
 % store variables finer mesh
 d_finer = Solution.u;
 stress_finer = stress;

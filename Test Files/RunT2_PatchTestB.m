@@ -22,7 +22,7 @@ fprintf('\n\n Test 2: Patch Test B - Q4 elements\n')
 %% Step 1 - Run Simulation
 config_name = 'PatchTestB';
 meshfilename = 'Mesh Files\PatchTest_T.msh';
-mainTests
+main
 
 %% Step 2 - Check results
 [disp_er, stress_er, reaction_er] = PatchTest_check(Solution.u, stress, fu, MeshU, BC, Material);

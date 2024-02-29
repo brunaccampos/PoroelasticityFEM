@@ -23,7 +23,7 @@ fprintf('\n\n Test 9: Manufactured Solution - L2 elements\n')
 config_name = 'ManufacturedSolutionL2_m1';
 % Run coarse mesh
 meshfilename = '';
-mainTests
+main
 % store variables coarse mesh
 d_coarse = Solution.u;
 stress_coarse = stress;
@@ -33,7 +33,7 @@ Mesh_coarse = MeshU;
 config_name = 'ManufacturedSolutionL2_m2';
 % Run fine mesh
 meshfilename = '';
-mainTests
+main
 % store variables fine mesh
 d_fine = Solution.u;
 stress_fine = stress;
@@ -43,7 +43,7 @@ Mesh_fine = MeshU;
 config_name = 'ManufacturedSolutionL2_m3';
 % Run finer mesh
 meshfilename = '';
-mainTests
+main
 % store variables finer mesh
 d_finer = Solution.u;
 stress_finer = stress;
