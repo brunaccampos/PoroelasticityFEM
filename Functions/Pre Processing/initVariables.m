@@ -1,4 +1,4 @@
-function [Iteration, Plot] = initVariables(MeshU, MeshP, MeshN, Material, Control, BC, M)
+function [Iteration, Plot] = initVariables(MeshU, MeshP, MeshN, Material, Control, BC)
 % ------------------------------------------------------------------------
 % Initialize variables for iteration and plot stages; store initial
 % conditions
