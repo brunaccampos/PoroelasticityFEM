@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1D_UstePste(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1D_UstePste(config_dir, progress_on,~)
 % ------------------------------------------------------------------------
 % Manufactured solution for element mesh size convergence study
 % u = sin(x)
