@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateDiffusionSteady(config_dir, progress_on)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateDiffusionSteady(config_dir, progress_on,~)
 % 2D diffusion problem - steady case
 % Configuration file
 % ------------------------------------------------------------------------
