@@ -24,6 +24,7 @@ fprintf('\n\n Test 3: Patch Test C - Q4 elements\n')
 %% Step 1 - Run Simulation
 config_name = 'PatchTestC';
 meshfilename = 'Mesh Files\PatchTest.msh';
+nelements = 0;
 main
 
 %% Step 2 - Check results

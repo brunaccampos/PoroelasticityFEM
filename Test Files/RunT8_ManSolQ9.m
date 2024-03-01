@@ -23,6 +23,7 @@ fprintf('\n\n Test 8: Manufactured Solution - Q9 elements\n')
 
 %% Step 1 - Run Simulation
 config_name = 'ManufacturedSolutionQ9';
+nelements = 0;
 
 % Run coarse mesh
 meshfilename = 'Mesh Files\Manufactured_coarseQ9.msh';
