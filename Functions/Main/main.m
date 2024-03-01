@@ -21,7 +21,7 @@ end
 if progress_on
     fprintf('%.2f: Reading config file...\n', toc);
 end
-[Material, MeshU, MeshP, MeshN, BC, Control] = feval(config_name, ConfigDir, progress_on, meshfilename);
+[Material, MeshU, MeshP, MeshN, BC, Control] = feval(config_name, ConfigDir, progress_on, meshfilename, nelements);
 
 %% Set defaults
 [Material, BC, Control] = setDefaults(Material, MeshU, MeshP, BC, Control);
