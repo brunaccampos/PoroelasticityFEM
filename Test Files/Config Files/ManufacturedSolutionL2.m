@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionL2_m1(config_dir, progress_on, meshfilename)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionL2(config_dir, progress_on, ~, nelements)
 % ------------------------------------------------------------------------
 % Manufactured solution for L2 element mesh size convergence study
 % ux = x^5 - x^4
@@ -45,49 +45,28 @@ if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Manual';
-
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 16;
-        % column size [m]
-        L = 2;
-        
-        % solid displacement field
-        typeU = 'L2';
-        fieldU = 'u';
-        MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
-        
-        % fluid pressure field
-        typeP = 'L2';
-        fieldP = 'p';
-        MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
-        
-        MeshN = [];
-        
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        % build mesh displacement field
-        meshFileNameU = 'Mesh Files\Manufactured_finerQ4.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        % build mesh pressure field
-        meshFileNameP = 'Mesh Files\Manufactured_finerQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        MeshN = [];
+%% Mesh parameters
+if progress_on
+    disp([num2str(toc),': Building Mesh...']);
 end
+% number of space dimensions
+nsd = 1;
+% number of elements
+ne = nelements;
+% column size [m]
+L = 2;
+
+% solid displacement field
+typeU = 'L2';
+fieldU = 'u';
+MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
+
+% fluid pressure field
+typeP = 'L2';
+fieldP = 'p';
+MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
+
+MeshN = [];
 
 %% Find nodes for prescribed BCs
 % find top and bottom nodes for displacement field

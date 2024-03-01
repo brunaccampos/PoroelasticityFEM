@@ -1,6 +1,6 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionL2_m3(config_dir, progress_on, meshfilename)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionL3(config_dir, progress_on, ~, nelements)
 % ------------------------------------------------------------------------
-% Manufactured solution for L2 element mesh size convergence study
+% Manufactured solution for L3 element mesh size convergence study
 % ux = x^5 - x^4
 % ------------------------------------------------------------------------
 % Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
@@ -44,51 +44,25 @@ Material.constLaw = 'PlaneStress';
 if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
+% number of space dimensions
+nsd = 1;
+% number of elements
+ne = nelements;
+% column size [m]
+L = 2;
+        
+% solid displacement field
+typeU = 'L3';
+fieldU = 'u';
+MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Manual';
+% fluid pressure field
+typeP = 'L2';
+fieldP = 'p';
+MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
 
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 64;
-        % column size [m]
-        L = 2;
+MeshN = [];
         
-        % solid displacement field
-        typeU = 'L2';
-        fieldU = 'u';
-        MeshU = Build1DMesh(nsd, ne, L, typeU, fieldU);
-        
-        % fluid pressure field
-        typeP = 'L2';
-        fieldP = 'p';
-        MeshP = Build1DMesh(nsd, ne, L, typeP, fieldP);
-        
-        MeshN = [];
-        
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        % build mesh displacement field
-        meshFileNameU = 'Mesh Files\Manufactured_finerQ4.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        % build mesh pressure field
-        meshFileNameP = 'Mesh Files\Manufactured_finerQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        MeshN = [];
-end
-
 %% Find nodes for prescribed BCs
 % find top and bottom nodes for displacement field
 BC.top_node_u = find(MeshU.coords == max(MeshU.coords));
@@ -139,7 +113,7 @@ BC.fluxNodes = [];
 BC.s = @(x,t)[]; 
 
 %% Quadrature order
-Control.nqU = 2;
+Control.nqU = 3;
 Control.nqP = 2;
 
 %% Analytical solution
