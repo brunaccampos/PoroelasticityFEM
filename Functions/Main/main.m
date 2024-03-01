@@ -41,10 +41,10 @@ feval(main_type);
 
 %% Post processing
 % plot figures
-if Control.freqDomain
-    PlotGraphs(Solution, SolutionFreq, Material, MeshU, MeshP, MeshN, Control, Plot, saveGraphs_on);
-else
+if plotGraphs_on && ~Control.freqDomain
     PlotGraphs(Solution, [], Material, MeshU, MeshP, MeshN, Control, Plot, saveGraphs_on);
+elseif plotGraphs_on && Control.freqDomain
+    PlotGraphs(Solution, SolutionFreq, Material, MeshU, MeshP, MeshN, Control, Plot, saveGraphs_on);
 end
 
 % plot synthetics
