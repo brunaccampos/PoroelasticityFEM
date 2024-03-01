@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = PatchTestA(config_dir, progress_on, meshfilename)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = PatchTestA(config_dir, progress_on, ~, ~)
 % ------------------------------------------------------------------------
 % Patch Test A: all nodes are restrained and nodal displacement values
 % are specfied according to the exact solution. The error between the FEA

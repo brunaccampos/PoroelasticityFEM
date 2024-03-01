@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = PatchTestC(config_dir, progress_on, meshfilename)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = PatchTestC(config_dir, progress_on, ~, ~)
 % ------------------------------------------------------------------------
 % Patch Test C is performed with node 1 fully restrained and nodes 4 and 8
 % restrained only in the x -direction. Nodal forces are applied to nodes 2,

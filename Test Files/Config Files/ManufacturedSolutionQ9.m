@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionQ9(config_dir, progress_on, meshfilename)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionQ9(config_dir, progress_on, meshfilename, ~)
 % ------------------------------------------------------------------------
 % Test 4 calculates the convergence rates of a uniform Q4 mesh using a
 % manufactured solution in which

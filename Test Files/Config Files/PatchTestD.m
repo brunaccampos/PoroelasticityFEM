@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = PatchTestD(config_dir, progress_on, meshfilename)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = PatchTestD(config_dir, progress_on, ~, ~)
 % ------------------------------------------------------------------------
 % All nodes are restrained and nodal pressure values
 % are specfied according to the exact solution. The error between the FEA
