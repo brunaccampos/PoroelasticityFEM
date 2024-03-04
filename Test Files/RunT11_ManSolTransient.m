@@ -96,7 +96,7 @@ if test_pass
 else
     fprintf('\n\nFAIL Convergence Test Transient\n')
 end
-testpasssummary(10) = test_pass;
+testpasssummary(11) = test_pass;
 
 %% Step 4 - Cleanup
 clearvars -except  curDir  ConfigDir ...
