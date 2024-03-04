@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_Tian(config_dir, progress_on,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_Dynamic_Tian(config_dir, progress_on,~,~)
 % Wave propagation in 2D
 % Configuration File
 % ------------------------------------------------------------------------

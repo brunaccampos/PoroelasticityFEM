@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_Dynamic_Pulse(config_dir, progress_on,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_Dynamic_Pulse(config_dir, progress_on,~,~)
 % Pulse propagation in 2D simulation
 % Configuration File
 % ------------------------------------------------------------------------

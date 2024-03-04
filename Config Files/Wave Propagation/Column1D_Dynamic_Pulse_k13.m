@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Pulse_k13(config_dir, progress_on,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Pulse_k13(config_dir, progress_on,~,~)
 % Pulse propagation in 1D simulation
 % Configuration File
 % ------------------------------------------------------------------------
