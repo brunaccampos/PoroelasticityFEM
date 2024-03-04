@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Footing2D_Diebels(config_dir, progress_on,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Footing2D_Diebels(config_dir, progress_on,~,~)
 % 2D simulation of footing problem
 % Configuration File
 % ------------------------------------------------------------------------
