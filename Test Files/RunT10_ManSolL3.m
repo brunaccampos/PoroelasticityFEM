@@ -10,7 +10,7 @@
 
 % Create test VTK folder
 if plot2vtk
-    vtk_dir = fullfile(VTKFolder,'\Test9');
+    vtk_dir = fullfile(VTKFolder,'\Test10');
     if ~isfolder(vtk_dir)
         mkdir(vtk_dir)
     end
