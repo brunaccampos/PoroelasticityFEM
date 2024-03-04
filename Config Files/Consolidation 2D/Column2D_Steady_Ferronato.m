@@ -133,13 +133,6 @@ switch MeshType
         end
 end
 
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
-
 %% Dirichlet BCs - solid
 % displacement u=0 at the bottom
 BC.fixed_u = [MeshU.left_dofx; MeshU.right_dofx; MeshU.top_dofy];
