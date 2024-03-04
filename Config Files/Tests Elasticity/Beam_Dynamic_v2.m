@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Beam_Dynamic_v2(config_dir, progress_on,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Beam_Dynamic_v2(config_dir, progress_on,~,~)
 % Dynamic simulation of a beam
 % Comparison with code from http://solidmechanics.org/FEA.htm
 % ------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = VelocityImpact1D_Idesman(config_dir, progress_on,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = VelocityImpact1D_Idesman(config_dir, progress_on,~,~)
 % Velocity impact for 1D elasticity
 % Configuration File
 % ------------------------------------------------------------------------

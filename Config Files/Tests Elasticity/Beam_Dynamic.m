@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Beam_Dynamic(config_dir, progress_on,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Beam_Dynamic(config_dir, progress_on,~,~)
 % Plate with hole 1/8 model
 % Heat transfer problem adapted from file Q4one8thModel
 % ------------------------------------------------------------------------

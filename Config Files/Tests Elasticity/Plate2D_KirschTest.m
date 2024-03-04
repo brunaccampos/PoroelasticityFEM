@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_KirschTest(config_dir, progress_on,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_KirschTest(config_dir, progress_on,~,~)
 % Plate with hole for Kirsch test
 % Configuration File
 % ------------------------------------------------------------------------
