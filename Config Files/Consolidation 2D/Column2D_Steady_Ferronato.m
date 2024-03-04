@@ -26,7 +26,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Column2D_Steady_Ferronat
 %           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
 %           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
 %                                   porosity perturbation equation
-Control.Biotmodel = 'Tr1_Biot_UP';
+Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties - Ferronato (2010)
 % shear modulus [GPa]
