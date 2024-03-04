@@ -11,7 +11,7 @@ disp([num2str(toc),': Assembling System Matrices...']);
 [Kuu, Kup, Kpp, Muu, Mpu, S] = ComputeMatricesDyn1_Biot_UP(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Initialize iteration variables
-[Iteration, Plot] = initVariables(MeshU, MeshP, MeshN, Material, Control, BC, Muu);
+[Iteration, Plot] = initVariables(MeshU, MeshP, MeshN, Material, Control, BC);
 
 %% Initial condition file
 if plot2vtk
