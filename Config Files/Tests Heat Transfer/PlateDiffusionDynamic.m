@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateDiffusionDynamic(config_dir, progress_on,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateDiffusionDynamic(config_dir, progress_on,~,~)
 % 2D diffusion problem - dynamic case
 % Configuration file
 % ------------------------------------------------------------------------

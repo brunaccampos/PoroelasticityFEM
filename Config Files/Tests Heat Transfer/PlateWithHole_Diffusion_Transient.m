@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateWithHole_Diffusion_Transient(config_dir, progress_on,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateWithHole_Diffusion_Transient(config_dir, progress_on,~,~)
 % 2D diffusion problem - transient case
 % Configuration file
 % ------------------------------------------------------------------------

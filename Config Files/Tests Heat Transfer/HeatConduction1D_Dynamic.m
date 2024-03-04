@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = HeatConduction1D_Dynamic(config_dir, progress_on,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = HeatConduction1D_Dynamic(config_dir, progress_on,~,~)
 % Heat conduction in 1D
 % Configuration File
 % ------------------------------------------------------------------------
