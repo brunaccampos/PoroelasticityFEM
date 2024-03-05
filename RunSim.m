@@ -119,8 +119,12 @@ saveMatData_on = 0;
 progress_on = 1;
 % export video
 saveVideo_on = 0;
-% mesh file name
+% plot graphs
+plotGraphs_on = 1;
+% mesh file name (test files)
 meshfilename = '';
+% number of elements (test files, convergence study)
+nelements = 0;
 
 %% Directories
 VTKFolder = fullfile(VTKFolder, DirFolder);
@@ -143,7 +147,7 @@ clearvars -except VTKDir ConfigFile...
     exit_when_done print_log ...
     plot2vtk progress_on ...
     saveGraphs_on saveMatData_on ...
-    saveVideo_on meshfilename plotGraphs_on
+    saveVideo_on meshfilename plotGraphs_on nelements
 
 clearvars -global
 
