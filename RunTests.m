@@ -48,7 +48,7 @@ addpath(genpath(FuncDir));
 addpath(genpath(ConfigDir));
 
 % number of tests
-ntests = 10;
+ntests = 11;
 % initialize test summary
 testpasssummary = zeros(ntests,1);
     
@@ -96,6 +96,11 @@ run('Test Files/RunT9_ManSolL2')
 %   Pass condition: L2-norm converges at a rate of at least h^3
 %                    e-norm converges at a rate of at least h^2
 run('Test Files/RunT10_ManSolL3')
+
+%% Test 11: Manufactured Solution - Transient case convergence
+%   Pass condition: L2-norm converges at a rate of at least h^3
+%                    e-norm converges at a rate of at least h^2
+run('Test Files/RunT11_ManSolTransient')
 
 %% Summarize test results
 fprintf('\n\n%10s%10s', 'Test', 'Status')
