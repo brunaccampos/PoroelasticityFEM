@@ -27,12 +27,17 @@ if plot2vtk
     Control.step = 1;
 end
 
+msg_len = 1;
+fprintf('Step   ');
+
 %% Solve system
 for t = 1:length(Plot.time)
     % current time
     Control.t = Plot.time(t);
     % print current time and step
-    fprintf('\n Step %d, t = %d \n', Control.step, Control.t);
+    fprintf(repmat('\b',1,msg_len))
+    fprintf('%d',Control.step');
+    msg_len = numel(num2str(Control.step));
 
     % adapt time step size (dtc = dt current)
     if isfield(Control, 'dtmin') 
