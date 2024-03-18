@@ -48,7 +48,7 @@ addpath(genpath(FuncDir));
 addpath(genpath(ConfigDir));
 
 % number of tests
-ntests = 11;
+ntests = 12;
 % initialize test summary
 testpasssummary = zeros(ntests,1);
     
@@ -101,6 +101,11 @@ run('Test Files/RunT10_ManSolL3')
 %   Pass condition: L2-norm converges at a rate of at least h^3
 %                    e-norm converges at a rate of at least h^2
 run('Test Files/RunT11_ManSolTransient')
+
+%% Test 12: Poroelasticity - Consolidation problem
+%   Pass condition: Displacement and pressure are the same compared to
+%   analytical solution
+run('Test Files/RunT12_PMConsolidation')
 
 %% Summarize test results
 fprintf('\n\n%10s%10s', 'Test', 'Status')
