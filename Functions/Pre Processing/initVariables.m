@@ -29,7 +29,7 @@ if contains(Control.PMmodel, 'UPN')
 end
 
 % initialize variables for UPU model
-if contains(Control.PMmodel, 'UPU')
+if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     Iteration.uf_old = BC.initUf; % fluid displacement
     Iteration.ufdot_old = BC.initUfdot; % fluid velocity
     Iteration.uf2dot_old = zeros(MeshU.nDOF, 1); % fluid acceleration
@@ -64,7 +64,7 @@ Plot.u_time(1,1) = BC.initU(Control.plotu,1);
 Plot.p_time(1,1) = BC.initP(Control.plotp,1);
 Plot.udot_time(1,1) = BC.initUdot(Control.plotu,1);
 
-if contains(Control.PMmodel, 'UPU')
+if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     Plot.uf_time = zeros(length(Plot.time), 1); % fluid displacement
     Plot.ufdot_time = zeros(length(Plot.time), 1); % fluid velocity
     Plot.uf2dot_time = zeros(length(Plot.time), 1); % fluid acceleration
@@ -92,7 +92,7 @@ Plot.p_synthetic = zeros(length(Plot.time), length(Control.plotprow)); % fluid p
 if contains(Control.PMmodel, 'UPN')
     Plot.n_synthetic = zeros(length(Plot.time), length(Control.plotprow)); % porosity
 end
-if contains(Control.PMmodel, 'UPU')
+if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     Plot.uf_synthetic = zeros(length(Plot.time), length(Control.ploturow)); % fluid displacement
     Plot.ufdot_synthetic = zeros(length(Plot.time), length(Control.ploturow)); % fluid pressure
 end
@@ -105,7 +105,7 @@ Plot.u2dot_space = zeros(length(Control.plotu),1);
 Plot.pan_space = zeros(length(Control.plotp),1);
 Plot.uan_space = zeros(length(Control.plotu),1);
 
-if contains(Control.PMmodel, 'UPU')
+if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     Plot.uf_space = zeros(length(Control.plotu),1);
     Plot.ufdot_space = zeros(length(Control.plotu),1);
     Plot.uf2dot_space = zeros(length(Control.plotu),1);
