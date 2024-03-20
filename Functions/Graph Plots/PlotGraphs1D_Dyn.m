@@ -188,7 +188,7 @@ if contains(Control.PMmodel, 'UPN')
     end
 end
 
-if contains(Control.PMmodel, 'UPU')
+if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     figure;
     tiledlayout(2,3);
     %% fluid displacement vs time
