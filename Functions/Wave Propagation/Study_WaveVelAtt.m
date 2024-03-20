@@ -114,6 +114,11 @@ Material.k = 1.88e-13; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
 % Material.k = 1e-12; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
 
 %% Material parameters - dCS model
+% micro heterogeneity coefficient [-] (Quiroga, 2007)
+Material.c = 0;
+% Material.c = -0.5;
+% Material.c = -0.9;
+
 % porosity effective pressure coefficient (Spanos, 1989)
 % Material.n = 0; % lower limit
 Material.n = 1; % return to Biot
