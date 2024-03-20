@@ -18,6 +18,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Velocity [m/s]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 % slow P wave
@@ -30,6 +31,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Velocity [m/s]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 % fast S wave
@@ -42,6 +44,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Velocity [m/s]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 % slow S wave
@@ -54,6 +57,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Velocity [m/s]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 %% Plot attenuation 2D
@@ -67,6 +71,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Attenuation [1/m]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 % slow P wave
@@ -79,6 +84,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Attenuation [1/m]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 % fast S wave
@@ -91,6 +97,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Attenuation [1/m]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 % slow S wave
@@ -103,6 +110,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Attenuation [1/m]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 %% Initialize figure
@@ -120,6 +128,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Velocity [m/s]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 % slow P wave
@@ -132,6 +141,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Velocity [m/s]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 % fast S wave
@@ -144,6 +154,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Velocity [m/s]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 % slow S wave
@@ -156,6 +167,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Velocity [m/s]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 %% Plot attenuation 3D
@@ -169,6 +181,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Attenuation [1/m]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 % slow P wave
@@ -181,6 +194,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Attenuation [1/m]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 % fast S wave
@@ -193,6 +207,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Attenuation [1/m]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 % slow S wave
@@ -205,6 +220,7 @@ xlabel('Material parameter');
 ylabel('Frequency [Hz]');
 legend('Attenuation [1/m]');
 set(gca, 'XScale', 'log');
+set(gca, 'YScale', 'log');
 hold off
 
 end
