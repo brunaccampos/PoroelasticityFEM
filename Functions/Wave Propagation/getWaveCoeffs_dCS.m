@@ -20,9 +20,10 @@ deltas = Material.deltas; % compliance coefficient solid
 deltaf = Material.deltaf; % compliance coefficient fluid
 eta0 = Material.eta0; % porosity
 k = Material.k; % intrinsic permeability
+c = Material.c; % micro heterogeneity
 
 %% Auxiliar constants
-vps2 = (Ks+4*mus/3)/rhos;
+vps2 = (Ks+4*mus*(1+c)/3)/rhos;
 aps = muf*eta0^2/(k*rhos*(1-eta0));
 cps = rho12/(1-eta0)/rhos;
 dps = Ks*deltas/rhos/(1-eta0);
@@ -34,7 +35,7 @@ cpf = rho12/eta0/rhof;
 dpf = Kf*deltas/rhof/eta0;
 hpf = Kf*deltaf/rhof/eta0;
 mpf = xif*deltaf/rhof/eta0-xif/rhof-4*muf/3/rhof; % new in dCS
-rpf = xif*deltas/rhof/eta0; % new in dCS
+rpf = xif*deltas/rhof/eta0 + 4*(1-eta0)*muf*c/3/rhof/eta0; % new in dCS
 
 css = mus/rhos;
 dss = muf*eta0^2/(k*rhos*(1-eta0));
