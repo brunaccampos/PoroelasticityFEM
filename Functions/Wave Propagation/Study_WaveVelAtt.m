@@ -113,6 +113,51 @@ Material.k = 1.88e-13; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
 % Material.eta0 = 0.3; % porosity [-]
 % Material.k = 1e-12; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
 
+%% Material parameters (Fellah, 2004) - cancellous bone
+% Material.rhof = 1000; % fluid density [kg/m3]
+% Material.muf = 1e-3; % fluid dynamic viscosity [Pa s]
+% Material.Kf = 2.28e9; % fluid bulk modulus [Pa]
+% Material.xif = 3*Material.muf; % fluid bulk viscosity [Pa s]
+% 
+% Material.rhos = 1960; % solid density [kg/m3]
+% Material.mus = 2.6e9; % solid shear modulus [Pa]
+% Material.Ks = 20e9; % solid bulk modulus [Pa]
+% 
+% Material.rho12 = 0; % coupled density [kg/m3]
+% Material.alpha = 0.84; % Biot coefficient [-]
+% Material.eta0 = 0.83; % porosity [-]
+% Material.k = 3e-8; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
+
+%% Material parameters (Hosokawa, 1996) - cancellous bone
+% Material.rhof = 930; % fluid density [kg/m3]
+% Material.muf = 1.5; % fluid dynamic viscosity [Pa s]
+% Material.Kf = 2e9; % fluid bulk modulus [Pa]
+% Material.xif = 3*Material.muf; % fluid bulk viscosity [Pa s]
+% 
+% Material.rhos = 1960; % solid density [kg/m3]
+% Material.mus = 2.6e9; % solid shear modulus [Pa]
+% Material.Ks = 22e9; % solid bulk modulus [Pa]
+% 
+% Material.rho12 = 0; % coupled density [kg/m3]
+% Material.alpha = 1; % Biot coefficient [-]
+% Material.eta0 = 0.8; % porosity [-]
+% Material.k = 7e-9; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
+
+%% Material parameters (Cowin, 1999) - cancellous bone
+% Material.rhof = 930; % fluid density [kg/m3]
+% Material.muf = 1e-3; % fluid dynamic viscosity [Pa s]
+% Material.Kf = 2.3e9; % fluid bulk modulus [Pa]
+% Material.xif = 3*Material.muf; % fluid bulk viscosity [Pa s]
+% 
+% Material.rhos = 1960; % solid density [kg/m3]
+% Material.mus = 5e9; % solid shear modulus [Pa]
+% Material.Ks = 14e9; % solid bulk modulus [Pa]
+% 
+% Material.rho12 = 0; % coupled density [kg/m3]
+% Material.alpha = 0.14; % Biot coefficient [-]
+% Material.eta0 = 0.05; % porosity [-]
+% Material.k = 1.5e-20; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
+
 %% Material parameters - dCS model
 % micro heterogeneity coefficient [-] (Quiroga, 2007)
 Material.c = 0;
