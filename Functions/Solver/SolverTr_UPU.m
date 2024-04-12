@@ -13,21 +13,12 @@ function [Solution] = SolverTr_UPU(Kss, Ksp, Csf, Css, Kpf, Kps, Kpp, Kfp, Cff, 
 % ------------------------------------------------------------------------
 
 %% Iteration data
-if ~isempty(Iteration)
-    u_old = Iteration.u_old;
-    p_old = Iteration.p_old;
-    uf_old = Iteration.uf_old;
-    fs_old = Iteration.fu_old;
-    fp_old = Iteration.fp_old;
-    ff_old = Iteration.ff_old;
-else
-    u_old = zeros(length(Kss),1);
-    p_old = zeros(length(Kpp),1);
-    uf_old = zeros(length(Kff),1);
-    fs_old = zeros(length(Kss),1);
-    fp_old = zeros(length(Kpp),1);
-    ff_old = zeros(length(Kff),1);
-end
+u_old = Iteration.u_old;
+p_old = Iteration.p_old;
+uf_old = Iteration.uf_old;
+fs_old = Iteration.fu_old;
+fp_old = Iteration.fp_old;
+ff_old = Iteration.ff_old;
 
 % current time step
 dt = Control.dtc;

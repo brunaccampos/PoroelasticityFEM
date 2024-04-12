@@ -14,19 +14,11 @@ function [Solution] = SolverDyn_UP(Kuu, Kup, Kpp, M, Mhat, S, fu, fp, BC, Contro
 % ------------------------------------------------------------------------
 
 %% Iteration data
-if ~isempty(Iteration)
-    u_old = Iteration.u_old;
-    udot_old = Iteration.udot_old;
-    u2dot_old = Iteration.u2dot_old;
-    p_old = Iteration.p_old;
-    pdot_old = Iteration.pdot_old;
-else
-    u_old = zeros(length(Kuu),1);
-    udot_old = zeros(length(Kuu),1);
-    u2dot_old = zeros(length(Kuu),1);
-    p_old = zeros(length(Kpp),1);
-    pdot_old = zeros(length(Kpp),1);
-end
+u_old = Iteration.u_old;
+udot_old = Iteration.udot_old;
+u2dot_old = Iteration.u2dot_old;
+p_old = Iteration.p_old;
+pdot_old = Iteration.pdot_old;
 
 % current time step
 dt = Control.dtc;

@@ -13,21 +13,12 @@ function [Solution] = SolverTr_UPN(Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Ku
 % ------------------------------------------------------------------------
 
 %% Iteration data
-if ~isempty(Iteration)
-    u_old = Iteration.u_old;
-    p_old = Iteration.p_old;
-    n_old = Iteration.n_old;
-    fu_old = Iteration.fu_old;
-    fp_old = Iteration.fp_old;
-    fn_old = Iteration.fn_old;
-else
-    u_old = zeros(length(Kuu),1);
-    p_old = zeros(length(Kpp),1);
-    n_old = zeros(length(Knn),1);
-    fu_old = zeros(length(Kuu),1);
-    fp_old = zeros(length(Kpp),1);
-    fn_old = zeros(length(Knn),1);
-end
+u_old = Iteration.u_old;
+p_old = Iteration.p_old;
+n_old = Iteration.n_old;
+fu_old = Iteration.fu_old;
+fp_old = Iteration.fp_old;
+fn_old = Iteration.fn_old;
 
 % current time step
 dt = Control.dtc;

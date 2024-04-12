@@ -15,25 +15,14 @@ function [Solution] = SolverDyn_UPU_HHT(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, 
 % ------------------------------------------------------------------------
 
 %% Iteration data
-if ~isempty(Iteration)
-    u_old = Iteration.u_old;
-    udot_old = Iteration.udot_old;
-    u2dot_old = Iteration.u2dot_old;
-    p_old = Iteration.p_old;
-    pdot_old = Iteration.pdot_old;
-    uf_old = Iteration.uf_old;
-    ufdot_old = Iteration.ufdot_old;
-    uf2dot_old = Iteration.uf2dot_old;
-else
-    u_old = zeros(length(Kss),1);
-    udot_old = zeros(length(Kss),1);
-    u2dot_old = zeros(length(Kss),1);
-    p_old = zeros(length(Kpp),1);
-    pdot_old = zeros(length(Kpp),1);
-    uf_old = zeros(length(Kff),1);
-    ufdot_old = zeros(length(Kff),1);
-    uf2dot_old = zeros(length(Kff),1);
-end
+u_old = Iteration.u_old;
+udot_old = Iteration.udot_old;
+u2dot_old = Iteration.u2dot_old;
+p_old = Iteration.p_old;
+pdot_old = Iteration.pdot_old;
+uf_old = Iteration.uf_old;
+ufdot_old = Iteration.ufdot_old;
+uf2dot_old = Iteration.uf2dot_old;
 
 % current time step
 dt = Control.dtc;

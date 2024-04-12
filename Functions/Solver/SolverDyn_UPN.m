@@ -14,23 +14,13 @@ function [Solution] = SolverDyn_UPN(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, K
 % ------------------------------------------------------------------------
 
 %% Iteration data
-if ~isempty(Iteration)
-    u_old = Iteration.u_old;
-    udot_old = Iteration.udot_old;
-    u2dot_old = Iteration.u2dot_old;
-    p_old = Iteration.p_old;
-    pdot_old = Iteration.pdot_old;
-    n_old = Iteration.n_old;
-    ndot_old = Iteration.ndot_old;
-else
-    u_old = zeros(length(Kuu),1);
-    udot_old = zeros(length(Kuu),1);
-    u2dot_old = zeros(length(Kuu),1);
-    p_old = zeros(length(Kpp),1);
-    pdot_old = zeros(length(Kpp),1);
-    n_old = zeros(length(Knn),1);
-    ndot_old = zeros(length(Knn),1);
-end
+u_old = Iteration.u_old;
+udot_old = Iteration.udot_old;
+u2dot_old = Iteration.u2dot_old;
+p_old = Iteration.p_old;
+pdot_old = Iteration.pdot_old;
+n_old = Iteration.n_old;
+ndot_old = Iteration.ndot_old;
 
 % current time step
 dt = Control.dtc;

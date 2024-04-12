@@ -13,18 +13,10 @@ function [Solution] = SolverTr_UP(Kuu, Kup, Kpp, Kpu, S, fu, fp, BC, Control, It
 % ------------------------------------------------------------------------
 
 %% Iteration data
-if ~isempty(Iteration)
-    u_old = Iteration.u_old;
-    p_old = Iteration.p_old;
-    fu_old = Iteration.fu_old;
-    fp_old = Iteration.fp_old;
-else
-    % adapted for patch tests
-    u_old = zeros(length(Kuu),1);
-    p_old = zeros(length(Kpp),1);
-    fu_old = zeros(length(Kuu),1);
-    fp_old = zeros(length(Kpp),1);
-end
+u_old = Iteration.u_old;
+p_old = Iteration.p_old;
+fu_old = Iteration.fu_old;
+fp_old = Iteration.fp_old;
 
 % current time step
 dt = Control.dtc;
