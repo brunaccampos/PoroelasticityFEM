@@ -111,27 +111,27 @@ for e = 1:ne
         % assemble local matrices
         Kss_e = Kss_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         
-        Css_e = Css_e + Material.n^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1)- ...
+        Css_e = Css_e + Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1)- ...
             Material.xif*Material.deltaS * (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Csf_e = Csf_e + Material.n^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) + ...
-            (Material.n*Material.mu + Material.n*Material.xif + Material.n*Material.mu/3 - Material.xif*Material.deltaF) * ...
+        Csf_e = Csf_e + Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) + ...
+            (Material.eta0*Material.mu + Material.eta0*Material.xif + Material.eta0*Material.mu/3 - Material.xif*Material.deltaF) * ...
             (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Cff_e = Cff_e + Material.n^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) + ...
-            (Material.n*Material.mu + Material.n*Material.xif + Material.n*Material.mu/3 - Material.xif*Material.deltaF) * ...
+        Cff_e = Cff_e + Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) + ...
+            (Material.eta0*Material.mu + Material.eta0*Material.xif + Material.eta0*Material.mu/3 - Material.xif*Material.deltaF) * ...
             (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Cfs_e = Cfs_e + Material.n^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) - ...
+        Cfs_e = Cfs_e + Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) - ...
             Material.xif*Material.deltaS * (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
 
-        CssBiot = Material.n^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        CssBiot = Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         CssSpanos = - Material.xif*Material.deltaS * (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         test1 = (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         test2 = (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        CsfBiot = Material.n^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        CsfSpanos = (Material.n*Material.mu + Material.n*Material.xif + Material.n*Material.mu/3 - Material.xif*Material.deltaF) * ...
+        CsfBiot = Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        CsfSpanos = (Material.eta0*Material.mu + Material.eta0*Material.xif + Material.eta0*Material.mu/3 - Material.xif*Material.deltaF) * ...
             (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         
-        Mss_e = Mss_e + ((1-Material.n) * Material.rho_s - Material.rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Mff_e = Mff_e + (Material.n * Material.rho_f - Material.rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Mss_e = Mss_e + ((1-Material.eta0) * Material.rho_s - Material.rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Mff_e = Mff_e + (Material.eta0 * Material.rho_f - Material.rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         Msf_e = Msf_e + Material.rho12 * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
  
@@ -163,15 +163,15 @@ for e = 1:ne
 
         if MeshU.nsd == 2
             m = [1; 1; 0]; % mapping vector for plane stress
-            Ksp_e = Ksp_e + (Material.alpha - Material.n) * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Kfp_e = Kfp_e + Material.n * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Kps_e = Kps_e + (Material.deltaS / Material.n) * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Kpf_e = Kpf_e + (1 - Material.deltaF/Material.n) * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);            
+            Ksp_e = Ksp_e + (Material.alpha - Material.eta0) * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Kfp_e = Kfp_e + Material.eta0 * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Kps_e = Kps_e + (Material.deltaS / Material.eta0) * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Kpf_e = Kpf_e + (1 - Material.deltaF/Material.eta0) * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);            
         else
-            Ksp_e = Ksp_e + (Material.alpha - Material.n) * (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Kfp_e = Kfp_e + Material.n * (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Kps_e = Kps_e + (Material.deltaS / Material.n) * (NpVoigt.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Kpf_e = Kpf_e + (1 - Material.deltaF/Material.n) * (NpVoigt.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Ksp_e = Ksp_e + (Material.alpha - Material.eta0) * (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Kfp_e = Kfp_e + Material.eta0 * (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Kps_e = Kps_e + (Material.deltaS / Material.eta0) * (NpVoigt.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Kpf_e = Kpf_e + (1 - Material.deltaF/Material.eta0) * (NpVoigt.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
         end
     end
 

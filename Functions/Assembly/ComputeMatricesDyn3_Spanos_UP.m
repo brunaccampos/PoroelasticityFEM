@@ -101,18 +101,18 @@ for e = 1:ne
         % assemble local square matrices
         Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
         Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
-        S_e = S_e + (Material.n / Material.Kf)*(1/(1-Material.deltaF/Material.n)) * (NpVoigt.') * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
+        S_e = S_e + (Material.eta0 / Material.Kf)*(1/(1-Material.deltaF/Material.eta0)) * (NpVoigt.') * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
         Muu_e = Muu_e + Material.rho * (NuVoigt.') * NuVoigt * Material.t * Jdet * Quad.w(ip,1);
                         
         if MeshU.nsd == 2
             m = [1; 1; 0]; % mapping vector for plane stress
             Kup_e = Kup_e + Material.alpha * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
-            Kpu_e = Kpu_e + Material.n * (Material.n - Material.deltaF + Material.deltaS)/(Material.n - Material.deltaF) ...
+            Kpu_e = Kpu_e + Material.eta0 * (Material.eta0 - Material.deltaF + Material.deltaS)/(Material.eta0 - Material.deltaF) ...
                 * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
             Mpu_e = Mpu_e + Material.rho_f * Material.kf * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
         else
             Kup_e = Kup_e + Material.alpha * (BuVoigt.') * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
-            Kpu_e = Kpu_e + Material.n * (Material.n - Material.deltaF + Material.deltaS)/(Material.n - Material.deltaF) ...
+            Kpu_e = Kpu_e + Material.eta0 * (Material.eta0 - Material.deltaF + Material.deltaS)/(Material.eta0 - Material.deltaF) ...
                 * (NpVoigt.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
             Mpu_e = Mpu_e + Material.rho_f * Material.kf * (NpVoigt.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
         end
