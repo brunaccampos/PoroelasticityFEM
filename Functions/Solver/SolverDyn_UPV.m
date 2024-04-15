@@ -57,10 +57,10 @@ Ksp_EF = Kspbar(BC.fixed_u, BC.free_p);
 Ksp_FE = Kspbar(BC.free_u, BC.fixed_p);
 Ksp_FF = Kspbar(BC.free_u, BC.free_p);
 
-Ksf_EE = Ksfbar(BC.fixed_u, BC.fixed_uf);
-Ksf_EF = Ksfbar(BC.fixed_u, BC.free_uf);
-Ksf_FE = Ksfbar(BC.free_u, BC.fixed_uf);
-Ksf_FF = Ksfbar(BC.free_u, BC.free_uf);
+Ksf_EE = Ksfbar(BC.fixed_u, BC.fixed_ufdot);
+Ksf_EF = Ksfbar(BC.fixed_u, BC.free_ufdot);
+Ksf_FE = Ksfbar(BC.free_u, BC.fixed_ufdot);
+Ksf_FF = Ksfbar(BC.free_u, BC.free_ufdot);
 
 Kps_EE = Kpsbar(BC.fixed_p, BC.fixed_u);
 Kps_EF = Kpsbar(BC.fixed_p, BC.free_u);
@@ -72,25 +72,25 @@ Kpp_EF = Kppbar(BC.fixed_p, BC.free_p);
 Kpp_FE = Kppbar(BC.free_p, BC.fixed_p);
 Kpp_FF = Kppbar(BC.free_p, BC.free_p);
 
-Kpf_EE = Kpfbar(BC.fixed_p, BC.fixed_uf);
-Kpf_EF = Kpfbar(BC.fixed_p, BC.free_uf);
-Kpf_FE = Kpfbar(BC.free_p, BC.fixed_uf);
-Kpf_FF = Kpfbar(BC.free_p, BC.free_uf);
+Kpf_EE = Kpfbar(BC.fixed_p, BC.fixed_ufdot);
+Kpf_EF = Kpfbar(BC.fixed_p, BC.free_ufdot);
+Kpf_FE = Kpfbar(BC.free_p, BC.fixed_ufdot);
+Kpf_FF = Kpfbar(BC.free_p, BC.free_ufdot);
 
-Kfs_EE = Kfsbar(BC.fixed_uf, BC.fixed_u);
-Kfs_EF = Kfsbar(BC.fixed_uf, BC.free_u);
-Kfs_FE = Kfsbar(BC.free_uf, BC.fixed_u);
-Kfs_FF = Kfsbar(BC.free_uf, BC.free_u);
+Kfs_EE = Kfsbar(BC.fixed_ufdot, BC.fixed_u);
+Kfs_EF = Kfsbar(BC.fixed_ufdot, BC.free_u);
+Kfs_FE = Kfsbar(BC.free_ufdot, BC.fixed_u);
+Kfs_FF = Kfsbar(BC.free_ufdot, BC.free_u);
 
-Kfp_EE = Kfpbar(BC.fixed_uf, BC.fixed_p);
-Kfp_EF = Kfpbar(BC.fixed_uf, BC.free_p);
-Kfp_FE = Kfpbar(BC.free_uf, BC.fixed_p);
-Kfp_FF = Kfpbar(BC.free_uf, BC.free_p);
+Kfp_EE = Kfpbar(BC.fixed_ufdot, BC.fixed_p);
+Kfp_EF = Kfpbar(BC.fixed_ufdot, BC.free_p);
+Kfp_FE = Kfpbar(BC.free_ufdot, BC.fixed_p);
+Kfp_FF = Kfpbar(BC.free_ufdot, BC.free_p);
 
-Kff_EE = Kffbar(BC.fixed_uf, BC.fixed_uf);
-Kff_EF = Kffbar(BC.fixed_uf, BC.free_uf);
-Kff_FE = Kffbar(BC.free_uf, BC.fixed_uf);
-Kff_FF = Kffbar(BC.free_uf, BC.free_uf);
+Kff_EE = Kffbar(BC.fixed_ufdot, BC.fixed_ufdot);
+Kff_EF = Kffbar(BC.fixed_ufdot, BC.free_ufdot);
+Kff_FE = Kffbar(BC.free_ufdot, BC.fixed_ufdot);
+Kff_FF = Kffbar(BC.free_ufdot, BC.free_ufdot);
 
 % matrices reassemble
 KEE = [Kss_EE, Ksp_EE, Ksf_EE;
