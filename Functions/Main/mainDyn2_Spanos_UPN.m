@@ -10,9 +10,6 @@ disp([num2str(toc),': Model: Spanos u-p-n dynamic case']);
 disp([num2str(toc),': Assembling System Matrices...']);
 [Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesDyn2_Spanos_UPN(Material, MeshU, MeshP, MeshN, QuadU);
 
-%% Initialize iteration variables
-[Iteration, Plot] = initVariables(MeshU, MeshP, MeshN, Material, Control, BC);
-
 %% Initial condition file
 if plot2vtk
     % time domain solution

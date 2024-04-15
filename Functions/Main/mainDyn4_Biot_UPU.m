@@ -10,9 +10,6 @@ disp([num2str(toc),': Model: Biot u-p-U dynamic case']);
 disp([num2str(toc),': Assembling System Matrices...']);
 [Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs] = ComputeMatricesDyn4_Biot_UPU(Material, MeshU, MeshP, QuadU, QuadP);
 
-%% Initialize iteration variables
-[Iteration, Plot] = initVariables(MeshU, MeshP, MeshN, Material, Control, BC);
-
 %% Initial condition file
 if plot2vtk
     % time domain solution
