@@ -217,6 +217,11 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     xlabel('Time [s]');
     ylabel('udot (fluid) [m/s]');
     title(sprintf('Fluid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
+    % analytical solution
+    if Control.plotansol && contains(Control.PMmodel, 'UPV')
+        plot(Plot.time, Plot.ufdotan_time,'k:','LineWidth',2);
+        legend('Numerical', 'Analytical');
+    end
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'VelFluid_time.png','Resolution',300)
@@ -261,6 +266,11 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     xlabel('Column depth [m]');
     ylabel('udot (fluid) [m]');
     title(sprintf('Fluid velocity at t = %.1d s', Control.tend));
+    % analytical solution
+    if Control.plotansol && contains(Control.PMmodel, 'UPV')
+        plot(MeshU.coords, Plot.ufdotan_space,'k:','LineWidth',2);
+        legend('Numerical', 'Analytical');
+    end
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'VelFluid_depth.png','Resolution',300)
