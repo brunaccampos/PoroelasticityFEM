@@ -126,15 +126,15 @@ ffbar = ff + Mff*(1/xi/dt*ufdot_old - (1-1/xi)*uf2dot_old) + (Mfs/beta/dt^2 - Cf
 
 fuF = fubar(BC.free_u);
 fpF = fpbar(BC.free_p);
-ffF = ffbar(BC.free_uf);
+ffF = ffbar(BC.free_ufdot);
 
 fuE = fubar(BC.fixed_u);
 fpE = fpbar(BC.fixed_p);
-ffE = ffbar(BC.fixed_uf);
+ffE = ffbar(BC.fixed_ufdot);
 
 uE = BC.fixed_u_value(Control.t);
 pE = BC.fixed_p_value(Control.t);
-vE = BC.fixed_uf_value(Control.t);
+vE = BC.fixed_ufdot_value(Control.t);
 
 dE = [uE; pE; vE];
 fE = [fuE; fpE; ffE];
@@ -163,8 +163,8 @@ u(BC.fixed_u, 1) = uE;
 u(BC.free_u, 1) = uF;
 p(BC.fixed_p, 1) = pE;
 p(BC.free_p, 1) = pF;
-ufdot(BC.fixed_uf, 1) = vE;
-ufdot(BC.free_uf, 1) = vF;
+ufdot(BC.fixed_ufdot, 1) = vE;
+ufdot(BC.free_ufdot, 1) = vF;
 
 %% Velocity and acceleration
 udot = (u - u_old)*gamma/(beta*dt) - udot_old * (gamma/beta -1) - u2dot_old * dt * (gamma/(2*beta)-1);
