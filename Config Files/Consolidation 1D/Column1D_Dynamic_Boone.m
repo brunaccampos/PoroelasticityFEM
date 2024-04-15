@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Boone(config_dir, progress_on,~,~)
+ function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Boone(~, progress_on,~,~)
 % Column Consolidation 1D simulation
 % Configuration File
 % ------------------------------------------------------------------------

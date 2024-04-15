@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1D_Biot(config_dir, progress_on,~,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1D_Biot(~, progress_on,~,~)
 % ------------------------------------------------------------------------
 % Manufactured solution in 1D
 % u = sin(xt)

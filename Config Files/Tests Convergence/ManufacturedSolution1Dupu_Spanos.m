@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dupu_Spanos(config_dir, progress_on,~,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dupu_Spanos(~, progress_on,~,~)
 % ------------------------------------------------------------------------
 % Manufactured solution in 1D
 % us = sin(F1*x + F2*t)

@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dupv_Biot(config_dir, progress_on,~,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dupv_Biot(~, progress_on,~,~)
 % ------------------------------------------------------------------------
 % Manufactured solution in 1D
 % us = sin(x*t)/1000
