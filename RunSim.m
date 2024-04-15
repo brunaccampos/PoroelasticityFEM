@@ -7,8 +7,6 @@
 % ------------------------------------------------------------------------
 % Reference: https://github.com/GCMLab
 % ------------------------------------------------------------------------
-% Version 6 (07/26/22): update porosity field for time and spatial
-% variation
 
 %% Clear variables and initialize code
 clearvars
