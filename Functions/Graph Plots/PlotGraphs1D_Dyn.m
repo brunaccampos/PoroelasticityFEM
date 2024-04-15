@@ -163,7 +163,7 @@ if contains(Control.PMmodel, 'UPN')
     tiledlayout(1,2);
     %% porosity vs depth
     nexttile
-    plot(MeshN.coords, Solution.n ./ Material.n,'g','LineWidth',2);
+    plot(MeshN.coords, Solution.n ./ Material.eta0,'g','LineWidth',2);
     hold on
     grid on
     xlabel('Column depth [m]');
@@ -176,7 +176,7 @@ if contains(Control.PMmodel, 'UPN')
 
     %% porosity vs time
     nexttile
-    plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
+    plot(Plot.time, Plot.n_time ./ Material.eta0,'g','LineWidth',2);
     hold on
     grid on
     xlabel('Time [s]');

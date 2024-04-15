@@ -22,7 +22,7 @@ Iteration.fp_old = zeros(MeshP.nDOF, 1); % flux vector
 if contains(Control.PMmodel, 'UPN')
     % initial porosity condition
     Iteration.n_old = zeros(MeshN.nDOF, 1);
-    Iteration.n_old(:) = Material.n;
+    Iteration.n_old(:) = Material.eta0;
     Iteration.ndot_old = zeros(MeshN.nDOF, 1);
     % load vector
     Iteration.fn_old = zeros(MeshN.nDOF, 1); % flux vector
@@ -82,7 +82,7 @@ end
 % porosity
 if contains(Control.PMmodel, 'UPN')
     Plot.n_time = zeros(length(Plot.time), 1);
-    Plot.n_time(1,1) = Material.n;
+    Plot.n_time(1,1) = Material.eta0;
 end  
 
 %% Plot arrays - synthetics
@@ -127,7 +127,7 @@ if Control.freqDomain
     Iteration.xpFdot_old = (phi_p) \ Iteration.pFdot_old(BC.free_p);
     if contains(Control.PMmodel, 'UPN')
         Iteration.nF_old = zeros(MeshN.nDOF, 1); % porosity variable storage
-        Iteration.nF_old(:) = Material.n;
+        Iteration.nF_old(:) = Material.eta0;
         Iteration.nFdot_old = zeros(MeshN.nDOF, 1); % porosity gradient
         Iteration.xnF_old = (phi_n) \ Iteration.nF_old(BC.free_n);
         Iteration.xnFdot_old = (phi_n) \ Iteration.nFdot_old(BC.free_n);

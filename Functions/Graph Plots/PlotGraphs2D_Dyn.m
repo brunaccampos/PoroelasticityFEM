@@ -74,7 +74,7 @@ end
 %% porosity vs time
 if contains(Control.PMmodel, 'UPN')
     nexttile
-    plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
+    plot(Plot.time, Plot.n_time ./ Material.eta0,'g','LineWidth',2);
     hold on
     grid on
     xlabel('Time [s]');

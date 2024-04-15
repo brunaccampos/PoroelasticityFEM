@@ -79,7 +79,7 @@ end
 %% porosity vs time
 if contains(Control.PMmodel, 'UPN')
     nexttile
-    plot(Plot.time, Plot.n_time ./ Material.n,'g','LineWidth',2);
+    plot(Plot.time, Plot.n_time ./ Material.eta0,'g','LineWidth',2);
     hold on
     grid on
     xlabel('Time [s]');
@@ -147,7 +147,7 @@ if Control.fixedDepthPlotON
     if contains (Control.PMmodel,'UPN')
         %% porosity for fixed coord
         nexttile
-        plot(MeshN.coords(Control.plotprow,2), (Plot.nrow - Material.n)./ Material.n,'g','LineWidth',2);
+        plot(MeshN.coords(Control.plotprow,2), (Plot.nrow - Material.eta0)./ Material.eta0,'g','LineWidth',2);
         hold on
         grid on
         xlabel('y [m]');

@@ -18,7 +18,7 @@ end
 f = (f_min:10:f_max);
 
 %% Material parameters
-n = Material.n; % porosity [-]
+n = Material.eta0; % porosity [-]
 k = Material.k; % intrinsic permeability [m2]
 Kf = Material.Kf; % fluid bulk modulus [Pa]
 Ks = Material.Ks; % solid bulk modulus [Pa]

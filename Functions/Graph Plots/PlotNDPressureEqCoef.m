@@ -8,19 +8,19 @@ function PlotNDPressureEqCoef(Material)
 n = (0:0.01:Material.Ks/Material.Kf);
 
 % deltas
-deltaF = (Material.alpha - Material.n) * Material.n * n / Material.Ks ./ (Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks);
-deltaS = (Material.alpha - Material.n) * Material.n / Material.Kf ./ (Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks);
+deltaF = (Material.alpha - Material.eta0) * Material.eta0 * n / Material.Ks ./ (Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks);
+deltaS = (Material.alpha - Material.eta0) * Material.eta0 / Material.Kf ./ (Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks);
 
 % find position where n = 1
 index = find (n == 1);
 
 % coefficient for Kps
-hi1 = deltaS/Material.n;
+hi1 = deltaS/Material.eta0;
 % values normalized with n=1
 hi1norm = hi1./hi1(index);
 
 % coefficient for Kpf
-hi2 = (1 - deltaF/Material.n);
+hi2 = (1 - deltaF/Material.eta0);
 % normalized values
 hi2norm = hi2./hi2(index);
 
