@@ -68,14 +68,25 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     Plot.uf_time = zeros(length(Plot.time), 1); % fluid displacement
     Plot.ufdot_time = zeros(length(Plot.time), 1); % fluid velocity
     Plot.uf2dot_time = zeros(length(Plot.time), 1); % fluid acceleration
-    Plot.ufan_time = zeros(length(Plot.time),1); % analytic fluid displacement
-    
+        
     % store initial conditions
     Plot.uf_time(1,1) = BC.initUf(Control.plotu,1);
     Plot.ufdot_time(1,1) = BC.initUfdot(Control.plotu,1);
-    if Control.plotansol
+    
+    % store boundary conditions
+%     if Control.plotansol
+%         Plot.ufan_time = zeros(length(Plot.time),1); % analytic fluid displacement
+%         aux3 = Control.uf_an(0);
+%         Plot.ufan_time(1,1) = aux3(Control.plotu);
+%     end
+    if Control.plotansol && contains(Control.PMmodel, 'UPU')
+        Plot.ufan_time = zeros(length(Plot.time),1); % analytic fluid displacement
         aux3 = Control.uf_an(0); 
         Plot.ufan_time(1,1) = aux3(Control.plotu);
+    elseif Control.plotansol && contains(Control.PMmodel, 'UPV')
+        Plot.ufan_time = zeros(length(Plot.time),1); % analytic fluid velocity
+           aux4 = Control.ufdot_an(0);
+           Plot.ufdotan_time(1,1) = aux4(Control.plotu);
     end
 end
 
@@ -109,6 +120,8 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     Plot.uf_space = zeros(length(Control.plotu),1);
     Plot.ufdot_space = zeros(length(Control.plotu),1);
     Plot.uf2dot_space = zeros(length(Control.plotu),1);
+    Plot.ufan_space = zeros(length(Control.plotu),1);
+    Plot.ufdotan_space = zeros(length(Control.plotu),1);
 end
 
 end
