@@ -57,9 +57,9 @@ Material.Kf = 1/(4.4e-4) *1e-3;
 % fluid bulk viscosity [GPa s]
 Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
 % material porosity
-Material.n = 0.375;
+Material.eta0 = 0.375;
 % 1/Q (related to storage coefficient)
-Material.Minv = Material.n/Material.Kf;
+Material.Minv = Material.eta0/Material.Kf;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -78,7 +78,7 @@ n = 1; % return to Biot
 
 % porosity equation coefficients
 Material.deltaF = 0;
-Material.deltaS = Material.alpha - Material.n;
+Material.deltaS = Material.alpha - Material.eta0;
 
 %% Mesh parameters
 if progress_on

@@ -35,9 +35,9 @@ Material.Kf = 3.3;
 % solid bulk modulus [GPa]
 Material.Ks = 36;
 % material porosity
-Material.n = 0.19;
+Material.eta0 = 0.19;
 % 1/Q (related to storage coefficient)
-Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
+Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;

@@ -41,7 +41,7 @@ Material.alpha = 1;
 % 1/Q (related to storage coefficient)
 Material.Minv = 0;
 % porosity
-Material.n = 0.3;
+Material.eta0 = 0.3;
 
 % additional coefficients for analytical result
 % Lame constant [GPa]
@@ -72,7 +72,7 @@ n = 1; % return to Biot
  
 % porosity equation coefficients
 Material.deltaF = 0;
-Material.deltaS = Material.alpha - Material.n;
+Material.deltaS = Material.alpha - Material.eta0;
 
 %% Mesh parameters
 if progress_on

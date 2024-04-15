@@ -47,9 +47,9 @@ Material.Ks = 36;
 % fluid bulk viscosity [GPa s]
 Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
 % material porosity
-Material.n = 0.19;
+Material.eta0 = 0.19;
 % 1/Q (related to storage coefficient)
-Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
+Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
 
 % additional coefficients for analytical result
 % Lame constant [GPa]
@@ -77,12 +77,12 @@ n = 1; % return to Biot
 % n = Material.Ks/Material.Kf; % upper limit
 
 % modified storage coefficient (Muller, 2019)
-Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks; 
+Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks; 
 Mstar = 1/Mstarinv;
 
 % porosity equation coefficients
-Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
-Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
+Material.deltaF = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
+Material.deltaS = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
 
 %% Mesh parameters
 if progress_on

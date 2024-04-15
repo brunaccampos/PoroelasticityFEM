@@ -46,7 +46,7 @@ Material.Kf = 3.3;
 % solid bulk modulus [GPa]
 Material.Ks = 36;
 % material porosity
-Material.n = 0.19;
+Material.eta0 = 0.19;
 % 1/Q (related to storage coefficient)
 Material.Minv = 0;
 % fluid bulk viscosity [GPa s]
@@ -56,7 +56,7 @@ Material.rho_f = 1000e-9;
 % solid density [10^9 kg/m3]
 Material.rho_s = 2600e-9;
 % average density of the medium
-Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
+Material.rho = Material.eta0*Material.rho_f + (1-Material.eta0)*Material.rho_s;
 
 % additional coefficients for analytical result
 % Lame constant [GPa]
@@ -82,11 +82,11 @@ n = 1; % return to Biot
 % n = Material.Ks/Material.Kf; % upper limit
 
 % modified storage coefficient (Muller, 2019)
-Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks; 
+Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks; 
 Mstar = 1/Mstarinv;
 
-Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
-Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar /Material.Kf;
+Material.deltaF = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
+Material.deltaS = (Material.alpha - Material.eta0) * Material.eta0 * Mstar /Material.Kf;
 
 %% Mesh parameters
 if progress_on
@@ -162,11 +162,11 @@ BC.pointLoad = [];
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.bs = @(x,t) (Material.E * t^2 * sin(x*t) + (Material.alpha-Material.n)*t*(cos(x*t)^2-sin(x*t)^2) -...
-    (1-Material.n)*Material.rho_s*x^2*sin(x*t) - Material.mu*Material.n^2/Material.k*(1-x)*cos(x*t))./1000;
+BC.bs = @(x,t) (Material.E * t^2 * sin(x*t) + (Material.alpha-Material.eta0)*t*(cos(x*t)^2-sin(x*t)^2) -...
+    (1-Material.eta0)*Material.rho_s*x^2*sin(x*t) - Material.mu*Material.eta0^2/Material.k*(1-x)*cos(x*t))./1000;
 
-BC.bf = @(x,t) (Material.n*(cos(x*t)^2-sin(x*t)^2) - Material.n*Material.rho_f*x*sin(x*t) + ...
-    Material.mu*Material.n^2/Material.k*(1-x)*cos(x*t))./1000;
+BC.bf = @(x,t) (Material.eta0*(cos(x*t)^2-sin(x*t)^2) - Material.eta0*Material.rho_f*x*sin(x*t) + ...
+    Material.mu*Material.eta0^2/Material.k*(1-x)*cos(x*t))./1000;
 
 %% Neumann BCs - fluid
 % point flux [m/s]
@@ -176,8 +176,8 @@ BC.pointFlux = [];
 BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x,t) (Material.Minv*x*(cos(x*t)^2-sin(x*t)^2) + (Material.alpha-Material.n)*(cos(x*t)-x*t*sin(x*t)) - ...
-    Material.n*t*sin(x*t))./1000;
+BC.s = @(x,t) (Material.Minv*x*(cos(x*t)^2-sin(x*t)^2) + (Material.alpha-Material.eta0)*(cos(x*t)-x*t*sin(x*t)) - ...
+    Material.eta0*t*sin(x*t))./1000;
 
 %% Quadrature order
 Control.nqU = 3;

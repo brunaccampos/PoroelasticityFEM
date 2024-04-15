@@ -39,7 +39,7 @@ Material.mu = 1e-12;
 % intrinsic permeability [m2]
 Material.k = Material.kf * Material.mu;
 % material porosity
-Material.n = 0.33;
+Material.eta0 = 0.33;
 % Biot's coefficient
 Material.alpha = 1;
 % fluid density [10^9 kg/m3]
@@ -47,7 +47,7 @@ Material.rho_f = 1000e-9;
 % solid density [10^9 kg/m3]
 Material.rho_s = 2000e-9;
 % average density of the medium
-Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
+Material.rho = Material.eta0*Material.rho_f + (1-Material.eta0)*Material.rho_s;
 % 1/Q (related to storage coefficient)
 Material.Minv = 0;
 

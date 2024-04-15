@@ -40,7 +40,7 @@ Material.Kf = 2.1;
 % solid bulk modulus [GPa]
 Material.Ks = 1e11;
 % material porosity
-Material.n = 0.3;
+Material.eta0 = 0.3;
 % Biot's coefficient
 Material.alpha = 1;
 % fluid density [10^9 kg/m3]
@@ -48,9 +48,9 @@ Material.rho_f = 1000e-9;
 % solid density [10^9 kg/m3]
 Material.rho_s = 2000e-9;
 % average density of the medium
-Material.rho = Material.n*Material.rho_f + (1-Material.n)*Material.rho_s;
+Material.rho = Material.eta0*Material.rho_f + (1-Material.eta0)*Material.rho_s;
 % 1/Q (related to storage coefficient)
-Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
+Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;

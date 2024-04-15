@@ -41,7 +41,7 @@ Material.mu = 1e-12;
 % intrinsic permeability [m2]
 Material.k = Material.kf * Material.mu;
 % material porosity
-Material.n = 0.33;
+Material.eta0 = 0.33;
 % Biot's coefficient
 Material.alpha = 1;
 % 1/Q (related to storage coefficient)
@@ -53,7 +53,7 @@ Material.Minv = 0;
 % % solid bulk modulus [GPa]
 % Material.Ks = 36;
 % % 1/Q (related to storage coefficient)
-% Material.Minv = (Material.alpha - Material.n)/Material.Ks + Material.n/Material.Kf;
+% Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;
@@ -75,16 +75,16 @@ n = 1; % return to Biot
  
 % porosity equation coefficients
 Material.deltaF = 0;
-Material.deltaS = Material.alpha - Material.n;
+Material.deltaS = Material.alpha - Material.eta0;
 
 % % alternative equations for compressible materials
 % % modified storage coefficient (Muller, 2019)
-% Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks; 
+% Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks; 
 % Mstar = 1/Mstarinv;
 % 
 % % porosity equation coefficients
-% Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
-% Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
+% Material.deltaF = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
+% Material.deltaS = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
 
 %% Mesh parameters
 if progress_on

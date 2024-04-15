@@ -39,7 +39,7 @@ Material.Kf = 0.6106e-4;
 % solid bulk modulus [GPa]
 Material.Ks = 0.5005e-5;
 % material porosity
-Material.n = 0.333;
+Material.eta0 = 0.333;
 % Biot's coefficient
 Material.alpha = 0.667;
 % fluid density [10^9 kg/m3]
@@ -47,7 +47,7 @@ Material.rho_f = 0.2977e-9;
 % average density of the medium [10^9 kg/m3]
 Material.rho = 0.306e-9;
 % solid density [10^9 kg/m3]
-Material.rho_s = (Material.rho - Material.n*Material.rho_f) / (1 - Material.n);
+Material.rho_s = (Material.rho - Material.eta0*Material.rho_f) / (1 - Material.eta0);
 % 1/Q (related to storage coefficient)
 Material.Minv = 1/(0.1385e5);
 % fluid bulk viscosity [GPa s]
@@ -69,12 +69,12 @@ Material.constLaw = 'PlaneStrain';
 n = Material.Ks/Material.Kf; % upper limit
 
 % modified storage coefficient (Muller, 2019)
-Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.n)/Material.Ks; 
+Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks; 
 Mstar = 1/Mstarinv;
 
 % porosity equation coefficients
-Material.deltaF = (Material.alpha - Material.n) * Material.n * Mstar * n / Material.Ks;
-Material.deltaS = (Material.alpha - Material.n) * Material.n * Mstar / Material.Kf;
+Material.deltaF = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
+Material.deltaS = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
 
 %% Mesh parameters
 if progress_on
