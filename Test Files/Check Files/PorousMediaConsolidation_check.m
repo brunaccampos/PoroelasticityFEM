@@ -1,4 +1,4 @@
-function [disp_er, press_er] = PorousMediaConsolidation_check(Solution, MeshU, MeshP, Material, Control, QuadU, BC)
+function [disp_er, press_er] = PorousMediaConsolidation_check(Solution, MeshU, MeshP, Material, Control, ~, BC)
 % Calculates the error between the FE approximation and the analytical
 % solution of a porous media consolidation example in one dimension
 % ------------------------------------------------------------------------
