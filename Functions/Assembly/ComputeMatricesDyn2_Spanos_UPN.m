@@ -146,21 +146,21 @@ for e = 1:ne
         
         % assemble local square matrices p-n
         Kpn_e = Kpn_e + (NpVoigt.') * NnVoigt  * Material.t * Jdet * Quad.w(ip,1);
-        Knp_e = Knp_e + Material.deltaF * Material.kf / Material.eta0 * (BnVoigt.') * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
+        Knp_e = Knp_e + Material.deltaf * Material.kf / Material.eta0 * (BnVoigt.') * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
                 
         if MeshU.nsd == 2
             m = [1; 1; 0]; % mapping vector for plane stress
             Kup_e = Kup_e + Material.alpha * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
             Kpu_e = Kpu_e + Material.eta0 * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
-            Knu_e = Knu_e + (Material.deltaF - Material.deltaS) * (NnVoigt.') * (m.') * BuVoigt  * Material.t * Jdet * Quad.w(ip,1);
-            Mpu_e = Mpu_e + Material.rho_f * Material.kf * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
-            Mnu_e = Mnu_e + Material.deltaF * Material.rho_f * Material.kf / Material.eta0 * (NnVoigt.') * (m.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
+            Knu_e = Knu_e + (Material.deltaf - Material.deltas) * (NnVoigt.') * (m.') * BuVoigt  * Material.t * Jdet * Quad.w(ip,1);
+            Mpu_e = Mpu_e + Material.rhof * Material.kf * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
+            Mnu_e = Mnu_e + Material.deltaf * Material.rhof * Material.kf / Material.eta0 * (NnVoigt.') * (m.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
         else
             Kup_e = Kup_e + Material.alpha * (BuVoigt.') * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
             Kpu_e = Kpu_e + Material.eta0 * (NpVoigt.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
-            Knu_e = Knu_e + (Material.deltaF - Material.deltaS) * (NnVoigt.') * BuVoigt  * Material.t * Jdet * Quad.w(ip,1);
-            Mpu_e = Mpu_e + Material.rho_f * Material.kf * (NpVoigt.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
-            Mnu_e = Mnu_e + Material.deltaF * Material.rho_f * Material.kf / Material.eta0 * (NnVoigt.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
+            Knu_e = Knu_e + (Material.deltaf - Material.deltas) * (NnVoigt.') * BuVoigt  * Material.t * Jdet * Quad.w(ip,1);
+            Mpu_e = Mpu_e + Material.rhof * Material.kf * (NpVoigt.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
+            Mnu_e = Mnu_e + Material.deltaf * Material.rhof * Material.kf / Material.eta0 * (NnVoigt.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
         end
     end
     

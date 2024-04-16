@@ -240,7 +240,7 @@ if contains(Control.PMmodel, 'UPN')
                 [N,~] = lagrange_basis(MeshN, coord);
                 Nvoigt = getNVoigt(MeshN, N');
                 % element load vector
-                fn_e = fn_e - (Material.deltaF/Material.eta0) * Nvoigt.' * fluxValue(j,:)';
+                fn_e = fn_e - (Material.deltaf/Material.eta0) * Nvoigt.' * fluxValue(j,:)';
                 % update counting
                 count(j) = 1;
             end
@@ -267,9 +267,9 @@ if ~isempty(BC.pointFlux)
     end
     if contains(Control.PMmodel,'UPN')
         if isa(BC.pointFlux,'function_handle')
-            fn = fn - (Material.deltaF/Material.eta0) * BC.pointFlux(Control.t);
+            fn = fn - (Material.deltaf/Material.eta0) * BC.pointFlux(Control.t);
         else
-            fn = fn - (Material.deltaF/Material.eta0) * BC.pointFlux;
+            fn = fn - (Material.deltaf/Material.eta0) * BC.pointFlux;
         end
     end
 end

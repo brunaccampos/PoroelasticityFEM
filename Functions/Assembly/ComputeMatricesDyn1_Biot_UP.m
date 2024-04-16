@@ -134,10 +134,10 @@ for e = 1:ne
         if MeshU.nsd == 2
             m = [1; 1; 0]; % mapping vector for plane stress
             Kup_e = Kup_e + Material.alpha * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Mpu_e = Mpu_e + Material.rho_f * Material.kf * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Mpu_e = Mpu_e + Material.rhof * Material.kf * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
         else
             Kup_e = Kup_e + Material.alpha * (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Mpu_e = Mpu_e + Material.rho_f * Material.kf * (NpVoigt.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+            Mpu_e = Mpu_e + Material.rhof * Material.kf * (NpVoigt.') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
         end
     end
 

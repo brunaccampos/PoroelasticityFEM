@@ -6,14 +6,14 @@ function PlotDelta(Material)
 % parameter n
 n = (0:0.01:Material.Ks/Material.Kf);
 % deltas
-deltaF = (Material.alpha - Material.eta0) * Material.eta0 * n / Material.Ks ./ (Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks);
-deltaS = (Material.alpha - Material.eta0) * Material.eta0 / Material.Kf ./ (Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks);
+deltaf = (Material.alpha - Material.eta0) * Material.eta0 * n / Material.Ks ./ (Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks);
+deltas = (Material.alpha - Material.eta0) * Material.eta0 / Material.Kf ./ (Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks);
 
 % plot
 figure;
-plot(n, deltaF, 'LineWidth', 1.5);
+plot(n, deltaf, 'LineWidth', 1.5);
 hold on
-plot(n, deltaS, 'LineWidth', 1.5);
+plot(n, deltas, 'LineWidth', 1.5);
 grid on
 xline(1, '--', 'LineWidth', 1.5);
 xlabel('n');

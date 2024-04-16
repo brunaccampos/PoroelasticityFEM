@@ -20,12 +20,12 @@ P = BC.pointLoadValue;
 t = Control.t;
 
 % material parameters
-mu = Material.G;
+mu = Material.mu;
 M = 1/Material.Minv;
 alpha = Material.alpha;
 Ku = Material.lambda + 2*mu/3 + alpha^2*M;
 cm = 1/(Material.lambda + 2*mu);
-c = Material.kh/(Material.rho_f*Material.g*(Material.Minv + alpha^2*cm));
+c = Material.kh/(Material.rhof*Material.g*(Material.Minv + alpha^2*cm));
 
 % initial displacement after instantaneous load
 u0 = P*(L-x)/(Ku + 4*mu/3);

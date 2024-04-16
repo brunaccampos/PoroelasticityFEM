@@ -16,7 +16,7 @@ L = max(MeshU.coords);
 syms x
 
 % additional material parameters
-G = Material.E/(2*(1+Material.nu)); % shear modulus [Pa]
+mu = Material.E/(2*(1+Material.nu)); % shear modulus [Pa]
 lambda = Material.E*Material.nu/((1+Material.nu)*(1-2*Material.nu)); % Lamé constant [Pa]
 
 aux1 = 0; % u
@@ -27,7 +27,7 @@ aux3 = 0; % p
 N = 100;
 
 % dimensionless time
-td = (lambda + 2*G)*Material.k * Control.t / (Material.mu * L^2);
+td = (lambda + 2*mu)*Material.k * Control.t / (Material.muf * L^2);
 
 % loop of N terms
 for n = 0:N
@@ -39,7 +39,7 @@ end
 
 % displacement
 ud = 1 - x - aux1;
-u_an = ud * BC.pointLoadValue * L/(lambda + 2*G);
+u_an = ud * BC.pointLoadValue * L/(lambda + 2*mu);
 
 % pressure
 pd = aux3;

@@ -22,19 +22,19 @@ n = Material.eta0; % porosity [-]
 k = Material.k; % intrinsic permeability [m2]
 Kf = Material.Kf; % fluid bulk modulus [Pa]
 Ks = Material.Ks; % solid bulk modulus [Pa]
-mu = Material.mu; % dynamic viscosity [Pa s]
-rhos = Material.rho_s; % solid density [kg/m^3]
-rhof = Material.rho_f; % fluid density [kg/m^3]
+muf = Material.muf; % dynamic viscosity [Pa s]
+rhos = Material.rhos; % solid density [kg/m^3]
+rhof = Material.rhof; % fluid density [kg/m^3]
 
 %% Spanos parameters
-deltaF = Material.deltaF;
-deltaS = Material.deltaS;
+deltaf = Material.deltaf;
+deltas = Material.deltas;
 
 %% Biot parameters
-A = (1-n-deltaS) * Ks - (1-n)*mu*2/3; % Lamé constant
-N = (1-n) * mu; % Lamé constant
-Q = Kf * deltaS; % coupling term
-R = n * Kf * (1-deltaF/n);
+A = (1-n-deltas) * Ks - (1-n)*muf*2/3; % Lamé constant
+N = (1-n) * muf; % Lamé constant
+Q = Kf * deltas; % coupling term
+R = n * Kf * (1-deltaf/n);
 P = A + 2*N;
 H = P + R + 2*Q;
 rho11 = (1-n)*rhos;
@@ -50,7 +50,7 @@ gamma22 = rho22/rho;
 gamma12 = 0;
 
 % characteristic frequency
-fc = mu*n^2/(k*2*pi*rho*(gamma12+gamma22));
+fc = muf*n^2/(k*2*pi*rho*(gamma12+gamma22));
 
 % current frequency ratio
 ratio = f0/fc;
