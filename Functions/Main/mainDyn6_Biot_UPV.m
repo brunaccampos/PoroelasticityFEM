@@ -57,19 +57,19 @@ for t = 1:length(Plot.time)
     
     % analytical solution for 1D case
     if Control.plotansol
-        [p_an, u_an, uf_an] = feval(Control.ansol_type, Control, Material, MeshU, MeshP, BC);
+        [p_an, u_an, ufdot_an] = feval(Control.ansol_type, Control, Material, MeshU, MeshP, BC);
        
         % store variables over length
         Plot.pan_space = p_an;
         Plot.uan_space = u_an;
-        Plot.ufan_space = uf_an;
+        Plot.ufdotan_space = ufdot_an;
         
         % store variables over time
         if Control.step < length(Plot.time)
             % store variables over time
             Plot.uan_time(Control.step+1,:) = u_an(Control.plotu, 1);
             Plot.pan_time(Control.step+1,:) = p_an(Control.plotp, 1);
-            Plot.ufan_time(Control.step+1,:) = uf_an(Control.plotu, 1);
+            Plot.ufdotan_time(Control.step+1,:) = ufdot_an(Control.plotu, 1);
         end
     end
     
@@ -79,7 +79,7 @@ for t = 1:length(Plot.time)
     % update external forces vectors
     fu(BC.fixed_u) = Solution.fuE;
     fp(BC.fixed_p) = Solution.fpE;
-	ff(BC.fixed_uf) = Solution.ffE;
+	ff(BC.fixed_ufdot) = Solution.ffE;
     
     % post processing: compute stress/flux, export VTK file
     if plot2vtk
