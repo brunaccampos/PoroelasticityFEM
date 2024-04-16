@@ -58,12 +58,12 @@ if ~isfield(BC, 'initUdot')
 end
 
 % initial condition for fluid displacement field
-if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') && ~isfield(BC, 'initUf')
+if (contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')) && ~isfield(BC, 'initUf')
     BC.initUf = zeros(MeshU.nDOF,1);
 end
 
 % initial condition for fluid velocity field
-if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') && ~isfield(BC, 'initUfdot')
+if (contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')) && ~isfield(BC, 'initUfdot')
     BC.initUfdot = zeros(MeshU.nDOF,1);
 end
 
