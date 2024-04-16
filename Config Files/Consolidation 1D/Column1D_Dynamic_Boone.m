@@ -25,17 +25,17 @@ Control.PMmodel = 'Dyn5_Spanos_UPU';
 
 %% Material properties - Boone (1990)
 % shear modulus [GPa]
-Material.G = 6;
+Material.mu = 6;
 % Poisson's ratio
 Material.nu = 0.2;
 % elasticity modulus [GPa]
-Material.E = 2 * Material.G * (1 + Material.nu);
+Material.E = 2 * Material.mu * (1 + Material.nu);
 % porous media permeability [m2/GPa s]
 Material.kf = 2e-2;
 % dynamic viscosity [GPa s]
-Material.mu = 1e-12;
+Material.muf = 1e-12;
 % intrinsic permeability [m2]
-Material.k = Material.kf * Material.mu;
+Material.k = Material.kf * Material.muf;
 % Biot's coefficient
 Material.alpha = 1;
 % fluid bulk modulus [GPa]
@@ -49,11 +49,11 @@ Material.eta0 = 0.19;
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
 % fluid density [10^9 kg/m3]
-Material.rho_f = 1000e-9;
+Material.rhof = 1000e-9;
 % solid density [10^9 kg/m3]
-Material.rho_s = 2650e-9;
+Material.rhos = 2650e-9;
 % average density of the medium
-Material.rho = Material.eta0*Material.rho_f + (1-Material.eta0)*Material.rho_s;
+Material.rho = Material.eta0*Material.rhof + (1-Material.eta0)*Material.rhos;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -75,8 +75,8 @@ Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks;
 Mstar = 1/Mstarinv;
 
 % porosity equation coefficients
-Material.deltaF = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
-Material.deltaS = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
+Material.deltaf = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
+Material.deltas = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
 
 %% Mesh parameters
 if progress_on

@@ -30,25 +30,25 @@ Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties - Ferronato (2010)
 % shear modulus [GPa]
-Material.G = 40e-3;
+Material.mu = 40e-3;
 % Lame constant [GPa]
 Material.lambda = 40e-3;
 % Poisson's ratio
-Material.nu = Material.lambda/(2*(Material.lambda + Material.G));
+Material.nu = Material.lambda/(2*(Material.lambda + Material.mu));
 % elasticity modulus [GPa]
-Material.E = 2 * Material.G * (1 + Material.nu);
+Material.E = 2 * Material.mu * (1 + Material.nu);
 % gravitational acceleration [m/s2]
 Material.g = 9.81;
 % fluid density [10^9 kg/m3]
-Material.rho_f = 1000e-9;
+Material.rhof = 1000e-9;
 % hydraulic conductivity [m/s]
 Material.kh = 1e-5;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.kh/(Material.rho_f * Material.g);
+Material.kf = Material.kh/(Material.rhof * Material.g);
 % dynamic viscosity [GPa s]
-Material.mu = 1e-12;
+Material.muf = 1e-12;
 % intrinsic permeability [m2]
-Material.k = Material.kf * Material.mu;
+Material.k = Material.kf * Material.muf;
 % Biot's coefficient
 Material.alpha = 1;
 % fluid bulk modulus [GPa]
@@ -77,8 +77,8 @@ n = 1; % return to Biot
 % n = Material.Ks/Material.Kf; % upper limit
 
 % porosity equation coefficients
-Material.deltaF = 0;
-Material.deltaS = Material.alpha - Material.eta0;
+Material.deltaf = 0;
+Material.deltas = Material.alpha - Material.eta0;
 
 %% Mesh parameters
 if progress_on

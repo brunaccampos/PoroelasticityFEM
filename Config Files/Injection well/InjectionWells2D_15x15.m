@@ -34,9 +34,9 @@ Material.nu = 0.2;
 % intrinsic permeability [m2]
 Material.k = 1.88e-13;
 % dynamic viscosity [GPa s]
-Material.mu = 1e-12;
+Material.muf = 1e-12;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.k/Material.mu;
+Material.kf = Material.k/Material.muf;
 % Biot's coefficient
 Material.alpha = 0.79;
 % fluid bulk modulus [GPa]
@@ -83,8 +83,8 @@ Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks;
 Mstar = 1/Mstarinv;
 
 % porosity equation coefficients
-Material.deltaF = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
-Material.deltaS = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
+Material.deltaf = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
+Material.deltas = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
 
 %% Mesh parameters
 if progress_on

@@ -32,7 +32,7 @@ Material.alpha = 0;
 % 1/Q (related to storage coefficient)
 Material.Minv = 0;
 % fluid density [10^9 kg/m3]
-Material.rho_f = 0;
+Material.rhof = 0;
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 1;

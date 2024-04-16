@@ -33,9 +33,9 @@ Material.nu = 0.3;
 % porous media permeability [m2/GPa s]
 Material.kf = 1.0194e3;
 % dynamic viscosity [GPa s]
-Material.mu = 1e-12;
+Material.muf = 1e-12;
 % intrinsic permeability [m2]
-Material.k = Material.kf * Material.mu;
+Material.k = Material.kf * Material.muf;
 % fluid bulk modulus [GPa]
 Material.Kf = 2.1;
 % solid bulk modulus [GPa]
@@ -45,11 +45,11 @@ Material.eta0 = 0.3;
 % Biot's coefficient
 Material.alpha = 1;
 % fluid density [10^9 kg/m3]
-Material.rho_f = 1000e-9;
+Material.rhof = 1000e-9;
 % solid density [10^9 kg/m3]
-Material.rho_s = 2000e-9;
+Material.rhos = 2000e-9;
 % average density of the medium
-Material.rho = Material.eta0*Material.rho_f + (1-Material.eta0)*Material.rho_s;
+Material.rho = Material.eta0*Material.rhof + (1-Material.eta0)*Material.rhos;
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
 

@@ -29,17 +29,17 @@ Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties - Boone (1990)
 % shear modulus [GPa]
-Material.G = 1e3;
+Material.mu = 1e3;
 % Poisson's ratio
 Material.nu = 0.3;
 % elasticity modulus [GPa]
-Material.E = 2 * Material.G * (1 + Material.nu);
+Material.E = 2 * Material.mu * (1 + Material.nu);
 % intrinsic permeability [m2]
 Material.k = 0.1;
 % dynamic viscosity [GPa s]
-Material.mu = 1e-3;
+Material.muf = 1e-3;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.k/Material.mu;
+Material.kf = Material.k/Material.muf;
 % Biot's coefficient
 Material.alpha = 1;
 %  [GPa]
@@ -55,9 +55,9 @@ Material.lambda = Material.E * Material.nu/((1+Material.nu)*(1-2*Material.nu));
 % gravitational acceleration [m/s2]
 Material.g = 9.81;
 % fluid density [10^9 kg/m3]
-Material.rho_f = 1000e-9;
+Material.rhof = 1000e-9;
 % hydraulic conductivity [m/s]
-Material.kh = Material.kf * Material.rho_f * Material.g;
+Material.kh = Material.kf * Material.rhof * Material.g;
 
 % thickness
 % 1D: cross sectional area [m2]
@@ -131,13 +131,13 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 % point load [GN]
 L = max(MeshU.coords);
 BC.pointLoadNodes = MeshU.right_nodes;
-BC.pointLoad = @(t) [zeros(MeshU.nDOF-1,1); (2*Material.G + Material.lambda)* t * cos(L*t) - Material.alpha * cos(L*t)];
+BC.pointLoad = @(t) [zeros(MeshU.nDOF-1,1); (2*Material.mu + Material.lambda)* t * cos(L*t) - Material.alpha * cos(L*t)];
 
 % distributed load [GN/m2]
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.b = @(x,t) (2*Material.G + Material.lambda) * t^2 * sin (x*t) - Material.alpha * t * sin(x*t);
+BC.b = @(x,t) (2*Material.mu + Material.lambda) * t^2 * sin (x*t) - Material.alpha * t * sin(x*t);
 
 %% Neumann BCs - fluid
 % point flux [m/s]

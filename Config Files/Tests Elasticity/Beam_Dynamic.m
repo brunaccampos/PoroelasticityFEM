@@ -19,11 +19,11 @@ Control.PMmodel = 'Dyn1_Biot_UP';
 
 %% Material properties
 % shear modulus [Pa]
-Material.G = 10;
+Material.mu = 10;
 % Poisson's ratio
 Material.nu = 0.3;
 % elasticity modulus [Pa]
-Material.E = 2 * Material.G * (1 + Material.nu);
+Material.E = 2 * Material.mu * (1 + Material.nu);
 % material density [kg/m3]
 Material.rho = 1;
 
@@ -34,7 +34,7 @@ Material.alpha = 0;
 % 1/Q (related to storage coefficient)
 Material.Minv = 0;
 % fluid density [kg/m3]
-Material.rho_f = 0;
+Material.rhof = 0;
 
 % thickness 
 % 1D: cross sectional area [m2]

@@ -25,9 +25,9 @@ Material.nu = 0.2;
 % intrinsic permeability [m2]
 Material.k = 1.88e-13;
 % dynamic viscosity [GPa s]
-Material.mu = 1e-12;
+Material.muf = 1e-12;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.k/Material.mu;
+Material.kf = Material.k/Material.muf;
 % Biot's coefficient
 Material.alpha = 0.79;
 % fluid bulk modulus [GPa]

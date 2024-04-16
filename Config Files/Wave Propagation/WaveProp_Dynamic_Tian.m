@@ -54,11 +54,11 @@ alpha = (Q/R+1)*eta0;
 % Poisson's ratio
 Material.nu = 0.2;
 % dynamic viscosity [Pa s]
-Material.mu = 1e-3;
+Material.muf = 1e-3;
 % intrinsic permeability [m2]
 Material.k = 1e-13;
 % porous media permeability [m2/Pa s]
-Material.kf = Material.k / Material.mu;
+Material.kf = Material.k / Material.muf;
 % Biot's coefficient
 Material.alpha = alpha;
 % fluid bulk modulus [Pa]
@@ -70,17 +70,17 @@ Material.xif = 2.8e-3;
 % material porosity
 Material.eta0 = eta0;
 % shear modulus [Pa]
-Material.G = N;
+Material.mu = N;
 % elasticity modulus [Pa]
-Material.E = 2 * Material.G * (1 + Material.nu);
+Material.E = 2 * Material.mu * (1 + Material.nu);
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
 % fluid density [kg/m3]
-Material.rho_f = rhof;
+Material.rhof = rhof;
 % solid density [kg/m3]
-Material.rho_s = rhos;
+Material.rhos = rhos;
 % average density of the medium
-Material.rho = Material.eta0*Material.rho_f + (1-Material.eta0)*Material.rho_s;
+Material.rho = Material.eta0*Material.rhof + (1-Material.eta0)*Material.rhos;
 % added mass [kg/m3]
 Material.rho12 = rho12;
 
@@ -103,8 +103,8 @@ n = 1; % return to Biot
 Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks; 
 Mstar = 1/Mstarinv;
 
-Material.deltaF = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
-Material.deltaS = (Material.alpha - Material.eta0) * Material.eta0 * Mstar /Material.Kf;
+Material.deltaf = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
+Material.deltas = (Material.alpha - Material.eta0) * Material.eta0 * Mstar /Material.Kf;
 
 %% Mesh parameters
 if progress_on

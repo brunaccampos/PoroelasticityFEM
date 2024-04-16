@@ -33,9 +33,9 @@ Material.nu = 0.2;
 % intrinsic permeability [m2]
 Material.k = 1e-10;
 % dynamic viscosity [GPa s]
-Material.mu = 1e-12;
+Material.muf = 1e-12;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.k/Material.mu;
+Material.kf = Material.k/Material.muf;
 % Biot's coefficient
 Material.alpha = 1;
 % 1/Q (related to storage coefficient)
@@ -49,11 +49,11 @@ Material.lambda = Material.E * Material.nu/((1+Material.nu)*(1-2*Material.nu));
 % gravitational acceleration [m/s2]
 Material.g = 9.81;
 % fluid density [10^9 kg/m3]
-Material.rho_f = 1000e-9;
+Material.rhof = 1000e-9;
 % hydraulic conductivity [m/s]
-Material.kh = Material.kf * Material.rho_f * Material.g;
+Material.kh = Material.kf * Material.rhof * Material.g;
 % shear modulus [GPa]
-Material.G = Material.E/(2*(1+Material.nu));
+Material.mu = Material.E/(2*(1+Material.nu));
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -71,8 +71,8 @@ n = 1; % return to Biot
 % n = Material.Ks/Material.Kf; % upper limit
  
 % porosity equation coefficients
-Material.deltaF = 0;
-Material.deltaS = Material.alpha - Material.eta0;
+Material.deltaf = 0;
+Material.deltas = Material.alpha - Material.eta0;
 
 %% Mesh parameters
 if progress_on

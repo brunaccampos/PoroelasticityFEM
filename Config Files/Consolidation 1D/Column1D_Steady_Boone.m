@@ -27,17 +27,17 @@ Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties - Boone (1990)
 % shear modulus [GPa]
-Material.G = 6;
+Material.mu = 6;
 % Poisson's ratio
 Material.nu = 0.2;
 % elasticity modulus [GPa]
-Material.E = 2 * Material.G * (1 + Material.nu);
+Material.E = 2 * Material.mu * (1 + Material.nu);
 % porous media permeability [m2/GPa s]
 Material.kf = 2e-2;
 % dynamic viscosity [GPa s]
-Material.mu = 1e-12;
+Material.muf = 1e-12;
 % intrinsic permeability [m2]
-Material.k = Material.kf * Material.mu;
+Material.k = Material.kf * Material.muf;
 % Biot's coefficient
 Material.alpha = 1;
 % fluid bulk modulus [GPa]
@@ -57,9 +57,9 @@ Material.lambda = Material.E * Material.nu/((1+Material.nu)*(1-2*Material.nu));
 % gravitational acceleration [m/s2]
 Material.g = 9.81;
 % fluid density [10^9 kg/m3]
-Material.rho_f = 1000e-9;
+Material.rhof = 1000e-9;
 % hydraulic conductivity [m/s]
-Material.kh = Material.kf * Material.rho_f * Material.g;
+Material.kh = Material.kf * Material.rhof * Material.g;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -81,8 +81,8 @@ Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks;
 Mstar = 1/Mstarinv;
 
 % porosity equation coefficients
-Material.deltaF = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
-Material.deltaS = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
+Material.deltaf = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
+Material.deltas = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
 
 %% Mesh parameters
 if progress_on

@@ -39,11 +39,11 @@ Control.PMmodel = 'Tr1_Biot_UP';
 % Poisson's ratio
 Material.nu = 0.2;
 % dynamic viscosity [GPa s]
-Material.mu = 1e-12;
+Material.muf = 1e-12;
 % intrinsic permeability [m2]
 Material.k = 1e-13;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.k / Material.mu;
+Material.kf = Material.k / Material.muf;
 % Biot's coefficient
 Material.alpha = 1;
 % fluid bulk modulus [GPa]
@@ -55,17 +55,17 @@ Material.xif = 2.8e-12;
 % material porosity
 Material.eta0 = 0.25;
 % shear modulus [GPa]
-Material.G = (1-Material.eta0)*23;
+Material.mu = (1-Material.eta0)*23;
 % elasticity modulus [GPa]
-Material.E = 2 * Material.G * (1 + Material.nu);
+Material.E = 2 * Material.mu * (1 + Material.nu);
 % 1/Q (related to storage coefficient)
 Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
 % fluid density [10^9 kg/m3]
-Material.rho_f = 1000e-9;
+Material.rhof = 1000e-9;
 % solid density [10^9 kg/m3]
-Material.rho_s = 2650e-9;
+Material.rhos = 2650e-9;
 % average density of the medium
-Material.rho = Material.eta0*Material.rho_f + (1-Material.eta0)*Material.rho_s;
+Material.rho = Material.eta0*Material.rhof + (1-Material.eta0)*Material.rhos;
 % added mass [10^9 kg/m3]
 Material.rho12 = -83e-9;
 
@@ -94,8 +94,8 @@ n = 1; % return to Biot
 Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks; 
 Mstar = 1/Mstarinv;
 
-Material.deltaF = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
-Material.deltaS = (Material.alpha - Material.eta0) * Material.eta0 * Mstar /Material.Kf;
+Material.deltaf = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
+Material.deltas = (Material.alpha - Material.eta0) * Material.eta0 * Mstar /Material.Kf;
 
 % plot deltaS and deltaF
 PlotDelta(Material);
@@ -105,21 +105,21 @@ PlotNDPressureEqCoef(Material);
 
 %% Verifying correspondence Biot/Spanos parameters
 % pore scale solid constants
-Gs = Material.G/(1-Material.eta0);
-lambdaS = Material.Ks - Gs*2/3;
+mus = Material.mu/(1-Material.eta0);
+lambdaS = Material.Ks - mus*2/3;
 % averaged material constants
 M = 1/Material.Minv;
-lambda = (1-Material.alpha)*Material.Ks-2*Material.G/3;
+lambda = (1-Material.alpha)*Material.Ks-2*Material.mu/3;
 % Biot constants
-N_Biot = Material.G;
+N_Biot = Material.mu;
 Q_Biot = Material.eta0 * (Material.alpha - Material.eta0)*M;
 R_Biot = Material.eta0^2*M;
 A_Biot = lambda + Q_Biot^2/R_Biot;
 % Spanos constants
-N_Spanos = (1-Material.eta0)*Material.G;
-Q_Spanos = Material.Ks*Material.deltaF;
-R_Spanos = Material.Kf*(Material.eta0 - Material.deltaF);
-A_Spanos = (1-Material.eta0)*lambdaS -Material.deltaS*Material.Ks;
+N_Spanos = (1-Material.eta0)*Material.mu;
+Q_Spanos = Material.Ks*Material.deltaf;
+R_Spanos = Material.Kf*(Material.eta0 - Material.deltaf);
+A_Spanos = (1-Material.eta0)*lambdaS -Material.deltas*Material.Ks;
 % check term Q^2/R
 resBiot = Q_Biot^2/R_Biot;
 resSpanos = Q_Spanos^2/R_Spanos;

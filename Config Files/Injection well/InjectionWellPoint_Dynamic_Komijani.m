@@ -28,17 +28,17 @@ Control.PMmodel = 'Dyn1_Biot_UP';
 
 %% Material properties - Komijani (2019b)
 % shear modulus [GPa]
-Material.G = 12;
+Material.mu = 12;
 % Poisson's ratio
 Material.nu = 0.15;
 % elasticity modulus [GPa]
-Material.E = 2 * Material.G * (1 + Material.nu);
+Material.E = 2 * Material.mu * (1 + Material.nu);
 % intrinsic permeability [m2]
 Material.k = 9.869233e-16;
 % dynamic viscosity [GPa s]
-Material.mu = 1e-12;
+Material.muf = 1e-12;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.k/Material.mu;
+Material.kf = Material.k/Material.muf;
 % Biot's coefficient
 Material.alpha = 0.64;
 % 1/Q (related to storage coefficient)

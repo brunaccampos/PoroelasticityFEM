@@ -14,7 +14,7 @@ Control.PMmodel = 'Dyn1_Biot_UP';
 % material density [kg/m3]
 Material.rho = 0;
 % fluid density [kg/m3]
-Material.rho_f = 0;
+Material.rhof = 0;
 % elasticity modulus [Pa]
 Material.E = 0;
 % Poisson's ratio

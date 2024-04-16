@@ -37,9 +37,9 @@ Material.nu = 0.2;
 % porous media permeability [m2/GPa s]
 Material.kf = 1e3;
 % dynamic viscosity [GPa s]
-Material.mu = 1e-12;
+Material.muf = 1e-12;
 % intrinsic permeability [m2]
-Material.k = Material.kf * Material.mu;
+Material.k = Material.kf * Material.muf;
 % material porosity
 Material.eta0 = 0.33;
 % Biot's coefficient
@@ -74,8 +74,8 @@ n = 1; % return to Biot
 % n = Material.Ks/Material.Kf; % upper limit
  
 % porosity equation coefficients
-Material.deltaF = 0;
-Material.deltaS = Material.alpha - Material.eta0;
+Material.deltaf = 0;
+Material.deltas = Material.alpha - Material.eta0;
 
 % % alternative equations for compressible materials
 % % modified storage coefficient (Muller, 2019)
@@ -83,8 +83,8 @@ Material.deltaS = Material.alpha - Material.eta0;
 % Mstar = 1/Mstarinv;
 % 
 % % porosity equation coefficients
-% Material.deltaF = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
-% Material.deltaS = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
+% Material.deltaf = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
+% Material.deltas = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
 
 %% Mesh parameters
 if progress_on

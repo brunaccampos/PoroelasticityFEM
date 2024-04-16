@@ -33,9 +33,9 @@ Material.nu = 0.2;
 % intrinsic permeability [m2]
 Material.k = 1e-10;
 % dynamic viscosity [GPa s]
-Material.mu = 1e-12;
+Material.muf = 1e-12;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.k/Material.mu;
+Material.kf = Material.k/Material.muf;
 % Biot's coefficient
 Material.alpha = 1;
 % 1/Q (related to storage coefficient)
