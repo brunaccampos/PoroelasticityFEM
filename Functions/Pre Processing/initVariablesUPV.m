@@ -9,7 +9,6 @@ function [Iteration, Plot] = initVariablesUPV(MeshU, MeshP, ~, ~, Control, BC)
 Iteration.u_old = BC.initU; % solid displacement
 Iteration.p_old = BC.initP; % pressure
 Iteration.udot_old = BC.initUdot; % solid velocity
-Iteration.uf_old = BC.initUf; % fluid displacement
 Iteration.ufdot_old = BC.initUfdot; % fluid velocity
 
 % time derivatives
@@ -36,7 +35,6 @@ Plot.p_time = zeros(length(Plot.time), 1); % fluid pressure
 Plot.u_time = zeros(length(Plot.time), 1); % solid displacement
 Plot.udot_time = zeros(length(Plot.time), 1); % solid velocity
 Plot.u2dot_time = zeros(length(Plot.time), 1); % solid acceleration
-Plot.uf_time = zeros(length(Plot.time), 1); % fluid displacement
 Plot.ufdot_time = zeros(length(Plot.time), 1); % fluid velocity
 Plot.uf2dot_time = zeros(length(Plot.time), 1); % fluid acceleration
 
@@ -49,7 +47,6 @@ Plot.ufdotan_time = zeros(length(Plot.time),1); % analytic fluid velocity
 Plot.u_time(1,1) = BC.initU(Control.plotu,1);
 Plot.p_time(1,1) = BC.initP(Control.plotp,1);
 Plot.udot_time(1,1) = BC.initUdot(Control.plotu,1);
-Plot.uf_time(1,1) = BC.initUf(Control.plotu,1);
 Plot.ufdot_time(1,1) = BC.initUfdot(Control.plotu,1);
 
 % initial conditions for analytical solution
@@ -66,7 +63,6 @@ end
 Plot.u_synthetic = zeros(length(Plot.time), length(Control.ploturow)); % solid displacement
 Plot.udot_synthetic = zeros(length(Plot.time), length(Control.ploturow)); % solid velocity
 Plot.p_synthetic = zeros(length(Plot.time), length(Control.plotprow)); % fluid pressure
-Plot.uf_synthetic = zeros(length(Plot.time), length(Control.ploturow)); % fluid displacement
 Plot.ufdot_synthetic = zeros(length(Plot.time), length(Control.ploturow)); % fluid pressure
 
 %% Plot arrays - space
@@ -76,7 +72,6 @@ Plot.udot_space = zeros(length(Control.plotu),1);
 Plot.u2dot_space = zeros(length(Control.plotu),1);
 Plot.pan_space = zeros(length(Control.plotp),1);
 Plot.uan_space = zeros(length(Control.plotu),1);
-Plot.uf_space = zeros(length(Control.plotu),1);
 Plot.ufdot_space = zeros(length(Control.plotu),1);
 Plot.uf2dot_space = zeros(length(Control.plotu),1);
 Plot.ufan_space = zeros(length(Control.plotu),1);
