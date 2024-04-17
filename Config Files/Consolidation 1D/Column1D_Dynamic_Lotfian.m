@@ -1,17 +1,12 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dupv_Biot(~, progress_on,~,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Lotfian(~, progress_on,~,~)
+% Column Consolidation 1D simulation
+% Configuration File
 % ------------------------------------------------------------------------
-% Manufactured solution in 1D
-% us = sin(x*t)/1000
-% vf = cos(x*t)/1000
-% p = sin(x*t)*cos(x*t)/1000
-% ------------------------------------------------------------------------
-% Based on Korsawe (2006) model for transient/quasi-steady case
+% Based on Zienkiewicz (1982) model for dynamic case
 % ------------------------------------------------------------------------
 % Assumptions/conventions:
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
-% - no acceleration terms for solid or fluid
-% - solid velocity is neglected
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
@@ -26,54 +21,46 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dup
 %           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
 %           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
 %                                   porosity perturbation equation
-Control.PMmodel = 'Dyn6_Biot_UPV';
+Control.PMmodel = 'Dyn7_Biot_UPW';
 
-%% Material properties - Boone (1990) with modifications
+%% Material properties - Komijani (2019)
 % elasticity modulus [GPa]
-Material.E = 14.4;
+Material.E = 14.516e-3;
 % Poisson's ratio
-Material.nu = 0.2;
-% intrinsic permeability [m2]
-Material.k = 1.88e-13;
+Material.nu = 0.3;
+% porous media permeability [m2/GPa s]
+Material.kf = 1.0194e3;
 % dynamic viscosity [GPa s]
 Material.muf = 1e-12;
-% porous media permeability [m2/GPa s]
-Material.kf = Material.k/Material.muf;
+% intrinsic permeability [m2]
+Material.k = Material.kf * Material.muf;
+% fluid bulk modulus [GPa]
+Material.Kf = 2.1;
+% solid bulk modulus [GPa]
+Material.Ks = 1e11;
+% material porosity
+Material.eta0 = 0.3;
 % Biot's coefficient
 Material.alpha = 1;
-% fluid bulk modulus [GPa]
-Material.Kf = 3.3;
-% solid bulk modulus [GPa]
-Material.Ks = 36;
-% material porosity
-Material.eta0 = 0.19;
-% 1/Q (related to storage coefficient)
-Material.Minv = 0;
-% fluid bulk viscosity [GPa s]
-Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
 % fluid density [10^9 kg/m3]
 Material.rhof = 1000e-9;
 % solid density [10^9 kg/m3]
-Material.rhos = 2600e-9;
+Material.rhos = 2000e-9;
 % average density of the medium
 Material.rho = Material.eta0*Material.rhof + (1-Material.eta0)*Material.rhos;
-
-% additional coefficients for analytical result
-% Lame constant [GPa]
-Material.lambda = Material.E * Material.nu/((1+Material.nu)*(1-2*Material.nu));
-% gravitational acceleration [m/s2]
-Material.g = 9.81;
-% hydraulic conductivity [m/s]
-Material.kh = Material.kf * Material.rhof * Material.g;
+% 1/Q (related to storage coefficient)
+Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
+% fluid bulk viscosity [GPa s]
+Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
 
 % thickness
 % 1D: cross sectional area [m2]
 % 2D: out of plane thickness [m]
-Material.t = 1;
+Material.t = 0.1;
 
 % constititive law - 'PlaneStress' or 'PlaneStrain'
 % Note: use 'PlaneStrain' for 1D or 2D poroelasticity
-Material.constLaw = 'PlaneStress';
+Material.constLaw = 'PlaneStrain';
 
 %% Spanos material parameters
 % porosity effective pressure coefficient (Spanos, 1989)
@@ -98,9 +85,9 @@ coord0 = [0;0;0];
 % number of space dimensions
 nsd = 1;
 % size of domain [m] [Lx;Ly;Lz]
-L = 4;
+L = 10;
 % number of elements in each direction [nex; ney; nez]
-ne = 100;
+ne = 400;
 
 %%%% displacement mesh
 % element type ('Q4')
@@ -116,57 +103,43 @@ typeP = 'L2';
 fieldP = 'p';
 MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
 
-%%%% porosity mesh
-if contains(Control.PMmodel, 'UPN')
-    % element type ('Q4')
-    typeN = 'L2';
-    % variable field ('u', 'p', 'n')
-    fieldN = 'n';
-    MeshN = BuildMesh_structured(nsd, coord0, L, ne, typeN, fieldN, progress_on);
-else
-    MeshN = [];
-end
-
-%% Initial conditions
-% udot
-BC.initU = ones(MeshU.nDOF,1)./1000;
-% ufdot
-BC.initUfdot = ones(MeshU.nDOF,1)./1000;
+MeshN = [];
 
 %% Dirichlet BCs - solid
-% displacement prescribed on the left and right
-BC.fixed_u = [MeshU.left_nodes; MeshU.right_nodes];
-BC.fixed_u_value = @(t) [0; sin(L*t)]./1000;
+% displacement u=0 at the bottom
+BC.fixed_u = MeshU.right_nodes;
+BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
-%% Dirichlet BCs - fluid velocity
-% displacement prescribed on the left and right
-BC.fixed_ufdot = [MeshU.left_nodes; MeshU.right_nodes];
-BC.fixed_ufdot_value = @(t) [1; cos(L*t)]./1000;
+%% Dirichlet BCs - relative fluid velocity
+% velocity u=0 at the bottom
+BC.fixed_w = MeshU.right_nodes;
+BC.fixed_w_value = @(t) zeros(length(BC.fixed_w),1);
 % free displacement nodes
-BC.free_ufdot = setdiff(MeshU.DOF, BC.fixed_ufdot);
+BC.free_w = setdiff(MeshU.DOF, BC.fixed_w);
 
 %% Dirichlet BCs - fluid pressure
-% pressure prescribed on the left and right
-BC.fixed_p = [MeshP.left_nodes; MeshP.right_nodes];
-BC.fixed_p_value = @(t) [0; sin(L*t)*cos(L*t)]./1000;
+% pressure p=0 at the top
+BC.fixed_p = MeshP.left_nodes;
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
 % point load [GN]
-BC.pointLoad = [];
+BC.pointLoadValue = 3e-6;
+BC.pointLoadNodes = MeshU.left_nodes;
+BC.pointLoad = zeros(MeshU.nDOF,1);
+BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
 
 % distributed load [GN/m2]
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.bs = @(x,t) (Material.E * t^2 * sin(x*t) + (Material.alpha-Material.eta0)*t*(cos(x*t)^2-sin(x*t)^2) -...
-    (1-Material.eta0)*Material.rhos*x^2*sin(x*t) - Material.muf*Material.eta0^2/Material.k*(1-x)*cos(x*t))./1000;
+BC.bs = @(x,t) [];
 
-BC.bf = @(x,t) (Material.eta0*(cos(x*t)^2-sin(x*t)^2) - Material.eta0*Material.rhof*x*sin(x*t) + ...
-    Material.muf*Material.eta0^2/Material.k*(1-x)*cos(x*t))./1000;
+BC.bf = @(x,t) [];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
@@ -176,8 +149,7 @@ BC.pointFlux = [];
 BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x,t) (Material.Minv*x*(cos(x*t)^2-sin(x*t)^2) + (Material.alpha-Material.eta0)*(cos(x*t)-x*t*sin(x*t)) - ...
-    Material.eta0*t*sin(x*t))./1000;
+BC.s = @(x,t) [];
 
 %% Quadrature order
 Control.nqU = 3;
@@ -192,30 +164,11 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 Control.uncoupled = 1;
 
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
-Control.plotansol = 1; % 1 = true; 0 = false
-
-% type of analytical solution to compute
-% 'getAnSol_uncoupled' = uncoupled problem (elasticity, heat transfer, etc)
-% 'getAnSol_coupledComp' = coupled porous media problem, compressible
-% materials
-% 'getAnSol_coupledIncomp' = coupled porous media problem, incompressible
-% materials (1/M=0)
-Control.ansol_type = 'getAnSol_uncoupled_upv';
-
-% solution in u
-Control.uan_symb = @(x,t) sin(x*t)./1000;
-Control.u_an = @(t) Control.uan_symb(MeshU.coords,t);
-
-Control.ufdotan_symb = @(x,t) cos(x*t)./1000;
-Control.ufdot_an = @(t) Control.ufdotan_symb(MeshU.coords,t);
-
-% solution in p
-Control.pan_symb = @(x,t) (sin(x*t).*cos(x*t))./1000;
-Control.p_an = @(t) Control.pan_symb(MeshP.coords,t);
+Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
-Control.dt = 1e-3;  % time step [s]
-Control.tend = 1;   % final simulation time [s]
+Control.dt = 1e-4;  % time step [s]
+Control.tend = 10;   % final simulation time [s]
 
 % Newmark method
 Control.beta = 0.7;
