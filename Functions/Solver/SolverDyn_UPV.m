@@ -172,10 +172,6 @@ u2dot = (u - u_old)/(beta*dt^2) - udot_old/(beta*dt) - u2dot_old * (1/(2*beta) -
 pdot = (p - p_old)/(theta*dt) - (1/theta - 1) * pdot_old;
 uf2dot = (ufdot - ufdot_old)/(xi*dt) + (1-1/xi)* uf2dot_old;
 
-% uncomment for velocity impact problem
-% udot(BC.fixed_u2) = 1;
-% ufdot(BC.fixed_u2) = 1;
-
 %% Store variables
 Solution.u = u;
 Solution.udot = udot;
@@ -187,7 +183,5 @@ Solution.uf2dot = uf2dot;
 Solution.fuE = fuE;
 Solution.fpE = fpE;
 Solution.ffE = ffE;
-
-Solution.uf = BC.initUf;
 
 end
