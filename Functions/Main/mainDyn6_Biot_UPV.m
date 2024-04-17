@@ -17,7 +17,6 @@ if plot2vtk
     Solution.udot = Iteration.udot_old;
     Solution.u2dot = Iteration.u2dot_old;
     Solution.p = Iteration.p_old;
-    Solution.uf = Iteration.uf_old;
     Solution.ufdot = Iteration.ufdot_old;
     Solution.uf2dot = Iteration.uf2dot_old;
     
@@ -95,8 +94,6 @@ for t = 1:length(Plot.time)
         Plot.u_time(Control.step+1,:) = Solution.u(Control.plotu, 1);
         % plot solid velocity vs time
         Plot.udot_time(Control.step+1,:) = Solution.udot(Control.plotu, 1);
-        % plot fluid displacement vs time
-        Plot.uf_time(Control.step+1,:) = Solution.uf(Control.plotu, 1);
         % plot fluid velocity vs time
         Plot.ufdot_time(Control.step+1,:) = Solution.ufdot(Control.plotu, 1);
         % plot solid acceleration vs time
@@ -108,7 +105,6 @@ for t = 1:length(Plot.time)
         Plot.u_synthetic(Control.step+1,:) = Solution.u(Control.ploturow);
         Plot.udot_synthetic(Control.step+1,:) = Solution.udot(Control.ploturow);
         Plot.p_synthetic(Control.step+1,:) = Solution.p(Control.plotprow);
-        Plot.uf_synthetic(Control.step+1,:) = Solution.uf(Control.ploturow);
         Plot.ufdot_synthetic(Control.step+1,:) = Solution.ufdot(Control.ploturow);
     end
 
@@ -116,7 +112,6 @@ for t = 1:length(Plot.time)
     Plot.p_space = Solution.p(Control.plotp);
     Plot.u_space = Solution.u(Control.plotu);
     Plot.udot_space = Solution.udot(Control.plotu);
-    Plot.uf_space = Solution.uf(Control.plotu);
     Plot.ufdot_space = Solution.ufdot(Control.plotu);
     Plot.u2dot_space = Solution.u2dot(Control.plotu);
     Plot.uf2dot_space = Solution.uf2dot(Control.plotu);
@@ -129,11 +124,11 @@ for t = 1:length(Plot.time)
     Iteration.p_old = Solution.p; % fluid pressure
     Iteration.pdot_old = Solution.pdot; % fluid pressure gradient
     
-    Iteration.uf_old = Solution.uf; % fluid displacement
     Iteration.ufdot_old = Solution.ufdot; % fluid velocity
     Iteration.uf2dot_old = Solution.uf2dot; % fluid acceleration
     
     Iteration.fu_old = fu; % load vector
+    Iteration.fp_old = fp; % load vector
     Iteration.ff_old = ff; % load vector
 
     % update time step
@@ -144,5 +139,4 @@ end
 Plot.urow = Solution.u(Control.ploturow);
 Plot.udotrow = Solution.udot(Control.ploturow);
 Plot.prow = Solution.p(Control.plotprow);
-Plot.ufrow = Solution.uf(Control.ploturow);
 Plot.ufdotrow = Solution.ufdot(Control.ploturow);
