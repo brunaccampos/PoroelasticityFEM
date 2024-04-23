@@ -67,6 +67,11 @@ if (contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')) && ~is
     BC.initUfdot = zeros(MeshU.nDOF,1);
 end
 
+% initial condition for relative fluid velocity field
+if contains(Control.PMmodel, 'UPW') && ~isfield(BC, 'initW')
+    BC.initW = zeros(MeshU.nDOF,1);
+end
+
 % boundary condition for fluid displacement
 if ~isfield(BC, 'fixed_uf')
     BC.fixed_uf = [];
