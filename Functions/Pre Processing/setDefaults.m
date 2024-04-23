@@ -38,6 +38,13 @@ if ~isfield(Material, 'rho12')
     Material.rho12 = 0;
 end
 
+% mapping vector
+if MeshU.nsd == 1
+    Material.m = 1;
+elseif MeshU.nsd == 2
+    Material.m = [1; 1; 0];
+end
+
 %% Boundary/Initial conditions
 err_BC = sprintf('\t\tBoundary conditions \n');
 war_BC = sprintf('\t\tBoundary conditions \n');
