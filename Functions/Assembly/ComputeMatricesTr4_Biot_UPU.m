@@ -123,15 +123,8 @@ for e = 1:ne
 
         % assemble local matrices
         Kpp_e = Kpp_e + Material.Minv * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-
-        if MeshU.nsd == 2
-            m = [1; 1; 0]; % mapping vector for plane stress
-            Ksp_e = Ksp_e + (Material.alpha - Material.eta0) * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Kfp_e = Kfp_e + Material.eta0 * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        else
-            Ksp_e = Ksp_e + (Material.alpha - Material.eta0) * (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Kfp_e = Kfp_e + Material.eta0 * (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        end
+        Ksp_e = Ksp_e + (Material.alpha - Material.eta0) * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kfp_e = Kfp_e + Material.eta0 * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
     end
 
     % lumped element damping matrix

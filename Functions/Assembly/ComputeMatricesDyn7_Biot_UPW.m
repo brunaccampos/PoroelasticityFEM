@@ -127,16 +127,9 @@ for e = 1:ne
         BuVoigt = getBVoigt(MeshU, Bu);
 
         % assemble local matrices
-        if MeshU.nsd == 2
-            m = [1; 1; 0]; % mapping vector for plane stress
-            Ksp_e = Ksp_e + Material.alpha * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Kfp_e = Kfp_e + (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Csp_e = Csp_e + Material.alpha * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        else
-            Ksp_e = Ksp_e + Material.alpha * (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Kfp_e = Kfp_e + (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-            Csp_e = Csp_e + Material.alpha * (BuVoigt.') * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        end
+        Ksp_e = Ksp_e + Material.alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kfp_e = Kfp_e + (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Csp_e = Csp_e + Material.alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
 
     % lumped element mass matrix

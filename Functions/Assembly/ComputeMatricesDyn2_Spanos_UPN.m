@@ -4,8 +4,6 @@ function [Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = Compu
 % ------------------------------------------------------------------------
 % Input parameters: Material, Mesh, Control, Quad
 % ------------------------------------------------------------------------
-% version 3: correcting matrices for Spanos formulation
-% ------------------------------------------------------------------------
 
 ne = MeshU.ne; % number of elements
 nq = Quad.nq; % total number of integration points

@@ -4,8 +4,6 @@ function [Muu, Mpu, Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesDyn3_Spanos_UP(Mater
 % ------------------------------------------------------------------------
 % Input parameters: Material, Mesh, Control, Quad
 % ------------------------------------------------------------------------
-% version 4: u-p Spanos formulation
-% ------------------------------------------------------------------------
 
 ne = MeshU.ne; % number of elements
 nq = Quad.nq; % total number of integration points
@@ -98,24 +96,16 @@ for e = 1:ne
         BuVoigt = getBVoigt(MeshU, Bu);
         BpVoigt = getBVoigt(MeshP, Bp);      
         
-        % assemble local square matrices
+        % assemble local matrices
         Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
         Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
         S_e = S_e + (Material.eta0 / Material.Kf)*(1/(1-Material.deltaf/Material.eta0)) * (NpVoigt.') * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
         Muu_e = Muu_e + Material.rho * (NuVoigt.') * NuVoigt * Material.t * Jdet * Quad.w(ip,1);
-                        
-        if MeshU.nsd == 2
-            m = [1; 1; 0]; % mapping vector for plane stress
-            Kup_e = Kup_e + Material.alpha * (BuVoigt.') * m * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
-            Kpu_e = Kpu_e + Material.eta0 * (Material.eta0 - Material.deltaf + Material.deltas)/(Material.eta0 - Material.deltaf) ...
-                * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
-            Mpu_e = Mpu_e + Material.rhof * Material.kf * (NpVoigt.') * (m.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
-        else
-            Kup_e = Kup_e + Material.alpha * (BuVoigt.') * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
-            Kpu_e = Kpu_e + Material.eta0 * (Material.eta0 - Material.deltaf + Material.deltas)/(Material.eta0 - Material.deltaf) ...
-                * (NpVoigt.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
-            Mpu_e = Mpu_e + Material.rhof * Material.kf * (NpVoigt.') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
-        end
+
+        Kup_e = Kup_e + Material.alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
+        Kpu_e = Kpu_e + Material.eta0 * (Material.eta0 - Material.deltaf + Material.deltas)/(Material.eta0 - Material.deltaf) ...
+            * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
+        Mpu_e = Mpu_e + Material.rhof * Material.kf * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
     end
     
     % lumped element mass matrix
