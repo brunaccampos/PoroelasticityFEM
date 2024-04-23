@@ -1,7 +1,7 @@
 function [Iteration, Plot] = initVariablesUPW(MeshU, MeshP,~, ~, Control, BC)
 % ------------------------------------------------------------------------
 % Initialize variables for Iteration and Plot structures
-% Model u-p-w (solid displacement, fluid pressure, relative fluid velocity
+% Model u-p-w (solid displacement, fluid pressure, relative fluid velocity)
 % ------------------------------------------------------------------------
 
 %% Iteration data - time domain
@@ -46,8 +46,7 @@ Plot.wan_time = zeros(length(Plot.time),1); % analytic relative fluid velocity
 % initial conditions for FE solution
 Plot.u_time(1,1) = BC.initU(Control.plotu,1);
 Plot.p_time(1,1) = BC.initP(Control.plotp,1);
-Plot.udot_time(1,1) = BC.initUdot(Control.plotu,1);
-Plot.w_time(1,1) = BC.initUf(Control.plotu,1);
+Plot.w_time(1,1) = BC.initW(Control.plotu,1);
 
 % initial conditions for analytical solution
 if Control.plotansol
