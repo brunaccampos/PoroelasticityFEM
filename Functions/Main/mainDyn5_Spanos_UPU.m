@@ -27,10 +27,9 @@ if plot2vtk
     Control.step = 1;
 end
 
-
 % initialize video file
 if saveVideo_on
-    myVideo = VideoWriter('myVideoFile'); %open video file
+    myVideo = VideoWriter('myVideoFile'); % open video file
     myVideo.FrameRate = 20;
     open(myVideo)
 end
@@ -146,3 +145,8 @@ Plot.udotrow = Solution.udot(Control.ploturow);
 Plot.prow = Solution.p(Control.plotprow);
 Plot.ufrow = Solution.uf(Control.ploturow);
 Plot.ufdotrow = Solution.ufdot(Control.ploturow);
+
+% close video file
+if saveVideo_on
+    close(myVideo)
+end
