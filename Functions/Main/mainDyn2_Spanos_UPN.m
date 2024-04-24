@@ -57,6 +57,10 @@ for t = 1:length(Plot.time)
     % linear solver
     [Solution] = SolverDyn_UPN(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration);
 
+    % plot solution over time
+%     PlotGraphsUP_OverTime(MeshU, MeshP, Control, Solution);
+%     pause(0.0001);
+
     % update external forces vectors
     fu(BC.fixed_u) = Solution.fE;
     fp(BC.fixed_p) = Solution.qE;
