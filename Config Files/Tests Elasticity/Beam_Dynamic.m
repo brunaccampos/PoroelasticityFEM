@@ -1,23 +1,11 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = Beam_Dynamic(config_dir, progress_on,~,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = Beam_Dynamic(~, progress_on,~,~)
 % Plate with hole 1/8 model
 % Heat transfer problem adapted from file Q4one8thModel
 % ------------------------------------------------------------------------
 
-%% Poroelasticity model
-% Options:  Tr1_Biot_UP -------- Biot model (u-p), transient
-%           Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient
-%           Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dyn1_Biot_UP -------- Biot model (u-p), dynamic
-%           Dyn2_Spanos_UPN ----- Spanos model (u-p-n), dynamic
-%           Dyn3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
-%           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
-%                                   porosity perturbation equation
-Control.PMmodel = 'Dyn1_Biot_UP';
-
 %% Material properties
+% poroelasticity model
+Control.PMmodel = 'Dyn1_Biot_UP';
 % shear modulus [Pa]
 Material.mu = 10;
 % Poisson's ratio

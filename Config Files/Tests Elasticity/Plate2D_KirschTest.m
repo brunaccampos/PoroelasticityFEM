@@ -3,21 +3,9 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_KirschTest(confi
 % Configuration File
 % ------------------------------------------------------------------------
 
-%% Poroelasticity model
-% Options:  Tr1_Biot_UP -------- Biot model (u-p), transient
-%           Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient
-%           Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dyn1_Biot_UP -------- Biot model (u-p), dynamic
-%           Dyn2_Spanos_UPN ----- Spanos model (u-p-n), dynamic
-%           Dyn3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
-%           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
-%                                   porosity perturbation equation
-Control.PMmodel = 'Tr1_Biot_UP';
-
 %% Material properties - Berea Sandstone (Detournay, 1993, p.26)
+% poroelasticity model
+Control.PMmodel = 'Tr1_Biot_UP';
 % elasticity modulus [GPa]
 Material.E = 14.4;
 % Poisson's ratio

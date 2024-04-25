@@ -12,17 +12,26 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Column2D_Steady_Zheng(co
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
-% Options:  Tr1_Biot_UP -------- Biot model (u-p), transient
-%           Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient
-%           Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dyn1_Biot_UP -------- Biot model (u-p), dynamic
-%           Dyn2_Spanos_UPN ----- Spanos model (u-p-n), dynamic
-%           Dyn3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
-%           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
-%                                   porosity perturbation equation
+% Tr1_Biot_UP -------- Biot model (u-p), transient, u = solid
+%                      displacement, p = fluid pressure
+% Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient, u = solid
+%                      displacement, p = fluid pressure, n = porosity
+% Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, u = solid displacement,
+%                      p = fluid pressure
+% Dyn1_Biot_UP ------- Biot model (u-p), dynamic, u = solid displacement, 
+%                      p = fluid pressure
+% Dyn2_Spanos_UPN ---- Spanos model (u-p-n), dynamic, u = solid displacement,
+%                      p = fluid pressure, n = porosity
+% Dyn3_Spanos_UP ----- Spanos model (u-p), dynamic, u = solid displacement, 
+%                      p = fluid pressure
+% Dyn4_Biot_UPU ------ Biot model (u-p-U), dynamic, u = solid displacement,
+%                      p = fluid pressure, U = fluid displacement
+% Dyn5_Spanos_UPU ---- Spanos model (u-p-U), dynamic, u = solid displacement,
+%                      p = fluid pressure, U = fluid displacement
+% Dyn6_Biot_UPV ------ Biot model (u-p-v), dynamic, u = solid displacement,
+%                      p = fluid pressure, v = fluid velocity
+% Dyn7_Biot_UPW ------ Biot model (u-p-w), dynamic, u = solid displacement,
+%                      p = fluid pressure, w = relative fluid velocity
 Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties - Berea Sandstone (Zheng, 2003)
