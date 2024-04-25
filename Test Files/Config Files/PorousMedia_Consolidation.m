@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = PorousMedia_Consolidation(config_dir, progress_on,~,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = PorousMedia_Consolidation(~, progress_on,~,~)
 % Column Consolidation 1D simulation
 % Configuration File
 % ------------------------------------------------------------------------

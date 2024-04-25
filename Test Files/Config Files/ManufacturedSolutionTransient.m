@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionTransient(config_dir, progress_on, ~, nelements)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionTransient(~, progress_on, ~, nelements)
 % ------------------------------------------------------------------------
 % Manufactured solution for L3 element mesh size convergence study
 % u = sin(xt)

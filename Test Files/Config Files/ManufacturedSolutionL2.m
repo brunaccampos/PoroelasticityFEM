@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionL2(config_dir, progress_on, ~, nelements)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionL2(~, progress_on, ~, nelements)
 % ------------------------------------------------------------------------
 % Manufactured solution for L2 element mesh size convergence study
 % ux = x^5 - x^4
