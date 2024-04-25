@@ -122,10 +122,6 @@ Control.nqU = 2;
 Control.nqP = 2;
 
 %% Analytical solution
-% 1 = uncoupled problem (elasticity, heat transfer, etc)
-% 0 = coupled problem (Biot, Spanos model)
-Control.uncoupled = 0; 
-
 % plot analytical solution (valid for 1D problems)
 Control.plotansol = 1; % 1 = true; 0 = false
 
