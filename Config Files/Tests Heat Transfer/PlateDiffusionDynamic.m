@@ -79,7 +79,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 BC.tractionNodes = [];
 
 % point loads [N]
-BC.pointLoad = [];
+BC.pointLoad = @(t)[];
 
 % body force [N/m3]
 BC.b = @(x,t)[];  
@@ -92,7 +92,7 @@ Flux = BC.flux/(length(BC.fluxNodes) - 1);
 BC.fluxValue = Flux*ones(size(BC.fluxNodes));
 
 % point flux [m3/s]
-BC.pointFlux = [];
+BC.pointFlux = @(t)[];
 
 % flux source [m3/s/m3]
 BC.s = @(x,t)[]; 
