@@ -171,14 +171,12 @@ righttopnode  = find(MeshU.coords(BC.tractionNodes,1) == max(MeshU.coords(:,1)))
 
 BC.tractionForce(lefttopnode,2) = BC.tractionForce(lefttopnode,2)/2;
 BC.tractionForce(righttopnode,2) = BC.tractionForce(righttopnode,2)/2;
-% time dependent vector
-BC.tractionForce = @(t) BC.tractionForce;
 
 % point loads [GN]
-BC.pointLoad = [];
+BC.pointLoad = @(t)[];
 
 % body force [GN/m3]
-BC.b = @(x)[];  
+BC.b = @(x,t)[];  
 
 %% Neumann BCs - fluid
 % point flux [m/s]
@@ -186,10 +184,10 @@ BC.fluxNodes = [MeshP.left_dof; MeshP.right_dof; MeshP.top_dof];
 BC.fluxValue = zeros(length(BC.fluxNodes),1);
 
 % point flux [m3/s]
-BC.pointFlux = [];
+BC.pointFlux = @(t)[];
 
 % flux source [m3/s/m3]
-BC.s = @(x)[]; 
+BC.s = @(x,t)[]; 
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')
