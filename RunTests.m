@@ -36,6 +36,8 @@ saveMatData_on = 0;
 progress_on = 1;
 % plot graphs
 plotGraphs_on = 0;
+% save vide file
+saveVideo_on = 0;
 
 %% Directories
 VTKFolder = fullfile(VTKFolder, DirFolder);
