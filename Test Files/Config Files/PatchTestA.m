@@ -125,9 +125,6 @@ BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
-% traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
-BC.tractionInterp = 0;
-
 BC.tractionNodes = MeshU.right_nodes;
 Force = 1/(length(BC.tractionNodes) - 1);
 BC.tractionForce = Force*[zeros(size(BC.tractionNodes)), zeros(size(BC.tractionNodes))];
@@ -138,18 +135,15 @@ botrightnode = find(MeshU.coords(BC.tractionNodes,2) == min(MeshU.coords(:,2)));
 BC.tractionForce(toprightnode,1) = BC.tractionForce(toprightnode,1)/2;
 BC.tractionForce(botrightnode,1) = BC.tractionForce(botrightnode,1)/2;
 
-% time dependent vector
-BC.tractionForce = @(t) BC.tractionForce;
-
 % point load [N]
-BC.pointLoad = [];
+BC.pointLoad = @(t)[];
 
 % body force
 BC.b = @(x,t)[];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
-BC.pointFlux = [];
+BC.pointFlux = @(t)[];
 
 % distributed flux [m/s]
 BC.fluxNodes = [];

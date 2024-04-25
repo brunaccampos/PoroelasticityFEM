@@ -117,16 +117,11 @@ BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
-% traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
-BC.tractionInterp = 0;
 % column vector of prescribed traction nodes
 BC.tractionNodes = MeshU.right_nodes;
 % prescribed traction [t1x t1y;t2x t2y;...] [N]
 Fnode = 1/(length(BC.tractionNodes) - 1);
 BC.tractionForce = Fnode*[zeros(size(BC.tractionNodes)), zeros(size(BC.tractionNodes))];
-
-% time dependent force
-BC.tractionForce = @(t) BC.tractionForce;
 
 % body force
 E = Material.E;
@@ -135,11 +130,11 @@ BC.b = @(x,t)[-E / (1-nu^2)  * ( 20*x(1).^3 + 3*nu*x(2).^2              + (1-nu)
     -E / (1-nu^2)  * ( (1-nu)/2*( 3*x(2).^2  + 20*x(1).^3)    + 3*nu*x(2).^2 + 6*x(1).*x(2) - 30*x(2).^4 )];
 
 % point load [N]
-BC.pointLoad = [];
+BC.pointLoad = @(t)[];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
-BC.pointFlux = [];
+BC.pointFlux = @(t)[];
 
 % distributed flux [m/s]
 BC.fluxNodes = [];
