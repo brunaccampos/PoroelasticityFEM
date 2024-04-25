@@ -189,14 +189,14 @@ BC.tractionForce(lefttopnodeindex,1) = BC.tractionForce(lefttopnodeindex,1)/2;
 BC.tractionForce(leftbottomnodeindex,1) = BC.tractionForce(leftbottomnodeindex,1)/2;
 
 % point loads [GN]
-BC.pointLoad = [];
+BC.pointLoad = @(t)[];
 
 % body force [GN/m3]
 BC.b = @(x)[];  
 
 %% Neumann BCs - fluid
 % distributed flux [m3/s]
-BC.pointFlux = [];
+BC.pointFlux = @(t)[];
 
 % point flux [m/s]
 BC.fluxNodes = [];
