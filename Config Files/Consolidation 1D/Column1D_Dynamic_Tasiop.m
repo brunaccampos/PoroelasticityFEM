@@ -149,9 +149,6 @@ BC.pointLoadNodes = MeshU.left_nodes;
 BC.pointLoad = zeros(MeshU.nDOF,1);
 BC.pointLoad(BC.pointLoadNodes) = BC.pointLoadValue;
 
-% traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
-BC.tractionInterp = 0;
-
 % distributed load [GN/m2]
 BC.tractionNodes = [];
 
@@ -160,10 +157,7 @@ BC.b = @(x,t)[];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
-BC.pointFluxValue = 0;
-BC.pointFluxNodes = MeshP.right_nodes;
-BC.pointFlux = zeros(MeshP.nDOF,1);
-BC.pointFlux(BC.pointFluxNodes) = BC.pointFluxValue;
+BC.pointFlux = @(t)[];
 
 % distributed flux [m3/s]
 BC.fluxNodes = [];
