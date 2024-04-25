@@ -133,17 +133,14 @@ end
 % apply step load gradualy
 if Control.rampLoad
     if Control.t <= Control.tlim
-        BC.pointLoad = BC.pointLoad*Control.t/Control.tlim;
+        aux = Control.t/Control.tlim;
+        BC.pointLoad = @(t) BC.pointLoad(t)*aux;
     end
 end
 
 % adding point loads
-if ~isempty(BC.pointLoad)
-    if isa(BC.pointLoad,'function_handle')
-        fu = fu + BC.pointLoad(Control.t);
-    else
-        fu = fu + BC.pointLoad;
-    end
+if ~strcmp(func2str(BC.pointLoad),'@(t)[]')
+    fu = fu + BC.pointLoad(Control.t);
 end
 
 %% Flux vector
@@ -251,26 +248,11 @@ if contains(Control.PMmodel, 'UPN')
     end
 end
 
-% apply step load gradualy
-if Control.rampLoad
-    if Control.t <= Control.tlim
-        BC.pointFlux = BC.pointFlux*Control.t/Control.tlim;
-    end
-end
-
 % adding point loads
-if ~isempty(BC.pointFlux)
-    if isa(BC.pointFlux,'function_handle')
-        fp = fp - BC.pointFlux(Control.t);
-    else
-        fp = fp - BC.pointFlux;
-    end
+if ~strcmp(func2str(BC.pointFlux),'@(t)[]')
+    fp = fp - BC.pointFlux(Control.t);
     if contains(Control.PMmodel,'UPN')
-        if isa(BC.pointFlux,'function_handle')
-            fn = fn - (Material.deltaf/Material.eta0) * BC.pointFlux(Control.t);
-        else
-            fn = fn - (Material.deltaf/Material.eta0) * BC.pointFlux;
-        end
+        fn = fn - (Material.deltaf/Material.eta0) * BC.pointFlux(Control.t);
     end
 end
 

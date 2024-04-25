@@ -138,7 +138,6 @@ for e = 1:ne
     if Control.rampLoad
         if Control.t <= Control.tlim
             fu_e = fu_e*Control.t/Control.tlim;
-%             fu_e = fu_e*sin(pi*Control.t/2/Control.tlim);
         end
     end
 
@@ -150,18 +149,14 @@ end
 % apply step load gradualy
 if Control.rampLoad
     if Control.t <= Control.tlim
-        BC.pointLoad = BC.pointLoad*Control.t/Control.tlim;
-%         BC.pointLoad = BC.pointLoad*sin(pi*Control.t/2/Control.tlim);
+        aux = Control.t/Control.tlim;
+        BC.pointLoad = @(t) BC.pointLoad(t) * aux;
     end
 end
     
 %% Point load u field
-if ~isempty(BC.pointLoad)
-    if isa(BC.pointLoad,'function_handle')
-        fs = fs + BC.pointLoad(Control.t);
-    else
-        fs = fs + BC.pointLoad;
-    end
+if ~strcmp(func2str(BC.pointLoad),'@(t)[]')
+    fs = fs + BC.pointLoad(Control.t);
 end
 
 %% Source/sink term, p vector
