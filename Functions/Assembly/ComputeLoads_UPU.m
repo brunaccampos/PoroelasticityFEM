@@ -34,7 +34,7 @@ ff = zeros(MeshU.nDOF, 1);
 %% Return zeros if no applied loads
 % verifying if there are body forces
 if isempty(BC.tractionNodes) && strcmp(func2str(BC.bs),'@(x,t)[]') && strcmp(func2str(BC.bf),'@(x,t)[]') && ...
-    isempty(BC.pointLoad) && isempty(BC.fluxNodes) && strcmp(func2str(BC.s),'@(x,t)[]') && isempty(BC.pointFlux)
+    strcmp(func2str(BC.pointLoad),'@(t)[]') && isempty(BC.fluxNodes) && strcmp(func2str(BC.s),'@(x,t)[]') && strcmp(func2str(BC.pointFlux),'@(t)[]')
     return
 end
 

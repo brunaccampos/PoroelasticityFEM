@@ -40,8 +40,8 @@ else
 end
 
 %% Return zeros if no applied loads
-if isempty(BC.tractionNodes) && strcmp(func2str(BC.b),'@(x,t)[]') && isempty(BC.pointLoad) ...
-        && isempty(BC.fluxNodes) && strcmp(func2str(BC.s),'@(x,t)[]') && isempty(BC.pointFlux)
+if isempty(BC.tractionNodes) && strcmp(func2str(BC.b),'@(x,t)[]') && strcmp(func2str(BC.pointLoad),'@(t)[]') ...
+        && isempty(BC.fluxNodes) && strcmp(func2str(BC.s),'@(x,t)[]') && strcmp(func2str(BC.pointFlux),'@(t)[]')
     return
 end
 
