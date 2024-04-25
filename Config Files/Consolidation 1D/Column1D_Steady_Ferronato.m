@@ -170,12 +170,7 @@ Control.nqP = 2;
 %% Frequency domain
 Control.freqDomain = 0;  % 1 = true; 0 = false
 
-%% Solution parameters
-% tag used for computing analytical solution
-% 1 = uncoupled problem (elasticity, heat transfer, etc)
-% 0 = coupled problem (Biot, Spanos model)
-Control.uncoupled = 0; 
-
+%% Analytical solution
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 1; % 1 = true; 0 = false
 
