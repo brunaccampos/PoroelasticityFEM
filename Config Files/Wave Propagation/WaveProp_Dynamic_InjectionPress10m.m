@@ -129,7 +129,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
 % point loads [GN]
-BC.pointLoad = [];
+BC.pointLoad = @(t)[];
 
 % prescribed traction [GN/m2]
 BC.tractionNodes = [];
@@ -139,7 +139,7 @@ BC.b = @(x,t)[];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
-BC.pointFlux = [];
+BC.pointFlux = @(t)[];
 
 % distributed flux [m3/s]
 BC.fluxNodes = [];

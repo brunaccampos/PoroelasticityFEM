@@ -209,14 +209,14 @@ a0 = 1e-2;
 BC.tractionForce = @(t) -BC.tractionForce + Material.alpha*p0*normalG_vec + Material.alpha*a0/2*normalG_vec*(1-cos(2*pi*f*t)).*(t<t0);
 
 % point loads [GN]
-BC.pointLoad = [];
+BC.pointLoad = @(t)[];
 
 % body force [GN/m3]
 BC.b = @(x,t)[];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
-BC.pointFlux = [];
+BC.pointFlux = @(t)[];
 
 % distributed flux [m3/s]
 BC.fluxNodes = [];
