@@ -129,10 +129,6 @@ Control.tend = 1;
 Control.beta = 1; % beta-method time discretization -- beta = 1 Backward Euler; beta = 0.5 Crank-Nicolson
 
 %% Analytical solution
-% 1 = uncoupled problem (elasticity, heat transfer, etc)
-% 0 = coupled problem (Biot, Spanos model)
-Control.uncoupled = 1; 
-
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 1; % 1 = true; 0 = false
 
