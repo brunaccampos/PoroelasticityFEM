@@ -179,6 +179,9 @@ Control.plotansol = 1; % 1 = true; 0 = false
 % materials (1/M=0)
 Control.ansol_type = 'getAnSol_coupledComp';
 
+Control.u_an = @(t) zeros(MeshU.nDOF,1);
+Control.p_an = @(t) zeros(MeshP.nDOF,1);
+
 %% Time step controls
 Control.dt = 0.1;  % time step [s]
 Control.tend = 60;   % final simulation time [s]
