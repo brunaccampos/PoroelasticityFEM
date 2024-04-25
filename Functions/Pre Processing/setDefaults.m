@@ -92,14 +92,38 @@ if ~isfield(BC,'tractionInterp')
     BC.tractionInterp = 0;
 end
 
-% body force in fluid motion equation (upU model)
-if ~isfield(BC,'bf')
+% body force in fluid motion equation (upU, upv, upw model)
+if ~isfield(BC,'bf') && (contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') || contains(Control.PMmodel, 'UPW'))
     BC.bf = @(x,t) [];
 end
 
-% body force in solid motion equation (upU model)
-if ~isfield(BC,'bs')
+% body force in solid motion equation (upU, upv, upw model)
+if ~isfield(BC,'bs') && (contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') || contains(Control.PMmodel, 'UPW'))
     BC.bs = @(x,t) [];
+end
+
+% point load  - initialize default
+if ~isfield(BC, 'pointLoad')
+    BC.pointLoad = @(t) [];
+end
+
+% point load - check time dependent vector
+if ~isa(BC.pointLoad, 'function_handle')
+    BC.pointLoad = @(t) BC.pointLoad;
+end
+
+% point flux - initialize default
+if ~isfield(BC, 'pointFlux')
+    BC.pointFlux = @(t) [];
+end
+
+% point flud - check time dependent vector
+if ~isa(BC.pointFlux, 'function_handle')
+    BC.pointFlux = @(t) BC.pointFlux;
+end
+
+if isfield(BC, 'tractionForce') && ~isa(BC.tractionForce, 'function_handle')
+    BC.tractionForce = @(t) BC.tractionForce;
 end
 
 %% Control options
