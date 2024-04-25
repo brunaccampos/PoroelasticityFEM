@@ -133,10 +133,6 @@ Control.nqP = 3;
 Control.freqDomain = 0;  % 1 = true; 0 = false
 
 %% Analytical solution
-% 1 = uncoupled problem (elasticity, heat transfer, etc)
-% 0 = coupled problem (Biot, Spanos model)
-Control.uncoupled = 1; 
-
 % plot analytical solution (valid for 1D problems with Material.Minv == 0)
 Control.plotansol = 0; % 1 = true; 0 = false
 
