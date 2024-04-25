@@ -103,11 +103,11 @@ BC.tractionNodes = [];
 BC.b = @(x,t) sin(x);
 
 % point load [N]
-BC.pointLoad = [];
+BC.pointLoad = @(t)[];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
-BC.pointFlux = [];
+BC.pointFlux = @(t)[];
 
 % distributed flux [m/s]
 BC.fluxNodes = [];
