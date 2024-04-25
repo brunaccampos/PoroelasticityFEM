@@ -100,7 +100,7 @@ BC.tractionForce(botrightnode,1) = BC.tractionForce(botrightnode,1)/2;
 BC.tractionForce(toprightnode,1) = BC.tractionForce(toprightnode,1)/2;
 
 % point loads [N]
-BC.pointLoad = [];
+BC.pointLoad = @(t)[];
 
 % body force [N/m3]
 BC.b = @(x,t)[];
@@ -111,7 +111,7 @@ BC.fluxNodes = 1:MeshP.nDOF;
 BC.fluxValue = zeros(length(BC.fluxNodes),1);
 
 % point flux [m3/s]
-BC.pointFlux = [];
+BC.pointFlux = @(t)[];
 
 % flux source [m3/s/m3]
 BC.s = @(x,t)[];

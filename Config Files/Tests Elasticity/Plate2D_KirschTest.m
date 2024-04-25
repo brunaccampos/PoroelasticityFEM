@@ -144,7 +144,7 @@ for i = 1:length(BC.tractionNodes)
 end
 
 % point loads [GN]
-BC.pointLoad = [];
+BC.pointLoad = @(t)[];
 
 % body force [GN/m3]
 BC.b = @(x,t)[];
@@ -156,7 +156,7 @@ BC.fluxNodes = [];
 BC.fluxValue = zeros(length(BC.fluxNodes),1);
 
 % point flux [m/s]
-BC.pointFlux = [];
+BC.pointFlux = @(t)[];
 
 % flux source [m3/s/m3]
 BC.s = @(x,t)[];
