@@ -192,13 +192,6 @@ switch MeshType
         end
 end
 
-%% Initial conditions
-% displacement
-BC.initU = [];
-
-% pressure
-BC.initP = [];
-
 %% Dirichlet BCs - solid
 % central node
 node = find(MeshU.coords(:,1) == 7.5 & MeshU.coords(:,2) == 7.5);
@@ -221,7 +214,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
 % point load [GN]
-BC.pointLoad = [];
+BC.pointLoad = @(t)[];
 
 % distributed load [GN/m2]
 BC.tractionNodes = [];
@@ -231,7 +224,7 @@ BC.b = @(x,t)[];
 
 %% Neumann BCs - fluid
 % point flux [m/s]
-BC.pointFlux = [];
+BC.pointFlux = @(t)[];
 
 % distributed flux [m3/s]
 BC.fluxNodes = [];
@@ -254,10 +247,6 @@ Control.nqP = 2;
 Control.freqDomain = 0;  % 1 = true; 0 = false
 
 %% Analytical solution
-% 1 = uncoupled problem (elasticity, heat transfer, etc)
-% 0 = coupled problem (Biot, Spanos model)
-Control.uncoupled = 0; 
-
 % plot analytical solution (valid for 1D problems)
 Control.plotansol = 0; % 1 = true; 0 = false
 
