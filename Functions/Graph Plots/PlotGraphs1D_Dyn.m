@@ -191,6 +191,7 @@ end
 if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     figure;
     tiledlayout(2,3);
+    if contains(Control.PMmodel, 'UPU')
     %% fluid displacement vs time
     nexttile
     plot(Plot.time, Plot.uf_time,'m','LineWidth',2);
@@ -207,6 +208,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'DisplFluid_time.png','Resolution',300)
+    end
     end
     
     %% fluid velocity vs time
@@ -240,6 +242,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
         exportgraphics(gcf,'AccFluid_time.png','Resolution',300)
     end
     
+    if contains(Control.PMmodel, 'UPU')
     %% fluid displacement vs depth
     nexttile
     plot(MeshU.coords, Solution.uf,'m','LineWidth',2);
@@ -256,6 +259,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'DisplFluid_depth.png','Resolution',300)
+    end
     end
     
     %% fluid velocity vs depth
@@ -279,6 +283,73 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     %% fluid acceleration vs depth
     nexttile
     plot(MeshU.coords, Solution.uf2dot,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
+    hold on
+    grid on
+    xlabel('Column depth [m]');
+    ylabel('u2dot (fluid) [m]');
+    title(sprintf('Fluid acceleration at t = %.1d s', Control.tend));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'AccFluid_depth.png','Resolution',300)
+    end
+    
+end
+
+if contains(Control.PMmodel, 'UPW')
+    figure;
+    tiledlayout(2,3);   
+    %% fluid velocity vs time
+    nexttile
+    plot(Plot.time, Plot.w_time,'c','LineWidth',2);
+    hold on
+    grid on
+    xlabel('Time [s]');
+    ylabel('udot (fluid) [m/s]');
+    title(sprintf('Fluid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
+    % analytical solution
+    if Control.plotansol 
+        plot(Plot.time, Plot.wan_time,'k:','LineWidth',2);
+        legend('Numerical', 'Analytical');
+    end
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'VelFluid_time.png','Resolution',300)
+    end
+    
+    %% fluid acceleration vs time
+    nexttile
+    plot(Plot.time, Plot.wdot_time,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
+    hold on
+    grid on
+    xlabel('Time [s]');
+    ylabel('u2dot (fluid) [m/s]');
+    title(sprintf('Fluid acceleration at x = %.2f m', MeshU.coords(Control.plotu,1)));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'AccFluid_time.png','Resolution',300)
+    end
+        
+    %% fluid velocity vs depth
+    nexttile
+    plot(MeshU.coords, Solution.w,'c','LineWidth',2);
+    hold on
+    grid on
+    xlabel('Column depth [m]');
+    ylabel('udot (fluid) [m]');
+    title(sprintf('Fluid velocity at t = %.1d s', Control.tend));
+    % analytical solution
+    if Control.plotansol
+        plot(MeshU.coords, Plot.wan_space,'k:','LineWidth',2);
+        legend('Numerical', 'Analytical');
+    end
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'VelFluid_depth.png','Resolution',300)
+    end
+    
+    %% fluid acceleration vs depth
+    nexttile
+    plot(MeshU.coords, Solution.wdot,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
     hold on
     grid on
     xlabel('Column depth [m]');
@@ -318,21 +389,5 @@ if Control.fixedDepthPlotON
     exportgraphics(gcf,'Pressure_3D.png','Resolution',300);
     savefig(gcf,'Pressure_3D.fig');
     
-    %% solid velocity vs time - FFT
-% figure
-% y = fft(Plot.udot_time);
-% f_min = 0;
-% f_max = 1000;
-% f = linspace(f_min, f_max, length(Plot.udot_time));
-% plot(f, y,'r','LineWidth',2);
-% hold on
-% grid on
-% xlabel('Frequency spectrum [Hz]');
-% ylabel('Amplitude spectrum [m/s]');
-% title(sprintf('FFT - Solid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
-% hold off
-% if saveGraphs_on
-%     exportgraphics(gcf,'FFTVelSolid_time.png','Resolution',300)
-% end
 
 end
