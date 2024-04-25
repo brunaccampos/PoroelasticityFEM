@@ -55,111 +55,80 @@ end
 
 % mesh type
 % 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Manual';
-
-switch MeshType
-    case 'Manual'
-    % Manual 2D mesh
-        MeshU.nsd = 2; % number of spatial directions
-        MeshU.nn = 22; % number of nodes
-        MeshU.ne = 10; % number of elements
-        MeshU.type = 'Q4'; % element type
-        MeshU.field = 'u'; % field type
-        MeshU.nne = 4; % nodes per element
-        MeshU.nDOFe = MeshU.nne*MeshU.nsd; % DOFs per element
-        MeshU.nDOF = MeshU.nn*MeshU.nsd; % total number of DOFs
-        for sd = 1:MeshU.nsd
-            MeshU.DOF(:,sd) = (sd : MeshU.nsd : (MeshU.nDOF-(MeshU.nsd-sd)))';
-        end
-        MeshU.coords = zeros(MeshU.nn, 2); % nodal coordinates
-        % x coordinates
-        MeshU.coords(:,1) = [(0:10)'; (0:10)'];
-        % y coordinates
-        MeshU.coords(:,2) = [zeros(11,1); ones(11,1)];
-        % elements connectivity
-        MeshU.conn = [1, 2, 13, 12;
-                    2, 3, 14, 13;
-                    3, 4, 15, 14;
-                    4, 5, 16, 15;
-                    5, 6, 17, 16;
-                    6, 7, 18, 17;
-                    7, 8, 19, 18;
-                    8, 9, 20, 19;
-                    9, 10, 21, 20;
-                    10, 11, 22, 21]; 
-                
-        % mesh for fluid field
-        MeshP.nsd = 2; % number of spatial directions
-        MeshP.nn = 22; % number of nodes
-        MeshP.ne = 10; % number of elements
-        MeshP.type = 'Q4'; % element type
-        MeshP.field = 'p'; % field type
-        MeshP.nne = 4; % nodes per element
-        MeshP.nDOFe = MeshP.nne; % DOFs per element
-        MeshP.nDOF = MeshP.nn; % total number of DOFs
-        MeshP.DOF = (1:MeshP.nDOF).'; % DOFs
-        MeshP.coords = zeros(MeshP.nn, 2); % nodal coordinates
-        % x coordinates
-        MeshP.coords(:,1) = [(0:10)'; (0:10)'];
-        % y coordinates
-        MeshP.coords(:,2) = [zeros(11,1); ones(11,1)];
-        % elements connectivity
-        MeshP.conn = [1, 2, 13, 12;
-                    2, 3, 14, 13;
-                    3, 4, 15, 14;
-                    4, 5, 16, 15;
-                    5, 6, 17, 16;
-                    6, 7, 18, 17;
-                    7, 8, 19, 18;
-                    8, 9, 20, 19;
-                    9, 10, 21, 20;
-                    10, 11, 22, 21]; 
-
-        % mesh for porosity field
-        MeshN = [];
-% ------------------------------------------------------------------------
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        meshFileNameU = 'PlateWithHoleQ4.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        meshFileNameP = 'PlateWithHoleQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            fieldN = 'n';
-            meshFileNameN = 'PlateWithHoleQ4.msh';
-            MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
-        else
-            MeshN = [];
-        end
+MeshU.nsd = 2; % number of spatial directions
+MeshU.nn = 22; % number of nodes
+MeshU.ne = 10; % number of elements
+MeshU.type = 'Q4'; % element type
+MeshU.field = 'u'; % field type
+MeshU.nne = 4; % nodes per element
+MeshU.nDOFe = MeshU.nne*MeshU.nsd; % DOFs per element
+MeshU.nDOF = MeshU.nn*MeshU.nsd; % total number of DOFs
+for sd = 1:MeshU.nsd
+    MeshU.DOF(:,sd) = (sd : MeshU.nsd : (MeshU.nDOF-(MeshU.nsd-sd)))';
 end
+MeshU.coords = zeros(MeshU.nn, 2); % nodal coordinates
+% x coordinates
+MeshU.coords(:,1) = [(0:10)'; (0:10)'];
+% y coordinates
+MeshU.coords(:,2) = [zeros(11,1); ones(11,1)];
+% elements connectivity
+MeshU.conn = [1, 2, 13, 12;
+    2, 3, 14, 13;
+    3, 4, 15, 14;
+    4, 5, 16, 15;
+    5, 6, 17, 16;
+    6, 7, 18, 17;
+    7, 8, 19, 18;
+    8, 9, 20, 19;
+    9, 10, 21, 20;
+    10, 11, 22, 21];
+
+% mesh for fluid field
+MeshP.nsd = 2; % number of spatial directions
+MeshP.nn = 22; % number of nodes
+MeshP.ne = 10; % number of elements
+MeshP.type = 'Q4'; % element type
+MeshP.field = 'p'; % field type
+MeshP.nne = 4; % nodes per element
+MeshP.nDOFe = MeshP.nne; % DOFs per element
+MeshP.nDOF = MeshP.nn; % total number of DOFs
+MeshP.DOF = (1:MeshP.nDOF).'; % DOFs
+MeshP.coords = zeros(MeshP.nn, 2); % nodal coordinates
+% x coordinates
+MeshP.coords(:,1) = [(0:10)'; (0:10)'];
+% y coordinates
+MeshP.coords(:,2) = [zeros(11,1); ones(11,1)];
+% elements connectivity
+MeshP.conn = [1, 2, 13, 12;
+    2, 3, 14, 13;
+    3, 4, 15, 14;
+    4, 5, 16, 15;
+    5, 6, 17, 16;
+    6, 7, 18, 17;
+    7, 8, 19, 18;
+    8, 9, 20, 19;
+    9, 10, 21, 20;
+    10, 11, 22, 21];
+
+% mesh for porosity field
+MeshN = [];
 
 %% Dirichlet BCs - solid
 % column vector of prescribed displacement dof
 BC.fixed_u = [1; 2; 23];
 % prescribed displacement for each dof [u1; u2; ...] [m]
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_u_value = @(t)zeros(length(BC.fixed_u),1);
 % free nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
 BC.fixed_p = 1:MeshP.nDOF; % nodes at the inner circle
 % fixed DOF values
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t)zeros(length(BC.fixed_p),1);
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
-% traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
-BC.tractionInterp = 0;
-
 BC.tractionNodes = [11; 22];
 % prescribed traction [N/m2]
 BC.traction = 0.005;
