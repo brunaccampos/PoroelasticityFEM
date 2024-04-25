@@ -136,14 +136,14 @@ end
 %% Dirichlet BCs - solid
 % displacement u=0 at the bottom
 BC.fixed_u = [MeshU.left_dofx; MeshU.right_dofx; MeshU.top_dofy];
-BC.fixed_u_value = zeros(length(BC.fixed_u),1);
+BC.fixed_u_value = @(t) zeros(length(BC.fixed_u),1);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
 %   pressure p=0 at the top
 BC.fixed_p = (MeshP.bottom_dof);
-BC.fixed_p_value = zeros(length(BC.fixed_p),1);
+BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free pressure nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
