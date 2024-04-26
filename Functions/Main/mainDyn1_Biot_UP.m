@@ -31,12 +31,17 @@ if saveVideo_on
     open(myVideo)
 end
 
+% print time and step
+fprintf('Step 0, t = 0');
+msg_len = numel('Step 0, t = 0');
+
 %% Solve system
 for t = 1:length(Plot.time)
     % current time
     Control.t = Plot.time(t);
     % print current time and step
-    fprintf('\n Step %d, t = %d \n', Control.step, Control.t);
+    fprintf(repmat('\b',1,msg_len));
+    msg_len = fprintf('Step %d, t = %.4g',Control.step', Control.t);
     
     % adapt time step size (dtc = dt current)
     if isfield(Control, 'dtmin') 
