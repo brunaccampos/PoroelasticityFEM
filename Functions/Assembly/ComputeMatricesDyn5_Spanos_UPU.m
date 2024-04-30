@@ -122,8 +122,8 @@ for e = 1:ne
         Cfs_e = Cfs_e + Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) - ...
             Material.xif*Material.deltas * (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
      
-        Mss_e = Mss_e + ((1-Material.eta0) * Material.rho_s - Material.rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Mff_e = Mff_e + (Material.eta0 * Material.rho_f - Material.rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Mss_e = Mss_e + ((1-Material.eta0) * Material.rhos - Material.rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Mff_e = Mff_e + (Material.eta0 * Material.rhof - Material.rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         Msf_e = Msf_e + Material.rho12 * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
  
