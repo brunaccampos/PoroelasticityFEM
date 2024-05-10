@@ -36,6 +36,8 @@ DirFolder = 'Config Files';
 % File = 'Column1D_Dynamic_Sandstone';
 % File = 'Column1D_Dynamic_Tasiop';
 % File = 'Column1D_Dynamic_Zienck';
+% File = 'Column1D_Dynamic_Lotfian';
+% File = 'Column1D_Dynamic_LotfianUPV';
 
 % -------------------- Consolidation 2D - quasi-steady
 % File = 'Column2D_Steady_Ferronato';
@@ -49,12 +51,8 @@ DirFolder = 'Config Files';
 % File = 'Footing2D_Korsawe';
 
 % -------------------- Injection well
-% File = 'Injection2D_Plate';
-% File = 'InjectionWellPoint_Dynamic_Komijani';
 % File = 'InjectionWells2D_15x15';
 % File = 'Plate_Dynamic_Komijani';
-% File = 'PlatePointInjection_Dynamic';
-% File = 'PlatePointInjection_Dynamic_Komijani';
 
 % -------------------- Tests Convergence
 % File = 'ManufacturedSolution1D_Biot';
@@ -62,12 +60,15 @@ DirFolder = 'Config Files';
 % File = 'ManufacturedSolution1D_UstePste';
 % File = 'ManufacturedSolution1D_UstePtra';
 % File = 'ManufacturedSolution1D_UtraPtra';
+% File = 'ManufacturedSolution1Dup_Biot';
 % File = 'ManufacturedSolution1Dupu_Biot';
-% File = 'ManufacturedSolution1Dupu_Spanos';
+% File = 'ManufacturedSolution1Dupu_Biot_v2';
+File = 'ManufacturedSolution1Dupu_Spanos';
+% File = 'ManufacturedSolution1Dupu_Spanos_v2';
+% File = 'ManufacturedSolution1Dupv_Biot';
 
 % -------------------- Tests Elasticity
 % File = 'Beam_Dynamic';
-% File = 'Beam_Dynamic_v2';
 % File = 'Plate2D_KirschTest';
 % File = 'PlateWithHole_Elasticity';
 % File = 'VelocityImpact1D_Ham';
@@ -76,14 +77,10 @@ DirFolder = 'Config Files';
 % -------------------- Tests Heat Transfer
 % File = 'HeatConduction1D_Dynamic';
 % File = 'HeatConduction2D';
-% File = 'HeatConduction2D_PointFluxBC';
 % File = 'HeatConduction2D_TempBC';
 % File = 'PlateDiffusionDynamic';
-% File = 'PlateDiffusionDynamic_Point';
 % File = 'PlateDiffusionSteady';
-% File = 'PlateWithHole_Diffusion';
 % File = 'PlateWithHole_Diffusion_Transient';
-% File = 'PlateWithHole_HeatTransfer';
 
 % -------------------- Velocity Impact
 % File = 'VelocityImpact2D_Dynamic_Komijani';
@@ -96,10 +93,8 @@ DirFolder = 'Config Files';
 % File = 'WaveProp_Dynamic_Komijani';
 % File = 'WaveProp_Dynamic_Quiroga';
 % File = 'WaveProp_Dynamic_Tian';
-File = 'WaveProp_Dynamic_InjectionPress10m';
+% File = 'WaveProp_Dynamic_InjectionPress10m';
 % File = 'WaveProp_Dynamic_InjectionPress10m_InSitu';
-% File = 'WaveProp_Dynamic_InjectionPress100m';
-% File = 'WaveProp_Dynamic_InjectionFlux';
 
 % ------------------------------------------------------------------------
 
