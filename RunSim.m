@@ -164,5 +164,5 @@ start_time = toc;
 run('Functions/Main/main');
 end_time = toc;
 
-disp(['run time: ' num2str(end_time - start_time)])
+fprintf(['\nRun time: ' num2str(end_time - start_time)]);
 % close all
