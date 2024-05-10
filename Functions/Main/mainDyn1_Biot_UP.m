@@ -57,6 +57,22 @@ for t = 1:length(Plot.time)
     % system load vectors
     [fu,fp,fn] = ComputeLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
 
+    % analytical solution for 1D case
+    if Control.plotansol
+        [p_an, u_an] = feval(Control.ansol_type, Control, Material, MeshU, MeshP, BC);
+       
+        % store variables over length
+        Plot.pan_space = p_an;
+        Plot.uan_space = u_an;
+        
+        % store variables over time
+        if Control.step < length(Plot.time)
+            % store variables over time
+            Plot.uan_time(Control.step+1,:) = u_an(Control.plotu, 1);
+            Plot.pan_time(Control.step+1,:) = p_an(Control.plotp, 1);
+        end
+    end
+
     % linear solver
     [Solution] = SolverDyn_UP(Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
 
