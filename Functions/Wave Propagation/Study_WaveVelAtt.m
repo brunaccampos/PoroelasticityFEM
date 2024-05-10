@@ -214,3 +214,8 @@ Material.deltaf = (Material.alpha-Material.eta0)*Material.eta0*Mstar*Material.n/
 % plots frequency vs velocity/attenuation
 PlotVelAtt(w, vp, attp, vs, atts);
 
+%% Porosity-pressure waves
+[vpPorPres, attpPorPres] = ComputeVelAtt_PorPres(w, Material);
+
+% plots frequency vs velocity/attenuation
+PlotVelAtt_PorPres(w, vpPorPres, attpPorPres);
