@@ -73,18 +73,7 @@ Solution.gradp = gradp;
 Solution.flux = flux;
  
 % compute error
-if saveMatData_on && Control.plotansol
-    % symbolic analytical results
-    if ~Control.uncoupled
-        if any(Material.Minv)
-            [pan_symb, uan_symb] = getAnalyticResult_Comp_Symb(Material, MeshU, BC, Control);
-        else
-            [pan_symb, uan_symb] = getAnalyticResult_Incomp_Symb(Material, MeshU, BC, Control);
-        end
-        Control.uan_symb = uan_symb;
-        Control.pan_symb = pan_symb;
-    end
-        
+if saveMatData_on && Control.plotansol      
     % compute strain and stress (analytical)
     [strain_an, stress_an] = ComputeSolidStress(Material, MeshU, Plot.uan_space);
     Solution.strain_an = strain_an;
