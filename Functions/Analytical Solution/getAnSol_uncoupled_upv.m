@@ -1,4 +1,4 @@
-function [p_an, u_an, ufdot_an] = getAnSol_uncoupled_upv(Control, ~, ~, ~, ~)
+function [p_an, u_an, ufdot_an] = getAnSol_uncoupled_UPV(Control, ~, ~, ~, ~)
 % ------------------------------------------------------------------------
 % Return analytical solution for uncoupled problem (e.g. elasticity, heat
 % transfer
