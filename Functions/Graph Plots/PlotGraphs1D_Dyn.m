@@ -190,8 +190,10 @@ end
 
 if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') || contains(Control.PMmodel, 'UPW')
     figure;
+    tiledlayout(1,2);
     %% porosity vs depth
-    semilogx(MeshU.coords, (Solution.n-Material.eta0) ./ Material.eta0,'g','LineWidth',2);
+    nexttile;
+    plot(MeshU.coords, (Solution.n-Material.eta0) ./ Material.eta0,'g','LineWidth',2);
     grid on
     hold on
     xlabel('Column depth [m]');
@@ -200,6 +202,18 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') || conta
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'Poros_depth.png','Resolution',300)
+    end
+    %% porosity gradient vs depth
+    nexttile;
+    plot(MeshU.coords, Solution.ndot,'g','LineWidth',2);
+    grid on
+    hold on
+    xlabel('Column depth [m]');
+    ylabel('Porosity gradient [-]');
+    title(sprintf('Porosity gradient (dt) at t = %.1d s', Control.tend));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'PorosDot_depth.png','Resolution',300)
     end
 end
 
