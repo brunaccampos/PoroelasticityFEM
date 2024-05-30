@@ -136,7 +136,7 @@ plot(MeshU.coords, Solution.udot,'r','LineWidth',2);
 hold on
 grid on
 xlabel('Column depth [m]');
-ylabel('udot (solid) [m]');
+ylabel('udot (solid) [m/s]');
 title(sprintf('Solid velocity at t = %.1d s', Control.tend));
 % frequency domain solution
 if Control.freqDomain
