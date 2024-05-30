@@ -12,21 +12,40 @@ function Quad = getIPs(nsd, nq, type)
 switch type
     case {'T3', 'T6'}
         %% 2D triangular elements
+        % quadrature coordinates
+        Quad.p = zeros(nq,nsd);
+        % quadrature weights
+        Quad.w = zeros(nq,1);
         switch nq
             case 1
                 % coords
-                Quad.p = [1/3, 1/3];
+                Quad.p(1) = [1/3, 1/3];
                 % weight
-                Quad.w = 1/2;
-            case 2
-                Quad.p = zeros(3,2);
-                Quad.w = zeros(3,1);
+                Quad.w(1) = 1;
+            case 3
                 % coords
                 Quad.p(1,:) = [1/6, 1/6];
-                Quad.p(2,:) = [4/6, 1/6];
-                Quad.p(3,:) = [1/6, 4/6];
+                Quad.p(2,:) = [2/3, 1/6];
+                Quad.p(3,:) = [1/6, 2/3];
                 % weights
-                Quad.w(:) = 1/6;
+                Quad.w(:) = 1/3;
+            case 7
+                % coords
+                Quad.p(1,:) = [0.1012865073235, 0.1012865073235];
+                Quad.p(2,:) = [0.7974269853531, 0.1012865073235];
+                Quad.p(3,:) = [0.1012865073235, 0.7974269853531];
+                Quad.p(4,:) = [0.4701420641051, 0.0597158717898];
+                Quad.p(5,:) = [0.4701420641051, 0.4701420641051];
+                Quad.p(6,:) = [0.0597158717898, 0.4701420641051];
+                Quad.p(7,:) = [1/3, 1/3];
+                % weights
+                Quad.w(1) = 0.1259391805448;
+                Quad.w(2) = 0.1259391805448;
+                Quad.w(3) = 0.1259391805448;
+                Quad.w(4) = 0.1323941527885;
+                Quad.w(5) = 0.1323941527885;
+                Quad.w(6) = 0.1323941527885;
+                Quad.w(7) = 0.225;
         end
     otherwise
         %% 1D and 2D quadrilateral elements
