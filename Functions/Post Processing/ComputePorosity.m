@@ -61,9 +61,9 @@ for e = 1:ne
         % changing to Voigt form
         B = getBVoigt(Mesh,B);
         % porosity
-        eta_e(n,:) = (B*use).' - (B*ufe).' + Material.eta0;
+        eta_e(n,:) = (Material.m'*B*use).' - (Material.m'*B*ufe).' + Material.eta0;
         % time varying porosity
-        etadot_e(n,:) = (B*usdote).' - (B*ufdote).';
+        etadot_e(n,:) = (Material.m'*B*usdote).' - (Material.m'*B*ufdote).';
     end
     
     % add to global matrices
