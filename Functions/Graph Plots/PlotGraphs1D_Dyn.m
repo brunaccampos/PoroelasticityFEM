@@ -188,6 +188,21 @@ if contains(Control.PMmodel, 'UPN')
     end
 end
 
+if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') || contains(Control.PMmodel, 'UPW')
+    figure;
+    %% porosity vs depth
+    semilogx(MeshU.coords, (Solution.n-Material.eta0) ./ Material.eta0,'g','LineWidth',2);
+    grid on
+    hold on
+    xlabel('Column depth [m]');
+    ylabel('Change in porosity normalized [-]');
+    title(sprintf('Porosity norm at t = %.1d s', Control.tend));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'Poros_depth.png','Resolution',300)
+    end
+end
+
 if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     figure;
     tiledlayout(2,3);
