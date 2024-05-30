@@ -15,10 +15,10 @@ if contains(Control.PMmodel, 'UPU')
     uf = Solution.uf;
     ufdot = Solution.ufdot;
 elseif contains(Control.PMmodel, 'UPV')
-    uf = zeros(MeshU.nDOF,1);
+    uf = zeros(Mesh.nDOF,1);
     ufdot = Solution.ufdot;
 elseif contains(Control.PMmodel, 'UPW')
-    uf = zeros(MeshU.nDOF,1);
+    uf = zeros(Mesh.nDOF,1);
     ufdot = (Solution.w + Material.eta0*Solution.udot)/Material.eta0;
 end
 
