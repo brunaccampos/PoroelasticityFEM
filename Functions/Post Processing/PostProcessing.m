@@ -19,8 +19,20 @@ nsd = MeshU.nsd; % number of spatial dimensions
 fixedU = zeros(MeshU.nDOF,1);
 fixedU(BC.fixed_u) = 1;
 % fixed DOFs fluid displacement
-fixedUf = zeros(MeshU.nDOF,1);
-fixedUf(BC.fixed_uf) = 1;
+if contains(Control.PMmodel, 'UPU')
+    fixedUf = zeros(MeshU.nDOF,1);
+    fixedUf(BC.fixed_uf) = 1;
+end
+% fixed DOFs fluid velocity
+if contains(Control.PMmodel, 'UPV')
+    fixedUfdot = zeros(MeshU.nDOF,1);
+    fixedUfdot(BC.fixed_ufdot) = 1;
+end
+% fixed DOFs relative fluid velocity
+if contains(Control.PMmodel, 'UPW')
+    fixedW = zeros(MeshU.nDOF,1);
+    fixedW(BC.fixed_w) = 1;
+end
 % fixed DOFs pressure
 fixedP = zeros(MeshP.nDOF,1);
 fixedP(BC.fixed_p) = 1;
@@ -28,7 +40,7 @@ fixedP(BC.fixed_p) = 1;
 if nsd == 1
     xdofs_u = MeshU.DOF(:,1); % DOFs
     
-    %% Storing data for solid media - 1D case
+    %% Solid field - 1D
     % fixed DOFs
     scalardataU(1).name = 'fixed_us';
     scalardataU(1).data = fixedU(MeshU.DOF);
@@ -60,7 +72,7 @@ if nsd == 1
     
     vectordataU = [];
     
-    %% Storing data for fluid media - 1D case
+    %% Fluid displacement - 1D
     if contains(Control.PMmodel, 'UPU')
         % fixed DOFs
         scalardataUf(1).name = 'fixed_uf';
@@ -84,6 +96,46 @@ if nsd == 1
         vectordataUf = [];
     end
     
+    %% Fluid velocity - 1D
+    if contains(Control.PMmodel, 'UPV')
+        % fixed DOFs
+        scalardataUfdot(1).name = 'fixed_ufdot';
+        scalardataUfdot(1).data = fixedUfdot(MeshU.DOF);
+        scalardataUfdot(1).type = 'int';
+        % velocity
+        scalardataUfdot(end+1).name = 'vel_uf';
+        scalardataUfdot(end).data = Solution.ufdot(xdofs_u);
+        scalardataUfdot(end).type = 'float';
+        
+        if contains(Control.PMmodel, 'Dyn')
+            % acceleration
+            scalardataUfdot(end+1).name = 'acc_uf';
+            scalardataUfdot(end).data = Solution.uf2dot(xdofs_u);
+            scalardataUfdot(end).type = 'float';
+        end
+        vectordataUfdot = [];
+    end
+    
+    %% Fluid velocity (relative) - 1D
+    if contains(Control.PMmodel, 'UPW')
+        % fixed DOFs
+        scalardataW(1).name = 'fixed_w';
+        scalardataW(1).data = fixedW(MeshU.DOF);
+        scalardataW(1).type = 'int';
+        % velocity
+        scalardataW(end+1).name = 'vel_w';
+        scalardataW(end).data = Solution.w(xdofs_u);
+        scalardataW(end).type = 'float';
+        
+        if contains(Control.PMmodel, 'Dyn')
+            % acceleration
+            scalardataW(end+1).name = 'acc_wdot';
+            scalardataW(end).data = Solution.wdot(xdofs_u);
+            scalardataW(end).type = 'float';
+        end
+        vectordataW = [];
+    end
+
 elseif nsd == 2
     xdofs_u = MeshU.DOF(:,1); % DOFs in x
     ydofs_u = MeshU.DOF(:,2); % DOFs in y
@@ -151,7 +203,7 @@ elseif nsd == 2
     scalardataU(end).data = Solution.udot(ydofs_u);
     scalardataU(end).type = 'float';
     
-    %% Storing data for fluid media - 2D case
+    %% Fluid displacement - 2D case
     if contains(Control.PMmodel, 'UPU')
         % fixed DOFs
         scalardataUf(1).name = 'fixed_uf';
@@ -188,9 +240,65 @@ elseif nsd == 2
         % velocity in y (scalar)
         scalardataUf(end+1).name = 'vel_ufy';
         scalardataUf(end).data = Solution.ufdot(ydofs_u);
-        scalardataUf(end).type = 'float';
-        
+        scalardataUf(end).type = 'float';        
     end 
+    
+    %% Fluid velocity - 2D case
+    if contains(Control.PMmodel, 'UPV')
+        % fixed DOFs
+        scalardataUfdot(1).name = 'fixed_ufdot';
+        scalardataUfdot(1).data = fixedUfdot(MeshU.DOF);
+        scalardataUfdot(1).type = 'int';
+        % velocity
+        vectordataUfdot(end+1).name = 'vel_uf';
+        vectordataUfdot(end).data = [Solution.ufdot(xdofs_u) Solution.ufdot(ydofs_u) zeros(length(xdofs_u),1)];
+        vectordataUfdot(end).type = 'float';
+        
+        if contains(Control.PMmodel, 'Dyn')
+            % acceleration
+            vectordataUf(end+1).name = 'acc_uf';
+            vectordataUf(end).data = [Solution.uf2dot(xdofs_u) Solution.uf2dot(ydofs_u) zeros(length(xdofs_u),1)];
+            vectordataUf(end).type = 'float';
+        end
+        
+        % velocity in x (scalar)
+        scalardataUfdot(end+1).name = 'vel_ufx';
+        scalardataUfdot(end).data = Solution.ufdot(xdofs_u);
+        scalardataUfdot(end).type = 'float';
+        % velocity in y (scalar)
+        scalardataUfdot(end+1).name = 'vel_ufy';
+        scalardataUfdot(end).data = Solution.ufdot(ydofs_u);
+        scalardataUfdot(end).type = 'float';        
+    end 
+    
+    %% Fluid velocity (relative) - 2D case
+    if contains(Control.PMmodel, 'UPW')
+        % fixed DOFs
+        scalardataW(1).name = 'fixed_w';
+        scalardataW(1).data = fixedW(MeshU.DOF);
+        scalardataW(1).type = 'int';
+        % velocity
+        vectordataW(end+1).name = 'vel_uf';
+        vectordataW(end).data = [Solution.w(xdofs_u) Solution.w(ydofs_u) zeros(length(xdofs_u),1)];
+        vectordataW(end).type = 'float';
+        
+        if contains(Control.PMmodel, 'Dyn')
+            % acceleration
+            vectordataW(end+1).name = 'acc_uf';
+            vectordataW(end).data = [Solution.wdot(xdofs_u) Solution.wdot(ydofs_u) zeros(length(xdofs_u),1)];
+            vectordataW(end).type = 'float';
+        end
+        
+        % velocity in x (scalar)
+        scalardataW(end+1).name = 'vel_ufx';
+        scalardataW(end).data = Solution.w(xdofs_u);
+        scalardataW(end).type = 'float';
+        % velocity in y (scalar)
+        scalardataW(end+1).name = 'vel_ufy';
+        scalardataW(end).data = Solution.w(ydofs_u);
+        scalardataW(end).type = 'float';        
+    end 
+    
 end
 
 %% Storing data for fluid media
@@ -253,6 +361,22 @@ if contains(Control.PMmodel, 'UPU')
     nameUf = 'Solution_uf.vtk.';
     filenameUf = fullfile(vtk_dir, [nameUf, num2str(step)]);
     WriteMesh2VTK(filenameUf, description, MeshU, scalardataUf, vectordataUf);
+end
+
+% fluid (u-p-v)
+if contains(Control.PMmodel, 'UPV')
+    description = config_name; % config file name
+    nameUfdot = 'Solution_ufdot.vtk.';
+    filenameUfdot = fullfile(vtk_dir, [nameUfdot, num2str(step)]);
+    WriteMesh2VTK(filenameUfdot, description, MeshU, scalardataUfdot, vectordataUfdot);
+end
+
+% fluid (u-p-w)
+if contains(Control.PMmodel, 'UPW')
+    description = config_name; % config file name
+    nameW = 'Solution_w.vtk.';
+    filenameW = fullfile(vtk_dir, [nameW, num2str(step)]);
+    WriteMesh2VTK(filenameW, description, MeshU, scalardataW, vectordataW);
 end
 
 end
