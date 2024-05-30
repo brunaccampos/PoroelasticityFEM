@@ -215,7 +215,7 @@ Control.plotansol = 1; % 1 = true; 0 = false
 % materials
 % 'getAnSol_coupledIncomp' = coupled porous media problem, incompressible
 % materials (1/M=0)
-Control.ansol_type = 'getAnSol_uncoupled_up';
+Control.ansol_type = 'getAnSol_uncoupled_UP';
 
 % solution in u
 Control.uan_symb = @(x,t) sin(F1*x + F2*t)./1000;
