@@ -14,6 +14,11 @@ nsd = MeshU.nsd; % number of spatial dimensions
 %% Compute fluid flux
 [q] = ComputeFluidFlux(Material, MeshP, Solution.p);
 
+%% Compute porosity
+if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') || contains(Control.PMmodel, 'UPW')
+    [eta, etadot] = ComputePorosity(Material, MeshU, Solution, Control);
+end
+
 %% Store fixed DOFs
 % fixed DOFs solid displacement
 fixedU = zeros(MeshU.nDOF,1);
@@ -327,9 +332,17 @@ end
 %% Storing data for porosity field
 % porosity
 if contains(Control.PMmodel, 'UPN')
-    scalardataN(1).name = 'porosity';
+    scalardataN(1).name = 'eta';
     scalardataN(1).data = Solution.n;
     scalardataN(1).type = 'float';
+elseif contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') || contains(Control.PMmodel, 'UPW')
+    scalardataN(1).name = 'eta';
+    scalardataN(1).data = eta;
+    scalardataN(1).type = 'float';
+    
+    scalardataN(end+1).name = 'eta_dot';
+    scalardataN(end).data = etadot;
+    scalardataN(end).type = 'float';
 else
     scalardataN = [];
 end
@@ -348,14 +361,19 @@ filenameP = fullfile(vtk_dir, [nameP, num2str(step)]);
 WriteMesh2VTK(filenameP, description, MeshP, scalardataP, vectordataP);
 
 % porosity
-if contains(Control.PMmodel, 'UPN')
+if contains(Control.PMmodel, 'UPN') 
     description = config_name; % config file name
     nameN = 'Solution_n.vtk.';
     filenameN = fullfile(vtk_dir, [nameN, num2str(step)]);
     WriteMesh2VTK(filenameN, description, MeshN, scalardataN, []);
+elseif contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') || contains(Control.PMmodel, 'UPW')
+    description = config_name; % config file name
+    nameN = 'Solution_n.vtk.';
+    filenameN = fullfile(vtk_dir, [nameN, num2str(step)]);
+    WriteMesh2VTK(filenameN, description, MeshP, scalardataN, []);
 end
 
-% fluid (u-p-U)
+% fluid (u-p-u)
 if contains(Control.PMmodel, 'UPU')
     description = config_name; % config file name
     nameUf = 'Solution_uf.vtk.';
