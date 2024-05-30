@@ -44,6 +44,31 @@ initVars_function = append('initVariables', vars_type);
 main_type = append('main',modeltype);
 feval(main_type);
 
+%% Compute stress - flux - porosity
+% compute solid strain and stress
+[strain, stress] = ComputeSolidStress(Material, MeshU, Solution.u);
+Solution.strain = strain;
+Solution.stress = stress;
+
+% compute pressure gradient and flux
+[gradp, flux] = ComputeFluidFlux(Material, MeshP, Solution.p);
+Solution.gradp = gradp;
+Solution.flux = flux;
+
+% compute flux strain and stress
+if contains(Control.PMmodel, 'UPU')
+    [strainf, stressf] = ComputeSolidStress(Material, MeshU, Solution.uf);
+    Solution.strainf = strainf;
+    Solution.stressf = stressf;
+end
+
+% compute porosity
+if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') || contains(Control.PMmodel, 'UPW')
+    [eta, etadot] = ComputePorosity(Material, MeshU, Solution, Control);
+    Solution.n = eta;
+    Solution.ndot = etadot;
+end
+
 %% Post processing
 % plot figures
 if plotGraphs_on && ~Control.freqDomain
@@ -62,16 +87,6 @@ if Control.freqDomain
     PlotModeShapes(phi_u, omega2_u, phi_p, omega2_p, MeshU, MeshP, Control, BC, config_name, vtk_dir);
 end
 
-% compute strain and stress
-[strain, stress] = ComputeSolidStress(Material, MeshU, Solution.u);
-Solution.strain = strain;
-Solution.stress = stress;
-
-% compute flux
-[gradp, flux] = ComputeFluidFlux(Material, MeshP, Solution.p);
-Solution.gradp = gradp;
-Solution.flux = flux;
- 
 % compute error
 if saveMatData_on && Control.plotansol      
     % compute strain and stress (analytical)
@@ -85,13 +100,8 @@ if saveMatData_on && Control.plotansol
     Solution.flux_an = flux_an;
    
     if contains(Control.PMmodel, 'UPU')
-        % compute strain and stress
-        [strainf, stressf] = ComputeSolidStress(Material, MeshU, Solution.uf);
+        % compute strain and stress (analytical)
         [strainf_an, stressf_an] = ComputeSolidStress(Material, MeshU, Plot.ufan_space);
-        
-        % store results
-        Solution.strainf = strainf;
-        Solution.stressf = stressf;
         Solution.strainf_an = strainf_an;
         Solution.stressf_an = stressf_an;
     end
