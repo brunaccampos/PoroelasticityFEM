@@ -189,6 +189,21 @@ Material.k = 1.88e-13; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
 % Material.eta0 = 0.393; % porosity [-]
 % Material.k = 1.15e-10; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
 
+%% Material parameters (Kimura, 2007) - marine sediments and heavy oil
+% Material.rhof = 1025; % fluid density [kg/m3]
+% Material.muf = 1e1; % fluid dynamic viscosity [Pa s]
+% Material.Kf = 2.37e9; % fluid bulk modulus [Pa]
+% Material.xif = Material.muf*3; % fluid bulk viscosity [Pa s]
+% 
+% Material.rhos = 2650; % solid density [kg/m3]
+% Material.mus = 4.37e5; % solid shear modulus [Pa]
+% Material.Ks = 36e9; % solid bulk modulus [Pa]
+% 
+% Material.rho12 = 0; % coupled density [kg/m3]
+% Material.alpha = 1; % Biot coefficient [-]
+% Material.eta0 = 0.393; % porosity [-]
+% Material.k = 1.15e-10; % permeability [m2] Note: 1D = 1e-12 m2, 1mD = 1e-15 m2
+
 %% Material parameters - dCS model
 % micro heterogeneity coefficient [-] (Quiroga, 2007)
 Material.c = 0;
