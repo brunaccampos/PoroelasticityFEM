@@ -30,7 +30,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_Dynamic_Pulse(~,
 %                      p = fluid pressure, v = fluid velocity
 % Dyn7_Biot_UPW ------ Biot model (u-p-w), dynamic, u = solid displacement,
 %                      p = fluid pressure, w = relative fluid velocity
-Control.PMmodel = 'Dyn4_Biot_UPU';
+Control.PMmodel = 'Dyn5_Spanos_UPU';
 
 %% Material properties - Berea Sandstone (Detournay, 1993, p.26)
 % elasticity modulus [GPa]
@@ -101,9 +101,9 @@ coord0 = [0;0;0];
 % number of space dimensions
 nsd = 2;
 % size of domain [m] [Lx;Ly;Lz]
-L = [10; 10];
+L = [12; 12];
 % number of elements in each direction [nex; ney; nez]
-ne = [80; 80];
+ne = [240; 240];
 
 %%%% displacement mesh
 % element type ('Q4')
@@ -132,7 +132,7 @@ end
 
 %% Dirichlet BCs - solid
 % central node
-node = find(MeshU.coords(:,1) == 5 & MeshU.coords(:,2) == 5);
+node = find(MeshU.coords(:,1) == 6 & MeshU.coords(:,2) == 6);
 % central node y DOF
 BC.fixed_u = node*2;
 % amplitude [GPa]
@@ -190,7 +190,7 @@ Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
 Control.dt = 1e-5;  % time step
-Control.tend = 1.5e-3;   % final simulation time
+Control.tend = 2e-3;   % final simulation time
 
 % Newmark method
 Control.beta = 0.7;
