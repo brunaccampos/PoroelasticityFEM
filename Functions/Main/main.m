@@ -42,6 +42,9 @@ initVars_function = append('initVariables', vars_type);
 %% Select model and evaluate main function
 [~,modeltype] = fileparts(Control.PMmodel);
 main_type = append('main',modeltype);
+if Control.freqDomain
+    main_type = append(main_type,'_Freq');
+end
 feval(main_type);
 
 %% Compute stress - flux - porosity
