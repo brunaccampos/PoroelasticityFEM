@@ -8,7 +8,6 @@ disp([num2str(toc),': Model: Biot u-p transient case, mode superposition']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
-
 [Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesTr1_Biot_UP(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Solve eigenproblem
@@ -32,12 +31,24 @@ if plot2vtk
     Control.step = 1;
 end
 
+% initialize video file
+if saveVideo_on
+    myVideo = VideoWriter('myVideoFile'); % open video file
+    myVideo.FrameRate = 20;
+    open(myVideo)
+end
+
+% print time and step
+fprintf('Step 0, t = 0');
+msg_len = numel('Step 0, t = 0');
+
 %% Solve system
 for t = 1:length(Plot.time)
     % current time
     Control.t = Plot.time(t);
     % print current time and step
-    fprintf('\n Step %d, t = %d \n', Control.step, Control.t);
+    fprintf(repmat('\b',1,msg_len));
+    msg_len = fprintf('Step %d, t = %.4g',Control.step', Control.t);
 
     % adapt time step size (dtc = dt current)
     if isfield(Control, 'dtmin') 
@@ -136,3 +147,8 @@ end
 Plot.urow = Solution.u(Control.ploturow);
 Plot.udotrow = Solution.udot(Control.ploturow);
 Plot.prow = Solution.p(Control.plotprow);
+
+% close video file
+if saveVideo_on
+    close(myVideo)
+end
