@@ -223,11 +223,15 @@ Mstar = 1/Mstarinv;
 Material.deltas = (Material.alpha-Material.eta0)*Material.eta0*Mstar/Material.Kf;
 Material.deltaf = (Material.alpha-Material.eta0)*Material.eta0*Mstar*Material.n/Material.Ks;
 
+%% Critical frequency limit
+wc = Material.muf*Material.eta0/Material.k/Material.rhof;
+fprintf('Critical frequency limit is %.2d Hz \n', wc);
+
 %% Compute velocity and attenuation
 [vp, attp, vs, atts] = ComputeVelAtt(w, Material);
 
 % plots frequency vs velocity/attenuation
-PlotVelAtt(w, vp, attp, vs, atts);
+PlotVelAtt(w, vp, attp, vs, atts, wc);
 
 %% Porosity-pressure waves
 [vpPorPres, attpPorPres] = ComputeVelAtt_PorPres(w, Material);
