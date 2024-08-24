@@ -237,4 +237,4 @@ PlotVelAtt(w, vp, attp, vs, atts, wc);
 [vpPorPres, attpPorPres] = ComputeVelAtt_PorPres(w, Material);
 
 % plots frequency vs velocity/attenuation
-PlotVelAtt_PorPres(w, vpPorPres, attpPorPres);
+PlotVelAtt_PorPres(w, vpPorPres, attpPorPres, wc);

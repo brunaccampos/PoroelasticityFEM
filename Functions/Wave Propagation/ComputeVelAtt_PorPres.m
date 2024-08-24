@@ -12,12 +12,14 @@ Z = zeros(length(w),1);
 %% Compute polynomial roots
 pol_p = [AdCS' Z BdCS' Z CdCS'];
 roots_p = zeros(length(w),4);
+kp = zeros(length(w),2);
 % loop over frequency values
 for i = 1:length(w)
     % roots
     roots_p(i,:) = roots(pol_p(i,:));
+    kp(i,:) = roots_p(i, real(roots_p(i,:))>0);
 end
 % phase velocities
-vp_pp = w'./real(roots_p);
+vp_pp = w'./real(kp);
 % attenuations
-attp_pp = -2*imag(roots_p)./real(roots_p);
+attp_pp = abs(imag(kp)./real(kp));

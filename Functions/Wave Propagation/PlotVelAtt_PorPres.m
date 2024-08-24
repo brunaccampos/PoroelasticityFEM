@@ -1,4 +1,4 @@
-function PlotVelAtt_PorPres(w, vp, attp)
+function PlotVelAtt_PorPres(w, vp, attp, wc)
 % Plot velocity and attenuation for porosity-pressure waves
 % ------------------------------------------------------------------------
 
@@ -12,6 +12,7 @@ nexttile;
 semilogx(w,vp(:,1),'b-', 'LineWidth', 1.5);
 hold on
 grid on
+xline(wc, '--k', 'LineWidth', 1.5); % critical frequency
 xlabel('Frequency [Hz]');
 ylabel('Velocity [m/s]');
 title('PorPre - Slow P');
@@ -22,6 +23,7 @@ nexttile;
 semilogx(w,vp(:,3),'b-', 'LineWidth', 1.5);
 hold on
 grid on
+xline(wc, '--k', 'LineWidth', 1.5); % critical frequency
 xlabel('Frequency [Hz]');
 ylabel('Velocity [m/s]');
 title('PorPre - Fast P');
@@ -33,6 +35,7 @@ nexttile;
 semilogx(w,attp(:,1),'m-', 'LineWidth', 1.5);
 hold on
 grid on
+xline(wc, '--k', 'LineWidth', 1.5); % critical frequency
 xlabel('Frequency [Hz]');
 ylabel('Attenuation');
 title('PorPre - Slow P');
@@ -43,6 +46,7 @@ nexttile;
 semilogx(w,attp(:,3),'m-', 'LineWidth', 1.5);
 hold on
 grid on
+xline(wc, '--k', 'LineWidth', 1.5); % critical frequency
 xlabel('Frequency [Hz]');
 ylabel('Attenuation');
 title('PorPre - Fast P');
