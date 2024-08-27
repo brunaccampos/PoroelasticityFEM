@@ -138,7 +138,7 @@ end
 
 %% Initial conditions
 % udot
-BC.initU = ones(MeshU.nDOF,1)./1000;
+BC.initUdot = MeshU.coords./1000;
 % ufdot
 BC.initUfdot = ones(MeshU.nDOF,1)./1000;
 
@@ -171,8 +171,8 @@ BC.pointLoad = @(t)[];
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.bs = @(x,t) (Material.E * t^2 * sin(x*t) + (Material.alpha-Material.eta0)*t*(cos(x*t)^2-sin(x*t)^2) -...
-    (1-Material.eta0)*Material.rhos*x^2*sin(x*t) - Material.muf*Material.eta0^2/Material.k*(1-x)*cos(x*t))./1000;
+BC.bs = @(x,t) (Material.E * t^2 * sin(x*t) + Material.alpha*t*(cos(x*t)^2-sin(x*t)^2) -...
+    (1-Material.eta0)*Material.rhos*x^2*sin(x*t) - Material.eta0*Material.rhof*x*sin(x*t))./1000;
 
 BC.bf = @(x,t) (Material.eta0*(cos(x*t)^2-sin(x*t)^2) - Material.eta0*Material.rhof*x*sin(x*t) + ...
     Material.muf*Material.eta0^2/Material.k*(1-x)*cos(x*t))./1000;
