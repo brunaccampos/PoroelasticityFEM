@@ -37,7 +37,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dup
 %                      p = fluid pressure, w = relative fluid velocity
 Control.PMmodel = 'Dyn6_Biot_UPV';
 
-%% Material properties - Boone (1990) with modifications
+%% Material properties - Detournay (1993)
 % elasticity modulus [GPa]
 Material.E = 14.4;
 % Poisson's ratio
@@ -49,7 +49,7 @@ Material.muf = 1e-12;
 % porous media permeability [m2/GPa s]
 Material.kf = Material.k/Material.muf;
 % Biot's coefficient
-Material.alpha = 1;
+Material.alpha = 0.79;
 % fluid bulk modulus [GPa]
 Material.Kf = 3.3;
 % solid bulk modulus [GPa]
@@ -57,7 +57,7 @@ Material.Ks = 36;
 % material porosity
 Material.eta0 = 0.19;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
+Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
 % fluid bulk viscosity [GPa s]
 Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
 % fluid density [10^9 kg/m3]
