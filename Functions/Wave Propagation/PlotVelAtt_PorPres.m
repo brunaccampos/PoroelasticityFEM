@@ -18,9 +18,9 @@ ylabel('Velocity [m/s]');
 title('PorPre - Slow P');
 hold off
 
-% wave 3
+% wave 2
 nexttile;
-semilogx(w,vp(:,3),'b-', 'LineWidth', 1.5);
+semilogx(w,vp(:,2),'b-', 'LineWidth', 1.5);
 hold on
 grid on
 xline(wc, '--k', 'LineWidth', 1.5); % critical frequency
@@ -41,9 +41,9 @@ ylabel('Attenuation');
 title('PorPre - Slow P');
 hold off
 
-% wave 3
+% wave 2
 nexttile;
-semilogx(w,attp(:,3),'m-', 'LineWidth', 1.5);
+semilogx(w,attp(:,2),'m-', 'LineWidth', 1.5);
 hold on
 grid on
 xline(wc, '--k', 'LineWidth', 1.5); % critical frequency
