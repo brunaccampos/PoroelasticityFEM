@@ -120,12 +120,13 @@ end
 
 % auxiliar terms for external forces vector
 fubar = fu + Mss*(u_old/beta/dt^2 + udot_old/beta/dt + u2dot_old*(1/2/beta-1)) + ...
-    Msf*(udot_old/theta/dt - u2dot_old*(1-1/theta));
+    Msf*(ufdot_old/theta/dt - uf2dot_old*(1-1/theta));
 
-ffbar = ff + Mff*(udot_old/theta/dt - u2dot_old*(1-1/theta)) -...
+ffbar = ff + Mff*(ufdot_old/theta/dt - uf2dot_old*(1-1/theta)) -...
     Cfs*(u_old*gamma/beta/dt + udot_old*(gamma/beta-1) + u2dot_old*dt*(gamma/2/beta-1));
 
-fpbar = fp + Kps*(u_old*gamma/beta/dt + udot_old*(gamma/beta-1) + u2dot_old*dt*(gamma/2/beta-1));
+fpbar = fp + Kps*(u_old*gamma/beta/dt + udot_old*(gamma/beta-1) + u2dot_old*dt*(gamma/2/beta-1)) + ...
+    Kpp*(p_old*(1/alpha/dt) - pdot_old*(1-1/alpha));
 
 fuF = fubar(BC.free_u);
 ffF = ffbar(BC.free_ufdot);
