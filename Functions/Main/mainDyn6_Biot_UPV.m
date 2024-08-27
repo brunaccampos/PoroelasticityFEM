@@ -8,7 +8,7 @@ disp([num2str(toc),': Model: Biot u-p-v dynamic case']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
-[Mss, Msf, Kss, Ksp, Kps, Kpf, Mff, Kff, Cfs, Kfp] = ComputeMatricesDyn6_Biot_UPV(Material, MeshU, MeshP, QuadU, QuadP);
+[Mss, Msf, Kss, Ksp, Kps, Kpf, Mff, Kff, Cfs, Kfp, Kpp] = ComputeMatricesDyn6_Biot_UPV(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Initial condition file
 if plot2vtk
@@ -79,7 +79,7 @@ for t = 1:length(Plot.time)
     end
     
     % linear solver
-    [Solution] = SolverDyn_UPV(Mss, Msf, Kss, Ksp, Kps, Kpf, Mff, Kff, Cfs, Kfp, fu, fp, ff, BC, Control, Iteration);
+    [Solution] = SolverDyn_UPV(Mss, Msf, Kss, Ksp, Kps, Kpf, Mff, Kff, Cfs, Kfp, Kpp, fu, fp, ff, BC, Control, Iteration);
 
     % update external forces vectors
     fu(BC.fixed_u) = Solution.fuE;

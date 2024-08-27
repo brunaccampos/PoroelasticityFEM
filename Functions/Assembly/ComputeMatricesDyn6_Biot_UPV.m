@@ -1,4 +1,4 @@
-function [Mss, Msf, Kss, Ksp, Kps, Kpf, Mff, Kff, Cfs, Kfp] = ComputeMatricesDyn6_Biot_UPV(Material, MeshU, MeshP, QuadU, QuadP)
+function [Mss, Msf, Kss, Ksp, Kps, Kpf, Mff, Kff, Cfs, Kfp, Kpp] = ComputeMatricesDyn6_Biot_UPV(Material, MeshU, MeshP, QuadU, QuadP)
 % ------------------------------------------------------------------------
 % Compute System Matrices for dynamic simulation
 % ------------------------------------------------------------------------
@@ -39,6 +39,7 @@ Kspvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
 Kpsvec = zeros(ne*MeshP.nDOFe*MeshU.nDOFe,1);
 Kfpvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
 Kffvec = zeros(ne*MeshU.nDOFe^2,1);
+Kppvec = zeros(ne*MeshP.nDOFe^2,1);
 
 % DOF counter
 count_u = 1;
@@ -75,6 +76,7 @@ for e = 1:ne
     Kps_e = zeros(MeshP.nDOFe, MeshU.nDOFe);
     Kfp_e = zeros(MeshU.nDOFe, MeshP.nDOFe);
     Kff_e = zeros(MeshU.nDOFe, MeshU.nDOFe);
+    Kpp_e = zeros(MeshP.nDOFe, MeshP.nDOFe);
     
     % loop over integration points - Displacement
     for ip = 1:nqU
@@ -134,6 +136,7 @@ for e = 1:ne
         BuVoigt = getBVoigt(MeshU, Bu);
 
         % assemble local matrices
+        Kpp_e = Kpp_e + Material.Minv * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
         Ksp_e = Ksp_e + Material.alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
         Kps_e = Kps_e + (Material.alpha-Material.eta0) * (NpVoigt.') * Material.m' * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
         Kfp_e = Kfp_e + Material.eta0 * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
@@ -170,6 +173,7 @@ for e = 1:ne
     Kps_e = reshape(Kps_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
     Kfp_e = reshape(Kfp_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
     Kff_e = reshape(Kff_e, [MeshU.nDOFe^2,1]);
+    Kpp_e = reshape(Kpp_e, [MeshP.nDOFe^2,1]);
     
     % u-u
     rowmatrix_u = dofu_e*ones(1,MeshU.nDOFe);
@@ -197,6 +201,7 @@ for e = 1:ne
     Kpsvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Kps_e;
     Kfpvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Kfp_e;
     Kffvec(count_u-MeshU.nDOFe^2:count_u-1) = Kff_e;
+    Kppvec(count_p-MeshP.nDOFe^2:count_p-1) = Kpp_e;
 
     % u-u
     rowu(count_u-MeshU.nDOFe^2:count_u-1) = rowu_e;
@@ -225,5 +230,6 @@ Kps = sparse(rowpu, colpu, Kpsvec, MeshP.nDOF, MeshU.nDOF);
 Kfp = sparse(rowup, colup, Kfpvec, MeshU.nDOF, MeshP.nDOF);
 Kpf = Kfp.';
 Kff = sparse(rowu, colu, Kffvec, MeshU.nDOF, MeshU.nDOF);
+Kpp = sparse(rowp, colp, Kppvec, MeshP.nDOF, MeshP.nDOF);
 
 end

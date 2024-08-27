@@ -1,4 +1,4 @@
-function [Solution] = SolverDyn_UPV(Mss, Msf, Kss, Ksp, Kps, Kpf, Mff, Kff, Cfs, Kfp, fu, fp, ff, BC, Control, Iteration)
+function [Solution] = SolverDyn_UPV(Mss, Msf, Kss, Ksp, Kps, Kpf, Mff, Kff, Cfs, Kfp, Kpp, fu, fp, ff, BC, Control, Iteration)
 % ------------------------------------------------------------------------
 % Solve linear system for dynamic case
 % Input parameters: coupled matrices, BC, Control, Iteration
@@ -30,6 +30,7 @@ beta = Control.beta;
 gamma = Control.gamma;
 theta = Control.theta;
 lambda = beta;
+alpha = gamma;
 
 %% Matrix partitioning
 % matrices time discretization
@@ -39,7 +40,7 @@ Ksfbar = Msf/theta/dt;
 
 Kpsbar = Kps*gamma/beta/dt;
 Kpfbar = Kpf;
-Kppbar = zeros(length(fp), length(fp));
+Kppbar = Kpp*(1/alpha/dt);
 Kfsbar = -Cfs*gamma/beta/dt;
 Kfpbar = -Kfp;
 Kffbar = Mff/theta/dt + Kff;
