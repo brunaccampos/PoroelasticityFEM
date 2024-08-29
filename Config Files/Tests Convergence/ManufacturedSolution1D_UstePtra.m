@@ -9,7 +9,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1D_U
 
 %% Poroelasticity
 % Biot's coefficient
-Material.alpha = 0;
+Material.M(1).alpha = 0;
 % poroelasticity model
 Control.PMmodel = 'Tr1_Biot_UP';
 
@@ -24,13 +24,13 @@ Material.constLaw = 'PlaneStress';
 
 %% Material properties
 % porous media permeability [m2/Pa s]
-Material.kf = 0.002;
+Material.M(1).kf = 0.002;
 % 1/Q (related to storage coefficient)
-Material.Minv = 1;
+Material.M(1).Minv = 1;
 % elasticity modulus [Pa]
-Material.E = 1;
+Material.M(1).E = 1;
 % Poisson's ratio
-Material.nu = 0.3;
+Material.M(1).nu = 0.3;
 
 %% Mesh parameters
 if progress_on
@@ -52,6 +52,10 @@ typeU = 'L4';
 % variable field ('u', 'p', 'n')
 fieldU = 'u';
 MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
 
 %%%% pressure mesh
 % element type ('Q4')
@@ -59,6 +63,10 @@ typeP = 'L3';
 % variable field ('u', 'p', 'n')
 fieldP = 'p';
 MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
 
 %%%% porosity mesh
 if contains(Control.PMmodel, 'UPN')
@@ -67,6 +75,10 @@ if contains(Control.PMmodel, 'UPN')
     % variable field ('u', 'p', 'n')
     fieldN = 'n';
     MeshN = BuildMesh_structured(nsd, coord0, L, ne, typeN, fieldN, progress_on);
+    % type of material per element
+    MeshN.MatList = zeros(MeshN.ne, 1, 'int8');
+    % assign material type to elements
+    MeshN.MatList(:) = 1;
 else
     MeshN = [];
 end

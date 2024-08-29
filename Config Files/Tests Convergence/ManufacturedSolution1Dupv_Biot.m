@@ -39,41 +39,42 @@ Control.PMmodel = 'Dyn6_Biot_UPV';
 
 %% Material properties - Detournay (1993)
 % elasticity modulus [GPa]
-Material.E = 14.4;
+Material.M(1).E = 14.4;
 % Poisson's ratio
-Material.nu = 0.2;
+Material.M(1).nu = 0.2;
 % intrinsic permeability [m2]
-Material.k = 1.88e-13;
+Material.M(1).k = 1.88e-13;
 % dynamic viscosity [GPa s]
-Material.muf = 1e-12;
+Material.M(1).muf = 1e-12;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.k/Material.muf;
+Material.M(1).kf = Material.M(1).k/Material.M(1).muf;
 % Biot's coefficient
-Material.alpha = 0.79;
+Material.M(1).alpha = 0.79;
 % fluid bulk modulus [GPa]
-Material.Kf = 3.3;
+Material.M(1).Kf = 3.3;
 % solid bulk modulus [GPa]
-Material.Ks = 36;
+Material.M(1).Ks = 36;
 % material porosity
-Material.eta0 = 0.19;
+Material.M(1).eta0 = 0.19;
 % 1/Q (related to storage coefficient)
-Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
+Material.M(1).Minv = (Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks + Material.M(1).eta0/Material.M(1).Kf;
+% Material.M(1).Minv = 0;
 % fluid bulk viscosity [GPa s]
-Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
+Material.M(1).xif = 2.8e-12; % (Quiroga-Goode, 2005)
 % fluid density [10^9 kg/m3]
-Material.rhof = 1000e-9;
+Material.M(1).rhof = 1000e-9;
 % solid density [10^9 kg/m3]
-Material.rhos = 2600e-9;
+Material.M(1).rhos = 2600e-9;
 % average density of the medium
-Material.rho = Material.eta0*Material.rhof + (1-Material.eta0)*Material.rhos;
+Material.M(1).rho = Material.M(1).eta0*Material.M(1).rhof + (1-Material.M(1).eta0)*Material.M(1).rhos;
 
 % additional coefficients for analytical result
 % Lame constant [GPa]
-Material.lambda = Material.E * Material.nu/((1+Material.nu)*(1-2*Material.nu));
+Material.M(1).lambda = Material.M(1).E * Material.M(1).nu/((1+Material.M(1).nu)*(1-2*Material.M(1).nu));
 % gravitational acceleration [m/s2]
-Material.g = 9.81;
+Material.M(1).g = 9.81;
 % hydraulic conductivity [m/s]
-Material.kh = Material.kf * Material.rhof * Material.g;
+Material.M(1).kh = Material.M(1).kf * Material.M(1).rhof * Material.M(1).g;
 
 % thickness
 % 1D: cross sectional area [m2]
@@ -88,14 +89,14 @@ Material.constLaw = 'PlaneStress';
 % porosity effective pressure coefficient (Spanos, 1989)
 % n = 0; % lower limit
 n = 1; % return to Biot
-% n = Material.Ks/Material.Kf; % upper limit
+% n = Material.M(1).Ks/Material.M(1).Kf; % upper limit
 
 % modified storage coefficient (Muller, 2019)
-Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks; 
+Mstarinv = Material.M(1).Minv - (1-n)*(Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks; 
 Mstar = 1/Mstarinv;
 
-Material.deltaf = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
-Material.deltas = (Material.alpha - Material.eta0) * Material.eta0 * Mstar /Material.Kf;
+Material.M(1).deltaf = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar * n / Material.M(1).Ks;
+Material.M(1).deltas = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar /Material.M(1).Kf;
 
 %% Mesh parameters
 if progress_on
@@ -117,6 +118,10 @@ typeU = 'L3';
 % variable field ('u', 'p', 'n')
 fieldU = 'u';
 MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
 
 %%%% pressure mesh
 % element type ('Q4')
@@ -124,6 +129,10 @@ typeP = 'L2';
 % variable field ('u', 'p', 'n')
 fieldP = 'p';
 MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
 
 %%%% porosity mesh
 if contains(Control.PMmodel, 'UPN')
@@ -132,6 +141,10 @@ if contains(Control.PMmodel, 'UPN')
     % variable field ('u', 'p', 'n')
     fieldN = 'n';
     MeshN = BuildMesh_structured(nsd, coord0, L, ne, typeN, fieldN, progress_on);
+    % type of material per element
+    MeshN.MatList = zeros(MeshN.ne, 1, 'int8');
+    % assign material type to elements
+    MeshN.MatList(:) = 1;
 else
     MeshN = [];
 end
@@ -171,11 +184,11 @@ BC.pointLoad = @(t)[];
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.bs = @(x,t) (Material.E * t^2 * sin(x*t) + Material.alpha*t*(cos(x*t)^2-sin(x*t)^2) -...
-    (1-Material.eta0)*Material.rhos*x^2*sin(x*t) - Material.eta0*Material.rhof*x*sin(x*t))./1000;
+BC.bs = @(x,t) (Material.M(1).E * t^2 * sin(x*t) + Material.M(1).alpha*t*(cos(x*t)^2-sin(x*t)^2) -...
+    (1-Material.M(1).eta0)*Material.M(1).rhos*x^2*sin(x*t) - Material.M(1).eta0*Material.M(1).rhof*x*sin(x*t))./1000;
 
-BC.bf = @(x,t) (Material.eta0*(cos(x*t)^2-sin(x*t)^2) - Material.eta0*Material.rhof*x*sin(x*t) + ...
-    Material.muf*Material.eta0^2/Material.k*(1-x)*cos(x*t))./1000;
+BC.bf = @(x,t) (Material.M(1).eta0*(cos(x*t)^2-sin(x*t)^2) - Material.M(1).eta0*Material.M(1).rhof*x*sin(x*t) + ...
+    Material.M(1).muf*Material.M(1).eta0^2/Material.M(1).k*(1-x)*cos(x*t))./1000;
 
 %% Neumann BCs - fluid
 % point flux [m/s]
@@ -185,8 +198,8 @@ BC.pointFlux = @(t)[];
 BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x,t) (Material.Minv*x*(cos(x*t)^2-sin(x*t)^2) + (Material.alpha-Material.eta0)*(cos(x*t)-x*t*sin(x*t)) - ...
-    Material.eta0*t*sin(x*t))./1000;
+BC.s = @(x,t) (Material.M(1).Minv*x*(cos(x*t)^2-sin(x*t)^2) + (Material.M(1).alpha-Material.M(1).eta0)*(cos(x*t)-x*t*sin(x*t)) - ...
+    Material.M(1).eta0*t*sin(x*t))./1000;
 
 %% Quadrature order
 Control.nqU = 3;
