@@ -34,33 +34,33 @@ Control.PMmodel = 'Dyn5_Spanos_UPU';
 
 %% Material properties - Berea Sandstone (Detournay, 1993, p.26)
 % elasticity modulus [GPa]
-Material.E = 14.4;
+Material.M(1).E = 14.4;
 % Poisson's ratio
-Material.nu = 0.2;
+Material.M(1).nu = 0.2;
 % intrinsic permeability [m2]
-Material.k = 1.88e-13;
+Material.M(1).k = 1.88e-13;
 % dynamic viscosity [GPa s]
-Material.muf = 1e-12;
+Material.M(1).muf = 1e-12;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.k/Material.muf;
+Material.M(1).kf = Material.M(1).k/Material.M(1).muf;
 % Biot's coefficient
-Material.alpha = 0.79;
+Material.M(1).alpha = 0.79;
 % fluid bulk modulus [GPa]
-Material.Kf = 3.3;
+Material.M(1).Kf = 3.3;
 % solid bulk modulus [GPa]
-Material.Ks = 36;
+Material.M(1).Ks = 36;
 % material porosity
-Material.eta0 = 0.19;
+Material.M(1).eta0 = 0.19;
 % 1/Q (related to storage coefficient)
-Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
+Material.M(1).Minv = (Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks + Material.M(1).eta0/Material.M(1).Kf;
 % fluid bulk viscosity [GPa s]
-Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
+Material.M(1).xif = 2.8e-12; % (Quiroga-Goode, 2005)
 % fluid density [10^9 kg/m3]
-Material.rhof = 1000e-9;
+Material.M(1).rhof = 1000e-9;
 % solid density [10^9 kg/m3]
-Material.rhos = 2600e-9;
+Material.M(1).rhos = 2600e-9;
 % average density of the medium
-Material.rho = Material.eta0*Material.rhof + (1-Material.eta0)*Material.rhos;
+Material.M(1).rho = Material.M(1).eta0*Material.M(1).rhof + (1-Material.M(1).eta0)*Material.M(1).rhos;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -75,15 +75,15 @@ Material.constLaw = 'PlaneStrain';
 % porosity effective pressure coefficient (Spanos, 1989)
 % n = 0; % lower limit
 n = 1; % return to Biot
-% n = Material.Ks/Material.Kf; % upper limit
+% n = Material.M(1).Ks/Material.M(1).Kf; % upper limit
 
 % modified storage coefficient (Muller, 2019)
-Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks; 
+Mstarinv = Material.M(1).Minv - (1-n)*(Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks; 
 Mstar = 1/Mstarinv;
 
 % porosity equation coefficients
-Material.deltaf = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
-Material.deltas = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
+Material.M(1).deltaf = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar * n / Material.M(1).Ks;
+Material.M(1).deltas = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar / Material.M(1).Kf;
 
 %% Mesh parameters
 if progress_on
@@ -97,10 +97,20 @@ nsd = 2;
 fieldU = 'u';
 meshFileNameU = 'Mesh Files\WavePropInj10x10mQ9_structured.msh';
 MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
+
 %%%% pressure field
 fieldP = 'p';
 meshFileNameP = 'Mesh Files\WavePropInj10x10mQ4_structured.msh';
 MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
+
 %%%% porosity field
 MeshN = [];
 
@@ -143,11 +153,11 @@ g = 9.81;
 % depth [m]
 depth = 1000;
 % hydrostatic pressire [GPa]
-p0 = Material.rhof * g * depth;
+p0 = Material.M(1).rhof * g * depth;
 % vertical in situ stress [GPa]
 sigmaV = rho_Top * g * depth;
 % horizontal in situ stress [GPa]
-sigmaH = sigmaV * Material.nu / (1-Material.nu);
+sigmaH = sigmaV * Material.M(1).nu / (1-Material.M(1).nu);
 % global in situ stress
 sigmaG = [sigmaH, 0; 0, sigmaV];
 % traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
@@ -215,7 +225,7 @@ f = 1/t0;
 a0 = 1e-2;
 
 % adding in situ pressure and injection pressure
-BC.tractionForce = @(t) -BC.tractionForce + Material.alpha*p0*normalG_vec + Material.alpha*a0/2*normalG_vec*(1-cos(2*pi*f*t)).*(t<t0);
+BC.tractionForce = @(t) -BC.tractionForce + Material.M(1).alpha*p0*normalG_vec + Material.M(1).alpha*a0/2*normalG_vec*(1-cos(2*pi*f*t)).*(t<t0);
 
 % point loads [GN]
 BC.pointLoad = @(t)[];
