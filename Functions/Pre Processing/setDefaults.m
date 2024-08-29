@@ -35,7 +35,7 @@ end
 
 % added mass coefficient: default zero
 if ~isfield(Material, 'rho12')
-    Material.rho12 = 0;
+    Material.M(:).rho12 = 0;
 end
 
 % mapping vector
