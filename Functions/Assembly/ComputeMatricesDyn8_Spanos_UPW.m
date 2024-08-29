@@ -10,9 +10,6 @@ ne = MeshU.ne; % number of elements
 nqU = QuadU.nq; % total number of integration points
 nqP = QuadP.nq;
 
-% constitutive matrix
-C = getConstitutiveMatrix(Material, MeshU);
-
 %% Initialize global matrices
 % initialize vector sizes
 % u-u
@@ -49,6 +46,11 @@ count_up = 1;
 
 %% Coupled matrices
 for e = 1:ne
+    % element material type
+    nMat = MeshU.MatList(e); % element material type
+    % constitutive matrix
+    C = getConstitutiveMatrix(nMat, Material, MeshU);
+
     % element connectivity
     connu_e = MeshU.conn(e,:);
     connu_e = reshape(connu_e',MeshU.nne,[]);
@@ -105,12 +107,12 @@ for e = 1:ne
 
         % assemble local matrices
         Kss_e = Kss_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Kff_e = Kff_e + Material.muf*Material.eta0^2/Material.k * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kff_e = Kff_e + Material.M(nMat).muf*Material.M(nMat).eta0^2/Material.M(nMat).k * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadP.w(ip,1);
      
-        Mss_e = Mss_e + Material.rho * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Mff_e = Mff_e + (Material.rhof - Material.rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Msf_e = Msf_e + Material.rhof * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Mfs_e = Mfs_e + Material.rhof * Material.eta0 * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Mss_e = Mss_e + Material.M(nMat).rho * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Mff_e = Mff_e + (Material.M(nMat).rhof - Material.M(nMat).rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Msf_e = Msf_e + Material.M(nMat).rhof * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Mfs_e = Mfs_e + Material.M(nMat).rhof * Material.M(nMat).eta0 * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
  
     % loop over integration points - Displacement
@@ -137,12 +139,12 @@ for e = 1:ne
         BuVoigt = getBVoigt(MeshU, Bu);
 
         % assemble local matrices
-        Ksp_e = Ksp_e + Material.alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Ksp_e = Ksp_e + Material.M(nMat).alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
         Kfp_e = Kfp_e + (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        Kpf_e = Kpf_e + ((1-Material.deltaf/Material.eta0)/Material.eta0) * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kpf_e = Kpf_e + ((1-Material.M(nMat).deltaf/Material.M(nMat).eta0)/Material.M(nMat).eta0) * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
         
-        Cps_e = Cps_e + (1+(Material.deltas-Material.deltaf)/Material.eta0) * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Cpp_e = Cpp_e + (1/Material.Kf) * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Cps_e = Cps_e + (1+(Material.M(nMat).deltas-Material.M(nMat).deltaf)/Material.M(nMat).eta0) * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Cpp_e = Cpp_e + (1/Material.M(nMat).Kf) * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
 
     % lumped element mass matrix

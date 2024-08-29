@@ -10,9 +10,6 @@ ne = MeshU.ne; % number of elements
 nqU = QuadU.nq; % total number of integration points
 nqP = QuadP.nq;
 
-% constitutive matrix
-C = getConstitutiveMatrix(Material, MeshU);
-
 %% Initialize global matrices
 % initialize vector sizes
 % u-u
@@ -43,6 +40,11 @@ count_up = 1;
 
 %% Coupled matrices
 for e = 1:ne
+    % element material type
+    nMat = MeshU.MatList(e); % element material type
+    % constitutive matrix
+    C = getConstitutiveMatrix(nMat, Material, MeshU);
+
     % element connectivity
     connu_e = MeshU.conn(e,:);
     connu_e = reshape(connu_e',MeshU.nne,[]);
@@ -96,11 +98,11 @@ for e = 1:ne
 
         % assemble local matrices
         Kss_e = Kss_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Kff_e = Kff_e + Material.muf/Material.k * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kff_e = Kff_e + Material.M(nMat).muf/Material.M(nMat).k * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadP.w(ip,1);
      
-        Mss_e = Mss_e + Material.rho * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Mff_e = Mff_e + Material.rhof/Material.eta0 * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Msf_e = Msf_e + Material.rhof * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Mss_e = Mss_e + Material.M(nMat).rho * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Mff_e = Mff_e + Material.M(nMat).rhof/Material.M(nMat).eta0 * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Msf_e = Msf_e + Material.M(nMat).rhof * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
  
     % loop over integration points - Displacement
@@ -127,9 +129,9 @@ for e = 1:ne
         BuVoigt = getBVoigt(MeshU, Bu);
 
         % assemble local matrices
-        Ksp_e = Ksp_e + Material.alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Ksp_e = Ksp_e + Material.M(nMat).alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
         Kfp_e = Kfp_e + (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        Csp_e = Csp_e + Material.alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Csp_e = Csp_e + Material.M(nMat).alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
 
     % lumped element mass matrix

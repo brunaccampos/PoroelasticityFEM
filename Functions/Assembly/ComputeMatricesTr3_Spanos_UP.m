@@ -10,9 +10,6 @@ ne = MeshU.ne; % number of elements
 nqU = QuadU.nq; % total number of integration points
 nqP = QuadP.nq;
 
-% constitutive matrix
-C = getConstitutiveMatrix(Material, MeshU);
-
 %% Initialize global matrices
 % initialize vector sizes
 % u-u 
@@ -42,6 +39,11 @@ count_up = 1;
 
 %% Coupled matrices
 for e = 1:ne
+    % element material type
+    nMat = MeshU.MatList(e); % element material type
+    % constitutive matrix
+    C = getConstitutiveMatrix(nMat, Material, MeshU);
+
     % element connectivity
     connu_e = MeshU.conn(e,:);
     connu_e = reshape(connu_e',MeshU.nne,[]);
@@ -90,8 +92,8 @@ for e = 1:ne
 
         % assemble local matrices
         Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        if any(Material.Minv)
-            S_e = S_e + (Material.eta0 / Material.Kf)*(1/(1-Material.deltaf/Material.eta0)) * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        if any(Material.M(nMat).Minv)
+            S_e = S_e + (Material.M(nMat).eta0 / Material.M(nMat).Kf)*(1/(1-Material.M(nMat).deltaf/Material.M(nMat).eta0)) * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
         end
     end
     
@@ -121,9 +123,9 @@ for e = 1:ne
         BuVoigt = getBVoigt(MeshU, Bu);
 
         % assemble local matrices
-        Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        Kup_e = Kup_e + Material.alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        Kpu_e = Kpu_e + Material.eta0 * (Material.eta0 - Material.deltaf + Material.deltas)/(Material.eta0 - Material.deltaf) ...
+        Kpp_e = Kpp_e + Material.M(nMat).kf * (BpVoigt.') * BpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kup_e = Kup_e + Material.M(nMat).alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kpu_e = Kpu_e + Material.M(nMat).eta0 * (Material.M(nMat).eta0 - Material.M(nMat).deltaf + Material.M(nMat).deltas)/(Material.M(nMat).eta0 - Material.M(nMat).deltaf) ...
             * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
     end
     

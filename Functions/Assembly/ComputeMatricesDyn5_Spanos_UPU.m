@@ -10,9 +10,6 @@ ne = MeshU.ne; % number of elements
 nqU = QuadU.nq; % total number of integration points
 nqP = QuadP.nq;
 
-% constitutive matrix
-C = getConstitutiveMatrix(Material, MeshU);
-
 %% Initialize global matrices
 % initialize vector sizes
 % u-u
@@ -52,6 +49,11 @@ count_up = 1;
 
 %% Coupled matrices
 for e = 1:ne
+    % element material type
+    nMat = MeshU.MatList(e); % element material type
+    % constitutive matrix
+    C = getConstitutiveMatrix(nMat, Material, MeshU);
+
     % element connectivity
     connu_e = MeshU.conn(e,:);
     connu_e = reshape(connu_e',MeshU.nne,[]);
@@ -111,20 +113,20 @@ for e = 1:ne
         % assemble local matrices
         Kss_e = Kss_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         
-        Css_e = Css_e + Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1)- ...
-            Material.xif*Material.deltas * (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Csf_e = Csf_e + Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) + ...
-            (Material.eta0*Material.muf + Material.eta0*Material.xif + Material.eta0*Material.muf/3 - Material.xif*Material.deltaf) * ...
+        Css_e = Css_e + Material.M(nMat).eta0^2/Material.M(nMat).kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1)- ...
+            Material.M(nMat).xif*Material.M(nMat).deltas * (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Csf_e = Csf_e + Material.M(nMat).eta0^2/Material.M(nMat).kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) + ...
+            (Material.M(nMat).eta0*Material.M(nMat).muf + Material.M(nMat).eta0*Material.M(nMat).xif + Material.M(nMat).eta0*Material.M(nMat).muf/3 - Material.M(nMat).xif*Material.M(nMat).deltaf) * ...
             (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Cff_e = Cff_e + Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) + ...
-            (Material.eta0*Material.muf + Material.eta0*Material.xif + Material.eta0*Material.muf/3 - Material.xif*Material.deltaf) * ...
+        Cff_e = Cff_e + Material.M(nMat).eta0^2/Material.M(nMat).kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) + ...
+            (Material.M(nMat).eta0*Material.M(nMat).muf + Material.M(nMat).eta0*Material.M(nMat).xif + Material.M(nMat).eta0*Material.M(nMat).muf/3 - Material.M(nMat).xif*Material.M(nMat).deltaf) * ...
             (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Cfs_e = Cfs_e + Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) - ...
-            Material.xif*Material.deltas * (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Cfs_e = Cfs_e + Material.M(nMat).eta0^2/Material.M(nMat).kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1) - ...
+            Material.M(nMat).xif*Material.M(nMat).deltas * (BuVoigt.') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
      
-        Mss_e = Mss_e + ((1-Material.eta0) * Material.rhos - Material.rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Mff_e = Mff_e + (Material.eta0 * Material.rhof - Material.rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Msf_e = Msf_e + Material.rho12 * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Mss_e = Mss_e + ((1-Material.M(nMat).eta0) * Material.M(nMat).rhos - Material.M(nMat).rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Mff_e = Mff_e + (Material.M(nMat).eta0 * Material.M(nMat).rhof - Material.M(nMat).rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Msf_e = Msf_e + Material.M(nMat).rho12 * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
  
     % loop over integration points - Displacement
@@ -151,11 +153,11 @@ for e = 1:ne
         BuVoigt = getBVoigt(MeshU, Bu);
 
         % assemble local matrices
-        Kpp_e = Kpp_e + (1/Material.Kf) * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        Ksp_e = Ksp_e + (Material.alpha - Material.eta0) * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        Kfp_e = Kfp_e + Material.eta0 * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        Kps_e = Kps_e + (Material.deltas / Material.eta0) * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        Kpf_e = Kpf_e + (1 - Material.deltaf/Material.eta0) * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kpp_e = Kpp_e + (1/Material.M(nMat).Kf) * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Ksp_e = Ksp_e + (Material.M(nMat).alpha - Material.M(nMat).eta0) * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kfp_e = Kfp_e + Material.M(nMat).eta0 * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kps_e = Kps_e + (Material.M(nMat).deltas / Material.M(nMat).eta0) * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kpf_e = Kpf_e + (1 - Material.M(nMat).deltaf/Material.M(nMat).eta0) * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
     end
 
     % lumped element mass matrix

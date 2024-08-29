@@ -7,9 +7,6 @@ function [Kuu, Kup, Kpp, S, M] = ComputeMatricesHarmonic(Material, MeshU, MeshP,
 ne = MeshU.ne; % number of elements
 nq = Quad.nq; % total number of integration points
 
-% constitutive matrix
-C = getConstitutiveMatrix(Material, MeshU);
-
 %% Initialize global matrices
 % initialize vector sizes
 rowu = zeros(ne*MeshU.nDOFe^2,1);
@@ -34,6 +31,11 @@ count_up = 1;
 
 %% Coupled matrices
 for e = 1:ne
+    % element material type
+    nMat = MeshU.MatList(e); % element material type
+    % constitutive matrix
+    C = getConstitutiveMatrix(nMat, Material, MeshU);
+
     % element connectivity
     connu_e = MeshU.conn(e,:);
     connu_e = reshape(connu_e',MeshU.nne,[]);
@@ -86,10 +88,10 @@ for e = 1:ne
 
         % assemble local matrices
         Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
-        Kpp_e = Kpp_e + (Material.eta0^2 / Material.rho22_tilde) * (BpVoigt.') * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
-        S_e = S_e + (Material.eta0^2 / Material.R) * (NpVoigt.') * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
-        M_e = M_e + Material.rho_tilde * (NuVoigt.') * NuVoigt * Material.t * Jdet * Quad.w(ip,1);
-        Kup_e = Kup_e + Material.gamma_tilde * (NuVoigt.') * Material.m' * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
+        Kpp_e = Kpp_e + (Material.M(nMat).eta0^2 / Material.M(nMat).rho22_tilde) * (BpVoigt.') * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
+        S_e = S_e + (Material.M(nMat).eta0^2 / Material.M(nMat).R) * (NpVoigt.') * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
+        M_e = M_e + Material.M(nMat).rho_tilde * (NuVoigt.') * NuVoigt * Material.t * Jdet * Quad.w(ip,1);
+        Kup_e = Kup_e + Material.M(nMat).gamma_tilde * (NuVoigt.') * Material.m' * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
     end
     
     % vectorized matrices

@@ -10,9 +10,6 @@ ne = MeshU.ne; % number of elements
 nqU = QuadU.nq; % total number of integration points
 nqP = QuadP.nq;
 
-% constitutive matrix
-C = getConstitutiveMatrix(Material, MeshU);
-
 %% Initialize global matrices
 % initialize vector sizes
 % u-u 
@@ -64,6 +61,11 @@ count_pn = 1;
 
 %% Coupled matrices
 for e = 1:ne
+    % element material type
+    nMat = MeshU.MatList(e); % element material type
+    % constitutive matrix
+    C = getConstitutiveMatrix(nMat, Material, MeshU);
+
     % element connectivity
     connu_e = MeshU.conn(e,:);
     connu_e = reshape(connu_e',MeshU.nne,[]);
@@ -133,11 +135,11 @@ for e = 1:ne
         Knn_e = Knn_e + (NnVoigt.') * NnVoigt * Material.t * Jdet * QuadU.w(ip,1);
         
         Kpn_e = Kpn_e + (NpVoigt.') * NnVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Knp_e = Knp_e + Material.deltaf * Material.kf / Material.eta0 * (BnVoigt.') * BpVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Knp_e = Knp_e + Material.M(nMat).deltaf * Material.M(nMat).kf / Material.M(nMat).eta0 * (BnVoigt.') * BpVoigt * Material.t * Jdet * QuadU.w(ip,1);
 
-        Kup_e = Kup_e + Material.alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Kpu_e = Kpu_e + Material.eta0 * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Knu_e = Knu_e + (Material.deltaf - Material.deltas) * (NnVoigt.') * (Material.m') * BuVoigt  * Material.t * Jdet * QuadU.w(ip,1);
+        Kup_e = Kup_e + Material.M(nMat).alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Kpu_e = Kpu_e + Material.M(nMat).eta0 * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Knu_e = Knu_e + (Material.M(nMat).deltaf - Material.M(nMat).deltas) * (NnVoigt.') * (Material.m') * BuVoigt  * Material.t * Jdet * QuadU.w(ip,1);
     end
 
     % loop over integration points - PRESSURE
@@ -163,9 +165,9 @@ for e = 1:ne
         BpVoigt = getBVoigt(MeshP, Bp);     
         
         % assemble local square matrices
-        Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        if any(Material.Minv)
-            S_e = S_e + (Material.eta0 / Material.Kf) * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kpp_e = Kpp_e + Material.M(nMat).kf * (BpVoigt.') * BpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        if any(Material.M(nMat).Minv)
+            S_e = S_e + (Material.M(nMat).eta0 / Material.M(nMat).Kf) * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
         end
     end
 

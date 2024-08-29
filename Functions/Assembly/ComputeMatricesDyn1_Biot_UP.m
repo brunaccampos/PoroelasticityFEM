@@ -10,9 +10,6 @@ ne = MeshU.ne; % number of elements
 nqU = QuadU.nq; % total number of integration points
 nqP = QuadP.nq;
 
-% constitutive matrix
-C = getConstitutiveMatrix(Material, MeshU);
-
 %% Initialize global matrices
 % initialize vector sizes
 % u-u
@@ -45,6 +42,11 @@ count_up = 1;
 
 %% Coupled matrices
 for e = 1:ne
+    % element material type
+    nMat = MeshU.MatList(e); % element material type
+    % constitutive matrix
+    C = getConstitutiveMatrix(nMat, Material, MeshU);
+
     % element connectivity
     connu_e = MeshU.conn(e,:);
     connu_e = reshape(connu_e',MeshU.nne,[]);
@@ -98,8 +100,8 @@ for e = 1:ne
 
         % assemble local matrices
         Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Muu_e = Muu_e + Material.rho * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        S_e = S_e + Material.Minv * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Muu_e = Muu_e + Material.M(nMat).rho * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        S_e = S_e + Material.M(nMat).Minv * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
  
     % loop over integration points - Displacement
@@ -129,9 +131,9 @@ for e = 1:ne
 
 
         % assemble local matrices
-        Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        Kup_e = Kup_e + Material.alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        Mpu_e = Mpu_e + Material.rhof * Material.kf * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kpp_e = Kpp_e + Material.M(nMat).kf * (BpVoigt.') * BpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kup_e = Kup_e + Material.M(nMat).alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Mpu_e = Mpu_e + Material.M(nMat).rhof * Material.M(nMat).kf * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * QuadP.w(ip,1);
     end
 
     % lumped element mass matrix

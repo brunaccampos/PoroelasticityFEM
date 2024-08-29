@@ -8,9 +8,6 @@ function [Muu, Mpu, Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesDyn3_Spanos_UP(Mater
 ne = MeshU.ne; % number of elements
 nq = Quad.nq; % total number of integration points
 
-% constitutive matrix
-C = getConstitutiveMatrix(Material, MeshU);
-
 %% Initialize global matrices
 % initialize vector sizes
 % u-u 
@@ -43,6 +40,11 @@ count_up = 1;
 
 %% Coupled matrices
 for e = 1:ne
+    % element material type
+    nMat = MeshU.MatList(e); % element material type
+    % constitutive matrix
+    C = getConstitutiveMatrix(nMat, Material, MeshU);
+
     % element connectivity
     connu_e = MeshU.conn(e,:);
     connu_e = reshape(connu_e',MeshU.nne,[]);
@@ -98,14 +100,14 @@ for e = 1:ne
         
         % assemble local matrices
         Kuu_e = Kuu_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
-        Kpp_e = Kpp_e + Material.kf * (BpVoigt.') * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
-        S_e = S_e + (Material.eta0 / Material.Kf)*(1/(1-Material.deltaf/Material.eta0)) * (NpVoigt.') * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
-        Muu_e = Muu_e + Material.rho * (NuVoigt.') * NuVoigt * Material.t * Jdet * Quad.w(ip,1);
+        Kpp_e = Kpp_e + Material.M(nMat).kf * (BpVoigt.') * BpVoigt * Material.t * Jdet * Quad.w(ip,1);
+        S_e = S_e + (Material.M(nMat).eta0 / Material.M(nMat).Kf)*(1/(1-Material.M(nMat).deltaf/Material.M(nMat).eta0)) * (NpVoigt.') * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
+        Muu_e = Muu_e + Material.M(nMat).rho * (NuVoigt.') * NuVoigt * Material.t * Jdet * Quad.w(ip,1);
 
-        Kup_e = Kup_e + Material.alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
-        Kpu_e = Kpu_e + Material.eta0 * (Material.eta0 - Material.deltaf + Material.deltas)/(Material.eta0 - Material.deltaf) ...
+        Kup_e = Kup_e + Material.M(nMat).alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * Quad.w(ip,1);
+        Kpu_e = Kpu_e + Material.M(nMat).eta0 * (Material.M(nMat).eta0 - Material.M(nMat).deltaf + Material.M(nMat).deltas)/(Material.M(nMat).eta0 - Material.M(nMat).deltaf) ...
             * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
-        Mpu_e = Mpu_e + Material.rhof * Material.kf * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
+        Mpu_e = Mpu_e + Material.M(nMat).rhof * Material.M(nMat).kf * (NpVoigt.') * (Material.m') * BuVoigt * Material.t * Jdet * Quad.w(ip,1);
     end
     
     % lumped element mass matrix

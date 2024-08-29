@@ -10,9 +10,6 @@ ne = MeshU.ne; % number of elements
 nqU = QuadU.nq; % total number of integration points
 nqP = QuadP.nq;
 
-% constitutive matrix
-C = getConstitutiveMatrix(Material, MeshU);
-
 %% Initialize global matrices
 % initialize vector sizes
 % u-u
@@ -41,6 +38,11 @@ count_up = 1;
 
 %% Coupled matrices
 for e = 1:ne
+    % element material type
+    nMat = MeshU.MatList(e); % element material type
+    % constitutive matrix
+    C = getConstitutiveMatrix(nMat, Material, MeshU);
+
     % element connectivity
     connu_e = MeshU.conn(e,:);
     connu_e = reshape(connu_e',MeshU.nne,[]);
@@ -93,9 +95,9 @@ for e = 1:ne
         % assemble local matrices
         Kss_e = Kss_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         
-        Css_e = Css_e + Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Csf_e = Csf_e + Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Cff_e = Cff_e + Material.eta0^2/Material.kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Css_e = Css_e + Material.M(nMat).eta0^2/Material.M(nMat).kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Csf_e = Csf_e + Material.M(nMat).eta0^2/Material.M(nMat).kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Cff_e = Cff_e + Material.M(nMat).eta0^2/Material.M(nMat).kf * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
  
     % loop over integration points - Displacement
@@ -122,9 +124,9 @@ for e = 1:ne
         BuVoigt = getBVoigt(MeshU, Bu);
 
         % assemble local matrices
-        Kpp_e = Kpp_e + Material.Minv * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        Ksp_e = Ksp_e + (Material.alpha - Material.eta0) * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
-        Kfp_e = Kfp_e + Material.eta0 * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kpp_e = Kpp_e + Material.M(nMat).Minv * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Ksp_e = Ksp_e + (Material.M(nMat).alpha - Material.M(nMat).eta0) * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kfp_e = Kfp_e + Material.M(nMat).eta0 * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
     end
 
     % lumped element damping matrix
