@@ -34,33 +34,33 @@ Control.PMmodel = 'Dyn1_Biot_UP';
 
 %% Material properties - Komijani (2019)
 % elasticity modulus [GPa]
-Material.E = 14.516e-3;
+Material.M(1).E = 14.516e-3;
 % Poisson's ratio
-Material.nu = 0.3;
+Material.M(1).nu = 0.3;
 % porous media permeability [m2/GPa s]
-Material.kf = 1.0194e3;
+Material.M(1).kf = 1.0194e3;
 % dynamic viscosity [GPa s]
-Material.muf = 1e-12;
+Material.M(1).muf = 1e-12;
 % intrinsic permeability [m2]
-Material.k = Material.kf * Material.muf;
+Material.M(1).k = Material.M(1).kf * Material.M(1).muf;
 % fluid bulk modulus [GPa]
-Material.Kf = 2.1;
+Material.M(1).Kf = 2.1;
 % solid bulk modulus [GPa]
-Material.Ks = 1e11;
+Material.M(1).Ks = 1e11;
 % material porosity
-Material.eta0 = 0.3;
+Material.M(1).eta0 = 0.3;
 % Biot's coefficient
-Material.alpha = 1;
+Material.M(1).alpha = 1;
 % fluid density [10^9 kg/m3]
-Material.rhof = 1000e-9;
+Material.M(1).rhof = 1000e-9;
 % solid density [10^9 kg/m3]
-Material.rhos = 2000e-9;
+Material.M(1).rhos = 2000e-9;
 % average density of the medium
-Material.rho = Material.eta0*Material.rhof + (1-Material.eta0)*Material.rhos;
+Material.M(1).rho = Material.M(1).eta0*Material.M(1).rhof + (1-Material.M(1).eta0)*Material.M(1).rhos;
 % 1/Q (related to storage coefficient)
-Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
+Material.M(1).Minv = (Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks + Material.M(1).eta0/Material.M(1).Kf;
 % fluid bulk viscosity [GPa s]
-Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
+Material.M(1).xif = 2.8e-12; % (Quiroga-Goode, 2005)
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -78,67 +78,53 @@ Material.lumpedMass = 0;
 % porosity effective pressure coefficient (Spanos, 1989)
 % n = 0; % lower limit
 n = 1; % return to Biot
-% n = Material.Ks/Material.Kf; % upper limit
+% n = Material.M(1).Ks/Material.M(1).Kf; % upper limit
 
 % modified storage coefficient (Muller, 2019)
-Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks; 
+Mstarinv = Material.M(1).Minv - (1-n)*(Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks; 
 Mstar = 1/Mstarinv;
 
 % porosity equation coefficients
-Material.deltaf = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
-Material.deltas = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
+Material.M(1).deltaf = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar * n / Material.M(1).Ks;
+Material.M(1).deltas = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar / Material.M(1).Kf;
 
 %% Mesh parameters
 if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% mesh type
-% 'Manual': 1D mesh
-% 'Gmsh': 2D mesh, input file from GMSH
-MeshType = 'Gmsh';
+% Version 2 ASCII
+% number of space dimensions
+nsd = 2;
+%%%% displacement field
+fieldU = 'u';
+meshFileNameU = 'Mesh Files\Column2DQ9.msh';
+MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
 
-switch MeshType
-    case 'Manual'
-        % number of space dimensions
-        nsd = 1;
-        % number of elements
-        ne = 10;
-        % column size [m]
-        L = 10;
-        %%%% solid displacement field
-        typeU = 'L3';
-        MeshU = Build1DMesh(nsd, ne, L, typeU);
-        %%%% fluid pressure field
-        typeP = 'L2';
-        MeshP = Build1DMesh(nsd, ne, L, typeP);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            typeN = 'L2';
-            MeshN = Build1DMesh(nsd, ne, L, typeN);
-        else
-            MeshN = [];
-        end
-    case 'Gmsh'
-        % Version 2 ASCII
-        % number of space dimensions
-        nsd = 2;
-        %%%% displacement field
-        fieldU = 'u';
-        meshFileNameU = 'Mesh Files\Column2DQ9.msh';
-        MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
-        %%%% pressure field
-        fieldP = 'p';
-        meshFileNameP = 'Mesh Files\Column2DQ4.msh';
-        MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
-        %%%% porosity field
-        if contains(Control.PMmodel, 'UPN')
-            fieldN = 'n';
-            meshFileNameN = 'Mesh Files\Column2DQ4.msh';
-            MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
-        else
-            MeshN = [];
-        end
+%%%% pressure field
+fieldP = 'p';
+meshFileNameP = 'Mesh Files\Column2DQ4.msh';
+MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
+
+%%%% porosity field
+if contains(Control.PMmodel, 'UPN')
+    fieldN = 'n';
+    meshFileNameN = 'Mesh Files\Column2DQ4.msh';
+    MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
+    % type of material per element
+    MeshN.MatList = zeros(MeshN.ne, 1, 'int8');
+    % assign material type to elements
+    MeshN.MatList(:) = 1;
+else
+    MeshN = [];
 end
 
 %% Dirichlet BCs - solid
