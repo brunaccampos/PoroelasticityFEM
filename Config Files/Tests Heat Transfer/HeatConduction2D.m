@@ -5,18 +5,18 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = HeatConduction2D(~, prog
 
 %% Material properties
 % thermal conductance coefficient
-Material.kf = 5;
+Material.M(1).kf = 5;
 % Poroelasticity model
 Control.PMmodel = 'Tr1_Biot_UP';
 
 % elasticity modulus [Pa]
-Material.E = 0;
+Material.M(1).E = 0;
 % Poisson's ratio
-Material.nu = 0;
+Material.M(1).nu = 0;
 % Biot's coefficient
-Material.alpha = 0;
+Material.M(1).alpha = 0;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
+Material.M(1).Minv = 0;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -51,6 +51,10 @@ MeshU.coords(:,1) = [0; 0; 2; 2];
 MeshU.coords(:,2) = [1; 0; 0.5; 1];
 
 MeshU.conn = [1,2,3,4]; % elements connectivity
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
 
 % mesh for fluid field
 MeshP.nsd = 2; % number of spatial directions
@@ -69,6 +73,10 @@ MeshP.coords(:,1) = [0; 0; 2; 2];
 MeshP.coords(:,2) = [1; 0; 0.5; 1];
 
 MeshP.conn = [1,2,3,4]; % elements connectivity
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
 
 % mesh for porosity field
 MeshN = [];

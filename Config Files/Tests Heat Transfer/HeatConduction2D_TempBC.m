@@ -5,18 +5,18 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = HeatConduction2D_TempBC(
 
 %% Material properties
 % thermal conductance coefficient [W/m3]
-Material.kf = 1;
+Material.M(1).kf = 1;
 % Poroelasticity model
 Control.PMmodel = 'Tr1_Biot_UP';
 
 % elasticity modulus [Pa]
-Material.E = 0;
+Material.M(1).E = 0;
 % Poisson's ratio
-Material.nu = 0;
+Material.M(1).nu = 0;
 % Biot's coefficient
-Material.alpha = 0;
+Material.M(1).alpha = 0;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
+Material.M(1).Minv = 0;
 % poroelasticity model
 Control.Biotmodel = 1;
 
@@ -41,15 +41,29 @@ nsd = 2;
 fieldU = 'u';
 meshFileNameU = 'Mesh Files\UnitPlateQ4.msh';
 MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
+
 %%%% pressure field
 fieldP = 'p';
 meshFileNameP = 'Mesh Files\UnitPlateQ4.msh';
 MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
+
 %%%% porosity field
 if contains(Control.PMmodel, 'UPN')
     fieldN = 'n';
     meshFileNameN = 'Mesh Files\UnitPlateQ4.msh';
     MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
+    % type of material per element
+    MeshN.MatList = zeros(MeshN.ne, 1, 'int8');
+    % assign material type to elements
+    MeshN.MatList(:) = 1;
 else
     MeshN = [];
 end

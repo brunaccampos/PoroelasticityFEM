@@ -7,20 +7,20 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateDiffusionDynamic(co
 
 %% Material properties
 % diffusion coefficient [ppm/mm2] 
-Material.kf = 5e-3;
+Material.M(1).kf = 5e-3;
 % 1/Q (related to storage coefficient)
-Material.Minv = 1;
+Material.M(1).Minv = 1;
 
 % material density [kg/m3]
-Material.rho = 0;
+Material.M(1).rho = 0;
 % fluid density [kg/m3]
-Material.rhof = 0;
+Material.M(1).rhof = 0;
 % elasticity modulus [Pa]
-Material.E = 0;
+Material.M(1).E = 0;
 % Poisson's ratio
-Material.nu = 0;
+Material.M(1).nu = 0;
 % Biot's coefficient
-Material.alpha = 0;
+Material.M(1).alpha = 0;
 % poroelasticity model
 Control.PMmodel = 'Dyn1_Biot_UP';
 
@@ -45,15 +45,29 @@ nsd = 2;
 fieldU = 'u';
 meshFileNameU = 'Mesh Files\PlateDiffusion.msh';
 MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
+
 %%%% pressure field
 fieldP = 'p';
 meshFileNameP = 'Mesh Files\PlateDiffusion.msh';
 MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
+
 %%%% porosity field
 if contains(Control.PMmodel, 'UPN')
     fieldN = 'n';
     meshFileNameN = 'Mesh Files\PlateDiffusion.msh';
     MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
+    % type of material per element
+    MeshN.MatList = zeros(MeshN.ne, 1, 'int8');
+    % assign material type to elements
+    MeshN.MatList(:) = 1;
 else
     MeshN = [];
 end
