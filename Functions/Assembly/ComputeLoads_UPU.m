@@ -165,6 +165,8 @@ count = zeros(size(BC.fixed_p));
 
 % loop over elements
 for e = 1:ne
+    % element material type
+    nMat = Mesh.MatList(e);
     % element connectivity
     connp_e = MeshP.conn(e,:);
     % global coordinates
@@ -222,8 +224,8 @@ for e = 1:ne
     % assemble global flux vector
     fp(dofe) = fp(dofe) + fg_e;
     % add pressure vector contributions (valid for P2/P1 meshes)
-    fs(dofe*2-1) = fs(dofe*2-1) - (Material.alpha-Material.eta0) * faux_e;
-    ff(dofe*2-1) = ff(dofe*2-1) - Material.eta0 * faux_e;
+    fs(dofe*2-1) = fs(dofe*2-1) - (Material.M(nMat).alpha-Material.M(nMat).eta0) * faux_e;
+    ff(dofe*2-1) = ff(dofe*2-1) - Material.M(nMat).eta0 * faux_e;
     
 end
    

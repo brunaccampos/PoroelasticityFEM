@@ -25,7 +25,7 @@ count = zeros(nn,dim);
 %% Loop over elements
 for e = 1:ne
     % element material type
-    nMat = Mesh.MatList(e); % element material type
+    nMat = Mesh.MatList(e);
     % porous media permeability
     kf = Material.M(nMat).kf; 
 

@@ -217,6 +217,8 @@ end
 if contains(Control.PMmodel, 'UPN')
     % loop over elements
     for e = 1:ne
+        % element material type
+        nMat = Mesh.MatList(e); 
         % element connectivity
         connN_e = MeshN.conn(e,:);
         % element DOFs
@@ -237,7 +239,7 @@ if contains(Control.PMmodel, 'UPN')
                 [N,~] = lagrange_basis(MeshN, coord);
                 Nvoigt = getNVoigt(MeshN, N');
                 % element load vector
-                fn_e = fn_e - (Material.deltaf/Material.eta0) * Nvoigt.' * fluxValue(j,:)';
+                fn_e = fn_e - (Material.M(nMat).deltaf/Material.M(nMat).eta0) * Nvoigt.' * fluxValue(j,:)';
                 % update counting
                 count(j) = 1;
             end
@@ -252,7 +254,7 @@ end
 if ~strcmp(func2str(BC.pointFlux),'@(t)[]')
     fp = fp - BC.pointFlux(Control.t);
     if contains(Control.PMmodel,'UPN')
-        fn = fn - (Material.deltaf/Material.eta0) * BC.pointFlux(Control.t);
+        fn = fn - (Material.M(nMat).deltaf/Material.M(nMat).eta0) * BC.pointFlux(Control.t);
     end
 end
 
