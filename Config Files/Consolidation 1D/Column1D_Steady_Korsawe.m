@@ -36,33 +36,33 @@ Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties - Korsawe (2006)
 % elasticity modulus [GPa]
-Material.E = 3e-5;
+Material.M(1).E = 3e-5;
 % Poisson's ratio
-Material.nu = 0.2;
+Material.M(1).nu = 0.2;
 % intrinsic permeability [m2]
-Material.k = 1e-10;
+Material.M(1).k = 1e-10;
 % dynamic viscosity [GPa s]
-Material.muf = 1e-12;
+Material.M(1).muf = 1e-12;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.k/Material.muf;
+Material.M(1).kf = Material.M(1).k/Material.M(1).muf;
 % Biot's coefficient
-Material.alpha = 1;
+Material.M(1).alpha = 1;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
+Material.M(1).Minv = 0;
 % porosity
-Material.eta0 = 0.3;
+Material.M(1).eta0 = 0.3;
 
 % additional coefficients for analytical result
 % Lame constant [GPa]
-Material.lambda = Material.E * Material.nu/((1+Material.nu)*(1-2*Material.nu));
+Material.M(1).lambda = Material.M(1).E * Material.M(1).nu/((1+Material.M(1).nu)*(1-2*Material.M(1).nu));
 % gravitational acceleration [m/s2]
-Material.g = 9.81;
+Material.M(1).g = 9.81;
 % fluid density [10^9 kg/m3]
-Material.rhof = 1000e-9;
+Material.M(1).rhof = 1000e-9;
 % hydraulic conductivity [m/s]
-Material.kh = Material.kf * Material.rhof * Material.g;
+Material.M(1).kh = Material.M(1).kf * Material.M(1).rhof * Material.M(1).g;
 % shear modulus [GPa]
-Material.mu = Material.E/(2*(1+Material.nu));
+Material.M(1).mu = Material.M(1).E/(2*(1+Material.M(1).nu));
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -80,8 +80,8 @@ n = 1; % return to Biot
 % n = Material.Ks/Material.Kf; % upper limit
  
 % porosity equation coefficients
-Material.deltaf = 0;
-Material.deltas = Material.alpha - Material.eta0;
+Material.M(1).deltaf = 0;
+Material.M(1).deltas = Material.M(1).alpha - Material.M(1).eta0;
 
 %% Mesh parameters
 if progress_on
@@ -103,6 +103,10 @@ typeU = 'L3';
 % variable field ('u', 'p', 'n')
 fieldU = 'u';
 MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
 
 %%%% pressure mesh
 % element type ('Q4')
@@ -110,6 +114,10 @@ typeP = 'L2';
 % variable field ('u', 'p', 'n')
 fieldP = 'p';
 MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
 
 %%%% porosity mesh
 if contains(Control.PMmodel, 'UPN')
@@ -118,6 +126,10 @@ if contains(Control.PMmodel, 'UPN')
     % variable field ('u', 'p', 'n')
     fieldN = 'n';
     MeshN = BuildMesh_structured(nsd, coord0, L, ne, typeN, fieldN, progress_on);
+    % type of material per element
+    MeshN.MatList = zeros(MeshN.ne, 1, 'int8');
+    % assign material type to elements
+    MeshN.MatList(:) = 1;
 else
     MeshN = [];
 end

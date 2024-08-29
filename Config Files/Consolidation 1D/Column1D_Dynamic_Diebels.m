@@ -38,27 +38,27 @@ lambda = 5.583e-3;
 % shear modulus [GPa]
 G = 8.375e-3;
 % elasticity modulus [GPa]
-Material.E = G*(3*lambda+2*G)/(lambda+G);
+Material.M(1).E = G*(3*lambda+2*G)/(lambda+G);
 % Poisson's ratio
-Material.nu = 0.2;
+Material.M(1).nu = 0.2;
 % porous media permeability [m2/GPa s]
-Material.kf = 1e3;
+Material.M(1).kf = 1e3;
 % dynamic viscosity [GPa s]
-Material.muf = 1e-12;
+Material.M(1).muf = 1e-12;
 % intrinsic permeability [m2]
-Material.k = Material.kf * Material.muf;
+Material.M(1).k = Material.M(1).kf * Material.M(1).muf;
 % material porosity
-Material.eta0 = 0.33;
+Material.M(1).eta0 = 0.33;
 % Biot's coefficient
-Material.alpha = 1;
+Material.M(1).alpha = 1;
 % fluid density [10^9 kg/m3]
-Material.rhof = 1000e-9;
+Material.M(1).rhof = 1000e-9;
 % solid density [10^9 kg/m3]
-Material.rhos = 2000e-9;
+Material.M(1).rhos = 2000e-9;
 % average density of the medium
-Material.rho = Material.eta0*Material.rhof + (1-Material.eta0)*Material.rhos;
+Material.M(1).rho = Material.M(1).eta0*Material.M(1).rhof + (1-Material.M(1).eta0)*Material.M(1).rhos;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
+Material.M(1).Minv = 0;
 
 % thickness
 % 1D: cross sectional area [m2]
@@ -89,6 +89,10 @@ typeU = 'L3';
 % variable field ('u', 'p', 'n')
 fieldU = 'u';
 MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
 
 %%%% pressure mesh
 % element type ('Q4')
@@ -96,6 +100,10 @@ typeP = 'L2';
 % variable field ('u', 'p', 'n')
 fieldP = 'p';
 MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
 
 %%%% porosity mesh
 if contains(Control.PMmodel, 'UPN')
@@ -104,6 +112,10 @@ if contains(Control.PMmodel, 'UPN')
     % variable field ('u', 'p', 'n')
     fieldN = 'n';
     MeshN = BuildMesh_structured(nsd, coord0, L, ne, typeN, fieldN, progress_on);
+    % type of material per element
+    MeshN.MatList = zeros(MeshN.ne, 1, 'int8');
+    % assign material type to elements
+    MeshN.MatList(:) = 1;
 else
     MeshN = [];
 end
