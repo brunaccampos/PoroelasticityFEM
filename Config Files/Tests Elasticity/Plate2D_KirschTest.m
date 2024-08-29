@@ -7,25 +7,25 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_KirschTest(confi
 % poroelasticity model
 Control.PMmodel = 'Tr1_Biot_UP';
 % elasticity modulus [GPa]
-Material.E = 14.4;
+Material.M(1).E = 14.4;
 % Poisson's ratio
-Material.nu = 0.2;
+Material.M(1).nu = 0.2;
 % intrinsic permeability [m2]
-Material.k = 1.88e-13;
+Material.M(1).k = 1.88e-13;
 % dynamic viscosity [GPa s]
-Material.muf = 1e-12;
+Material.M(1).muf = 1e-12;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.k/Material.muf;
+Material.M(1).kf = Material.M(1).k/Material.M(1).muf;
 % Biot's coefficient
-Material.alpha = 0.79;
+Material.M(1).alpha = 0.79;
 % fluid bulk modulus [GPa]
-Material.Kf = 3.3;
+Material.M(1).Kf = 3.3;
 % solid bulk modulus [GPa]
-Material.Ks = 36;
+Material.M(1).Ks = 36;
 % material porosity
-Material.eta0 = 0.19;
+Material.M(1).eta0 = 0.19;
 % 1/Q (related to storage coefficient)
-Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
+Material.M(1).Minv = (Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks + Material.M(1).eta0/Material.M(1).Kf;
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;
@@ -51,15 +51,29 @@ nsd = 2;
 fieldU = 'u';
 meshFileNameU = 'Mesh Files\PlateWithHole_FullGeometryQ4.msh';
 MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
+
 %%%% pressure field
 fieldP = 'p';
 meshFileNameP = 'Mesh Files\PlateWithHole_FullGeometryQ4.msh';
 MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
+
 %%%% porosity field
 if contains(Control.PMmodel, 'UPN')
     fieldN = 'n';
     meshFileNameN = 'Mesh Files\PlateWithHole_FullGeometryQ4.msh';
     MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
+    % type of material per element
+    MeshN.MatList = zeros(MeshN.ne, 1, 'int8');
+    % assign material type to elements
+    MeshN.MatList(:) = 1;
 else
     MeshN = [];
 end

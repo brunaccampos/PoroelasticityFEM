@@ -7,22 +7,22 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Beam_Dynamic(~, progress
 % poroelasticity model
 Control.PMmodel = 'Dyn1_Biot_UP';
 % shear modulus [Pa]
-Material.mu = 10;
+Material.M(1).mu = 10;
 % Poisson's ratio
-Material.nu = 0.3;
+Material.M(1).nu = 0.3;
 % elasticity modulus [Pa]
-Material.E = 2 * Material.mu * (1 + Material.nu);
+Material.M(1).E = 2 * Material.M(1).mu * (1 + Material.M(1).nu);
 % material density [kg/m3]
-Material.rho = 1;
+Material.M(1).rho = 1;
 
 % thermal conductance coefficient
-Material.kf = 0;
+Material.M(1).kf = 0;
 % Biot's coefficient
-Material.alpha = 0;
+Material.M(1).alpha = 0;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
+Material.M(1).Minv = 0;
 % fluid density [kg/m3]
-Material.rhof = 0;
+Material.M(1).rhof = 0;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -70,6 +70,10 @@ MeshU.conn = [1, 2, 13, 12;
     8, 9, 20, 19;
     9, 10, 21, 20;
     10, 11, 22, 21];
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
 
 % mesh for fluid field
 MeshP.nsd = 2; % number of spatial directions
@@ -97,6 +101,10 @@ MeshP.conn = [1, 2, 13, 12;
     8, 9, 20, 19;
     9, 10, 21, 20;
     10, 11, 22, 21];
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
 
 % mesh for porosity field
 MeshN = [];
