@@ -14,8 +14,8 @@ xd_u = (MeshU.coords./MeshU.L);
 xd_p = (MeshP.coords./MeshP.L);
 
 % additional material parameters
-mu = Material.E/(2*(1+Material.nu)); % shear modulus [Pa]
-lambda = Material.E*Material.nu/((1+Material.nu)*(1-2*Material.nu)); % Lamé constant [Pa]
+mu = Material.M(1).E/(2*(1+Material.M(1).nu)); % shear modulus [Pa]
+lambda = Material.M(1).E*Material.M(1).nu/((1+Material.M(1).nu)*(1-2*Material.M(1).nu)); % Lamé constant [Pa]
 
 aux1 = 0; % u
 aux2 = 0; % sigma
@@ -25,7 +25,7 @@ aux3 = 0; % p
 N = 100;
 
 % dimensionless time
-td = (lambda + 2*mu)*Material.k * Control.t / (Material.muf * MeshU.L^2);
+td = (lambda + 2*mu)*Material.M(1).k * Control.t / (Material.M(1).muf * MeshU.L^2);
 
 % loop of N terms
 for n = 0:N
