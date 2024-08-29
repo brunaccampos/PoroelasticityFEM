@@ -40,29 +40,29 @@ lambda = 5.583e-3;
 % shear modulus [GPa]
 G = 8.375e-3;
 % elasticity modulus [GPa]
-Material.E = G*(3*lambda+2*G)/(lambda+G);
+Material.M(1).E = G*(3*lambda+2*G)/(lambda+G);
 % Poisson's ratio
-Material.nu = 0.2;
+Material.M(1).nu = 0.2;
 % porous media permeability [m2/GPa s]
-Material.kf = 1e3;
+Material.M(1).kf = 1e3;
 % dynamic viscosity [GPa s]
-Material.muf = 1e-12;
+Material.M(1).muf = 1e-12;
 % intrinsic permeability [m2]
-Material.k = Material.kf * Material.muf;
+Material.M(1).k = Material.M(1).kf * Material.M(1).muf;
 % material porosity
-Material.eta0 = 0.33;
+Material.M(1).eta0 = 0.33;
 % Biot's coefficient
-Material.alpha = 1;
+Material.M(1).alpha = 1;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
+Material.M(1).Minv = 0;
 
 % % alternative values of Kf, Ks for compressible materials (Boone, 1990)
 % % fluid bulk modulus [GPa]
-% Material.Kf = 3;
+% Material.M(1).Kf = 3;
 % % solid bulk modulus [GPa]
-% Material.Ks = 36;
+% Material.M(1).Ks = 36;
 % % 1/Q (related to storage coefficient)
-% Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
+% Material.M(1).Minv = (Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks + Material.M(1).eta0/Material.M(1).Kf;
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;
@@ -83,17 +83,17 @@ n = 1; % return to Biot
 % n = Material.Ks/Material.Kf; % upper limit
  
 % porosity equation coefficients
-Material.deltaf = 0;
-Material.deltas = Material.alpha - Material.eta0;
+Material.M(1).deltaf = 0;
+Material.M(1).deltas = Material.M(1).alpha - Material.M(1).eta0;
 
 % % alternative equations for compressible materials
 % % modified storage coefficient (Muller, 2019)
-% Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks; 
+% Mstarinv = Material.M(1).Minv - (1-n)*(Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks; 
 % Mstar = 1/Mstarinv;
 % 
 % % porosity equation coefficients
-% Material.deltaf = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
-% Material.deltas = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
+% Material.M(1).deltaf = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar * n / Material.M(1).Ks;
+% Material.M(1).deltas = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar / Material.M(1).Kf;
 
 %% Mesh parameters
 if progress_on
@@ -107,15 +107,29 @@ nsd = 2;
 fieldU = 'u';
 meshFileNameU = 'Mesh Files\Footing_DiebelsQ9uniformCoarse.msh';
 MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
+
 %%%% pressure field
 fieldP = 'p';
 meshFileNameP = 'Mesh Files\Footing_DiebelsQ4uniformCoarse.msh';
 MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
+
 %%%% porosity field
 if contains(Control.PMmodel, 'UPN')
     fieldN = 'n';
     meshFileNameN = 'Mesh Files\Footing_DiebelsQ4uniformCoarse.msh';
     MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
+    % type of material per element
+    MeshN.MatList = zeros(MeshN.ne, 1, 'int8');
+    % assign material type to elements
+    MeshN.MatList(:) = 1;
 else
     MeshN = [];
 end

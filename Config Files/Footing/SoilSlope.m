@@ -34,37 +34,37 @@ Control.PMmodel = 'Dyn4_Biot_UPU';
 
 %% Material properties - Wu (2019)
 % elasticity modulus [GPa]
-Material.E = 60e-3;
+Material.M(1).E = 60e-3;
 % Poisson's ratio
-Material.nu = 0.4;
+Material.M(1).nu = 0.4;
 % hydraulic permeability [m/s]
-Material.kh = 4e-10;
+Material.M(1).kh = 4e-10;
 % gravitational acceleration [m/s2]
-Material.g = 9.81;
+Material.M(1).g = 9.81;
 % fluid density [Gkg/m3]
-Material.rhof = 1000e-9;
+Material.M(1).rhof = 1000e-9;
 % porous media permeability [m2/Pa s]
-Material.kf = Material.kh/Material.rhof/Material.g;
+Material.M(1).kf = Material.M(1).kh/Material.M(1).rhof/Material.M(1).g;
 % dynamic viscosity [GPa s]
-Material.muf = 1e-12;
+Material.M(1).muf = 1e-12;
 % intrinsic permeability [m2]
-Material.k = Material.kf * Material.muf;
+Material.M(1).k = Material.M(1).kf * Material.M(1).muf;
 % fluid bulk modulus [GPa]
-Material.Kf = 2;
+Material.M(1).Kf = 2;
 % solid bulk modulus [GPa]
-Material.Ks = 50;
+Material.M(1).Ks = 50;
 % material porosity
-Material.eta0 = 0.2;
+Material.M(1).eta0 = 0.2;
 % Biot's coefficient
-Material.alpha = 1;
+Material.M(1).alpha = 1;
 % solid density [Gkg/m3]
-Material.rhos = 2000e-9;
+Material.M(1).rhos = 2000e-9;
 % average density of the medium
-Material.rho = Material.eta0*Material.rhof + (1-Material.eta0)*Material.rhos;
+Material.M(1).rho = Material.M(1).eta0*Material.M(1).rhof + (1-Material.M(1).eta0)*Material.M(1).rhos;
 % 1/Q (related to storage coefficient)
-Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
+Material.M(1).Minv = (Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks + Material.M(1).eta0/Material.M(1).Kf;
 % fluid bulk viscosity [GPa s]
-Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
+Material.M(1).xif = 2.8e-12; % (Quiroga-Goode, 2005)
 
 % lumped mass matrix - 0: false, 1: true
 Material.lumpedMass = 0;
@@ -82,15 +82,15 @@ Material.constLaw = 'PlaneStrain';
 % porosity effective pressure coefficient (Spanos, 1989)
 % n = 0; % lower limit
 n = 1; % return to Biot
-% n = Material.Ks/Material.Kf; % upper limit
+% n = Material.M(1).Ks/Material.M(1).Kf; % upper limit
 
 % modified storage coefficient (Muller, 2019)
-Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks; 
+Mstarinv = Material.M(1).Minv - (1-n)*(Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks; 
 Mstar = 1/Mstarinv;
 
 % porosity equation coefficients
-Material.deltaf = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
-Material.deltas = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
+Material.M(1).deltaf = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar * n / Material.M(1).Ks;
+Material.M(1).deltas = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar / Material.M(1).Kf;
 
 %% Mesh parameters
 if progress_on
@@ -104,10 +104,20 @@ nsd = 2;
 fieldU = 'u';
 meshFileNameU = 'Mesh Files\SoilSlopeT3finer.msh';
 MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
+
 %%%% pressure field
 fieldP = 'p';
 meshFileNameP = 'Mesh Files\SoilSlopeT3finer.msh';
 MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
+
 %%%% porosity field
 MeshN = [];
 

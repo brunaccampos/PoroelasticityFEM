@@ -36,19 +36,19 @@ Control.PMmodel = 'Tr1_Biot_UP';
 
 %% Material properties - Korsawe (2006)
 % elasticity modulus [GPa]
-Material.E = 3e-5;
+Material.M(1).E = 3e-5;
 % Poisson's ratio
-Material.nu = 0.2;
+Material.M(1).nu = 0.2;
 % intrinsic permeability [m2]
-Material.k = 1e-10;
+Material.M(1).k = 1e-10;
 % dynamic viscosity [GPa s]
-Material.muf = 1e-12;
+Material.M(1).muf = 1e-12;
 % porous media permeability [m2/GPa s]
-Material.kf = Material.k/Material.muf;
+Material.M(1).kf = Material.M(1).k/Material.M(1).muf;
 % Biot's coefficient
-Material.alpha = 1;
+Material.M(1).alpha = 1;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
+Material.M(1).Minv = 0;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -71,15 +71,29 @@ nsd = 2;
 fieldU = 'u';
 meshFileNameU = 'Mesh Files\FootingQ9.msh';
 MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+% type of material per element
+MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
+% assign material type to elements
+MeshU.MatList(:) = 1;
+
 %%%% pressure field
 fieldP = 'p';
 meshFileNameP = 'Mesh Files\FootingQ4.msh';
 MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+% type of material per element
+MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
+% assign material type to elements
+MeshP.MatList(:) = 1;
+
 %%%% porosity field
 if contains(Control.PMmodel, 'UPN')
     fieldN = 'n';
     meshFileNameN = 'Mesh Files\FootingQ4.msh';
     MeshN = BuildMesh_GMSH(meshFileNameN, fieldN, nsd, config_dir, progress_on);
+    % type of material per element
+    MeshN.MatList = zeros(MeshN.ne, 1, 'int8');
+    % assign material type to elements
+    MeshN.MatList(:) = 1;
 else
     MeshN = [];
 end
