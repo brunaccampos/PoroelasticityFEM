@@ -9,7 +9,6 @@ function [strain, stress] = ComputeSolidStress(Material, Mesh, u)
 nn = Mesh.nn; % total number of nodes
 ne = Mesh.ne; % number of elements
 nne = Mesh.nne; % number of nodes per element
-C = getConstitutiveMatrix(Material, Mesh); % constitutive matrix
 
 % dimension of strain/stress matrix
 switch Mesh.nsd
@@ -25,6 +24,11 @@ count = zeros(nn,dim);
 
 %% Loop over elements
 for e = 1:ne
+    % element material type
+    nMat = Mesh.MatList(e); % element material type
+    % constitutive matrix
+    C = getConstitutiveMatrix(nMat, Material, Mesh);
+    
     % element connectivity
     conne = Mesh.conn(e,:);
     % element DOF numbers

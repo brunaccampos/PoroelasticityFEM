@@ -9,7 +9,6 @@ function [gradp, flux] = ComputeFluidFlux(Material, Mesh, p)
 nn = Mesh.nn; % total number of nodes
 ne = Mesh.ne; % number of elements
 nne = Mesh.nne; % number of nodes per element
-kf = Material.kf; % porous media permeability [m2/Pa s]
 
 % dimension of flux matrix
 switch Mesh.nsd
@@ -25,6 +24,11 @@ count = zeros(nn,dim);
 
 %% Loop over elements
 for e = 1:ne
+    % element material type
+    nMat = Mesh.MatList(e); % element material type
+    % porous media permeability
+    kf = Material.M(nMat).kf; 
+
     % element connectivity
     conne = Mesh.conn(e,:);
     % element DOF numbers
