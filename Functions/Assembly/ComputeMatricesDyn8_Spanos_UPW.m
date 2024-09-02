@@ -28,7 +28,6 @@ colpu = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
 Mssvec = zeros(ne*MeshU.nDOFe^2,1);
 Mffvec = zeros(ne*MeshU.nDOFe^2,1);
 Msfvec = zeros(ne*MeshU.nDOFe^2,1);
-Mfsvec = zeros(ne*MeshU.nDOFe^2,1);
 
 Cpsvec = zeros(ne*MeshP.nDOFe*MeshU.nDOFe,1);
 Cppvec = zeros(ne*MeshP.nDOFe^2,1);
@@ -71,7 +70,6 @@ for e = 1:ne
     Mss_e = zeros(MeshU.nDOFe, MeshU.nDOFe);
     Mff_e = zeros(MeshU.nDOFe, MeshU.nDOFe);
     Msf_e = zeros(MeshU.nDOFe, MeshU.nDOFe);
-    Mfs_e = zeros(MeshU.nDOFe, MeshU.nDOFe);
     
     Cps_e = zeros(MeshP.nDOFe, MeshU.nDOFe);
     Cpp_e = zeros(MeshP.nDOFe, MeshP.nDOFe);
@@ -107,12 +105,11 @@ for e = 1:ne
 
         % assemble local matrices
         Kss_e = Kss_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Kff_e = Kff_e + Material.M(nMat).muf*Material.M(nMat).eta0^2/Material.M(nMat).k * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kff_e = Kff_e + Material.M(nMat).muf/Material.M(nMat).k * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadP.w(ip,1);
      
         Mss_e = Mss_e + Material.M(nMat).rho * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Mff_e = Mff_e + (Material.M(nMat).rhof - Material.M(nMat).rho12) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Mff_e = Mff_e + (Material.M(nMat).rhof/Material.M(nMat).eta0) * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         Msf_e = Msf_e + Material.M(nMat).rhof * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Mfs_e = Mfs_e + Material.M(nMat).rhof * Material.M(nMat).eta0 * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
  
     % loop over integration points - Displacement
@@ -170,7 +167,6 @@ for e = 1:ne
     Mss_e = reshape(Mss_e, [MeshU.nDOFe^2,1]);
     Mff_e = reshape(Mff_e, [MeshU.nDOFe^2,1]);
     Msf_e = reshape(Msf_e, [MeshU.nDOFe^2,1]);
-    Mfs_e = reshape(Mfs_e, [MeshU.nDOFe^2,1]);
     
     Cps_e = reshape(Cps_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
     Cpp_e = reshape(Cpp_e, [MeshP.nDOFe^2,1]);
@@ -199,7 +195,6 @@ for e = 1:ne
     Mssvec(count_u-MeshU.nDOFe^2:count_u-1) = Mss_e;
     Mffvec(count_u-MeshU.nDOFe^2:count_u-1) = Mff_e;
     Msfvec(count_u-MeshU.nDOFe^2:count_u-1) = Msf_e;
-    Mfsvec(count_u-MeshU.nDOFe^2:count_u-1) = Mfs_e;
 
     Cpsvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Cps_e;
     Cppvec(count_p-MeshP.nDOFe^2:count_p-1) = Cpp_e;
@@ -228,7 +223,7 @@ end
 Mss = sparse(rowu, colu, Mssvec, MeshU.nDOF, MeshU.nDOF);
 Mff = sparse(rowu, colu, Mffvec, MeshU.nDOF, MeshU.nDOF);
 Msf = sparse(rowu, colu, Msfvec, MeshU.nDOF, MeshU.nDOF);
-Mfs = sparse(rowu, colu, Mfsvec, MeshU.nDOF, MeshU.nDOF);
+Mfs = Msf.';
 
 Cps = sparse(rowpu, colpu, Cpsvec, MeshP.nDOF, MeshU.nDOF);
 Cpp = sparse(rowp, colp, Cppvec, MeshP.nDOF, MeshP.nDOF);
