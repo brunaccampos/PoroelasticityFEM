@@ -19,7 +19,7 @@ elseif contains(Control.PMmodel, 'UPV')
     ufdot = Solution.ufdot;
 elseif contains(Control.PMmodel, 'UPW')
     uf = zeros(Mesh.nDOF,1);
-    ufdot = (Solution.w + Material.eta0*Solution.udot)/Material.eta0;
+    ufdot = zeros(Mesh.nDOF,1);
 end
 
 eta = zeros(nn,1); % porosity
@@ -50,6 +50,8 @@ for e = 1:ne
     
     % loop over element nodes
     for n = 1:nne
+        % element material type
+        nMat = Mesh.MatList(e);
         % node parent coordinates
         coord = getParentCoords(n, Mesh.type);
         % shape function derivatives
@@ -61,7 +63,7 @@ for e = 1:ne
         % changing to Voigt form
         B = getBVoigt(Mesh,B);
         % porosity
-        eta_e(n,:) = (Material.m'*B*use).' - (Material.m'*B*ufe).' + Material.eta0;
+        eta_e(n,:) = (Material.m'*B*use).' - (Material.m'*B*ufe).' + Material.M(nMat).eta0;
         % time varying porosity
         etadot_e(n,:) = (Material.m'*B*usdote).' - (Material.m'*B*ufdote).';
     end
