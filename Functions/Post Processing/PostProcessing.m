@@ -347,6 +347,11 @@ else
     scalardataN = [];
 end
 
+%% Material type
+scalardataU(end+1).name = 'mat_type';
+scalardataU(end).data = MeshU.MatNodes;
+scalardataU(end).type = 'int';
+
 %% Write to VTK
 % solid
 description = config_name; % config file name
