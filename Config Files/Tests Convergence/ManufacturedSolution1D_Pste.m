@@ -51,10 +51,6 @@ typeU = 'L2';
 % variable field ('u', 'p', 'n')
 fieldU = 'u';
 MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
-% type of material per element
-MeshU.MatList = zeros(MeshU.ne, 1, 'int8');
-% assign material type to elements
-MeshU.MatList(:) = 1;
 
 %%%% pressure mesh
 % element type ('Q4')
@@ -62,10 +58,6 @@ typeP = 'L2';
 % variable field ('u', 'p', 'n')
 fieldP = 'p';
 MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
-% type of material per element
-MeshP.MatList = zeros(MeshP.ne, 1, 'int8');
-% assign material type to elements
-MeshP.MatList(:) = 1;
 
 %%%% porosity mesh
 if contains(Control.PMmodel, 'UPN')
@@ -74,10 +66,6 @@ if contains(Control.PMmodel, 'UPN')
     % variable field ('u', 'p', 'n')
     fieldN = 'n';
     MeshN = BuildMesh_structured(nsd, coord0, L, ne, typeN, fieldN, progress_on);
-    % type of material per element
-    MeshN.MatList = zeros(MeshN.ne, 1, 'int8');
-    % assign material type to elements
-    MeshN.MatList(:) = 1;
 else
     MeshN = [];
 end
