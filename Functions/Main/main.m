@@ -24,7 +24,7 @@ end
 [Material, MeshU, MeshP, MeshN, BC, Control] = feval(config_name, ConfigDir, progress_on, meshfilename, nelements);
 
 %% Set defaults
-[Material, BC, Control] = setDefaults(Material, MeshU, MeshP, BC, Control);
+[Material, MeshU, MeshP, BC, Control] = setDefaults(Material, MeshU, MeshP, BC, Control);
 
 %% Quadrature points
 QuadU = GlobalQuad(MeshU, Control);
