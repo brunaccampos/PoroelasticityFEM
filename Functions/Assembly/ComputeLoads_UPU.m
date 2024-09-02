@@ -166,7 +166,7 @@ count = zeros(size(BC.fixed_p));
 % loop over elements
 for e = 1:ne
     % element material type
-    nMat = Mesh.MatList(e);
+    nMat = MeshU.MatList(e);
     % element connectivity
     connp_e = MeshP.conn(e,:);
     % global coordinates
