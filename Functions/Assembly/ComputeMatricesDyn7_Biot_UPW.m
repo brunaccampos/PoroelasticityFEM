@@ -1,4 +1,4 @@
-function [Mss, Msf, Kss, Ksp, Mfs, Mff, Kfp, Kff, Cps, Kpf] = ComputeMatricesDyn7_Biot_UPW(Material, MeshU, MeshP, QuadU, QuadP)
+function [Mss, Msf, Kss, Ksp, Mfs, Mff, Kfp, Kff, Cps, Kpf, Cpp] = ComputeMatricesDyn7_Biot_UPW(Material, MeshU, MeshP, QuadU, QuadP)
 % ------------------------------------------------------------------------
 % Compute System Matrices for dynamic simulation
 % ------------------------------------------------------------------------
@@ -27,6 +27,7 @@ Mffvec = zeros(ne*MeshU.nDOFe^2,1);
 Msfvec = zeros(ne*MeshU.nDOFe^2,1);
 
 Cspvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
+Cppvec = zeros(ne*MeshP.nDOFe^2,1);
 
 Kssvec = zeros(ne*MeshU.nDOFe^2,1);
 Kspvec = zeros(ne*MeshU.nDOFe*MeshP.nDOFe,1);
@@ -67,6 +68,7 @@ for e = 1:ne
     Msf_e = zeros(MeshU.nDOFe, MeshU.nDOFe);
     
     Csp_e = zeros(MeshU.nDOFe, MeshP.nDOFe);
+    Cpp_e = zeros(MeshP.nDOFe, MeshP.nDOFe);
     
     Kss_e = zeros(MeshU.nDOFe, MeshU.nDOFe);
     Ksp_e = zeros(MeshU.nDOFe, MeshP.nDOFe);
@@ -132,6 +134,7 @@ for e = 1:ne
         Ksp_e = Ksp_e + Material.M(nMat).alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
         Kfp_e = Kfp_e + (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadP.w(ip,1);
         Csp_e = Csp_e + Material.M(nMat).alpha * (BuVoigt.') * Material.m * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
+        Cpp_e = Cpp_e + Material.M(nMat).Minv * (NpVoigt.') * NpVoigt * Material.t * Jdet * QuadU.w(ip,1);
     end
 
     % lumped element mass matrix
@@ -159,6 +162,7 @@ for e = 1:ne
     Msf_e = reshape(Msf_e, [MeshU.nDOFe^2,1]);
     
     Csp_e = reshape(Csp_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
+    Cpp_e = reshape(Cpp_e, [MeshP.nDOFe^2,1]);
     
     Kss_e = reshape(Kss_e, [MeshU.nDOFe^2,1]);
     Ksp_e = reshape(Ksp_e, [MeshU.nDOFe*MeshP.nDOFe,1]);
@@ -182,7 +186,8 @@ for e = 1:ne
     Msfvec(count_u-MeshU.nDOFe^2:count_u-1) = Msf_e;
 
     Cspvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Csp_e;
-
+    Cppvec(count_p-MeshP.nDOFe^2:count_p-1) = Cpp_e;
+    
     Kssvec(count_u-MeshU.nDOFe^2:count_u-1) = Kss_e;
     Kspvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Ksp_e;
     Kfpvec(count_up-MeshU.nDOFe*MeshP.nDOFe:count_up-1) = Kfp_e;
@@ -207,6 +212,7 @@ Mfs = Msf.';
 
 Csp = sparse(rowup, colup, Cspvec, MeshU.nDOF, MeshP.nDOF);
 Cps = Csp.';
+Cpp = sparse(rowp, colp, Cppvec, MeshP.nDOF, MeshP.nDOF);
 
 Kss = sparse(rowu, colu, Kssvec, MeshU.nDOF, MeshU.nDOF);
 Ksp = sparse(rowup, colup, Kspvec, MeshU.nDOF, MeshP.nDOF);
