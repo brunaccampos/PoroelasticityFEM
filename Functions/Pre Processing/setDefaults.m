@@ -46,10 +46,13 @@ if ~isfield(MeshP, 'MatList')
     MeshP.MatList = ones(MeshP.ne, 1, 'int8');
 end
 
+if contains(Control.PMmodel, 'UPN') && ~isfield(MeshN, 'MatList')
+    MeshN.MatList = ones(MeshN.ne, 1, 'int8');
+end
+
 if ~isfield(MeshU, 'MatNodes')
     MeshU.MatNodes = (1:MeshU.nn)';
 end
-
 
 if length(unique(MeshU.MatList))>1 && contains(Control.PMmodel, 'UPN')
     err_count = err_count+1;
