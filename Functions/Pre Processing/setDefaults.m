@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, BC, Control] = setDefaults(Material, MeshU, MeshP, BC, Control)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = setDefaults(Material, MeshU, MeshP, MeshN, BC, Control)
 % ------------------------------------------------------------------------
 % Set defaults for Material, BC, and Control structures
 % ------------------------------------------------------------------------
