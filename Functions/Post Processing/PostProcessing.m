@@ -255,15 +255,15 @@ elseif nsd == 2
         scalardataUfdot(1).data = fixedUfdot(MeshU.DOF);
         scalardataUfdot(1).type = 'int';
         % velocity
-        vectordataUfdot(end+1).name = 'vel_uf';
-        vectordataUfdot(end).data = [Solution.ufdot(xdofs_u) Solution.ufdot(ydofs_u) zeros(length(xdofs_u),1)];
-        vectordataUfdot(end).type = 'float';
+        vectordataUfdot(1).name = 'vel_uf';
+        vectordataUfdot(1).data = [Solution.ufdot(xdofs_u) Solution.ufdot(ydofs_u) zeros(length(xdofs_u),1)];
+        vectordataUfdot(1).type = 'float';
         
         if contains(Control.PMmodel, 'Dyn')
             % acceleration
-            vectordataUf(end+1).name = 'acc_uf';
-            vectordataUf(end).data = [Solution.uf2dot(xdofs_u) Solution.uf2dot(ydofs_u) zeros(length(xdofs_u),1)];
-            vectordataUf(end).type = 'float';
+            vectordataUfdot(end+1).name = 'acc_uf';
+            vectordataUfdot(end).data = [Solution.uf2dot(xdofs_u) Solution.uf2dot(ydofs_u) zeros(length(xdofs_u),1)];
+            vectordataUfdot(end).type = 'float';
         end
         
         % velocity in x (scalar)
@@ -283,9 +283,9 @@ elseif nsd == 2
         scalardataW(1).data = fixedW(MeshU.DOF);
         scalardataW(1).type = 'int';
         % velocity
-        vectordataW(end+1).name = 'vel_uf';
-        vectordataW(end).data = [Solution.w(xdofs_u) Solution.w(ydofs_u) zeros(length(xdofs_u),1)];
-        vectordataW(end).type = 'float';
+        vectordataW(1).name = 'vel_uf';
+        vectordataW(1).data = [Solution.w(xdofs_u) Solution.w(ydofs_u) zeros(length(xdofs_u),1)];
+        vectordataW(1).type = 'float';
         
         if contains(Control.PMmodel, 'Dyn')
             % acceleration
