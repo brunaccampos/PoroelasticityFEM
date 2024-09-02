@@ -55,7 +55,7 @@ if Control.plotansol
     aux3 = Control.w_an(0);
     Plot.pan_time(1,1) = aux1(Control.plotp);
     Plot.uan_time(1,1) = aux2(Control.plotu);
-    Plot.w_time(1,1) = aux3(Control.plotu);
+    Plot.wan_time(1,1) = aux3(Control.plotu);
 end
 
 %% Plot arrays - synthetics
