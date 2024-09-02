@@ -34,8 +34,8 @@ if ~isfield(Material, 'lumpedDamping')
 end
 
 % added mass coefficient: default zero
-if ~isfield(Material, 'rho12')
-    Material.M(:).rho12 = 0;
+if ~isfield(Material.M, 'rho12')
+    [Material.M(:).rho12] = deal(0);
 end
 
 % mapping vector
