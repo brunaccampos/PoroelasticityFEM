@@ -198,7 +198,7 @@ BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
 BC.s = @(x,t) (Material.M(1).alpha*cos(x*t)-Material.M(1).alpha*x*t*sin(x*t) - ...
-    t*sin(x*t))./1000;
+    t*sin(x*t) + Material.M(1).Minv*x*(cos(x*t)^2-sin(x*t)^2))./1000;
 
 %% Quadrature order
 Control.nqU = 3;
