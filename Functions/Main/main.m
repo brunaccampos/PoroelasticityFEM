@@ -109,12 +109,9 @@ if saveMatData_on && Control.plotansol
         Solution.stressf_an = stressf_an;
     end
 
-    % error
-    if contains(Control.PMmodel, 'UPU')
-        [ErrorComp] = ComputeMeshSizeError_UPU(MeshU, MeshP, Solution, Plot, Control);
-    else
-        [ErrorComp] = ComputeMeshSizeError_UP(MeshU, MeshP, Solution, Plot, Control);
-    end
+    % error computation
+    errorcomp_function = append('ComputeMeshSizeError_', vars_type);
+    [ErrorComp] = feval(errorcomp_function,MeshU, MeshP, Solution, Plot, Control);
 
     % save results
     save('Results.mat', 'ErrorComp', 'Control', 'Plot');
