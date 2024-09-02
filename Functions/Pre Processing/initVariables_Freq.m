@@ -1,4 +1,4 @@
-function [Iteration, Plot] = initVariables(phi_u, phi_p, phi_n, MeshU, MeshP, MeshN, Material, Control, BC, M)
+function [Iteration, Plot] = initVariables_Freq(phi_u, phi_p, phi_n, MeshU, MeshP, MeshN, Material, Control, BC, M)
 % ------------------------------------------------------------------------
 % Initialize variables for iteration and plot stages; store initial
 % conditions
