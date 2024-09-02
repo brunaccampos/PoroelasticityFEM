@@ -38,6 +38,24 @@ if ~isfield(Material.M, 'rho12')
     [Material.M(:).rho12] = deal(0);
 end
 
+if ~isfield(MeshU, 'MatList')
+    MeshU.MatList = ones(MeshU.ne, 1, 'int8');
+end
+
+if ~isfield(MeshP, 'MatList')
+    MeshP.MatList = ones(MeshP.ne, 1, 'int8');
+end
+
+if ~isfield(MeshU, 'MatNodes')
+    MeshU.MatNodes = (1:MeshU.nn)';
+end
+
+
+if length(unique(MeshU.MatList))>1 && contains(Control.PMmodel, 'UPN')
+    err_count = err_count+1;
+    err_mat = sprintf('%s\t\t\tError #%d\t:\t This formulation does not support more than one material assigned on the domain. \n',err_mat,err_count);
+end
+
 % mapping vector
 if MeshU.nsd == 1
     Material.m = 1;
