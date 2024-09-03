@@ -1,4 +1,4 @@
-function [Solution] = SolverDyn_UPW(Mss, Msf, Kss, Ksp, Mfs, Mff, Kfp, Kff, Cps, Kpf, Cpp, fu, fp, ff, BC, Control, Iteration)
+function [Solution] = SolverDyn_UPW(Mss, Msf, Kss, Ksp, Mfs, Mff, Kfp, Kff, Cps, Kpf, Cpp, Cfs, fu, fp, ff, BC, Control, Iteration)
 % ------------------------------------------------------------------------
 % Solve linear system for dynamic case
 % Input parameters: coupled matrices, BC, Control, Iteration
@@ -37,7 +37,7 @@ Kssbar = Kss + Mss./(beta*dt^2);
 Ksfbar = Msf./(theta*dt);
 Kspbar = -Ksp;
 
-Kfsbar = Mfs./(beta*dt^2);
+Kfsbar = Mfs./(beta*dt^2) + Cfs*gamma/beta/dt;
 Kffbar = Mff./(theta*dt) + Kff;
 Kfpbar = -Kfp;
 
@@ -129,7 +129,8 @@ fubar = fu + Mss*(u_old/beta/dt^2 + udot_old/beta/dt + (1/2/beta-1)*u2dot_old) +
     Msf*(w_old/theta/dt - (1-1/theta)*wdot_old);
 
 ffbar = ff + Mfs*(u_old/beta/dt^2 + udot_old/beta/dt + (1/2/beta-1)*u2dot_old) +...
-    Mff*(w_old/theta/dt - (1-1/theta)*wdot_old);
+    Mff*(w_old/theta/dt - (1-1/theta)*wdot_old) + ...
+    Cfs*(u_old*gamma/beta/dt + udot_old*(gamma/beta-1) + u2dot_old*dt*(gamma/2/beta-1));
 
 fpbar = fp + Cps*(u_old*gamma/beta/dt + (gamma/beta-1)*udot_old + dt*(gamma/2/beta-1)*u2dot_old) + ...
     Cpp*(p_old/alpha/dt - (1-1/alpha)*pdot_old);
