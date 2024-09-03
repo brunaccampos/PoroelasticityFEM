@@ -1,4 +1,4 @@
-function [Mss, Msf, Kss, Ksp, Mfs, Mff, Kfp, Kff, Cps, Kpf, Cpp] = ComputeMatricesDyn7_Biot_UPW(Material, MeshU, MeshP, QuadU, QuadP)
+function [Mss, Msf, Kss, Ksp, Mfs, Mff, Kfp, Kff, Cps, Kpf, Cpp, Cfs] = ComputeMatricesDyn7_Biot_UPW(Material, MeshU, MeshP, QuadU, QuadP)
 % ------------------------------------------------------------------------
 % Compute System Matrices for dynamic simulation
 % ------------------------------------------------------------------------
@@ -213,6 +213,7 @@ Mfs = Msf.';
 Csp = sparse(rowup, colup, Cspvec, MeshU.nDOF, MeshP.nDOF);
 Cps = Csp.';
 Cpp = sparse(rowp, colp, Cppvec, MeshP.nDOF, MeshP.nDOF);
+Cfs = sparse(MeshU.nDOF, MeshU.nDOF);
 
 Kss = sparse(rowu, colu, Kssvec, MeshU.nDOF, MeshU.nDOF);
 Ksp = sparse(rowup, colup, Kspvec, MeshU.nDOF, MeshP.nDOF);
