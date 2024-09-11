@@ -16,7 +16,7 @@ eL2w = zeros(nsims,1);
 
 %% Mesh 1
 % load file
-load Results_m11ManUPUBiot.mat
+load Resultsm1_dCSupw.mat
 % mesh size
 h(1) = ErrorComp.h;
 % L2 solid displacement
@@ -27,7 +27,7 @@ eL2p(1) = ErrorComp.eL2p;
 eL2w(1) = ErrorComp.eL2w;
 
 %% Mesh 2
-load Results_m12ManUPUBiot.mat
+load Resultsm2_dCSupw.mat
 % mesh size
 h(2) = ErrorComp.h;
 % L2 solid displacement
@@ -38,7 +38,7 @@ eL2p(2) = ErrorComp.eL2p;
 eL2w(2) = ErrorComp.eL2w;
 
 %% Mesh 3
-load Results_m13ManUPUBiot.mat
+load Resultsm3_dCSupw.mat
 % mesh size
 h(3) = ErrorComp.h;
 % L2 solid displacement
@@ -49,7 +49,7 @@ eL2p(3) = ErrorComp.eL2p;
 eL2w(3) = ErrorComp.eL2w;
 
 %% Mesh 4
-load Results_m14ManUPUBiot.mat
+load Resultsm4_dCSupw.mat
 % mesh size
 h(4) = ErrorComp.h;
 % L2 solid displacement
@@ -60,7 +60,7 @@ eL2p(4) = ErrorComp.eL2p;
 eL2w(4) = ErrorComp.eL2w;
 
 %% Mesh 5
-load Results_m15ManUPUBiot.mat
+load Resultsm5_dCSupw.mat
 % mesh size
 h(5) = ErrorComp.h;
 % L2 solid displacement
@@ -83,7 +83,7 @@ m_L2w = pL2w(1);
 
 %% Plots
 figure;
-tiledlayout(1,3);
+tiledlayout(2,3);
 % L2 norm solid displacement
 nexttile;
 loglog(h,eL2us,'g*', 'LineWidth', 1.5);

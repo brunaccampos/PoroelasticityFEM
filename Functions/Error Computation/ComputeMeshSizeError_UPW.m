@@ -95,6 +95,6 @@ end
 % square root
 ErrorComp.eL2u = sqrt(eL2us_num/eL2us_den);
 ErrorComp.eL2p = sqrt(eL2p_num/eL2p_den);
-ErrorComp.eL2uf = sqrt(eL2w_num/eL2w_den);
+ErrorComp.eL2w = sqrt(eL2w_num/eL2w_den);
 
 end
