@@ -245,6 +245,7 @@ pL2uf = polyfit(log(h), log(eL2uf),1);
 m_L2uf = pL2uf(1);
 
 % plot pressure 
+figure;
 tiledlayout(1,3);
 nexttile;
 loglog(h,eL2p,'g*', 'LineWidth', 1.5);
