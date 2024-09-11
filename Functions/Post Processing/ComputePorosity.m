@@ -19,7 +19,15 @@ elseif contains(Control.PMmodel, 'UPV')
     ufdot = Solution.ufdot;
 elseif contains(Control.PMmodel, 'UPW')
     uf = zeros(Mesh.nDOF,1);
-    ufdot = zeros(Mesh.nDOF,1);
+    eta0_nodes = [Material.M(Mesh.MatNodes).eta0]';
+    if Mesh.nsd == 1
+        eta0 = eta0_nodes;
+    elseif Mesh.nsd == 2
+        eta0 = zeros(Mesh.nDOF,1);
+        eta0(1:2:end) = eta0_nodes;
+        eta0(2:2:end) = eta0_nodes;
+    end
+    ufdot = (Solution.w + eta0.*Solution.udot)./eta0;
 end
 
 eta = zeros(nn,1); % porosity
