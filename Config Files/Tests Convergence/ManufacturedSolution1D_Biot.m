@@ -138,24 +138,24 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 % point load [GN]
 L = max(MeshU.coords);
 BC.pointLoadNodes = MeshU.right_nodes;
-BC.pointLoad = @(t) [zeros(MeshU.nDOF-1,1); (2*Material.mu + Material.lambda)* t * cos(L*t) - Material.alpha * cos(L*t)];
+BC.pointLoad = @(t) [zeros(MeshU.nDOF-1,1); (2*Material.M(1).mu + Material.M(1).lambda)* t * cos(L*t) - Material.M(1).alpha * cos(L*t)];
 
 % distributed load [GN/m2]
 BC.tractionNodes = [];
 
 % body force [GN/m3]
-BC.b = @(x,t) (2*Material.mu + Material.lambda) * t^2 * sin (x*t) - Material.alpha * t * sin(x*t);
+BC.b = @(x,t) (2*Material.M(1).mu + Material.M(1).lambda) * t^2 * sin (x*t) - Material.M(1).alpha * t * sin(x*t);
 
 %% Neumann BCs - fluid
 % point flux [m/s]
 BC.pointFluxNodes = MeshP.right_nodes;
-BC.pointFlux = @(t) [zeros(MeshP.nDOF-1,1); t * Material.kf * sin(L*t)];
+BC.pointFlux = @(t) [zeros(MeshP.nDOF-1,1); t * Material.M(1).kf * sin(L*t)];
 
 % distributed flux [m3/s]
 BC.fluxNodes = [];
 
 % flux source [m3/s/m3]
-BC.s = @(x,t) Material.alpha * (cos(x*t) - t * x * sin(x*t)) - Material.Minv * x * sin(x*t) + Material.kf * t^2 * cos(x*t);
+BC.s = @(x,t) Material.M(1).alpha * (cos(x*t) - t * x * sin(x*t)) - Material.M(1).Minv * x * sin(x*t) + Material.M(1).kf * t^2 * cos(x*t);
 
 %% Porosity BCs
 if contains(Control.PMmodel, 'UPN')
@@ -181,7 +181,7 @@ Control.plotansol = 1; % 1 = true; 0 = false
 % materials
 % 'getAnSol_coupledIncomp' = coupled porous media problem, incompressible
 % materials (1/M=0)
-Control.ansol_type = 'getAnSol_uncoupled';
+Control.ansol_type = 'getAnSol_uncoupled_UP';
 
 % solution in u
 Control.uan_symb = @(x,t) sin(x*t);
