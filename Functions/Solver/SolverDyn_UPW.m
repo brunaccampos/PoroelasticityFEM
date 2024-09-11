@@ -43,7 +43,6 @@ Kfpbar = -Kfp;
 
 Kpsbar = Cps*gamma/beta/dt;
 Kpfbar = Kpf;
-% Kppbar = zeros(length(fp), length(fp));
 Kppbar = Cpp./(alpha*dt);
 
 % matrix partitioning
@@ -180,7 +179,7 @@ p(BC.free_p, 1) = pF;
 %% Velocity and acceleration
 udot = (u - u_old)*gamma/(beta*dt) - udot_old * (gamma/beta -1) - u2dot_old * dt * (gamma/(2*beta)-1);
 u2dot = (u - u_old)/(beta*dt^2) - udot_old/(beta*dt) - u2dot_old * (1/(2*beta) -1);
-pdot = (p - p_old)/(theta*dt) - (1/theta - 1) * pdot_old;
+pdot = (p - p_old)/(alpha*dt) - (1/alpha - 1) * pdot_old;
 wdot = (w - w_old)/(theta*dt) + (1-1/theta)* wdot_old;
 
 %% Store variables
