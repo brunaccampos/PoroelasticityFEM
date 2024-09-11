@@ -118,9 +118,7 @@ end
 
 %% Initial conditions
 % pressure
-BC.initP = zeros(MeshP.nDOF,1);
-% pressure p=1 at the top
-BC.initP(MeshP.left_nodes,1) = 1;
+BC.initP = ones(MeshP.nDOF,1);
 
 %% Dirichlet BCs - solid
 % displacement u=0 at the top
