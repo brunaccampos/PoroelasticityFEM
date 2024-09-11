@@ -57,7 +57,7 @@ for t = 1:length(Plot.time)
     end
 
     % system load vectors
-    [fu,fp,fn] = ComputeLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP, Material);
+    [fu,fp,fn] = ComputeLoads_UP(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP, Material);
 
     % linear solver
     [Solution] = SolverDyn_UPN(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun, fu, fp, fn, BC, Control, Iteration);

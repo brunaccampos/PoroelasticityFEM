@@ -56,7 +56,7 @@ for t = 1:length(Plot.time)
     end
 
     % system load vectors
-    [fu,fp,fn] = ComputeLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP, Material);
+    [fu,fp,fn] = ComputeLoads_UP(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP, Material);
 
     % analytical solution for 1D case
     if Control.plotansol
