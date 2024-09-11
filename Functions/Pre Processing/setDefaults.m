@@ -51,7 +51,7 @@ if contains(Control.PMmodel, 'UPN') && ~isfield(MeshN, 'MatList')
 end
 
 if ~isfield(MeshU, 'MatNodes')
-    MeshU.MatNodes = (1:MeshU.nn)';
+    MeshU.MatNodes = ones(MeshU.nn,1);
 end
 
 if length(unique(MeshU.MatList))>1 && contains(Control.PMmodel, 'UPN')
