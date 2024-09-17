@@ -64,10 +64,11 @@ DirFolder = 'Config Files';
 % File = 'ManufacturedSolution1Dup_Biot';
 % File = 'ManufacturedSolution1Dupu_Biot';
 % File = 'ManufacturedSolution1Dupu_Biot_v2';
-File = 'ManufacturedSolution1Dupu_Spanos';
+% File = 'ManufacturedSolution1Dupu_Spanos';
 % File = 'ManufacturedSolution1Dupu_Spanos_v2';
 % File = 'ManufacturedSolution1Dupv_Biot';
 % File = 'ManufacturedSolution1Dupw_Biot';
+% File = 'ManufacturedSolution1Dupw_Spanos';
 
 % -------------------- Tests Elasticity
 % File = 'Beam_Dynamic';
@@ -97,6 +98,11 @@ File = 'ManufacturedSolution1Dupu_Spanos';
 % File = 'WaveProp_Dynamic_Tian';
 % File = 'WaveProp_Dynamic_InjectionPress10m';
 % File = 'WaveProp_Dynamic_InjectionPress10m_InSitu';
+% File = 'WaveProp_MatLayer30x30';
+% File = 'WaveProp_MatSame30x30';
+File = 'WaveProp_MatLayer2000x4000';
+% File = 'WaveProp_MatSame2000x4000';
+% File = 'WavePropP_MatLayer2000x2500';
 
 % ------------------------------------------------------------------------
 
