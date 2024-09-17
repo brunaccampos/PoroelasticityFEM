@@ -107,20 +107,18 @@ KFF = [Kss_FF, Ksf_FF, Ksp_FF;
 
 % at first step: compute solid acceleration and pressure gradient
 if Control.step == 1
-    % [Kss 0; 0 Kff]*[u_old w_old]
-    aux1 = [Kss, sparse(length(Kss), length(Kss));
-        sparse(length(Kss), length(Kss)), Kff] * [u_old; w_old];
-    % zeros for p 
-    aux2 = [aux1; zeros(length(fp),1)];
-    % find u2dot_old, wdot_old, p_old
-    aux3 = [Mss, Msf, -Ksp;
-        Mfs, Mff, -Kfp;
-        Cps, Kpf, sparse(length(fp), length(fp))];
-    aux4 = aux3 \ ([fu; ff; fp] - aux2);
-    % split u2dot_old, wdot_old, p_old
-    u2dot_old = aux4(1:length(u2dot_old));
-    wdot_old = aux4(length(u2dot_old)+1:length(u2dot_old)+length(wdot_old));
-    p_old = aux4(length(u2dot_old)+length(wdot_old)+1:end);
+    % [Kss -Ksp; 0 -Kfp]*[u_old p_old]
+    aux1 = [Kss, -Ksp;
+        sparse(length(Kss), length(Kss)), -Kfp] * [u_old; p_old];
+    % [0, 0; Cfs, Kff]*[udot_old w_old]
+    aux2 = [sparse(length(Kss), length(Kss)), sparse(length(Kss), length(Kss));
+        Cfs, Kff] * [udot_old; w_old];
+    % find u2dot_old, wdot_old
+    aux3 = [Mss, Msf; Mfs, Mff] \ ([fu; ff] - aux1 - aux2);
+    u2dot_old = aux3(1:length(u2dot_old));
+    wdot_old = aux3(length(u2dot_old)+1:length(u2dot_old)+length(wdot_old));
+    % find pdot_old
+    pdot_old = Cpp\(fp - Cps*udot_old - Kpf*w_old);
 end
 
 % auxiliar terms for external forces vector
