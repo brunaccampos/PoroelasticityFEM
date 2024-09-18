@@ -1,4 +1,4 @@
-function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_MatSame2000x2500(config_dir, progress_on,~,~)
+function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_MatSame2000x4000(config_dir, progress_on,~,~)
 % Wave propagation in 2D
 % Configuration File
 % ------------------------------------------------------------------------
@@ -106,18 +106,16 @@ MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
 MeshN = [];
         
 %% Dirichlet BCs - solid
-% boundary node
-% node = find(MeshP.coords(:,1) == 0 & MeshP.coords(:,2) == 1000);
 % central node
-node = find(MeshP.coords(:,1) == 2000 & MeshP.coords(:,2) == 1000);
+node = find(MeshU.coords(:,1) == 2000 & MeshU.coords(:,2) == 1000);
 % node y DOF
-BC.fixed_u = node*2;
+BC.fixed_u = [node*2; MeshU.bottom_dofy; MeshU.top_dofy; MeshU.left_dofx; MeshU.right_dofx];
 % peak frequency [Hz]
 f = 10;
 % peak location [s]
 t0 = 1/f;
 % fixed DOF values
-BC.fixed_u_value = @(t) (1-2*(pi*f*(t-t0)).^2) .* exp(-(pi*f*(t-t0)).^2);
+BC.fixed_u_value = @(t) [(1-2*(pi*f*(t-t0)).^2) .* exp(-(pi*f*(t-t0)).^2); zeros(length(BC.fixed_u)-1,1)];
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 

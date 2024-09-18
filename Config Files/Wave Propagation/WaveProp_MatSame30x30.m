@@ -30,7 +30,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_MatSame30x30(co
 %                      p = fluid pressure, v = fluid velocity
 % Dyn7_Biot_UPW ------ Biot model (u-p-w), dynamic, u = solid displacement,
 %                      p = fluid pressure, w = relative fluid velocity
-Control.PMmodel = 'Dyn6_Biot_UPV';
+Control.PMmodel = 'Dyn7_Biot_UPW';
 
 %% Material properties - berea sandstone (Detournay, 1993)
 % elasticity modulus [GPa]
@@ -89,42 +89,52 @@ if progress_on
     disp([num2str(toc),': Building Mesh...']);
 end
 
-% Version 2 ASCII
+% location of initial node [m] [x0;y0;z0]
+coord0 = [0;0;0];
 % number of space dimensions
 nsd = 2;
+% size of domain [m] [Lx;Ly;Lz]
+L = [30; 30];
+% number of elements in each direction [nex; ney; nez]
+ne = [400; 400];
+
 %%%% displacement field
+% element type ('Q4')
+typeU = 'Q4';
+% variable field ('u', 'p', 'n')
 fieldU = 'u';
-meshFileNameU = 'Mesh Files\LayeredDomain_30x30.msh';
-MeshU = BuildMesh_GMSH(meshFileNameU, fieldU, nsd, config_dir, progress_on);
+MeshU = BuildMesh_structured(nsd, coord0, L, ne, typeU, fieldU, progress_on);
 
 %%%% pressure field
+% element type ('Q4')
+typeP = 'Q4';
+% variable field ('u', 'p', 'n')
 fieldP = 'p';
-meshFileNameP = 'Mesh Files\LayeredDomain_30x30.msh';
-MeshP = BuildMesh_GMSH(meshFileNameP, fieldP, nsd, config_dir, progress_on);
+MeshP = BuildMesh_structured(nsd, coord0, L, ne, typeP, fieldP, progress_on);
 
 %%%% porosity mesh
 MeshN = [];
         
 %% Dirichlet BCs - solid
-% boundary node
-% node = find(MeshP.coords(:,1) == 0 & MeshP.coords(:,2) == 15);
 % central node
-node = find(MeshP.coords(:,1) == 15 & MeshP.coords(:,2) == 15);
+node = find(MeshU.coords(:,1) == 15 & MeshU.coords(:,2) == 15);
 % node y DOF
-BC.fixed_u = node*2;
+BC.fixed_u = [node*2; MeshU.bottom_dofy; MeshU.top_dofy; MeshU.left_dofx; MeshU.right_dofx];
+% frequency [Hz]
+f = 20e3;
 % period [s]
-t0 = 1e-3;
+t0 = 1/f;
 % fixed DOF values
-BC.fixed_u_value = @(t) (-t0/(2*pi)*cos(2*pi*(t)/t0) + t0/(8*pi)*cos(4*pi*(t)/t0) + 3*t0/8/pi).*(t<t0);
+BC.fixed_u_value = @(t) [(-t0/(2*pi)*cos(2*pi*(t)/t0) + t0/(8*pi)*cos(4*pi*(t)/t0) + 3*t0/8/pi).*(t<t0); zeros(length(BC.fixed_u)-1,1)];
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid displacement
 % displacement prescribed on the left and right
-BC.fixed_ufdot = [];
-BC.fixed_ufdot_value = @(t) zeros(length(BC.fixed_ufdot),1);
+BC.fixed_w = [];
+BC.fixed_w_value = @(t) zeros(length(BC.fixed_w),1);
 % free displacement nodes
-BC.free_ufdot = setdiff(MeshU.DOF, BC.fixed_ufdot);
+BC.free_w = setdiff(MeshU.DOF, BC.fixed_w);
 
 %% Dirichlet BCs - fluid
 BC.fixed_p = [];
@@ -184,7 +194,8 @@ Control.lambda = 0.7;
 %% Plot data
 % DOF to plot graphs
 Control.plotu = node*2; % dof y of node where source is applied
-Control.plotp = node; % dof of node where source is applied
+nodeP = find(MeshP.coords(:,1) == 15 & MeshP.coords(:,2) == 15);
+Control.plotp = nodeP; % dof of node where source is applied
 
 % Plot synthetics
 Control.plotSyntheticsON = 1; % 0: false, 1: true
@@ -192,7 +203,7 @@ Control.plotSyntheticsON = 1; % 0: false, 1: true
 % Plot in a row
 Control.fixedDepthPlotON = 1; % 0: false, 1: true
 
-Control.depthplot = 20; % fixed coordinate
+Control.depthplot = 21; % fixed coordinate
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 
 % node numbering
