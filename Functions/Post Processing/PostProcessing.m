@@ -375,7 +375,7 @@ elseif contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') || c
     description = config_name; % config file name
     nameN = 'Solution_n.vtk.';
     filenameN = fullfile(vtk_dir, [nameN, num2str(step)]);
-    WriteMesh2VTK(filenameN, description, MeshP, scalardataN, []);
+    WriteMesh2VTK(filenameN, description, MeshU, scalardataN, []);
 end
 
 % fluid (u-p-u)
