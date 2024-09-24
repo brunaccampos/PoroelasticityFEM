@@ -127,6 +127,9 @@ switch Mesh.nsd
                 % DOFs in the x- and y- directions
                 Mesh.xdofs = 1:Mesh.nDOF;
         end
+        
+        % corner nodes
+        Mesh.corner_nodes = unique(Mesh.conn(:,1:4));
 
     case 3
 
