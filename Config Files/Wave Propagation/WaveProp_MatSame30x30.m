@@ -124,6 +124,10 @@ BC.fixed_u = [node*2; MeshU.bottom_dofy; MeshU.top_dofy; MeshU.left_dofx; MeshU.
 f = 20e3;
 % period [s]
 t0 = 1/f;
+% critical frequency
+fc = Material.M(1).muf * Material.M(1).eta0 / Material.M(1).k / Material.M(1).rhof;
+% high-frequency correction factor (Biot model)
+Material.M(1).F_BT = sqrt(1 + 0.5*1i*f/fc);
 % fixed DOF values
 BC.fixed_u_value = @(t) [(-t0/(2*pi)*cos(2*pi*(t)/t0) + t0/(8*pi)*cos(4*pi*(t)/t0) + 3*t0/8/pi).*(t<t0); zeros(length(BC.fixed_u)-1,1)];
 % free displacement nodes

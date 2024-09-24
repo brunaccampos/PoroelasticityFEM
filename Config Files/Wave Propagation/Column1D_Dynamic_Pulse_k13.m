@@ -152,8 +152,12 @@ BC.fixed_u = [BC.fixed_u1; BC.fixed_u2];
 P0 = 1;
 % frequency [Hz]
 f = 1e3;
+% critical frequency
+fc = Material.M(1).muf * Material.M(1).eta0 / Material.M(1).k / Material.M(1).rhof;
+% high-frequency correction factor (Biot model)
+Material.M(1).F_BT = sqrt(1 + 0.5*1i*f/fc);
+% fixed DOF value
 BC.fixed_u_value = @(t) [0; 0; P0*(sin(pi*(t)*f) - 0.5*sin(2*pi*(t)*f))].*(t<1/f);
-% BC.fixed_u_value = @(t) [0; 0; P0*(sin(2*pi*(t)*f) - 0.5*sin(4*pi*(t)*f))].*(t<1/f);
 % free displacement nodes
 BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
