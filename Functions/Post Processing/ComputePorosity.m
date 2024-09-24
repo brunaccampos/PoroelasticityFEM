@@ -27,7 +27,7 @@ elseif contains(Control.PMmodel, 'UPW')
         eta0(1:2:end) = eta0_nodes;
         eta0(2:2:end) = eta0_nodes;
     end
-    ufdot = (Solution.w + eta0.*Solution.udot)./eta0;
+    ufdot = Solution.w./eta0 + Solution.udot;
 end
 
 eta = zeros(nn,1); % porosity
@@ -71,9 +71,9 @@ for e = 1:ne
         % changing to Voigt form
         B = getBVoigt(Mesh,B);
         % porosity
-        eta_e(n,:) = (Material.m'*B*use).' - (Material.m'*B*ufe).' + Material.M(nMat).eta0;
+        eta_e(n,:) = Material.M(nMat).deltas*(Material.m'*B*use).' - Material.M(nMat).deltaf*(Material.m'*B*ufe).' + Material.M(nMat).eta0;
         % time varying porosity
-        etadot_e(n,:) = (Material.m'*B*usdote).' - (Material.m'*B*ufdote).';
+        etadot_e(n,:) = Material.M(nMat).deltas*(Material.m'*B*usdote).' - Material.M(nMat).deltaf*(Material.m'*B*ufdote).';
     end
     
     % add to global matrices
