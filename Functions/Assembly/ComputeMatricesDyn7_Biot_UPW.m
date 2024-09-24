@@ -100,7 +100,7 @@ for e = 1:ne
 
         % assemble local matrices
         Kss_e = Kss_e + (BuVoigt.') * C * BuVoigt * Material.t * Jdet * QuadU.w(ip,1);
-        Kff_e = Kff_e + Material.M(nMat).muf/Material.M(nMat).k * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadP.w(ip,1);
+        Kff_e = Kff_e + real(Material.M(nMat).F_BT) * Material.M(nMat).muf/Material.M(nMat).k * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadP.w(ip,1);
      
         Mss_e = Mss_e + Material.M(nMat).rho * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
         Mff_e = Mff_e + Material.M(nMat).rhof/Material.M(nMat).eta0 * (NuVoigt.') * NuVoigt * Material.t * Jdet * QuadU.w(ip,1);
