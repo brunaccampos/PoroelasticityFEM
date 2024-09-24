@@ -38,6 +38,11 @@ if ~isfield(Material.M, 'rho12')
     [Material.M(:).rho12] = deal(0);
 end
 
+% BT high-frequency correction factor: default F_BT = 1
+if ~isfield(Material.M, 'F_BT')
+    [Material.M(:).F_BT] = deal(1);
+end
+
 if ~isfield(MeshU, 'MatList')
     MeshU.MatList = ones(MeshU.ne, 1, 'int8');
 end
