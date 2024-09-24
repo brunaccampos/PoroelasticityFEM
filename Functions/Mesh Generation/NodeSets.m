@@ -66,6 +66,10 @@ switch Mesh.nsd
         Mesh.xdofs = 1:Mesh.nDOF;
         Mesh.ydofs = zeros(length(Mesh.xdofs),1);
         Mesh.zdofs = [];
+        
+        % corner nodes (structured: nodes numbered sequentially)
+        Mesh.conn_corner_nodes = Mesh.conn(:,[1,end]);
+        Mesh.corner_nodes = unique(Mesh.conn_corner_nodes);
 
     case 2
         switch Mesh.field
@@ -128,8 +132,9 @@ switch Mesh.nsd
                 Mesh.xdofs = 1:Mesh.nDOF;
         end
         
-        % corner nodes
-        Mesh.corner_nodes = unique(Mesh.conn(:,1:4));
+        % corner nodes (GMSH/structured: first 4 columns contains corner nodes)
+        Mesh.conn_corner_nodes = Mesh.conn(:,1:4);
+        Mesh.corner_nodes = unique(Mesh.conn_corner_nodes);
 
     case 3
 
