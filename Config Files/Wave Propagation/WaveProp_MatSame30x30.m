@@ -38,7 +38,7 @@ Material.M(1).E = 14.4;
 % Poisson's ratio
 Material.M(1).nu = 0.2;
 % intrinsic permeability [m2]
-Material.M(1).k = 1.88e-13;
+Material.M(1).k = 1e-11;
 % dynamic viscosity [GPa s]
 Material.M(1).muf = 1e-12;
 % porous media permeability [m2/GPa s]
