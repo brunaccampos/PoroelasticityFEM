@@ -108,7 +108,7 @@ File = 'WaveProp_MatLayer2000x4000';
 
 % Directory for VTK file
 % VTKFolder ='C:\Users\bu_ca\Downloads\PoroelasticityFEM\Results';
-VTKFolder ='C:\Users\bccampos\Downloads\PoroelasticityFEM\Results';
+VTKFolder ='E:\PoroelasticityFEM\Results';
 
 % output VTK file
 plot2vtk = 1;
