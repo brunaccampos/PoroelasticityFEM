@@ -5,7 +5,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_KirschTest(confi
 
 %% Material properties - Berea Sandstone (Detournay, 1993, p.26)
 % poroelasticity model
-Control.PMmodel = 'Tr1_Biot_UP';
+Control.PMmodel = 'Tr_BT_UP';
 % elasticity modulus [GPa]
 Material.M(1).E = 14.4;
 % Poisson's ratio

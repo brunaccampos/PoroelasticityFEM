@@ -5,7 +5,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Beam_Dynamic(~, progress
 
 %% Material properties
 % poroelasticity model
-Control.PMmodel = 'Dyn1_Biot_UP';
+Control.PMmodel = 'Dyn_BT_UP';
 % shear modulus [Pa]
 Material.M(1).mu = 10;
 % Poisson's ratio

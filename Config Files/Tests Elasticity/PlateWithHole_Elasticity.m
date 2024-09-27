@@ -7,7 +7,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateWithHole_Elasticity
 
 %% Material properties
 % poroelasticity model
-Control.PMmodel = 'Tr1_Biot_UP';
+Control.PMmodel = 'Tr_BT_UP';
 % elasticity modulus [Pa]
 Material.M(1).E = 2e11;
 % Poisson's ratio

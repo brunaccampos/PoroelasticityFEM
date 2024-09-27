@@ -5,7 +5,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = VelocityImpact1D_Idesman
 
 %% Material properties - Idesman (2011)
 % poroelasticity model
-Control.PMmodel = 'Dyn1_Biot_UP';
+Control.PMmodel = 'Dyn_BT_UP';
 % elasticity modulus [Pa]
 Material.M(1).E = 1;
 % average density of the medium
