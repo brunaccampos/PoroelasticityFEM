@@ -35,7 +35,7 @@ Control.t = 0;  % initial simulation time
 Control.step = 0; % step counter
 
 %% Initialize variables
-vars_type = [extractAfter(Control.PMmodel, 'Spanos_'), extractAfter(Control.PMmodel, 'Biot_')]; 
+vars_type = [extractAfter(Control.PMmodel, 'dCS_'), extractAfter(Control.PMmodel, 'BT_')]; 
 initVars_function = append('initVariables', vars_type);
 [Iteration, Plot] = feval(initVars_function, MeshU, MeshP, MeshN, Material, Control, BC);
 
