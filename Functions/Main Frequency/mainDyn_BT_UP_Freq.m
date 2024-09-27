@@ -4,11 +4,11 @@
 % ------------------------------------------------------------------------
 
 %% Model name and type
-disp([num2str(toc),': Model: Biot u-p dynamic case, mode superposition']);
+disp([num2str(toc),': Model: BT u-p dynamic, mode superposition']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
-[Kuu, Kup, Kpp, Muu, Mpu, S] = ComputeMatricesDyn1_Biot_UP(Material, MeshU, MeshP, QuadU, QuadP);
+[Kuu, Kup, Kpp, Muu, Mpu, S] = ComputeMatricesDyn_BT_UP(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Solve eigenproblem
 disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);

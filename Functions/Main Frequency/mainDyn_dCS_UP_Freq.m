@@ -6,11 +6,11 @@
 % ------------------------------------------------------------------------
 
 %% Model name and type
-disp([num2str(toc),': Model: Spanos u-p dynamic case, mode superposition']);
+disp([num2str(toc),': Model: dCS u-p dynamic, mode superposition']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
-[Muu, Mpu, Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesDyn3_Spanos_UP(Material, MeshU, MeshP, QuadU);
+[Muu, Mpu, Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesDyn_dCS_UP(Material, MeshU, MeshP, QuadU);
 
 %% Solve eigenproblem
 disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);

@@ -4,11 +4,11 @@
 % ------------------------------------------------------------------------
 
 %% Model name and type
-disp([num2str(toc),': Model: Spanos u-p-U dynamic case']);
+disp([num2str(toc),': Model: dCS u-p-U dynamic']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
-[Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs] = ComputeMatricesDyn5_Spanos_UPU(Material, MeshU, MeshP, QuadU, QuadP);
+[Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs] = ComputeMatricesDyn_dCS_UPU(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Initial condition file
 if plot2vtk

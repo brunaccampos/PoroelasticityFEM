@@ -4,11 +4,11 @@
 % ------------------------------------------------------------------------
 
 %% Model name and type
-disp([num2str(toc),': Model: Biot u-p-w dynamic case']);
+disp([num2str(toc),': Model: BT u-p-w dynamic']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
-[Mss, Msf, Kss, Ksp, Mfs, Mff, Kfp, Kff, Cps, Kpf, Cpp, Cfs] = ComputeMatricesDyn7_Biot_UPW(Material, MeshU, MeshP, QuadU, QuadP);
+[Mss, Msf, Kss, Ksp, Mfs, Mff, Kfp, Kff, Cps, Kpf, Cpp, Cfs] = ComputeMatricesDyn_BT_UPW(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Initial condition file
 if plot2vtk

@@ -6,11 +6,11 @@
 % ------------------------------------------------------------------------
 
 %% Model name and type
-disp([num2str(toc),': Model: Spanos u-p transient case']);
+disp([num2str(toc),': Model: dCS u-p transient']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
-[Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesTr3_Spanos_UP(Material, MeshU, MeshP, QuadU, QuadP);
+[Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesTr_dCS_UP(Material, MeshU, MeshP, QuadU, QuadP);
 
 %% Initial condition file
 if plot2vtk

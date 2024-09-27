@@ -4,11 +4,11 @@
 % ------------------------------------------------------------------------
 
 %% Model name and type
-disp([num2str(toc),': Model: Spanos u-p-n transient case, mode superposition']);
+disp([num2str(toc),': Model: dCS u-p-n transient, mode superposition']);
 
 %% Assemble system matrices
 disp([num2str(toc),': Assembling System Matrices...']);
-[Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesTr2_Spanos_UPN(Material, MeshU, MeshP, MeshN, QuadU, QuadP);
+[Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesTr_dCS_UPN(Material, MeshU, MeshP, MeshN, QuadU, QuadP);
 
 %% Solve eigenproblem
 disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
