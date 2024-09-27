@@ -7,7 +7,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = HeatConduction2D(~, prog
 % thermal conductance coefficient
 Material.M(1).kf = 5;
 % Poroelasticity model
-Control.PMmodel = 'Tr1_Biot_UP';
+Control.PMmodel = 'Tr_BT_UP';
 
 % elasticity modulus [Pa]
 Material.M(1).E = 0;

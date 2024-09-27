@@ -9,7 +9,7 @@ Material.M(1).kf = 1;
 % 1/Q (related to storage coefficient)
 Material.M(1).Minv = 1;
 % Poroelasticity model
-Control.PMmodel = 'Dyn1_Biot_UP';
+Control.PMmodel = 'Dyn_BT_UP';
 
 % material density [kg/m3]
 Material.M(1).rho = 0;

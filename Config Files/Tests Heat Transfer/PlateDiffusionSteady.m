@@ -10,6 +10,8 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateDiffusionSteady(con
 Material.M(1).kf = 4e-6;
 % 1/Q (related to storage coefficient)
 Material.M(1).Minv = 0;
+% poroelasticity model
+Control.PMmodel = 'Tr_BT_UP';
 
 % material density [kg/m3]
 Material.M(1).rho = 0;
@@ -21,8 +23,6 @@ Material.M(1).E = 0;
 Material.M(1).nu = 0;
 % Biot's coefficient
 Material.M(1).alpha = 0;
-% poroelasticity model
-Control.PMmodel = 'Tr1_Biot_UP';
 
 % thickness 
 % 1D: cross sectional area [m2]
