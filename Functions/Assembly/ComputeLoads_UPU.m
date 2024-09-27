@@ -169,17 +169,18 @@ for e = 1:ne
     nMat = MeshU.MatList(e);
     % element connectivity
     connp_e = MeshP.conn(e,:);
+    connu_e = MeshU.conn_corner_nodes(e,:);
     % global coordinates
     gcoords = MeshP.coords(connp_e,:);
     % element DOFs
     dofe = MeshP.DOF(connp_e,:);
     dofe = reshape(dofe', MeshP.nDOFe,[]);
-    % element flux matrix
-    fp_e = zeros(MeshP.nDOFe,1);
+    dofe_ucorner = MeshU.DOF(connu_e,:);
+    dofe_ucorner = reshape(dofe_ucorner', MeshP.nDOFe*MeshU.nsd,[]);
     % element flux source matrix
     fg_e = zeros(MeshP.nDOFe,1);
     % auxiliar matrix for p vector
-    faux_e = zeros(MeshP.nDOFe,1);
+    fp_e = zeros(MeshP.nDOFe,1);
     
     % loop over IPs if there are flux sources
     if ~strcmp(func2str(BC.s),'@(x,t)[]')
@@ -215,7 +216,7 @@ for e = 1:ne
             Nvoigt = getNVoigt(MeshP, N');
             % element load vector
             vec = BC.fixed_p_value(Control.t);
-            faux_e = faux_e + Nvoigt.' * vec(j,:)';
+            fp_e = fp_e + Nvoigt.' * vec(j,:)';
             % update counting
             count(j) = 1;
         end
@@ -224,8 +225,8 @@ for e = 1:ne
     % assemble global flux vector
     fp(dofe) = fp(dofe) + fg_e;
     % add pressure vector contributions (valid for P2/P1 meshes)
-    fs(dofe*2-1) = fs(dofe*2-1) - (Material.M(nMat).alpha-Material.M(nMat).eta0) * faux_e;
-    ff(dofe*2-1) = ff(dofe*2-1) - Material.M(nMat).eta0 * faux_e;
+    fs(dofe_ucorner) = fs(dofe_ucorner) - (Material.M(nMat).alpha-Material.M(nMat).eta0) * fp_e;
+    ff(dofe_ucorner) = ff(dofe_ucorner) - Material.M(nMat).eta0 * fp_e;
     
 end
    
