@@ -1,4 +1,4 @@
-function [Mss, Msf, Kss, Ksp, Kps, Kpf, Mff, Kff, Cfs, Kfp, Kpp] = ComputeMatricesDyn6_Biot_UPV(Material, MeshU, MeshP, QuadU, QuadP)
+function [Mss, Msf, Kss, Ksp, Kps, Kpf, Mff, Kff, Cfs, Kfp, Kpp] = ComputeMatricesDyn_BT_UPV(Material, MeshU, MeshP, QuadU, QuadP)
 % ------------------------------------------------------------------------
 % Compute System Matrices for dynamic simulation
 % ------------------------------------------------------------------------

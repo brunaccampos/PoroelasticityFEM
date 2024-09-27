@@ -1,4 +1,4 @@
-function [Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesTr3_Spanos_UP(Material, MeshU, MeshP, QuadU, QuadP)
+function [Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesTr_dCS_UP(Material, MeshU, MeshP, QuadU, QuadP)
 % Compute System Matrices for 1D quasi-steady simulation
 % Input parameters: Material, Mesh, Control, Quad
 % Output matrices: Kuu, Kup, Kpp, S

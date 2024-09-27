@@ -1,4 +1,4 @@
-function [Kss, Ksp, Csf, Css, Kpf, Kps, Kpp, Kfp, Cff, Cfs] = ComputeMatricesTr4_Biot_UPU(Material, MeshU, MeshP, QuadU, QuadP)
+function [Kss, Ksp, Csf, Css, Kpf, Kps, Kpp, Kfp, Cff, Cfs] = ComputeMatricesTr_BT_UPU(Material, MeshU, MeshP, QuadU, QuadP)
 % ------------------------------------------------------------------------
 % Compute System Matrices for transient simulation
 % ------------------------------------------------------------------------

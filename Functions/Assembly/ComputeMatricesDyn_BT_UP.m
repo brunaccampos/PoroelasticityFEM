@@ -1,4 +1,4 @@
-function [Kuu, Kup, Kpp, Muu, Mpu, S] = ComputeMatricesDyn1_Biot_UP(Material, MeshU, MeshP, QuadU, QuadP)
+function [Kuu, Kup, Kpp, Muu, Mpu, S] = ComputeMatricesDyn_BT_UP(Material, MeshU, MeshP, QuadU, QuadP)
 % ------------------------------------------------------------------------
 % Compute System Matrices for 1D dynamic simulation
 % ------------------------------------------------------------------------

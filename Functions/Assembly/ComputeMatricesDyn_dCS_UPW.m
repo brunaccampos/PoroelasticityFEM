@@ -1,4 +1,4 @@
-function [Mss, Msf, Kss, Ksp, Mfs, Mff, Kfp, Kff, Cps, Kpf, Cpp, Cfs] = ComputeMatricesDyn8_Spanos_UPW(Material, MeshU, MeshP, QuadU, QuadP)
+function [Mss, Msf, Kss, Ksp, Mfs, Mff, Kfp, Kff, Cps, Kpf, Cpp, Cfs] = ComputeMatricesDyn_dCS_UPW(Material, MeshU, MeshP, QuadU, QuadP)
 % ------------------------------------------------------------------------
 % Compute System Matrices for dynamic simulation
 % ------------------------------------------------------------------------

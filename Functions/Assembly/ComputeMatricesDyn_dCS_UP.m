@@ -1,4 +1,4 @@
-function [Muu, Mpu, Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesDyn3_Spanos_UP(Material, MeshU, MeshP, Quad)
+function [Muu, Mpu, Kuu, Kup, Kpp, Kpu, S] = ComputeMatricesDyn_dCS_UP(Material, MeshU, MeshP, Quad)
 % ------------------------------------------------------------------------
 % Compute System Matrices for dynamic simulation
 % ------------------------------------------------------------------------
