@@ -8,29 +8,33 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Zienck(
 % - stress is positive for tension
 % - boundary condition for force is based on total stress
 % ------------------------------------------------------------------------
+% Porous media theories
+% - BT: Biot
+% - dCS: de la Cruz and Spanos
+% ------------------------------------------------------------------------
+% Loading options
+% - Tr: transient/quasi-steady
+% - Dyn: dynamic (acceleration included)
+% ------------------------------------------------------------------------
+% Main variables
+% u = solid displacement
+% p = fluid pressure
+% n = porosity
+% U = fluid displacement
+% v = fluid velocity
+% w = relative fluid velocity
+% ------------------------------------------------------------------------
+% Model options
+%
+% Tr_BT_UP          Tr_dCS_UP           Tr_dCS_UPN 
+%
+% Dyn_BT_UP         Dyn_BT_UPU          Dyn_BT_UPV          Dyn_BT_UPW
+%
+% Dyn_dCS_UP        Dyn_dCS_UPU         Dyn_dCS_UPN         Dyn_dCS_UPW
+% ------------------------------------------------------------------------
 
 %% Poroelasticity model
-% Tr1_Biot_UP -------- Biot model (u-p), transient, u = solid
-%                      displacement, p = fluid pressure
-% Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient, u = solid
-%                      displacement, p = fluid pressure, n = porosity
-% Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, u = solid displacement,
-%                      p = fluid pressure
-% Dyn1_Biot_UP ------- Biot model (u-p), dynamic, u = solid displacement, 
-%                      p = fluid pressure
-% Dyn2_Spanos_UPN ---- Spanos model (u-p-n), dynamic, u = solid displacement,
-%                      p = fluid pressure, n = porosity
-% Dyn3_Spanos_UP ----- Spanos model (u-p), dynamic, u = solid displacement, 
-%                      p = fluid pressure
-% Dyn4_Biot_UPU ------ Biot model (u-p-U), dynamic, u = solid displacement,
-%                      p = fluid pressure, U = fluid displacement
-% Dyn5_Spanos_UPU ---- Spanos model (u-p-U), dynamic, u = solid displacement,
-%                      p = fluid pressure, U = fluid displacement
-% Dyn6_Biot_UPV ------ Biot model (u-p-v), dynamic, u = solid displacement,
-%                      p = fluid pressure, v = fluid velocity
-% Dyn7_Biot_UPW ------ Biot model (u-p-w), dynamic, u = solid displacement,
-%                      p = fluid pressure, w = relative fluid velocity
-Control.PMmodel = 'Dyn3_Spanos_UP';
+Control.PMmodel = 'Dyn_dCS_UP';
 
 %% Material properties - Simon & Zienckiewicz (1986)
 % elasticity modulus [GPa]
