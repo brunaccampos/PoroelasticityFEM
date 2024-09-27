@@ -13,7 +13,7 @@ Material.M(1).Minv = 0;
 % Biot's coefficient
 Material.M(1).alpha = 0;
 % poroelasticity model
-Control.PMmodel = 'Tr1_Biot_UP';
+Control.PMmodel = 'Tr_BT_UP';
 
 % thickness 
 % 1D: cross sectional area [m2]
