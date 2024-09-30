@@ -108,22 +108,27 @@ Material.constLaw = 'PlaneStrain';
 
 %% Spanos material parameters
 % porosity effective pressure coefficient (Spanos, 1989)
-% n = 0; % lower limit
-n = 1; % return to Biot
-% n = Material.M(1).Ks/Material.M(1).Kf; % upper limit
+% n1 = 0; % lower limit
+n1 = 1; % return to Biot
+% n1 = Material.M(1).Ks/Material.M(1).Kf; % upper limit
 
 % modified storage coefficient (Muller, 2019) - material 1
-Mstarinv = Material.M(1).Minv - (1-n)*(Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks; 
+Mstarinv = Material.M(1).Minv - (1-n1)*(Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks; 
 Mstar = 1/Mstarinv;
 
-Material.M(1).deltaf = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar * n / Material.M(1).Ks;
+Material.M(1).deltaf = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar * n1 / Material.M(1).Ks;
 Material.M(1).deltas = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar /Material.M(1).Kf;
 
+% porosity effective pressure coefficient (Spanos, 1989)
+% n2 = 0; % lower limit
+n2 = 1; % return to Biot
+% n2 = Material.M(2).Ks/Material.M(2).Kf; % upper limit
+
 % modified storage coefficient (Muller, 2019) - material 2
-Mstarinv = Material.M(2).Minv - (1-n)*(Material.M(2).alpha - Material.M(2).eta0)/Material.M(2).Ks; 
+Mstarinv = Material.M(2).Minv - (1-n2)*(Material.M(2).alpha - Material.M(2).eta0)/Material.M(2).Ks; 
 Mstar = 1/Mstarinv;
 
-Material.M(2).deltaf = (Material.M(2).alpha - Material.M(2).eta0) * Material.M(2).eta0 * Mstar * n / Material.M(2).Ks;
+Material.M(2).deltaf = (Material.M(2).alpha - Material.M(2).eta0) * Material.M(2).eta0 * Mstar * n2 / Material.M(2).Ks;
 Material.M(2).deltas = (Material.M(2).alpha - Material.M(2).eta0) * Material.M(2).eta0 * Mstar /Material.M(2).Kf;
 
 %% Mesh parameters
