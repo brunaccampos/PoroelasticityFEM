@@ -47,7 +47,7 @@ end
 xlim tight
 ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
 xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
-title(sprintf('$\dot{u}_s in $x$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
+title(sprintf('$\dot{u}_s$ in $x$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
 hold off
 
 %% solid velocity in y
@@ -61,7 +61,7 @@ end
 xlim tight
 ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
 xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
-title(sprintf('$\dot{u}_s in $y$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
+title(sprintf('$\dot{u}_s$ in $y$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
 hold off
 
 %% fluid pressure
