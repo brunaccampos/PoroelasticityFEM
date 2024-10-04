@@ -28,7 +28,7 @@ if Control.freqDomain && Control.plotansol
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'Press_time.png','Resolution',300)
+    exportgraphics(gcf,'Press_time.png','Resolution',600);
 end
 
 %% solid displacement vs time
@@ -55,7 +55,7 @@ if Control.freqDomain && Control.plotansol
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'Displ_time.png','Resolution',300)
+    exportgraphics(gcf,'Displ_time.png','Resolution',600);
 end
 
 %% solid velocity vs time
@@ -73,7 +73,7 @@ if Control.freqDomain
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'Vel_time.png','Resolution',300)
+    exportgraphics(gcf,'Vel_time.png','Resolution',600);
 end
 
 %% porosity vs time
@@ -87,7 +87,7 @@ if contains(Control.PMmodel, 'UPN')
     title(sprintf('Porosity norm at x = %.2f m', MeshN.coords(round(Control.plotp/2),1), MeshN.coords(round(Control.plotp/2),2)));
     hold off
     if saveGraphs_on
-        exportgraphics(gcf,'Poros_time.png','Resolution',300)
+        exportgraphics(gcf,'Poros_time.png','Resolution',600);
     end
 end
 

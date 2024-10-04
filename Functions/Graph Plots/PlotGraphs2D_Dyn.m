@@ -19,7 +19,7 @@ if Control.freqDomain
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'Press_time.png','Resolution',300)
+    exportgraphics(gcf,'Press_time.png','Resolution',600);
 end
 
 %% solid displacement vs time
@@ -37,7 +37,7 @@ if Control.freqDomain
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'DisplSolid_time.png','Resolution',300)
+    exportgraphics(gcf,'DisplSolid_time.png','Resolution',600);
 end
 
 %% solid velocity vs time
@@ -55,7 +55,7 @@ if Control.freqDomain
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'VelSolid_time.png','Resolution',300)
+    exportgraphics(gcf,'VelSolid_time.png','Resolution',600);
 end
 
 %% solid acceleration vs time
@@ -68,7 +68,7 @@ ylabel('u2dot (solid) [m/s2]');
 title(sprintf('Solid acceleration at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'AccSolid_time.png','Resolution',300)
+    exportgraphics(gcf,'AccSolid_time.png','Resolution',600);
 end
 
 %% porosity vs time
@@ -82,7 +82,7 @@ if contains(Control.PMmodel, 'UPN')
     title(sprintf('Porosity norm at x = %.2f m', MeshN.coords(Control.plotp,1)));
     hold off
     if saveGraphs_on
-        exportgraphics(gcf,'Poros_time.png','Resolution',300)
+        exportgraphics(gcf,'Poros_time.png','Resolution',600);
     end
 end
 
@@ -97,7 +97,7 @@ if contains(Control.PMmodel, 'UPU')
     title(sprintf('Fluid displacement at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
     hold off
     if saveGraphs_on
-        exportgraphics(gcf,'DisplFluid_time.png','Resolution',300)
+        exportgraphics(gcf,'DisplFluid_time.png','Resolution',600);
     end
     
     %% fluid velocity vs time
@@ -110,7 +110,7 @@ if contains(Control.PMmodel, 'UPU')
     title(sprintf('Fluid velocity at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
     hold off
     if saveGraphs_on
-        exportgraphics(gcf,'VelFluid_time.png','Resolution',300)
+        exportgraphics(gcf,'VelFluid_time.png','Resolution',600);
     end
     
     %% fluid acceleration vs time
@@ -123,7 +123,7 @@ if contains(Control.PMmodel, 'UPU')
     title(sprintf('Fluid acceleration at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
     hold off
     if saveGraphs_on
-        exportgraphics(gcf,'AccFluid_time.png','Resolution',300)
+        exportgraphics(gcf,'AccFluid_time.png','Resolution',600);
     end
 end
 
@@ -144,7 +144,9 @@ if Control.fixedDepthPlotON
     ylabel('u [m]');
     title(sprintf('Solid displ. in x at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
     hold off
-    savefig(gcf,'Synthetics_SolidDispx.fig');
+    if saveGraphs_on
+        savefig(gcf,'FixedDepth_SolidDispx.fig');
+    end
     
     %% velocity in x for fixed coord
     nexttile
@@ -155,7 +157,9 @@ if Control.fixedDepthPlotON
     ylabel('udot [m]');
     title(sprintf('Solid vel. in x at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
     hold off
-    savefig(gcf,'Synthetics_SolidVelx.fig');
+    if saveGraphs_on
+        savefig(gcf,'FixedDepth_SolidVelx.fig');
+    end
     
     %% pressure for fixed coord
     nexttile
@@ -166,7 +170,9 @@ if Control.fixedDepthPlotON
     ylabel('p [Pa]');
     title(sprintf('Press. at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
     hold off
-    savefig(gcf,'Synthetics_Press.fig');
+    if saveGraphs_on
+        savefig(gcf,'FixedDepth_Press.fig');
+    end
     
     %% displacement in y for fixed coord
     nexttile
@@ -177,7 +183,9 @@ if Control.fixedDepthPlotON
     ylabel('u [m]');
     title(sprintf('Solid displ. in y at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
     hold off
-    savefig(gcf,'Synthetics_SolidDispy.fig');
+    if saveGraphs_on
+        savefig(gcf,'FixedDepth_SolidDispy.fig');
+    end
     
     %% velocity in y for fixed coord
     nexttile
@@ -188,7 +196,9 @@ if Control.fixedDepthPlotON
     ylabel('udot [m]');
     title(sprintf('Solid vel. in y at fixed %.0f, %.2f m, t = %.1d s', Control.depthDir, Control.depthplot, Control.tend));
     hold off
-    savefig(gcf,'Synthetics_SolidVely.fig');
+    if saveGraphs_on
+        savefig(gcf,'FixedDepth_SolidVely.fig');
+    end
 end
 
 if Control.fixedDepthPlotON
@@ -202,8 +212,10 @@ if Control.fixedDepthPlotON
     title('Solid displacement in domain over time');
     view(135, 30);
     hold off
-    exportgraphics(gcf,'SolidDisp_3D.png','Resolution',300);
-    savefig(gcf,'SolidDisp_3D.fig');
+    if saveGraphs_on
+        exportgraphics(gcf,'SolidDisp_3D.png','Resolution',600);
+        savefig(gcf,'SolidDisp_3D.fig');
+    end
     
     %% fluid pressure over depth over time (3D plot)
     figure;
@@ -215,9 +227,10 @@ if Control.fixedDepthPlotON
     title('Fluid pressure in domain over time');
     view(135, 30);
     hold off
-    exportgraphics(gcf,'Pressure_3D.png','Resolution',300);
-    savefig(gcf,'Pressure_3D.fig');
-
+    if saveGraphs_on
+        exportgraphics(gcf,'Pressure_3D.png','Resolution',600);
+        savefig(gcf,'Pressure_3D.fig');
+    end
 end
 
 end

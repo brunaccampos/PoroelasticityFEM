@@ -28,7 +28,7 @@ if Control.freqDomain && Control.plotansol
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'Press_time.png','Resolution',300)
+    exportgraphics(gcf,'Press_time.png','Resolution',600);
 end
 
 %% solid displacement vs time
@@ -55,7 +55,7 @@ if Control.freqDomain && Control.plotansol
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'Displ_time.png','Resolution',300)
+    exportgraphics(gcf,'Displ_time.png','Resolution',600);
 end
 
 %% solid velocity vs time
@@ -73,7 +73,7 @@ if Control.freqDomain
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'Vel_time.png','Resolution',300)
+    exportgraphics(gcf,'Vel_time.png','Resolution',600);
 end
 
 %% pressure vs depth
@@ -100,7 +100,7 @@ if Control.freqDomain && Control.plotansol
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'Press_depth.png','Resolution',300)
+    exportgraphics(gcf,'Press_depth.png','Resolution',600);
 end
 
 %% solid displacement vs depth
@@ -127,7 +127,7 @@ if Control.freqDomain && Control.plotansol
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'Displ_depth.png','Resolution',300)
+    exportgraphics(gcf,'Displ_depth.png','Resolution',600);
 end
 
 %% solid velocity vs depth
@@ -145,7 +145,7 @@ if Control.freqDomain
 end
 hold off
 if saveGraphs_on
-    exportgraphics(gcf,'Displ_depth.png','Resolution',300)
+    exportgraphics(gcf,'Displ_depth.png','Resolution',600);
 end
 
 if contains(Control.PMmodel, 'UPN')
@@ -161,7 +161,7 @@ if contains(Control.PMmodel, 'UPN')
     title(sprintf('Porosity norm at t = %.1d s', Control.tend));
     hold off
     if saveGraphs_on
-        exportgraphics(gcf,'Poros_depth.png','Resolution',300)
+        exportgraphics(gcf,'Poros_depth.png','Resolution',600);
     end
     
     %% porosity vs time
@@ -174,7 +174,7 @@ if contains(Control.PMmodel, 'UPN')
     title(sprintf('Porosity norm at x = %.2f m', MeshN.coords(Control.plotp,1)));
     hold off
     if saveGraphs_on
-        exportgraphics(gcf,'Poros_time.png','Resolution',300)
+        exportgraphics(gcf,'Poros_time.png','Resolution',600);
     end
 end
 
@@ -191,7 +191,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') || conta
     title(sprintf('Porosity norm at t = %.1d s', Control.tend));
     hold off
     if saveGraphs_on
-        exportgraphics(gcf,'Poros_depth.png','Resolution',300)
+        exportgraphics(gcf,'Poros_depth.png','Resolution',600);
     end
     %% porosity gradient vs depth
     nexttile;
@@ -203,7 +203,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV') || conta
     title(sprintf('Porosity gradient (dt) at t = %.1d s', Control.tend));
     hold off
     if saveGraphs_on
-        exportgraphics(gcf,'PorosDot_depth.png','Resolution',300)
+        exportgraphics(gcf,'PorosDot_depth.png','Resolution',600);
     end
 end
 
@@ -218,9 +218,11 @@ if Control.fixedDepthPlotON
     title('Solid displacement in domain over time','interpreter','latex');
     view(135, 30);
     hold off
-    exportgraphics(gcf,'SolidDisp_3D.png','Resolution',300);
-    savefig(gcf,'SolidDisp_3D.fig');
-
+    if saveGraphs_on
+        exportgraphics(gcf,'SolidDisp_3D.png','Resolution',600);
+        savefig(gcf,'SolidDisp_3D.fig');
+    end
+    
     %% fluid pressure over depth over time (3D plot)
     figure;
     waterfall(MeshP.coords, Plot.time, Plot.p_synthetic.*10^9);
@@ -231,8 +233,10 @@ if Control.fixedDepthPlotON
     title('Fluid pressure in domain over time','interpreter','latex');
     view(135, 30);
     hold off
-    exportgraphics(gcf,'Pressure_3D.png','Resolution',300);
-    savefig(gcf,'Pressure_3D.fig');
+    if saveGraphs_on
+        exportgraphics(gcf,'Pressure_3D.png','Resolution',600);
+        savefig(gcf,'Pressure_3D.fig');
+    end
 end
 
 end
