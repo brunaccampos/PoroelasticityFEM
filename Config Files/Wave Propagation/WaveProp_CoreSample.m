@@ -125,7 +125,7 @@ node = find(MeshU.coords(:,1) == 0 & MeshU.coords(:,2) == 0.05);
 % node y DOF
 BC.fixed_u = [node*2; MeshU.left_dofx; MeshU.right_dofx];
 % frequency [Hz]
-f = 50e3;
+f = 200e3;
 % period [s]
 t0 = 1/f;
 % critical frequency
@@ -190,8 +190,8 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
-Control.dt = 1e-6;  % time step
-Control.tend = 1e-3;   % final simulation time
+Control.dt = 5e-7;  % time step
+Control.tend = 2e-4;   % final simulation time
 
 % Newmark method
 Control.beta = 0.7;
