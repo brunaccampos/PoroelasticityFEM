@@ -251,9 +251,10 @@ Control.lambda = 0.7;
 
 %% Plot data
 % DOF to plot graphs
-Control.plotu = node*2; % dof y of node where source is applied
-nodeP = find(MeshP.coords(:,1) == 2000 & MeshP.coords(:,2) == 1000);
-Control.plotp = nodeP; % dof of node where source is applied
+nodePlot = find(MeshU.coords(:,1) == 2100 & MeshU.coords(:,2) == 1000);
+nodePlotP = find(MeshP.coords(:,1) == 2100 & MeshP.coords(:,2) == 1000);
+Control.plotu = nodePlot*2; % dof y of node where source is applied
+Control.plotp = nodePlotP; % dof of node where source is applied
 
 % Plot synthetics
 Control.plotSyntheticsON = 1; % 0: false, 1: true
@@ -261,8 +262,8 @@ Control.plotSyntheticsON = 1; % 0: false, 1: true
 % Plot in a row
 Control.fixedDepthPlotON = 1; % 0: false, 1: true
 
-Control.depthplot = 2200; % fixed coordinate
-Control.depthDir = 2; % 1 = fixed y, vary x --- 2 = fixed x, vary y
+Control.depthplot = 800; % fixed coordinate
+Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 
 % node numbering
 switch Control.depthDir
