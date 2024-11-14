@@ -16,7 +16,8 @@ for i = 1:half
     plot(ux_normalized(:,i) + MeshU.coords((Control.ploturow(i)+1)./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
     hold on
 end
-xlim tight
+xlim tight; ylim tight;
+set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
 ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
 xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
 title(sprintf('$u_s$ in $x$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
@@ -30,10 +31,25 @@ for i = 1:half
     plot(uy_normalized(:,i) + MeshU.coords((Control.ploturow(i+half))./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
     hold on
 end
-xlim tight
+xlim tight; ylim tight;
+set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
 ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
 xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
 title(sprintf('$u_s$ in $y$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
+hold off
+
+%% solid displacement magnitude
+u_normalized = sqrt(ux_normalized.^2 + uy_normalized.^2);
+figure;
+for i = 1:half
+    plot(u_normalized(:,i) + MeshU.coords((Control.ploturow(i+half))./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
+    hold on
+end
+xlim tight; ylim tight;
+set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
+ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
+xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
+title(sprintf('$u_s$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
 hold off
 
 %% solid velocity in x
@@ -44,10 +60,11 @@ for i = 1:half
     plot(uxdot_normalized(:,i) + MeshU.coords((Control.ploturow(i)+1)./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
     hold on
 end
-xlim tight
+xlim tight; ylim tight;
+set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
 ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
 xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
-title(sprintf('$\dot{u}_s$ in $x$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
+title(sprintf('$v_s$ in $x$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
 hold off
 
 %% solid velocity in y
@@ -58,10 +75,25 @@ for i = 1:half
     plot(uydot_normalized(:,i) + MeshU.coords((Control.ploturow(i+half))./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
     hold on
 end
-xlim tight
+xlim tight; ylim tight;
+set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
 ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
 xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
-title(sprintf('$\dot{u}_s$ in $y$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
+title(sprintf('$v_s$ in $y$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
+hold off
+
+%% solid velocity magnitude
+udot_normalized = sqrt(uxdot_normalized.^2 + uydot_normalized.^2);
+figure;
+for i = 1:half
+    plot(udot_normalized(:,i) + MeshU.coords((Control.ploturow(i+half))./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
+    hold on
+end
+xlim tight; ylim tight;
+set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
+ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
+xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
+title(sprintf('$v_s$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
 hold off
 
 %% fluid pressure
@@ -72,7 +104,8 @@ for i = 1:length(Control.plotprow)
     plot(p_normalized(:,i) + MeshP.coords(Control.plotprow(i), Control.depthDir), Plot.time, 'k','LineWidth',1.5);
     hold on
 end
-xlim tight
+xlim tight; ylim tight;
+set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
 ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
 xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
 title(sprintf('$p$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
@@ -86,7 +119,8 @@ if contains(Control.PMmodel, 'UPN')
         plot(Plot.n_synthetic(:,i) + MeshN.coords(Control.plotprow(i), Control.depthDir), Plot.time, 'k','LineWidth',1.5);
         hold on
     end
-    xlim tight
+    xlim tight; ylim tight;
+    set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
     ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
     xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
     title(sprintf('$\eta$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
@@ -103,7 +137,8 @@ if contains(Control.PMmodel, 'UPU')
         plot(ufx_normalized(:,i) + MeshU.coords((Control.ploturow(i)+1)./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
         hold on
     end
-    xlim tight
+    xlim tight; ylim tight;
+    set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
     ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
     xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
     title(sprintf('$u_f$ in $x$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
@@ -117,10 +152,25 @@ if contains(Control.PMmodel, 'UPU')
         plot(ufy_normalized(:,i) + MeshU.coords((Control.ploturow(i+half))./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
         hold on
     end
-    xlim tight
+    xlim tight; ylim tight;
+    set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
     ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
     xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
     title(sprintf('$u_f$ in $y$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
+    hold off
+
+    % fluid displacement magnitude
+    uf_normalized = sqrt(ufx_normalized.^2 + ufy_normalized.^2);
+    figure;
+    for i = 1:half
+        plot(uf_normalized(:,i) + MeshU.coords((Control.ploturow(i+half))./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
+        hold on
+    end
+    xlim tight; ylim tight;
+    set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
+    ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
+    xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
+    title(sprintf('$u_f$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
     hold off
 
     % fluid velocity in x
@@ -131,10 +181,11 @@ if contains(Control.PMmodel, 'UPU')
         plot(ufxdot_normalized(:,i) + MeshU.coords((Control.ploturow(i)+1)./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
         hold on
     end
-    xlim tight
+    xlim tight; ylim tight;
+    set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
     ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
     xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
-    title(sprintf('$\dot{u}_f$ in $x$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
+    title(sprintf('$v_f$ in $x$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
     hold off
 
     % fluid velocity in y
@@ -145,11 +196,26 @@ if contains(Control.PMmodel, 'UPU')
         plot(ufydot_normalized(:,i) + MeshU.coords((Control.ploturow(i+half))./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
         hold on
     end
-    xlim tight
+    xlim tight; ylim tight;
+    set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
     ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
     xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
-    title(sprintf('$\dot{u}_f$ in $y$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
+    title(sprintf('$v_f$ in $y$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
     hold off
+    
+    % fluid velocity magnitude
+    ufdot_normalized = sqrt(ufxdot_normalized.^2+ufydot_normalized.^2);
+    figure;
+    for i = 1:half
+        plot(ufdot_normalized(:,i) + MeshU.coords((Control.ploturow(i+half))./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
+        hold on
+    end
+    xlim tight; ylim tight;
+    set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
+    ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
+    xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
+    title(sprintf('$v_f$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
+    hold off    
 end
 
 %% --- UPW model ---
@@ -162,7 +228,8 @@ if contains(Control.PMmodel, 'UPW')
         plot(wx_normalized(:,i) + MeshU.coords((Control.ploturow(i)+1)./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
         hold on
     end
-    xlim tight
+    xlim tight; ylim tight;
+    set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
     ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
     xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
     title(sprintf('$w$ in $x$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
@@ -176,10 +243,25 @@ if contains(Control.PMmodel, 'UPW')
         plot(wy_normalized(:,i) + MeshU.coords((Control.ploturow(i+half))./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
         hold on
     end
-    xlim tight
+    xlim tight; ylim tight;
+    set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
     ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
     xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
     title(sprintf('$w$ in $y$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
+    hold off
+    
+    % relative fluid velocity magnitude
+    w_normalized = sqrt(wx_normalized.^2 + wy_normalized.^2);
+        figure;
+    for i = 1:half
+        plot(w_normalized(:,i) + MeshU.coords((Control.ploturow(i+half))./2, Control.depthDir), Plot.time, 'k','LineWidth',1.5);
+        hold on
+    end
+    xlim tight; ylim tight;
+    set(gca,'TickLabelInterpreter','latex', 'FontSize', 14);
+    ylabel('Time [s]', 'interpreter','latex', 'FontSize', 14);
+    xlabel('Coordinate [m]', 'interpreter','latex', 'FontSize', 14);
+    title(sprintf('$w$ at fixed %.0f, %.2f m', Control.depthDir, Control.depthplot), 'interpreter','latex', 'FontSize', 14);
     hold off
 end
 
