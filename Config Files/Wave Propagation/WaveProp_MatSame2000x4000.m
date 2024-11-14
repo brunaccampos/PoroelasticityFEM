@@ -34,7 +34,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_MatSame2000x400
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
-Control.PMmodel = 'Dyn_BT_UPW';
+Control.PMmodel = 'Dyn_dCS_UPW';
 
 %% Material properties - berea sandstone (Detournay, 1993)
 % elasticity modulus [GPa]
@@ -187,8 +187,9 @@ Control.lambda = 0.7;
 
 %% Plot data
 % DOF to plot graphs
-Control.plotu = node*2; % dof y of node where source is applied
-Control.plotp = node; % dof of node where source is applied
+nodePlot = find(MeshU.coords(:,1) == 2100 & MeshU.coords(:,2) == 1000);
+Control.plotu = nodePlot*2; % dof y of node where source is applied
+Control.plotp = nodePlot; % dof of node where source is applied
 
 % Plot synthetics
 Control.plotSyntheticsON = 1; % 0: false, 1: true
