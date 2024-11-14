@@ -34,7 +34,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_MatSame30x30(co
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
-Control.PMmodel = 'Dyn_BT_UPW';
+Control.PMmodel = 'Dyn_dCS_UPW';
 
 %% Material properties - berea sandstone (Detournay, 1993)
 % elasticity modulus [GPa]
@@ -211,7 +211,7 @@ Control.plotSyntheticsON = 1; % 0: false, 1: true
 % Plot in a row
 Control.fixedDepthPlotON = 1; % 0: false, 1: true
 
-Control.depthplot = 21; % fixed coordinate
+Control.depthplot = 10.049999999999999; % fixed coordinate
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 
 % node numbering
