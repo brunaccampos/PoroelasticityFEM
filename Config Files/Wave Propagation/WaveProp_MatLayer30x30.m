@@ -272,7 +272,7 @@ Control.plotSyntheticsON = 1; % 0: false, 1: true
 % Plot in a row
 Control.fixedDepthPlotON = 1; % 0: false, 1: true
 
-Control.depthplot = 21; % fixed coordinate
+Control.depthplot = 12; % fixed coordinate
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
 
 % node numbering
