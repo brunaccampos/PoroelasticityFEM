@@ -224,6 +224,11 @@ if ~isfield(Control,'plotp')
     Control.plotp = 1;
 end
 
+% scaling factor for synthetic plots
+if ~isfield(Control, 'plotSyntheticScale')
+    Control.plotSyntheticScale = 1;
+end
+
 %% Output error/warning
 war_message = sprintf('%s %s %s %s %s', war_message, war_mat, war_BC, war_control);
 err_message = sprintf('%s %s %s %s %s', err_message, err_mat, err_BC, err_control);

@@ -4,7 +4,7 @@ function PlotSynthetics(MeshU, MeshP, MeshN, Plot, Control)
 % ------------------------------------------------------------------------
 
 % scaling factor
-scale = 1;
+scale = Control.plotSyntheticScale;
 
 %% solid displacement in x
 % find half of array
