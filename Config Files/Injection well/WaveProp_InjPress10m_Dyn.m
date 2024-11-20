@@ -34,7 +34,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_InjPress10m_Dyn
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
-Control.PMmodel = 'Dyn_dCS_UPU';
+Control.PMmodel = 'Dyn_BT_UPU';
 
 %% Material properties - Berea Sandstone (Detournay, 1993, p.26)
 % elasticity modulus [GPa]
@@ -118,6 +118,23 @@ MeshP.MatList(:) = 1;
 %%%% porosity field
 MeshN = [];
 
+%% Injection data
+% period [s]
+t0 = 1e-3;
+% peak frequency [Hz]
+f = 1/t0;
+% amplitude [GN]
+a0 = 1e-2;
+
+%% Initial conditions
+% load data
+[u, udot, p, uf, ufdot] = CopyAndReadTable('WaveProp_InjPress10m_InSitu.xlsx');
+BC.initU = u;
+% BC.initUdot = udot;
+% BC.initP = p(~isnan(p));
+BC.initUf = uf;
+% BC.initUfdot = ufdot;
+
 %% Dirichlet BCs - solid
 % displacement u=0 at left, right, top, and bottom boundaries
 BC.fixed_u = [MeshU.bottom_dofy; MeshU.top_dofy; MeshU.left_dofx; MeshU.right_dofx];
@@ -134,21 +151,24 @@ BC.fixed_uf_value = @(t) zeros(length(BC.fixed_uf),1);
 BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
 
 %% Dirichlet BCs - fluid
-% nodes at injection well
-MeshP.nodesWell = [1, 5, 12, 321:358]; % transfinite, structured
-
-% fixed DOFs 
-BC.fixed_p = MeshP.nodesWell;
-% period [s]
-t0 = 1e-3;
-% peak frequency [Hz]
-f = 1/t0;
-% amplitude [GN]
-a0 = 1e-2;
+% pressure prescribed at all boundaries
+BC.fixed_p1 = unique([MeshP.left_nodes; MeshP.right_nodes; MeshP.bottom_nodes; MeshP.top_nodes]);
+BC.fixed_p2 = [1, 5, 12, 321:358]'; % well nodes
+BC.fixed_p = [BC.fixed_p1; BC.fixed_p2];
 % fixed DOF values
-BC.fixed_p_value = @(t) a0*(1-cos(2*pi*f*t))/2.*ones(length(BC.fixed_p),1).*(t<t0);
+BC.fixed_p_value = @(t) [zeros(length(BC.fixed_p1),1);Material.M(1).alpha*a0/2*ones(length(BC.fixed_p2),1)*(1-cos(2*pi*f*t)).*(t<t0)];
+% BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
+
+% % nodes at injection well
+% MeshP.nodesWell = [1, 5, 12, 321:358]; % transfinite, structured
+% % fixed DOFs 
+% BC.fixed_p = MeshP.nodesWell;
+% % fixed DOF values
+% BC.fixed_p_value = @(t) a0*(1-cos(2*pi*f*t))/2.*ones(length(BC.fixed_p),1).*(t<t0);
+% % free nodes
+% BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
 %% Neumann BCs - solid
 % point loads [GN]
@@ -205,4 +225,18 @@ node = 12; % transfinite, structured
 Control.plotu = node*2; % y DOF
 Control.plotp = node;
 
+end
+
+function [data1, data2, data3, data4, data5] = CopyAndReadTable(FullFilename)
+%COPYANDREADTABLE copies file and reads table.
+%
+% Copies a file to the 'tempdir' , then used readtable to 
+% read the contents. Afterwards the temp file is deleted.
+% 
+% Meindert Norg, 2021.
+[~,name,ext]        = fileparts(FullFilename);
+tempFullFilename    = fullfile(tempdir,[name,ext]);
+copyfile(FullFilename,tempFullFilename);
+[data1, data2, data3, data4, data5] = readvars(tempFullFilename);
+delete(tempFullFilename);
 end
