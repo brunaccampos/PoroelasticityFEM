@@ -2,7 +2,7 @@ function PlotGraphs2D_Tr(MeshU, MeshP, MeshN, Control, Plot, Material, saveGraph
 
 % initialize figure
 figure;
-tiledlayout(2,2);
+tiledlayout(2,3);
 
 %% pressure vs time
 nexttile
@@ -88,6 +88,34 @@ if contains(Control.PMmodel, 'UPN')
     hold off
     if saveGraphs_on
         exportgraphics(gcf,'Poros_time.png','Resolution',600);
+    end
+end
+
+if contains(Control.PMmodel, 'UPU')
+    %% fluid displacement vs time
+    nexttile
+    plot(Plot.time, Plot.uf_time,'m','LineWidth',2);
+    hold on
+    grid on
+    xlabel('Time [s]');
+    ylabel('u (fluid) [m]');
+    title(sprintf('Fluid displacement at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'DisplFluid_time.png','Resolution',600);
+    end
+    
+    %% fluid velocity vs time
+    nexttile
+    plot(Plot.time, Plot.ufdot_time,'c','LineWidth',2);
+    hold on
+    grid on
+    xlabel('Time [s]');
+    ylabel('udot (fluid) [m/s]');
+    title(sprintf('Fluid velocity at x = %.2f m, y = %.2f m', MeshU.coords(round(Control.plotu/2),1), MeshU.coords(round(Control.plotu/2),2)));
+    hold off
+    if saveGraphs_on
+        exportgraphics(gcf,'VelFluid_time.png','Resolution',600);
     end
 end
 
