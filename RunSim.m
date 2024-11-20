@@ -54,6 +54,8 @@ DirFolder = 'Config Files';
 % -------------------- Injection well
 % File = 'InjectionWells2D_15x15';
 % File = 'Plate_Dynamic_Komijani';
+% File = 'WaveProp_InjPress10m_InSitu';
+File = 'WaveProp_InjPress10m_Dyn';
 
 % -------------------- Tests Convergence
 % File = 'ManufacturedSolution1D_Biot';
@@ -96,11 +98,10 @@ DirFolder = 'Config Files';
 % File = 'WaveProp_Dynamic_Komijani';
 % File = 'WaveProp_Dynamic_Quiroga';
 % File = 'WaveProp_Dynamic_Tian';
-% File = 'WaveProp_Dynamic_InjectionPress10m';
-% File = 'WaveProp_Dynamic_InjectionPress10m_InSitu';
 % File = 'WaveProp_MatLayer30x30';
+% File = 'WaveProp_CoreSample';
 % File = 'WaveProp_MatSame30x30';
-File = 'WaveProp_MatLayer2000x4000';
+% File = 'WaveProp_MatLayer2000x4000';
 % File = 'WaveProp_MatSame2000x4000';
 % File = 'WavePropP_MatLayer2000x2500';
 
