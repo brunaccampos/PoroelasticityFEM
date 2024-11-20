@@ -34,7 +34,7 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_InjPress10m_InS
 % ------------------------------------------------------------------------
 
 %% Poroelasticity model
-Control.PMmodel = 'Dyn_dCS_UPU';
+Control.PMmodel = 'Tr_BT_UPU';
 
 %% Material properties - Berea Sandstone (Detournay, 1993, p.26)
 % elasticity modulus [GPa]
@@ -118,6 +118,29 @@ MeshP.MatList(:) = 1;
 %%%% porosity field
 MeshN = [];
 
+%% In situ data
+% overburden density [10^9 kg/m3]
+rho_Top = 2600e-9;
+% gravitational acceleration [m/s2]
+g = 9.81;
+% depth [m]
+depth = 1000;
+% hydrostatic pressire [GPa]
+p0 = Material.M(1).rhof * g * depth;
+% vertical in situ stress [GPa]
+sigmaV = rho_Top * g * depth;
+% horizontal in situ stress [GPa]
+sigmaH = sigmaV * Material.M(1).nu / (1-Material.M(1).nu);
+% global in situ stress
+sigmaG = [sigmaH, 0; 0, sigmaV];
+% traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
+BC.tractionInterp = 1;
+% traction unit normal in local coords
+normalL = [0; 1];
+
+%% Initial BCs
+% BC.initP = ones(MeshP.nDOF,1)*p0;
+
 %% Dirichlet BCs - solid
 % displacement u=0 at left, right, top, and bottom boundaries
 BC.fixed_u = [MeshU.bottom_dofy; MeshU.top_dofy; MeshU.left_dofx; MeshU.right_dofx];
@@ -138,6 +161,14 @@ BC.free_uf = setdiff(MeshU.DOF, BC.fixed_uf);
 BC.fixed_p = unique([MeshP.left_nodes; MeshP.right_nodes; MeshP.bottom_nodes; MeshP.top_nodes]);
 % fixed DOF values
 BC.fixed_p_value = @(t) zeros(length(BC.fixed_p),1);
+
+% % pressure prescribed at all boundaries
+% BC.fixed_p1 = unique([MeshP.left_nodes; MeshP.right_nodes; MeshP.bottom_nodes; MeshP.top_nodes]);
+% BC.fixed_p2 = [1, 5, 12, 321:358]'; % well nodes
+% BC.fixed_p = [BC.fixed_p1; BC.fixed_p2];
+% % fixed DOF values
+% BC.fixed_p_value = @(t) [zeros(length(BC.fixed_p1),1); ones(length(BC.fixed_p2),1)*p0];
+
 % free nodes
 BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 
@@ -149,25 +180,6 @@ corner_nodes = [1, 5, 12, 641:659, 680:698];
 middle_nodes = [660:679, 699:718];
 % all well nodes
 BC.tractionNodes = [corner_nodes, middle_nodes];
-
-% overburden density [10^9 kg/m3]
-rho_Top = 2600e-9;
-% gravitational acceleration [m/s2]
-g = 9.81;
-% depth [m]
-depth = 1000;
-% hydrostatic pressire [GPa]
-p0 = Material.M(1).rhof * g * depth;
-% vertical in situ stress [GPa]
-sigmaV = rho_Top * g * depth;
-% horizontal in situ stress [GPa]
-sigmaH = sigmaV * Material.M(1).nu / (1-Material.M(1).nu);
-% global in situ stress
-sigmaG = [sigmaH, 0; 0, sigmaV];
-% traction interpolation (needed for traction applied in wells); 1 - true, 0 - false
-BC.tractionInterp = 1;
-% traction unit normal in local coords
-normalL = [0; 1];
 
 % traction force vector
 BC.tractionAtNodes = zeros(length(BC.tractionNodes),2);
@@ -221,15 +233,8 @@ for i = 1:length(BC.tractionNodes)
     normalG_vec(nodeindex,:) = normalG_AtNodes(i,:);
 end
 
-% period [s]
-t0 = 1e-3;
-% peak frequency [Hz]
-f = 1/t0;
-% amplitude [GN]
-a0 = 1e-2;
-
 % adding in situ pressure and injection pressure
-BC.tractionForce = @(t) -BC.tractionForce + Material.M(1).alpha*p0*normalG_vec + Material.M(1).alpha*a0/2*normalG_vec*(1-cos(2*pi*f*t)).*(t<t0);
+BC.tractionForce = @(t) -BC.tractionForce + Material.M(1).alpha*p0*normalG_vec;
 
 % point loads [GN]
 BC.pointLoad = @(t)[];
@@ -266,8 +271,8 @@ Control.freqDomain = 0;  % 1 = true; 0 = false
 Control.plotansol = 0; % 1 = true; 0 = false
 
 %% Time step controls
-Control.dt = 1e-5;  % time step [s]
-Control.tend = 3e-3;   % final simulation time [s]
+Control.dt = 5e-1;  % time step [s]
+Control.tend = 100;   % final simulation time [s]
 
 % Newmark method
 Control.beta = 0.7;
