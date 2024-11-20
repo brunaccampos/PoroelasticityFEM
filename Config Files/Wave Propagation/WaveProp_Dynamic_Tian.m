@@ -256,6 +256,7 @@ Control.plotp = node; % dof y of node 177 (x = 7.5m, y = 7.5m)
 
 % Plot synthetics
 Control.plotSyntheticsON = 1; % 0: false, 1: true
+Control.plotSyntheticScale = 100; % plot scaling factor
 
 % Plot in a row
 Control.fixedDepthPlotON = 1; % 0: false, 1: true
