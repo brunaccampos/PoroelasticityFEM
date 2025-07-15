@@ -1,6 +1,7 @@
 *.sublime-project
 *.sublime-workspace
 *.vtk
+*.vtk.[0-9]*
 *.asv
 *.mat
 *.xls
