@@ -55,7 +55,7 @@ DirFolder = 'Config Files';
 % File = 'InjectionWells2D_15x15';
 % File = 'Plate_Dynamic_Komijani';
 % File = 'WaveProp_InjPress10m_InSitu';
-File = 'WaveProp_InjPress10m_Dyn';
+% File = 'WaveProp_InjPress10m_Dyn';
 
 % -------------------- Tests Convergence
 % File = 'ManufacturedSolution1D_Biot';
@@ -99,17 +99,18 @@ File = 'WaveProp_InjPress10m_Dyn';
 % File = 'WaveProp_Dynamic_Quiroga';
 % File = 'WaveProp_Dynamic_Tian';
 % File = 'WaveProp_MatLayer30x30';
-% File = 'WaveProp_CoreSample';
+File = 'WaveProp_CoreSample';
 % File = 'WaveProp_MatSame30x30';
 % File = 'WaveProp_MatLayer2000x4000';
 % File = 'WaveProp_MatSame2000x4000';
 % File = 'WavePropP_MatLayer2000x2500';
+% File = 'WaveProp_TestFFT';
 
 % ------------------------------------------------------------------------
 
 % Directory for VTK file
-% VTKFolder ='C:\Users\bu_ca\Downloads\PoroelasticityFEM\Results';
-VTKFolder ='E:\PoroelasticityFEM\Results';
+VTKFolder ='C:\Users\bu_ca\Downloads\PoroelasticityFEM\Results';
+% VTKFolder ='E:\PoroelasticityFEM\Results';
 
 % output VTK file
 plot2vtk = 1;

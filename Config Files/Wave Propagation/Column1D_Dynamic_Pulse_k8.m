@@ -223,8 +223,8 @@ Control.lambda = 0.7;
 
 %% Plot data
 % DOF to plot graphs
-nodeU = find(MeshU.coords == 300); % x = 300m
-nodeP = find(MeshP.coords == 300); % x = 300m
+nodeU = find(MeshU.coords == 260); % x = 300m
+nodeP = find(MeshP.coords == 260); % x = 300m
 Control.plotu = nodeU;
 Control.plotp = nodeP;
 Control.depthDir = 1; % 1 = fixed y, vary x --- 2 = fixed x, vary y
