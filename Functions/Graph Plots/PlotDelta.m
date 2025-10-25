@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotDelta(Material)
-% ------------------------------------------------------------------------
 % Plot variation of deltaF and deltaS for different values of n
-% ------------------------------------------------------------------------
 
 % parameter n
 n = (0:0.01:Material.Ks/Material.Kf);

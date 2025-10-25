@@ -1,6 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotFreqRange(Material, f0, range)
 % Plot frequency range for given material parameters
-% ------------------------------------------------------------------------
 
 %% Range to plot
 switch range

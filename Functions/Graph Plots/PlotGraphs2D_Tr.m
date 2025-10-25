@@ -1,3 +1,6 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotGraphs2D_Tr(MeshU, MeshP, MeshN, Control, Plot, Material, saveGraphs_on)
 
 % initialize figure

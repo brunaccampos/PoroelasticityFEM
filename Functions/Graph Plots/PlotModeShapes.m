@@ -1,6 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotModeShapes(phi_u, omega2_u, phi_p, omega2_p, MeshU, MeshP, Control, BC, config_name, vtk_dir)
 % Plot first 6 natural frequencies for u and p
-% ------------------------------------------------------------------------
 
 % sort modes first
 omega2_u_vec = diag(omega2_u);

@@ -1,8 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotGraphsUP_OverTime(MeshU, MeshP, Control, Solution)
-% ------------------------------------------------------------------------
-% Plot solutions at each time step
-% u-p formulation
-% ------------------------------------------------------------------------
+% Plot solutions at each time step u-p formulation
 
 % initialize figure
 figure(1);

@@ -1,8 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotNDPressureEqCoef(Material)
-% ------------------------------------------------------------------------
 % Plot non dimensional coefficients from pressure equation to study the
 % effect of the parameter n
-% ------------------------------------------------------------------------
 
 % parameter n
 n = (0:0.01:Material.Ks/Material.Kf);

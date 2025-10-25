@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotSynthetics(MeshU, MeshP, MeshN, Plot, Control)
-% ------------------------------------------------------------------------
 % Plot synthetics at fixed coordinate (x or y) in 2D domain
-% ------------------------------------------------------------------------
 
 % scaling factor
 scale = Control.plotSyntheticScale;
