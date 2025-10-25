@@ -1,3 +1,6 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = SoilSlope(config_dir, progress_on,~,~)
 % 2D simulation of soil slope (Wu, 2019)
 % Configuration File
