@@ -5,8 +5,6 @@ The PhD thesis related to this implementation is available [here](https://hdl.ha
 
 The code contains 12 distinct main solvers, encompassing models based on Biot (Bt) annd de la Cruz and Spanos (dCS) porous media theories, dynamic and transient formulations, and five different combinations of main variables.
 
-
-
 ## Available modules
 
 - `RunSim`: main function to run. This is where the configuration file is read and `main` is called. The existent configuration files are listed within this file.
