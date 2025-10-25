@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function ComputeTimeStepError_UP()
-% ------------------------------------------------------------------------
 % Compute error using the L2 norm of the time discretization
-% ------------------------------------------------------------------------
 
 clearvars
 clear, clc
@@ -15,6 +16,7 @@ nsd = 1; % number of dimensions
 type = 'L2'; % element type
 field = 'p'; % equivalent to scalar field
 
+% The name of the files need to be updated according to the desired plots
 %% Mesh 1
 % load file
 load Results_m76ManUPUSpanosdt.mat

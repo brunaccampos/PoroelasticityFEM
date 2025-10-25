@@ -1,8 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotConvergenceRate_UPW()
-% ------------------------------------------------------------------------
 % Plot convergence error and slope curve for displacement and pressure
 % fields
-% ------------------------------------------------------------------------
 
 %% Initialize variables
 % number of simulations
@@ -14,6 +15,7 @@ eL2us = zeros(nsims,1);
 eL2p = zeros(nsims,1);
 eL2w = zeros(nsims,1);
 
+% The name of the files need to be updated according to the desired plots
 %% Mesh 1
 % load file
 load Resultsm1_dCSupw.mat

@@ -1,8 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotConvergenceRate_UPU()
-% ------------------------------------------------------------------------
 % Plot convergence error and slope curve for displacement and pressure
 % fields
-% ------------------------------------------------------------------------
 
 %% Initialize variables
 % number of simulations
@@ -18,6 +19,7 @@ eENus = zeros(nsims,1);
 eENp = zeros(nsims,1);
 eENuf = zeros(nsims,1);
 
+% The name of the files need to be updated according to the desired plots
 %% Mesh 1
 % load file
 load Results_m11ManUPUBiot.mat

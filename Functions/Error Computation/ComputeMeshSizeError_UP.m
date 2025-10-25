@@ -1,10 +1,11 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [ErrorComp] = ComputeMeshSizeError_UP(MeshU, MeshP, Solution, Plot, Control)
-% ------------------------------------------------------------------------
 % Compute displacement and pressure errors related to the mesh size in 1D
 % L2-norm: uses displacement / pressure
 % Energy norm: uses strain and stress / flux
 % H1-norm: uses displacement and strain / pressure and flux
-% ------------------------------------------------------------------------
 
 %% Initialize variables
 % number of elements
@@ -99,6 +100,7 @@ for i = 1:ne
        ee = Nu*strain_exact(connu_e);
        gpe = Np*gradp_exact(connp_e);
        
+       % exact with function handle
 %        ee = eval(subs(e_exact, Nu*MeshU.coords(connu_e)));
 %        qe = eval(subs(qex_exact, Np*MeshP.coords(connp_e)));
      

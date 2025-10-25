@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function ComputeError_Time()
-% ------------------------------------------------------------------------
 % Compute error using the Le norm of the displacements
-% ------------------------------------------------------------------------
 
 clearvars
 clear, clc
@@ -15,7 +16,7 @@ L = 1; % t end
 type = 'L2';
 field = 'p';
 
-
+% The name of the files need to be updated according to the desired plots
 %% Mesh 1
 % load file
 load Results_m1ManUtraPtra_beta05.mat

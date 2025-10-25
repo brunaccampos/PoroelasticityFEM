@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [C] = getConstitutiveMatrix(nMat, Material, Mesh)
-% ------------------------------------------------------------------------
 % Return linear elastic constitutive matrix for solid constituent
-% ------------------------------------------------------------------------
 
 % Material properties
 E = Material.M(nMat).E;

@@ -1,8 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotConvergenceRate()
-% ------------------------------------------------------------------------
 % Plot convergence error and slope curve for displacement and pressure
 % fields
-% ------------------------------------------------------------------------
 
 %% Initialize variables
 nsims = 5;
@@ -14,6 +15,7 @@ eENp = zeros(nsims,1);
 eH1u = zeros(nsims,1);
 eH1p = zeros(nsims,1);
 
+% The name of the files need to be updated according to the desired plots
 %% Mesh 1
 % load file
 load Results_m1ManBiot_dt1e-5.mat
