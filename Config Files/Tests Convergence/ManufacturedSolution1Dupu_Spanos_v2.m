@@ -1,5 +1,7 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dupu_Spanos_v2(~, progress_on,~,~)
-% ------------------------------------------------------------------------
 % Manufactured solution in 1D
 % us = cos(pi*x)*sin(pi*t)
 % uf = sin(pi*x)*sin(pi*t)

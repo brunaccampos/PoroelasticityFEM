@@ -1,5 +1,7 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1Dupv_Biot(~, progress_on,~,~)
-% ------------------------------------------------------------------------
 % Manufactured solution in 1D
 % us = sin(x*t)/1000
 % vf = cos(x*t)/1000

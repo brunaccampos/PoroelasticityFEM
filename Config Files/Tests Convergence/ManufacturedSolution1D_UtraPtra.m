@@ -1,11 +1,10 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1D_UtraPtra(~, progress_on,~,~)
-% ------------------------------------------------------------------------
 % Manufactured solution for L3 element mesh size convergence study
 % u = sin(xt)
 % p = sin(xt)
-% ------------------------------------------------------------------------
-% Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
-% ------------------------------------------------------------------------
 
 %% Poroelasticity
 % Biot's coefficient

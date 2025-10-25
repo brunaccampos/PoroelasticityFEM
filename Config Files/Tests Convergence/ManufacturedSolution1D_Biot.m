@@ -1,5 +1,7 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolution1D_Biot(~, progress_on,~,~)
-% ------------------------------------------------------------------------
 % Manufactured solution in 1D
 % u = sin(xt)
 % p = cos(xt)
