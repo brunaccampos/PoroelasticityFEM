@@ -70,10 +70,6 @@ Knubar = -(phi_n.') * MnuFF * phi_u + (phi_n.') * KnuFF * phi_u .* (gamma/(beta*
 Knpbar = (phi_n.') * KnpFF * phi_p;
 Knnbar = (phi_n.') * KnnFF * phi_n ./(lambda*dt);
 
-test1 = (phi_u.') * MuuFF * phi_u;
-test2 = (phi_u.') * KuuFF * phi_u;
-test3 = (phi_p.') * KppFF * phi_p;
-
 % auxiliar terms for external forces vector
 fubar = (phi_u.') * fu(BC.free_u) + (phi_u.') * MuuFF * phi_u * (xuF_old ./(beta*dt^2) + xuFdot_old ./(beta*dt) + (1/(2*beta) -1) * xuF2dot_old);
 fpbar = (phi_p.') * fp(BC.free_p) - (phi_p.') * MpuFF * phi_u * (xuF_old ./(beta*dt^2) + xuFdot_old ./(beta*dt) + (1/(2*beta) -1) * xuF2dot_old) + ...

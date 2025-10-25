@@ -46,23 +46,12 @@ if Control.step == 1
 end
 %% Matrix partitioning
 % matrices time discretization
-% Kuubar = (phi_u.') * MFF * phi_u * 4/dt^2 + (phi_u.') * KuuFF * phi_u;
 Kuubar = (phi_u.') * MFF * phi_u ./(beta*dt^2) + (phi_u.') * KuuFF * phi_u;
 Kupbar = -(phi_u.') * KupFF * phi_p;
-% Kpubar = -(phi_p.') * MhatFF * phi_u * 4/dt^2 + (phi_p.') * KpuFF * phi_u * 2/dt;
 Kpubar = -(phi_p.') * MhatFF * phi_u ./(beta*dt^2) + (phi_p.') * KpuFF * phi_u * gamma/(beta*dt);
-% Kppbar = (phi_p.') * KppFF * phi_p + (phi_p.') * SFF * phi_p * 2/dt;
 Kppbar = (phi_p.') * KppFF * phi_p + (phi_p.') * SFF * phi_p ./(theta*dt);
 
-test1 = (phi_u.') * MFF * phi_u;
-test2 = (phi_u.') * KuuFF * phi_u;
-test3 = (phi_p.') * KppFF * phi_p;
-
 % auxiliar terms for external forces vector
-% fubar = (phi_u.') * fu(BC.free_u) + (phi_u.') * MFF * phi_u * (xuF_old * 4/dt^2 + xuFdot_old * 4/dt + xuF2dot_old);
-% fpbar = (phi_p.') * fp(BC.free_p) - (phi_p.') * MhatFF * phi_u * (xuF_old * 4/dt^2 + xuFdot_old * 4/dt + xuF2dot_old) + ...
-%     (phi_p.') * KpuFF * phi_u * (xuFdot_old + xuF_old * 2/dt) + (phi_p.') * SFF * phi_p * (xpFdot_old + xpF_old * 2/dt);
-
 fubar = (phi_u.') * fu(BC.free_u) + (phi_u.') * MFF * phi_u * (xuF_old ./(beta*dt^2) + xuFdot_old ./(beta*dt) + (1/(2*beta) -1) * xuF2dot_old);
 fpbar = (phi_p.') * fp(BC.free_p) - (phi_p.') * MhatFF * phi_u * (xuF_old ./(beta*dt^2) + xuFdot_old ./(beta*dt) + (1/(2*beta)-1) * xuF2dot_old) + ...
     (phi_p.') * KpuFF * phi_u * (xuFdot_old * (gamma/beta -1) + xuF_old * gamma/(beta*dt)) + (phi_p.') * SFF * phi_p * ((1/theta -1) * xpFdot_old + xpF_old ./(theta *dt));
@@ -98,14 +87,6 @@ p(BC.fixed_p, 1) = pE;
 p(BC.free_p, 1) = pF;
 
 %% Gradients
-% xuFdot = - xuFdot_old + (xuF - xuF_old) * 2/dt;
-% xpFdot = - xpFdot_old + (xpF - xpF_old) * 2/dt;
-% xuF2dot = xuF * 4/dt^2 - xuF_old * 4/dt^2 - xuFdot_old * 4/dt - xuF2dot_old;
-% 
-% udot = - udot_old + (u - uF_old) * 2/dt;
-% pdot = - pdot_old + (p - pF_old) * 2/dt;
-% u2dot = u * 4/dt^2 - uF_old * 4/dt^2 - udot_old * 4/dt - u2dot_old;
-
 xuFdot = - xuFdot_old * (gamma/beta -1) + (xuF - xuF_old) *gamma/(beta*dt) - xuF2dot_old * dt * (gamma/(2*beta)-1);
 xpFdot = - xpFdot_old * (1/theta - 1) + (xpF - xpF_old) ./(theta*dt);
 xuF2dot = (xuF - xuF_old) ./(beta*dt^2) - xuFdot_old ./(beta*dt) - xuF2dot_old * (1/(2*beta) -1);
