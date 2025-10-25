@@ -1,6 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotVelAtt_PorPres(w, vp, attp, wc)
 % Plot velocity and attenuation for porosity-pressure waves
-% ------------------------------------------------------------------------
 
 % initialize figure
 figure;

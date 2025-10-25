@@ -1,7 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [AdCS, BdCS, CdCS] = getWaveCoeffs_dCSPorPres(Material, w)
 % Compute polynomial coefficients for the wave solution for Biot (BT)
 % theory
-% ------------------------------------------------------------------------
 
 %% Material parameters
 rhof = Material.rhof; % fluid density

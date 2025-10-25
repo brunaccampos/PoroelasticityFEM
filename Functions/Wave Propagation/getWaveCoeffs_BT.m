@@ -1,12 +1,13 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Ap_BT, Bp_BT, Cp_BT, As_BT, Bs_BT, Cs_BT] = getWaveCoeffs_BT(Material, w)
 % Compute polynomial coefficients for the wave solution for Biot (BT)
 % theory
-% ------------------------------------------------------------------------
 % Based on equation from Zhao (2020): Effects of petrophysical parameters
 % on attenuation and dispersion of seismic waves in the simplified
 % poroelastic theory
 % Return to Biot: assume xif = 0 (fluid bulk viscosity)
-% ------------------------------------------------------------------------
 
 rhof = Material.rhof; % fluid density
 muf = Material.muf; % fluid dynamic viscosity

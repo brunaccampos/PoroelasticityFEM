@@ -1,7 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotVelAtt(w, vp, attp, vs, atts, wc)
 % Plot velocity and attenuation for compressional and shear waves using
 % different porous media models
-% ------------------------------------------------------------------------
 % Models to compare:
 % 1- Biot (1941, 1956a): porosity considered implicitly, no fluid viscous
 %   dissipation terms
@@ -9,7 +11,6 @@ function PlotVelAtt(w, vp, attp, vs, atts, wc)
 %   porosity are disregarded
 % 3- Spanos (2002): explicit porosity equation, includes fluid viscous
 %   dissipation terms
-% ------------------------------------------------------------------------
 
 plotZH = 0;
 

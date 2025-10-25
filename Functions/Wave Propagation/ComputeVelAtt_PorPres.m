@@ -1,8 +1,10 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [vp_pp, attp_pp] = ComputeVelAtt_PorPres(w, Material)
 % Compute velocity and attenuation for compressional waves based on the
 % porosity-pressure equations in dCS theory
 % Reference: Spanos (2002), The Theormophysics of Porous Media.
-% ------------------------------------------------------------------------
 
 %% Compute polynomial constants
 [AdCS, BdCS, CdCS] = getWaveCoeffs_dCSPorPres(Material, w);

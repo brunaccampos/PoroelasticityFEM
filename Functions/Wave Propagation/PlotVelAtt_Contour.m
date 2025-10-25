@@ -1,7 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PlotVelAtt_Contour(w, mat, vp1_dCS, vp2_dCS, vs1_dCS, vs2_dCS, attp1_dCS, attp2_dCS, atts1_dCS, atts2_dCS)
 % Contour plots for frequency vs velocity/attenuation vs material parameter
 % for dCS theory
-% ------------------------------------------------------------------------
 
 %% Initialize figure
 figure;

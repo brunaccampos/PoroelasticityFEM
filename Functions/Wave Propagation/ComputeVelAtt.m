@@ -1,7 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [vp, attp, vs, atts] = ComputeVelAtt(w, Material)
 % Compute velocity and attenuation for compressional and shear waves using
 % different porous media models
-% ------------------------------------------------------------------------
 
 %% Compute polynomial constants
 % Biot (BT) theory

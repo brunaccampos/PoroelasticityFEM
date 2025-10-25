@@ -1,3 +1,6 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+% ------------------------------------------------------------------------
 % Study of wave velocity and attenuation: computation for different
 % frequency values
 % ------------------------------------------------------------------------
@@ -17,6 +20,7 @@
 %% Frequency array
 w = logspace(0,6); % frequency [Hz]
 
+% uncomment the chosen set of material parameters
 %% Material parameters (Zhao 2020)
 % Material.rhof = 1050; % fluid density [kg/m3]
 % Material.muf = 1e-3; % fluid dynamic viscosity [Pa s]
