@@ -1,3 +1,6 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Column1D_Dynamic_Tasiop(~, progress_on,~,~)
 % Column Consolidation 1D simulation
 % Configuration File
