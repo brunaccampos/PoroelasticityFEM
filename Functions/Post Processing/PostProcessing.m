@@ -1,8 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PostProcessing(Solution, Material, MeshU, MeshP, MeshN, Control, BC, config_name, vtk_dir)
-% ------------------------------------------------------------------------
 % Export results to VTK file
-% ------------------------------------------------------------------------
-% Adapted from: https://github.com/GCMLab (Acknowledgements: Matin Parchei Esfahani)
+% Acknowledgements: Matin Parchei Esfahani
 
 %% Initialize variables
 step = Control.step; % time step number

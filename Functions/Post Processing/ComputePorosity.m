@@ -1,6 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [eta, etadot] = ComputePorosity(Material, Mesh, Solution, Control)
 % Compute porosity based on the solid and fluid displacements values
-% ------------------------------------------------------------------------
 
 %% Initialize variables
 nn = Mesh.nn; % total number of nodes

@@ -1,8 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function PostProcessingModes(mode, phi_u, phi_p, MeshU, MeshP, BC, config_name, vtk_dir)
-% ------------------------------------------------------------------------
 % Export results to VTK file
-% ------------------------------------------------------------------------
-% Adapted from: https://github.com/GCMLab (Acknowledgements: Matin Parchei Esfahani)
+% Acknowledgements: Matin Parchei Esfahani
 
 %% Initialize variables
 nsd = MeshU.nsd; % number of spatial dimensions

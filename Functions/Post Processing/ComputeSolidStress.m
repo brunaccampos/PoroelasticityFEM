@@ -1,9 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [strain, stress] = ComputeSolidStress(Material, Mesh, u)
 % Compute strain and stress in the elements of displacement field
-% ------------------------------------------------------------------------
-% Reference: https://github.com/GCMLab (Acknowledgements: Matin Parchei
-% Esfahani)
-% ------------------------------------------------------------------------
+% Acknowledgements: Matin Parchei Esfahani
 
 %% Initialize variables
 nn = Mesh.nn; % total number of nodes

@@ -1,20 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function WriteMesh2VTK(filename, description, Mesh, scalardata, vectordata)
-% Write FEM mesh data to a file in VTK format
-% ------------------------------------------------------------------------
-% Inputs
-% ------------------------------------------------------------------------
-% filename = string, should end with .vtk
-% description = string describing the model
-% Mesh = displacement or pressure field
-% scalardata = data structure
-% ------------------------------------------------------------------------
-% Creator: Robert Gracie, University of Waterloo 2012, 2018.
-% Use of this file is governed under the GNU Public Licence:
-% https://www.gnu.org/licenses/gpl-3.0.en.html
-% ------------------------------------------------------------------------
-% Last modified: June 2022
-% Modified by: Bruna Campos
-% Adapt for poroelasticity model
+% Write VTK files
+% Acknowledgements: Robert Gracie
 
 %% Mesh properties
 nn = Mesh.nn; % number of nodes
