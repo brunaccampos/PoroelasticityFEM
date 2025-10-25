@@ -1,38 +1,14 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = PatchTestA(config_dir, progress_on, ~, ~)
-% ------------------------------------------------------------------------
 % Patch Test A: all nodes are restrained and nodal displacement values
 % are specfied according to the exact solution. The error between the FEA
 % and exact solutions is then calculated. The FEA approximate solution
 % should be exact.
-% ------------------------------------------------------------------------
-% Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
-% ------------------------------------------------------------------------
-% Porous media theories
-% - BT: Biot
-% - dCS: de la Cruz and Spanos
-% ------------------------------------------------------------------------
-% Loading options
-% - Tr: transient/quasi-steady
-% - Dyn: dynamic (acceleration included)
-% ------------------------------------------------------------------------
-% Main variables
-% u = solid displacement
-% p = fluid pressure
-% n = porosity
-% U = fluid displacement
-% v = fluid velocity
-% w = relative fluid velocity
-% ------------------------------------------------------------------------
-% Model options
-%
-% Tr_BT_UP          Tr_dCS_UP           Tr_dCS_UPN 
-%
-% Dyn_BT_UP         Dyn_BT_UPU          Dyn_BT_UPV          Dyn_BT_UPW
-%
-% Dyn_dCS_UP        Dyn_dCS_UPU         Dyn_dCS_UPN         Dyn_dCS_UPW
-% ------------------------------------------------------------------------
 
 %% Poroelasticity model
+% use default for running in main function
 Control.PMmodel = 'Tr_BT_UP';
 
 %% Material properties

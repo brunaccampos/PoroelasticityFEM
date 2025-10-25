@@ -1,39 +1,15 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionQ9(config_dir, progress_on, meshfilename, ~)
-% ------------------------------------------------------------------------
 % Test 4 calculates the convergence rates of a uniform Q4 mesh using a
 % manufactured solution in which
 % ux = x^5 + x*y^3 - y^6
 % uy = x^5 + x*y^3 - y^6
 % under plane stress conditions
-% ------------------------------------------------------------------------
-% Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
-% ------------------------------------------------------------------------
-% Porous media theories
-% - BT: Biot
-% - dCS: de la Cruz and Spanos
-% ------------------------------------------------------------------------
-% Loading options
-% - Tr: transient/quasi-steady
-% - Dyn: dynamic (acceleration included)
-% ------------------------------------------------------------------------
-% Main variables
-% u = solid displacement
-% p = fluid pressure
-% n = porosity
-% U = fluid displacement
-% v = fluid velocity
-% w = relative fluid velocity
-% ------------------------------------------------------------------------
-% Model options
-%
-% Tr_BT_UP          Tr_dCS_UP           Tr_dCS_UPN 
-%
-% Dyn_BT_UP         Dyn_BT_UPU          Dyn_BT_UPV          Dyn_BT_UPW
-%
-% Dyn_dCS_UP        Dyn_dCS_UPU         Dyn_dCS_UPN         Dyn_dCS_UPW
-% ------------------------------------------------------------------------
 
 %% Poroelasticity model
+% use default for running in main function
 Control.PMmodel = 'Tr_BT_UP';
 
 %% Material properties

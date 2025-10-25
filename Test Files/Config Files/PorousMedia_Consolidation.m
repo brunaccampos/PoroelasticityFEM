@@ -1,6 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = PorousMedia_Consolidation(~, progress_on,~,~)
 % Column Consolidation 1D simulation
-% Configuration File
 % ------------------------------------------------------------------------
 % Based on Korsawe (2006) model for transient/quasi-steady case
 % ------------------------------------------------------------------------
