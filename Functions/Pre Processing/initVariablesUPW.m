@@ -1,8 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Iteration, Plot] = initVariablesUPW(MeshU, MeshP,~, ~, Control, BC)
-% ------------------------------------------------------------------------
 % Initialize variables for Iteration and Plot structures
 % Model u-p-w (solid displacement, fluid pressure, relative fluid velocity)
-% ------------------------------------------------------------------------
 
 %% Iteration data - time domain
 % initial condition

@@ -1,8 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Iteration, Plot] = initVariablesUP(MeshU, MeshP, ~, ~, Control, BC)
-% ------------------------------------------------------------------------
 % Initialize variables for iteration and plot stages; store initial
 % conditions
-% ------------------------------------------------------------------------
 
 %% Iteration data - time domain
 % initial condition

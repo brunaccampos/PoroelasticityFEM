@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = setDefaults(Material, MeshU, MeshP, MeshN, BC, Control)
-% ------------------------------------------------------------------------
 % Set defaults for Material, BC, and Control structures
-% ------------------------------------------------------------------------
 
 %% Output information
 err_message = sprintf('-------------------------------------------------\n');
