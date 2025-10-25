@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = HeatConduction1D_Dynamic(~, progress_on,~,~)
 % Heat conduction in 1D
-% Configuration File
-% ------------------------------------------------------------------------
 
 %% Material properties
 % porous media permeability [m2/Pa s]

@@ -1,9 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = PlateDiffusionDynamic(config_dir, progress_on,~,~)
 % 2D diffusion problem - dynamic case
-% Configuration file
-% ------------------------------------------------------------------------
-% Adapted from: https://github.com/GCMLab
-% ------------------------------------------------------------------------
 
 %% Material properties
 % diffusion coefficient [ppm/mm2] 

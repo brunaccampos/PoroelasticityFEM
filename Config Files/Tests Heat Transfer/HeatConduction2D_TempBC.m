@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = HeatConduction2D_TempBC(config_dir, progress_on,~,~)
 % Plate with hole 1/8 model: Heat transfer problem adapted from file Q4one8thModel
-% Configuration file
-% ------------------------------------------------------------------------
 
 %% Material properties
 % thermal conductance coefficient [W/m3]
