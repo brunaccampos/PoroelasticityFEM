@@ -9,7 +9,7 @@ The code contains 12 distinct main solvers, encompassing models based on Biot (B
 
 ## Available modules
 
-- `RunSim`: main function to run. This is where the configuration file is read and the main function is called. The existent configuration files are listed within this file.
+- `RunSim`: main function to run. This is where the configuration file is read and `main` is called. The existent configuration files are listed within this file.
 - `RunTests`: used to test the code functionalities. Contains patch tests and manufactured solution tests for the uncoupled equations.
 - `StudyWaveVelAtt` and `StudyWaveVelAttContours`: functions used to plot wave velocity and attenuation patterns; contain various sets of material parameters to be chosen from. 
 
