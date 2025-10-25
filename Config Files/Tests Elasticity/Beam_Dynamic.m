@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Beam_Dynamic(~, progress_on,~,~)
 % Plate with hole 1/8 model
-% Heat transfer problem adapted from file Q4one8thModel
-% ------------------------------------------------------------------------
 
 %% Material properties
 % poroelasticity model

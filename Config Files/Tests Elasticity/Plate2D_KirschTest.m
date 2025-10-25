@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_KirschTest(config_dir, progress_on,~,~)
 % Plate with hole for Kirsch test
-% Configuration File
-% ------------------------------------------------------------------------
 
 %% Material properties - Berea Sandstone (Detournay, 1993, p.26)
 % poroelasticity model

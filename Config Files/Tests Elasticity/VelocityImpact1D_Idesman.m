@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = VelocityImpact1D_Idesman(~, progress_on,~,~)
 % Velocity impact for 1D elasticity
-% Configuration File
-% ------------------------------------------------------------------------
 
 %% Material properties - Idesman (2011)
 % poroelasticity model
