@@ -1,6 +1,14 @@
-% Biot poroelasticity model
-% Dynamic case
-% December 2022
+% Porous Media Simulation
+% ------------------------------------------------------------------------
+% Created by Bruna Campos
+% bccampos@uwaterloo.ca
+% Department of Civil Engineering, University of Waterloo
+% January 2022
+% ------------------------------------------------------------------------
+% Reference: https://github.com/GCMLab
+% ------------------------------------------------------------------------
+% MAIN FUNCTION for Biot theory
+% Model: Dyn_BT_UPW
 % ------------------------------------------------------------------------
 
 %% Model name and type

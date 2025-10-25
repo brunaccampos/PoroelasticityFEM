@@ -1,6 +1,16 @@
-% Biot poroelasticity model
-% Transient case
-% December 2022
+% SPDX-License-Identifier: GPL-3.0-or-later
+% ------------------------------------------------------------------------
+% Porous Media Simulation
+% ------------------------------------------------------------------------
+% Created by Bruna Campos
+% bccampos@uwaterloo.ca
+% Department of Civil Engineering, University of Waterloo
+% January 2022
+% ------------------------------------------------------------------------
+% Reference: https://github.com/GCMLab
+% ------------------------------------------------------------------------
+% MAIN FUNCTION for Biot theory
+% Model: Tr_BT_UP
 % ------------------------------------------------------------------------
 
 %% Model name and type
@@ -75,7 +85,7 @@ for t = 1:length(Plot.time)
     % linear solver
     [Solution] = SolverTr_UP(Kuu, Kup, Kpp, Kpu, S, fu, fp, BC, Control, Iteration);
     
-    % plot solution over time
+    % plot solution over time (uncomment for plotting animation)
 %     PlotGraphsUP_OverTime(MeshU, MeshP, Control, Solution);
 %     pause(0.0001);
 

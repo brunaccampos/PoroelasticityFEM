@@ -1,6 +1,16 @@
-% Biot poroelasticity model
-% Dynamic case
-% December 2022
+% SPDX-License-Identifier: GPL-3.0-or-later
+% ------------------------------------------------------------------------
+% Porous Media Simulation
+% ------------------------------------------------------------------------
+% Created by Bruna Campos
+% bccampos@uwaterloo.ca
+% Department of Civil Engineering, University of Waterloo
+% January 2022
+% ------------------------------------------------------------------------
+% Reference: https://github.com/GCMLab
+% ------------------------------------------------------------------------
+% MAIN FUNCTION for Biot theory
+% Model: Dyn_BT_UPU
 % ------------------------------------------------------------------------
 
 %% Model name and type
@@ -81,7 +91,7 @@ for t = 1:length(Plot.time)
     % linear solver
     [Solution] = SolverDyn_UPU(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, fp, ff, BC, Control, Iteration);
 
-    % plot solution over time
+    % plot solution over time (uncomment for plotting animation)
 %     PlotGraphsUPU_OverTime(MeshU, MeshP, Control, Solution);
 %     pause(0.0001);
 

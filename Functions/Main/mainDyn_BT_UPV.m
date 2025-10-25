@@ -1,6 +1,16 @@
-% Biot poroelasticity model
-% Dynamic case
-% December 2022
+% SPDX-License-Identifier: GPL-3.0-or-later
+% ------------------------------------------------------------------------
+% Porous Media Simulation
+% ------------------------------------------------------------------------
+% Created by Bruna Campos
+% bccampos@uwaterloo.ca
+% Department of Civil Engineering, University of Waterloo
+% January 2022
+% ------------------------------------------------------------------------
+% Reference: https://github.com/GCMLab
+% ------------------------------------------------------------------------
+% MAIN FUNCTION for Biot theory
+% Model: Dyn_BT_UPV
 % ------------------------------------------------------------------------
 
 %% Model name and type
