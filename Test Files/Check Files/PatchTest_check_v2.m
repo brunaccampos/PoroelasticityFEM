@@ -31,7 +31,7 @@ function [press_er, flux_er] = PatchTest_check_v2(d, flux, Mesh, BC, Material)
 q = BC.flux;
 x = Mesh.coords(:,1);
 y = Mesh.coords(:,2);
-d_exact = -BC.flux/Material.kf.* (x + y);
+d_exact = -BC.flux/Material.M(1).kf.* (x + y);
 flux_exact = [q*ones(1,Mesh.nn); q*ones(1,Mesh.nn)];
 
 % Calculate the error

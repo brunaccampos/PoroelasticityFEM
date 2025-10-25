@@ -10,56 +10,69 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = PorousMedia_Consolidatio
 % - no acceleration terms for solid or fluid
 % - solid velocity is neglected
 % ------------------------------------------------------------------------
+% Porous media theories
+% - BT: Biot
+% - dCS: de la Cruz and Spanos
+% ------------------------------------------------------------------------
+% Loading options
+% - Tr: transient/quasi-steady
+% - Dyn: dynamic (acceleration included)
+% ------------------------------------------------------------------------
+% Main variables
+% u = solid displacement
+% p = fluid pressure
+% n = porosity
+% U = fluid displacement
+% v = fluid velocity
+% w = relative fluid velocity
+% ------------------------------------------------------------------------
+% Model options
+%
+% Tr_BT_UP          Tr_dCS_UP           Tr_dCS_UPN 
+%
+% Dyn_BT_UP         Dyn_BT_UPU          Dyn_BT_UPV          Dyn_BT_UPW
+%
+% Dyn_dCS_UP        Dyn_dCS_UPU         Dyn_dCS_UPN         Dyn_dCS_UPW
+% ------------------------------------------------------------------------
 
 %% Poroelasticity model
-% Options:  Tr1_Biot_UP -------- Biot model (u-p), transient
-%           Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient
-%           Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dyn1_Biot_UP -------- Biot model (u-p), dynamic
-%           Dyn2_Spanos_UPN ----- Spanos model (u-p-n), dynamic
-%           Dyn3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
-%           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
-%                                   porosity perturbation equation
-Control.PMmodel = 'Tr1_Biot_UP';
+Control.PMmodel = 'Tr_BT_UP';
 
 %% Material properties - Boone (1990)
 % shear modulus [GPa]
-Material.mu = 6;
+Material.M(1).mu = 6;
 % Poisson's ratio
-Material.nu = 0.2;
+Material.M(1).nu = 0.2;
 % elasticity modulus [GPa]
-Material.E = 2 * Material.mu * (1 + Material.nu);
+Material.M(1).E = 2 * Material.M(1).mu * (1 + Material.M(1).nu);
 % porous media permeability [m2/GPa s]
-Material.kf = 2e-2;
+Material.M(1).kf = 2e-2;
 % dynamic viscosity [GPa s]
-Material.muf = 1e-12;
+Material.M(1).muf = 1e-12;
 % intrinsic permeability [m2]
-Material.k = Material.kf * Material.muf;
+Material.M(1).k = Material.M(1).kf * Material.M(1).muf;
 % Biot's coefficient
-Material.alpha = 1;
+Material.M(1).alpha = 1;
 % fluid bulk modulus [GPa]
-Material.Kf = 3;
+Material.M(1).Kf = 3;
 % solid bulk modulus [GPa]
-Material.Ks = 36;
+Material.M(1).Ks = 36;
 % fluid bulk viscosity [GPa s]
-Material.xif = 2.8e-12; % (Quiroga-Goode, 2005)
+Material.M(1).xif = 2.8e-12; % (Quiroga-Goode, 2005)
 % material porosity
-Material.eta0 = 0.19;
+Material.M(1).eta0 = 0.19;
 % 1/Q (related to storage coefficient)
-Material.Minv = (Material.alpha - Material.eta0)/Material.Ks + Material.eta0/Material.Kf;
+Material.M(1).Minv = (Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks + Material.M(1).eta0/Material.M(1).Kf;
 
 % additional coefficients for analytical result
 % Lame constant [GPa]
-Material.lambda = Material.E * Material.nu/((1+Material.nu)*(1-2*Material.nu));
+Material.M(1).lambda = Material.M(1).E * Material.M(1).nu/((1+Material.M(1).nu)*(1-2*Material.M(1).nu));
 % gravitational acceleration [m/s2]
-Material.g = 9.81;
+Material.M(1).g = 9.81;
 % fluid density [10^9 kg/m3]
-Material.rhof = 1000e-9;
+Material.M(1).rhof = 1000e-9;
 % hydraulic conductivity [m/s]
-Material.kh = Material.kf * Material.rhof * Material.g;
+Material.M(1).kh = Material.M(1).kf * Material.M(1).rhof * Material.M(1).g;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -77,12 +90,12 @@ n = 1; % return to Biot
 % n = Material.Ks/Material.Kf; % upper limit
 
 % modified storage coefficient (Muller, 2019)
-Mstarinv = Material.Minv - (1-n)*(Material.alpha - Material.eta0)/Material.Ks; 
+Mstarinv = Material.M(1).Minv - (1-n)*(Material.M(1).alpha - Material.M(1).eta0)/Material.M(1).Ks; 
 Mstar = 1/Mstarinv;
 
 % porosity equation coefficients
-Material.deltaf = (Material.alpha - Material.eta0) * Material.eta0 * Mstar * n / Material.Ks;
-Material.deltas = (Material.alpha - Material.eta0) * Material.eta0 * Mstar / Material.Kf;
+Material.M(1).deltaf = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar * n / Material.M(1).Ks;
+Material.M(1).deltas = (Material.M(1).alpha - Material.M(1).eta0) * Material.M(1).eta0 * Mstar / Material.M(1).Kf;
 
 %% Mesh parameters
 if progress_on

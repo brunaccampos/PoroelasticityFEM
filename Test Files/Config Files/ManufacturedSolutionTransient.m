@@ -6,20 +6,33 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = ManufacturedSolutionTran
 % ------------------------------------------------------------------------
 % Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
 % ------------------------------------------------------------------------
+% Porous media theories
+% - BT: Biot
+% - dCS: de la Cruz and Spanos
+% ------------------------------------------------------------------------
+% Loading options
+% - Tr: transient/quasi-steady
+% - Dyn: dynamic (acceleration included)
+% ------------------------------------------------------------------------
+% Main variables
+% u = solid displacement
+% p = fluid pressure
+% n = porosity
+% U = fluid displacement
+% v = fluid velocity
+% w = relative fluid velocity
+% ------------------------------------------------------------------------
+% Model options
+%
+% Tr_BT_UP          Tr_dCS_UP           Tr_dCS_UPN 
+%
+% Dyn_BT_UP         Dyn_BT_UPU          Dyn_BT_UPV          Dyn_BT_UPW
+%
+% Dyn_dCS_UP        Dyn_dCS_UPU         Dyn_dCS_UPN         Dyn_dCS_UPW
+% ------------------------------------------------------------------------
 
 %% Poroelasticity model
-% Options:  Tr1_Biot_UP -------- Biot model (u-p), transient
-%           Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient
-%           Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dyn1_Biot_UP -------- Biot model (u-p), dynamic
-%           Dyn2_Spanos_UPN ----- Spanos model (u-p-n), dynamic
-%           Dyn3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
-%           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
-%                                   porosity perturbation equation
-Control.PMmodel = 'Tr1_Biot_UP';
+Control.PMmodel = 'Tr_BT_UP';
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -32,15 +45,15 @@ Material.constLaw = 'PlaneStress';
 
 %% Material properties
 % elasticity modulus [Pa]
-Material.E = 1;
+Material.M(1).E = 1;
 % Poisson's ratio
-Material.nu = 0.3;
+Material.M(1).nu = 0.3;
 % porous media permeability [m2/Pa s]
-Material.kf = 1;
+Material.M(1).kf = 1;
 % Biot's coefficient
-Material.alpha = 0;
+Material.M(1).alpha = 0;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
+Material.M(1).Minv = 0;
 
 %% Mesh parameters
 if progress_on
@@ -110,7 +123,7 @@ BC.free_p = setdiff(MeshP.DOF, BC.fixed_p);
 BC.tractionNodes = [];
 
 % body force
-BC.b = @(x,t) Material.E * t^2 * sin(x*t);
+BC.b = @(x,t) Material.M(1).E * t^2 * sin(x*t);
 
 % point load [N]
 BC.pointLoad = @(t)[];
@@ -123,7 +136,7 @@ BC.pointFlux = @(t)[];
 BC.fluxNodes = [];
 
 % flux source
-BC.s = @(x,t) Material.kf * t^2 * sin(x*t); 
+BC.s = @(x,t) Material.M(1).kf * t^2 * sin(x*t); 
 
 %% Quadrature order
 Control.nqU = 2;
@@ -142,7 +155,7 @@ Control.plotansol = 1; % 1 = true; 0 = false
 % materials
 % 'getAnSol_coupledIncomp' = coupled porous media problem, incompressible
 % materials (1/M=0)
-Control.ansol_type = 'getAnSol_uncoupled';
+Control.ansol_type = 'getAnSol_uncoupled_UP';
 
 % solution in u
 Control.uan_symb = @(x,t) sin(x*t);

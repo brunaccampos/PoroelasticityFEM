@@ -5,32 +5,45 @@ function [Material, MeshU, MeshP, MeshN, BC, Control] = PatchTestE(config_dir, p
 % and exact solutions is then calculated. The FEA approximate solution
 % should be exact.
 % ------------------------------------------------------------------------
+% Porous media theories
+% - BT: Biot
+% - dCS: de la Cruz and Spanos
+% ------------------------------------------------------------------------
+% Loading options
+% - Tr: transient/quasi-steady
+% - Dyn: dynamic (acceleration included)
+% ------------------------------------------------------------------------
+% Main variables
+% u = solid displacement
+% p = fluid pressure
+% n = porosity
+% U = fluid displacement
+% v = fluid velocity
+% w = relative fluid velocity
+% ------------------------------------------------------------------------
+% Model options
+%
+% Tr_BT_UP          Tr_dCS_UP           Tr_dCS_UPN 
+%
+% Dyn_BT_UP         Dyn_BT_UPU          Dyn_BT_UPV          Dyn_BT_UPW
+%
+% Dyn_dCS_UP        Dyn_dCS_UPU         Dyn_dCS_UPN         Dyn_dCS_UPW
+% ------------------------------------------------------------------------
 
 %% Poroelasticity model
-% Options:  Tr1_Biot_UP -------- Biot model (u-p), transient
-%           Tr2_Spanos_UPN ----- Spanos model (u-p-n), transient
-%           Tr3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dyn1_Biot_UP -------- Biot model (u-p), dynamic
-%           Dyn2_Spanos_UPN ----- Spanos model (u-p-n), dynamic
-%           Dyn3_Spanos_UP ------ Spanos model (u-p), dynamic, implicit
-%                                   porosity perturbation equation
-%           Dyn4_Biot_UPU ------- Biot model (u-p-U), dynamic
-%           Dyn5_Spanos_UPU ----- Spanos model (u-p-U), dynamic, implicit
-%                                   porosity perturbation equation
-Control.PMmodel = 'Tr1_Biot_UP';
+Control.PMmodel = 'Tr_BT_UP';
 
 %% Material properties
 % diffusivity coefficient [m2/s]
-Material.kf = 0.139e-4;
+Material.M(1).kf = 0.139e-4;
 % elasticity modulus [Pa]
-Material.E = 0;
+Material.M(1).E = 0;
 % Poisson's ratio
-Material.nu = 0;
+Material.M(1).nu = 0;
 % 1/Q (related to storage coefficient)
-Material.Minv = 0;
+Material.M(1).Minv = 0;
 % Biot's coefficient
-Material.alpha = 0;
+Material.M(1).alpha = 0;
 
 % thickness 
 % 1D: cross sectional area [m2]
@@ -105,7 +118,7 @@ BC.free_u = setdiff(MeshU.DOF, BC.fixed_u);
 
 %% Dirichlet BCs - fluid
 % pressure according to exact solution
-BC.p = @(x) -1/Material.kf * BC.flux * (x(:,1) + x(:,2));
+BC.p = @(x) -1/Material.M(1).kf * BC.flux * (x(:,1) + x(:,2));
 % fixed nodes
 BC.fixed_p_dof1 = MeshP.left_dof;
 BC.fixed_p_dof2 = MeshP.right_dof;

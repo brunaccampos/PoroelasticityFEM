@@ -34,8 +34,8 @@ sigma = BC.traction;
 x = Mesh.coords(:,1);
 y = Mesh.coords(:,2);
 d_exact = zeros(2*Mesh.nn,1);
-d_exact(1:2:end) = (1-Material.nu)*BC.traction/Material.E.*x;
-d_exact(2:2:end) = (1-Material.nu)*BC.traction/Material.E.*y;
+d_exact(1:2:end) = (1-Material.M(1).nu)*BC.traction/Material.M(1).E.*x;
+d_exact(2:2:end) = (1-Material.M(1).nu)*BC.traction/Material.M(1).E.*y;
 stress_exact = [sigma*ones(1,Mesh.nn); sigma*ones(1,Mesh.nn); zeros(1,Mesh.nn)];
 % stress_exact = [zeros(1,Mesh.nn); zeros(1,Mesh.nn); zeros(1,Mesh.nn)];
 

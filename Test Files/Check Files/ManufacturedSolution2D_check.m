@@ -33,8 +33,8 @@ function [m_L2, m_e] = ManufacturedSolution2D_check(d1, d2, d3, s1, s2, s3, e1, 
 plot_on = 1; % turn plots on/off - debugging tool
 
 % material parameters
-E = Material.E;
-nu = Material.nu;
+E = Material.M(1).E;
+nu = Material.M(1).nu;
 % quadrature data
 nq = Control.nqU^Mesh1.nsd; % total number of integration points
 
