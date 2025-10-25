@@ -1,3 +1,6 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = InjectionWells2D_15x15(config_dir, progress_on,~,~)
 % 2D simulation of hydraulic dilation stimulation of SADG well pair
 % Configuration File
