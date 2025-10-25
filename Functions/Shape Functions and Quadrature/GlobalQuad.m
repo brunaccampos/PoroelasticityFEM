@@ -1,14 +1,12 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Quad] = GlobalQuad(Mesh, Control)
-% Return quadrature points (coordinates and weights)
-% Return shape functions and its derivatives
-%   --------------------------------------------------------------------
-%   References
-%   --------------------------------------------------------------------
-%   [1] Fish, J., & Belytschko, T. (2007). A first course in finite
-%       elements. Chichester; Hoboken, NJ: John Wiley & Sons.
-%   --------------------------------------------------------------------
-%   Adapted from: https://github.com/GCMLab (Acknowledgments: Matin Parchei Esfahani)
-%   --------------------------------------------------------------------
+% Return quadrature points (coordinates and weights), shape functions and 
+% its derivatives
+% Reference: Fish, J., & Belytschko, T. (2007). A first course in finite
+% elements. Chichester; Hoboken, NJ: John Wiley & Sons.
+% Acknowledgments: Matin Parchei Esfahani
 
 % number of spatial dimensions
 nsd = Mesh.nsd;

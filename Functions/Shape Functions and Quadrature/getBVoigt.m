@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Bvoigt] = getBVoigt(Mesh, B)
 % return the B matrix in Voigt form
-% Input: NB matrix
-% adapted from GitHub GCMLab-FEM, getNv.m
 % Acknowledgements: Matin Parchei Esfahani
 
 nsd = Mesh.nsd;

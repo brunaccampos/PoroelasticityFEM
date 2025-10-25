@@ -1,7 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [L] = getGatherMatrix (rows,columns,e)
 % 'Gather' matrix
-% Input parameters: ndofs for rows and columns of gather matrix of element
-% e
 
 L = zeros(rows, columns);
 for i = 1:rows

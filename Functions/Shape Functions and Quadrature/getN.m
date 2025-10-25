@@ -1,8 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [N] = getN(Mesh, Quad, ip)
-% Get Shape Functions
-% Input parameters: Mesh
-%                   Quad = quadrature points
-%                   ip = number of the current integration point
+% Get shape functions
 
 % number of nodes per element
 nne = Mesh.nne;

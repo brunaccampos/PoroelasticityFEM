@@ -1,8 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [dN] = getdN(Mesh, Quad, ip)
 % Get Derivatives of Shape Functions
-% Input parameters: Mesh
-%                   Quad = quadrature points
-%                   ip = number of the current integration point
 
 % number of nodes per element
 nne = Mesh.nne;

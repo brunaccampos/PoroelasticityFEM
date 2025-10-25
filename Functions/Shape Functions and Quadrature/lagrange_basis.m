@@ -1,60 +1,18 @@
-function [N, dNdxi, Nv] = lagrange_basis(Mesh, coord)
-%LAGRANGE_BASIS Returns the lagrange interpolant basis and its gradients 
-%with respect to the parent coordinate system
-%   N = LAGRANGE_BASIS(type, coord) is a vector of shape functions
-%   (size n x 1 where n is the number of nodes) evaluated at the 
-%   specified parent coordinates (coord), for the specified element 
-%   type (type).
-%
-%   [N, dNdxi] = LAGRANGE_BASIS(type, coord) also returns a vector of 
-%   shape function derivatives (size n x dim where n is the number of 
-%   nodes and dim is the number of model dimensions) evaluated at the 
-%   specified parent coordinates (coord), for specified element type (type). 
-% 
-%   [N, dNdxi, Nv] = LAGRANGE_BASIS(type, coord) also returns a vector 
-%   of shape functions in Voigt notation (size n*dim x dim where n is 
-%   the number of nodes and dim is the number of spatial dimensions) 
-%   evaluated at the specified parent coordinates (coord).
-% 
-%   --------------------------------------------------------------------
-% 	Input
-%   --------------------------------------------------------------------
-%   type:   the topological class of finite element; it is in the general
-%           form 'topology-#of nodes' ie a three node triangle is T3 a 
-%           four node quadralateral is Q4 a 4 node tetrahedra is H4 a 27 
-%           node brick is B27 etc. Presently defined are L2, L3, L4, T3, 
-%           T4(cubic bubble), T6, Q4, Q9, H4, H10, B8 and B27.  
-%   coord:  the parent coordinates at which the basis and its gradients are 
-%           to be evaluated at. If enough coordinates are not specified, 
-%           code will return error. If too many coordinates are specified, 
-%           code will ignore the extra.
-%   dim:    Spatial dimensions. The default is unity. 
-%
-%   --------------------------------------------------------------------
-% 	Output
-%   --------------------------------------------------------------------
-%   N:      shape functions evaluated at the specified parent coordinates 
-%           (coord). These are given as nx1 where n is the number of nodes
-%   dNdxi:  derivatives of the shape functions evaluated at the specified 
-%           parent coordinates (coord). These are given as n x dim, where 
-%           n is the number of nodes and dim is the number of model 
-%           dimensions.
-%   Nv:     shape functions evaluated at the specified parent coordinates 
-%           (coord). There are given in Voigt notation.
-%
-%   --------------------------------------------------------------------
-%   References
-%   --------------------------------------------------------------------
-%   [1] Fish, J., & Belytschko, T. (2007). A first course in finite 
-%       elements. Chichester; Hoboken, NJ: John Wiley & Sons.
-%   [2] Liu, G. R., & Quek, S. S. (Eds.). (2003). Finite Element Method. 
-%       Oxford: Butterworth-Heinemann. 
-%   [3] Zienkiewicz, O. C., & Taylor, R. L. (2005). The Finite Element 
-%       Method: Volume 1 (6th ed., Vol. 1). Butterworth-Heinemann. 
-%   [4] Belytschko, T., Liu, W. K., Moran, B., & Elkhodary, K. (2014). 
-%       Nonlinear Finite Elements for Continua and Structures. John Wiley &
-%       Sons.
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
 
+function [N, dNdxi, Nv] = lagrange_basis(Mesh, coord)
+% Returns the lagrange interpolant basis and its gradients with respect to
+% the parent coordinate system
+% References
+% [1] Fish, J., & Belytschko, T. (2007). A first course in finite 
+% elements. Chichester; Hoboken, NJ: John Wiley & Sons.
+% [2] Liu, G. R., & Quek, S. S. (Eds.). (2003). Finite Element Method. 
+% Oxford: Butterworth-Heinemann. 
+% [3] Zienkiewicz, O. C., & Taylor, R. L. (2005). The Finite Element 
+% Method: Volume 1 (6th ed., Vol. 1). Butterworth-Heinemann. 
+% [4] Belytschko, T., Liu, W. K., Moran, B., & Elkhodary, K. (2014). 
+% Nonlinear Finite Elements for Continua and Structures. John Wiley & Sons.
 % Acknowledgements: Jack Chessa
 
 type = Mesh.type;

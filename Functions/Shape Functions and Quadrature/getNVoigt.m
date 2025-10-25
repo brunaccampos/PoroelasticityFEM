@@ -1,7 +1,9 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Nvoigt] = getNVoigt(Mesh, N)
 % Return the shape functions matrix in Voigt form
-% Input: Mesh, N matrix
-% Adapted from GitHub GCMLab-FEM (Acknowledgements: Matin Parchei Esfahani)
+% Acknowledgements: Matin Parchei Esfahani
 
 % number of spatial dimensions
 nsd = Mesh.nsd;

@@ -1,13 +1,11 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function Quad = getIPs(nsd, nq, type)
 % Return quadrature coordinates and weights
-%   --------------------------------------------------------------------
-%   References
-%   --------------------------------------------------------------------
-%   [1] Fish, J., & Belytschko, T. (2007). A first course in finite
-%       elements. Chichester; Hoboken, NJ: John Wiley & Sons.
-%   --------------------------------------------------------------------
-%   Adapted from: https://github.com/GCMLab (Acknowledgements: Jack Chessa)
-%   --------------------------------------------------------------------
+% Reference: Fish, J., & Belytschko, T. (2007). A first course in finite
+% elements. Chichester; Hoboken, NJ: John Wiley & Sons.
+% Acknowledgements: Jack Chessa
 
 switch type
     case {'T3', 'T6'}
