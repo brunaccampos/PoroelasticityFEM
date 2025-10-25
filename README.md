@@ -1,7 +1,7 @@
 # Finite Element Models for Multiscale Theory of Porous Media
 
 PoroelasticityFEM is a porous media Finite Element code developed during the PhD project of Bruna Campos at the University of Waterloo (2021-2024), under the supervision of Prof. Robert Gracie.
-The PhD thesis based on related to this implementation is available [here](https://hdl.handle.net/10012/21213).
+The PhD thesis related to this implementation is available [here](https://hdl.handle.net/10012/21213).
 
 The code contains 12 distinct main solvers, encompassing models based on Biot (Bt) annd de la Cruz and Spanos (dCS) porous media theories, dynamic and transient formulations, and five different combinations of main variables.
 
