@@ -1,3 +1,6 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Plate2D_Dynamic_Pulse(~, progress_on,~,~)
 % Pulse propagation in 2D simulation
 % Configuration File

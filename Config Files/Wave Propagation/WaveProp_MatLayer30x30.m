@@ -1,3 +1,6 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = WaveProp_MatLayer30x30(config_dir, progress_on,~,~)
 % Wave propagation in 2D
 % Configuration File
