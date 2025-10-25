@@ -1,3 +1,6 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Material, MeshU, MeshP, MeshN, BC, Control] = Column2D_Steady_Ferronato(config_dir, progress_on,~,~)
 % Column Consolidation 1D simulation
 % Configuration File
