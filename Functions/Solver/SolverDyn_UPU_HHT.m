@@ -1,18 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Solution] = SolverDyn_UPU_HHT(Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, fu, fp, ff, BC, Control, Iteration)
-% ------------------------------------------------------------------------
 % Solve linear system for dynamic case
-% Input parameters: coupled matrices, BC, Control, Iteration
-% ------------------------------------------------------------------------
-% Outputs:
-%   u: solid displacement
-%   udot: solid velocity
-%   u2dot: solid acceleration
-%   p: fluid pressure
-%   pdot: fluid pressure gradient
-%   uf: fluid displacement
-%   ufdot: fluid velocity
-%   uf2dot: fluid acceleration
-% ------------------------------------------------------------------------
 
 %% Iteration data
 u_old = Iteration.u_old;

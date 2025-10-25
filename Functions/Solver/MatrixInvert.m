@@ -1,16 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [d] = MatrixInvert(K,f,parallel_number)
 % Solves the linear system d = inv(K)*f
-%   --------------------------------------------------------------------
-% 	K:                  Partitioned stiffness matrix 
-% 	f:                  Partitioned force/residual vector
-%   parallel_number:    Number of cores on which to perform the inversion.
-%                       1   - perform on a single core
-%                       > 1 - creates a local pool and inverts in parallel
-%                             if inverting in parallel, use as many cores
-%                             as you have access to.
-% ------------------------------------------------------------------------
-% Reference: https://github.com/GCMLab
-% ------------------------------------------------------------------------
 
 if parallel_number == 1
     d = K\f;

@@ -1,16 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Solution] = SolverTr_UP(Kuu, Kup, Kpp, Kpu, S, fu, fp, BC, Control, Iteration)
-% ------------------------------------------------------------------------
-% Solve linear system for quasi-steady case
-% ------------------------------------------------------------------------
-% Input parameters: coupled matrices, BC, Control, Iteration
-% ------------------------------------------------------------------------
-% Outputs:
-%   u: solid displacement
-%   udot: solid velocity
-%   p: fluid pressure
-% ------------------------------------------------------------------------
-% version 4: generalize backward Euler to beta method
-% ------------------------------------------------------------------------
+% Solve linear system for transient case
 
 %% Iteration data
 u_old = Iteration.u_old;

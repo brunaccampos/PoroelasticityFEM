@@ -1,16 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Solution] = SolverTr_UPU(Kss, Ksp, Csf, Css, Kpf, Kps, Kpp, Kfp, Cff, Cfs, fu, fp, ff, BC, Control, Iteration)
-% ------------------------------------------------------------------------
 % Solve linear system for transient case
-% Input parameters: coupled matrices, BC, Control, Iteration
-% ------------------------------------------------------------------------
-% Outputs:
-%   u: solid displacement
-%   udot: solid velocity
-%   p: fluid pressure
-%   pdot: fluid pressure gradient
-%   uf: fluid displacement
-%   ufdot: fluid velocity
-% ------------------------------------------------------------------------
 
 %% Iteration data
 u_old = Iteration.u_old;
