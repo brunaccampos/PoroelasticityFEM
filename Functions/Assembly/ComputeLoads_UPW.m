@@ -1,26 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [fs, fp, ff] = ComputeLoads_UPW(BC, MeshU, MeshP, Control, Material, QuadU, QuadP)
 % Compute system load force vectors
-% ------------------------------------------------------------------------
-%   Input
-% ------------------------------------------------------------------------
-%   BC:     structure array with fields
-%       BC.tractionNodes: nodes where traction is applied
-%       BC.tractionForce: magnitude of applied traction
-%       BC.pointLoad: point loads applied
-%       BC.b: body forces
-%
-%       BC.fluxNodes: nodes where flux is applied
-%       BC.fluxValue: magnitude of applied flux
-%       BC.pointFlux: point fluxes applied
-%       BC.s: flux sources
-% ------------------------------------------------------------------------
-%   Output
-% ------------------------------------------------------------------------
-%   fu: global traction vector for displacement field
-%   fp: global flux vector for pressure field
-% ------------------------------------------------------------------------
-% Adapted from: https://github.com/GCMLab (Acknowledgements: Chris Ladubec)
-% ------------------------------------------------------------------------
 
 ne = MeshU.ne; % number of elements
 nqU = QuadU.nq; % total number of integration points

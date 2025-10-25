@@ -1,9 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Muu, Mpu, Mnu, Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesDyn_dCS_UPN(Material, MeshU, MeshP, MeshN, Quad)
-% ------------------------------------------------------------------------
-% Compute System Matrices for 1D dynamic simulation
-% ------------------------------------------------------------------------
-% Input parameters: Material, Mesh, Control, Quad
-% ------------------------------------------------------------------------
+% Compute system matrices for dynamic simulation
 
 ne = MeshU.ne; % number of elements
 nq = Quad.nq; % total number of integration points

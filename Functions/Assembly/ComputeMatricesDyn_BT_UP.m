@@ -1,10 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Kuu, Kup, Kpp, Muu, Mpu, S] = ComputeMatricesDyn_BT_UP(Material, MeshU, MeshP, QuadU, QuadP)
-% ------------------------------------------------------------------------
-% Compute System Matrices for 1D dynamic simulation
-% ------------------------------------------------------------------------
-% Input parameters: Material, Mesh, Control, Quad
-% Output matrices: Kuu, Kup, Kpp, M, Mhat, S
-% ------------------------------------------------------------------------
+% Compute system matrices for 1D dynamic simulation
 
 ne = MeshU.ne; % number of elements
 nqU = QuadU.nq; % total number of integration points

@@ -1,10 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Kss, Ksp, Csf, Css, Kpf, Kps, Kpp, Kfp, Cff, Cfs] = ComputeMatricesTr_BT_UPU(Material, MeshU, MeshP, QuadU, QuadP)
-% ------------------------------------------------------------------------
-% Compute System Matrices for transient simulation
-% ------------------------------------------------------------------------
-% Input parameters: Material, Mesh, Control, Quad
-% Output matrices: Kss, Ksp, Csf, Css, Kpf, Kps, Kpp, Kfp, Cff, Cfs
-% ------------------------------------------------------------------------
+% Compute system matrices for transient simulation
 
 ne = MeshU.ne; % number of elements
 nqU = QuadU.nq; % total number of integration points

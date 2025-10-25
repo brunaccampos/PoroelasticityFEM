@@ -1,10 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Kuu, Kup, Kpp, Kpu, S, Kpn, Knn, Knu, Knp, Kun] = ComputeMatricesTr_dCS_UPN(Material, MeshU, MeshP, MeshN, QuadU, QuadP)
-% Compute System Matrices for 1D quasi-steady simulation
-% Input parameters: Material, Mesh, Control, Quad
-% Output matrices: Kuu, Kup, Kpp, S
-% ------------------------------------------------------------------------
-% version 5: Spanos with different number of IPs for u-p fields
-% ------------------------------------------------------------------------
+% Compute system matrices for transient simulation
 
 ne = MeshU.ne; % number of elements
 nqU = QuadU.nq; % total number of integration points

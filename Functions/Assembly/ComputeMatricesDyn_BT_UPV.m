@@ -1,10 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [Mss, Msf, Kss, Ksp, Kps, Kpf, Mff, Kff, Cfs, Kfp, Kpp] = ComputeMatricesDyn_BT_UPV(Material, MeshU, MeshP, QuadU, QuadP)
-% ------------------------------------------------------------------------
-% Compute System Matrices for dynamic simulation
-% ------------------------------------------------------------------------
-% Input parameters: Material, Mesh, Control, Quad
-% Output matrices: Kss, Ksp, Ksf, Kpf, Kps, Kpp, Kfs, Kfp, Kff, Mss, Mff
-% ------------------------------------------------------------------------
+% Compute system matrices for dynamic simulation
 
 ne = MeshU.ne; % number of elements
 nqU = QuadU.nq; % total number of integration points
