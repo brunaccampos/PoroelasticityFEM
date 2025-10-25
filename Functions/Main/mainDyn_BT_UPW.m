@@ -1,11 +1,5 @@
-% Porous Media Simulation
-% ------------------------------------------------------------------------
-% Created by Bruna Campos
-% bccampos@uwaterloo.ca
-% Department of Civil Engineering, University of Waterloo
-% January 2022
-% ------------------------------------------------------------------------
-% Reference: https://github.com/GCMLab
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
 % ------------------------------------------------------------------------
 % MAIN FUNCTION for Biot theory
 % Model: Dyn_BT_UPW
