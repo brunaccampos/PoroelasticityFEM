@@ -1,14 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [SolutionFreq] = SolverFreqTr_UP(phi_u, phi_p, Kuu, Kup, Kpp, S, fu, fp, BC, Control, Iteration)
-% ------------------------------------------------------------------------
-% Solve linear system for quasi-steady case
-% ------------------------------------------------------------------------
-% Input parameters: coupled matrices, BC, Control, Iteration
-% ------------------------------------------------------------------------
-% Outputs:
-%   u: solid displacement
-%   udot: solid velocity
-%   p: fluid pressure
-% ------------------------------------------------------------------------
+% Solve linear system for transient case
 
 %% Iteration data
 uF_old = Iteration.uF_old;

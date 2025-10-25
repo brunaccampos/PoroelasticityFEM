@@ -1,6 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [phi_u, omega2_u, phi_p, omega2_p] = EigenDyn_UP(Kuu, Kup, Kpp, M, Mhat, MeshU, MeshP, BC, Control)
 % solve eigenproblem for dynamic systems considering Biot theory
-% ------------------------------------------------------------------------
 
 % partitioned matrices for unknown variables
 KuuFF = Kuu(BC.free_u, BC.free_u);

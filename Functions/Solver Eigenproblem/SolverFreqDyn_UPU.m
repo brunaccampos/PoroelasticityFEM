@@ -1,15 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [SolutionFreq] = SolverFreqDyn_UPU(phi_u, omega2_u, phi_p, omega2_p, phi_uf, omega_uf, Kss, Ksp, Mss, Csf, Css, Kpf, Kps, Kpp, Kfp, Mff, Cff, Cfs, Msf, Mfs, fu, ff, BC, Control, Iteration)
-% ------------------------------------------------------------------------
 % Solve linear system for dynamic case
-% Input parameters: coupled matrices, BC, Control, Iteration
-% ------------------------------------------------------------------------
-% Outputs:
-%   u: solid displacement
-%   udot: solid velocity
-%   u2dot: solid acceleration
-%   p: fluid pressure
-%   pdot: fluid pressure gradient
-% ------------------------------------------------------------------------
 
 %% Iteration data
 uF_old = Iteration.uF_old;

@@ -1,6 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [phi_ucoupl, omega2_ucoupl, phi_pcoupl, omega2_pcoupl, phi_ncoupl, omega2_ncoupl] = EigenTr_UPN(Kuu, Kup, Kpp, Knp, Kpu, S, Kpn, Knu, Knn, MeshU, MeshP, MeshN, BC, Control)
 % solve eigenproblem for transient systems
-% ------------------------------------------------------------------------
 
 % partitioned matrices for unknown variables
 KuuFF = Kuu(BC.free_u, BC.free_u);

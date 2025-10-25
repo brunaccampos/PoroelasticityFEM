@@ -1,6 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [phi_ucoupl, omega2_ucoupl, phi_pcoupl, omega2_pcoupl, phi_ncoupl, omega2_ncoupl] = EigenDyn_UPN(Muu, Mpu, Mnu, Kuu, Kup, Kpp, Knp, MeshU, MeshP, MeshN, BC, Control)
-% solve eigenproblem for dynamic systems considering Spanos theory
-% ------------------------------------------------------------------------
+% solve eigenproblem for dynamic systems considering dCS theory
 
 % partitioned matrices for unknown variables
 MuuFF = Muu(BC.free_u, BC.free_u);
