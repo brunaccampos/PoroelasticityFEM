@@ -1,3 +1,5 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
 % ------------------------------------------------------------------------
 % Runs unit Test 11 - L2/L3 manufactured solution convergence as a part of RunTests
 % ------------------------------------------------------------------------
@@ -6,8 +8,6 @@
 % u = sin(xt)
 % p = sin(xt)
 % Both fields are prescribed, but the problem is uncoupled
-% ------------------------------------------------------------------------
-% Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
 % ------------------------------------------------------------------------
 
 % Create test VTK folder

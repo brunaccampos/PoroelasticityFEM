@@ -1,3 +1,5 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
 % ------------------------------------------------------------------------
 % Runs unit Test 8 - Q9 manufactured solution convergence as a part of RunTests
 % ------------------------------------------------------------------------
@@ -6,8 +8,6 @@
 % ux = x^5 + x*y^3 - y^6
 % uy = x^5 + x*y^3 - y^6
 % under plane stress conditions
-% ------------------------------------------------------------------------
-% Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
 % ------------------------------------------------------------------------
 
 % Create test VTK folder

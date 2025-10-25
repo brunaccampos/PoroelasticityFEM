@@ -1,10 +1,10 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
 % ------------------------------------------------------------------------
 % Runs unit Test 12 - Poroelasticity consolidation as a part of RunTests
 % ------------------------------------------------------------------------
 % Verify the FEA solution of a one-dimensional consolidation problem in
 % porous media theory by comparing it to its analytical solution
-% ------------------------------------------------------------------------
-% Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
 % ------------------------------------------------------------------------
 
 % Create test VTK folder

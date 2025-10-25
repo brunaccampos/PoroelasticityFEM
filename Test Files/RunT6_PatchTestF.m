@@ -1,3 +1,5 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
 % ------------------------------------------------------------------------
 % Runs unit Test 6 - Patch Test F as part of RunTests
 % ------------------------------------------------------------------------
@@ -6,8 +8,6 @@
 % 3, and 6 in accordance with the values generated through the boundary
 % fluxes. The error between the FEA and exact solutions is then calculated. 
 % The FEA approximate solution should be exact.
-% ------------------------------------------------------------------------
-% Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
 % ------------------------------------------------------------------------
 
 % Create test VTK folder
