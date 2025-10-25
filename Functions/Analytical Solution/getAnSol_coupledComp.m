@@ -1,12 +1,13 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [p_an, u_an] = getAnSol_coupledComp(Control, Material, MeshU, MeshP, BC)
-% ------------------------------------------------------------------------
 % Analytical solution for column consolidation (Terzaghi problem)
 % Valid for compressible solid and fluid materials
-% ------------------------------------------------------------------------
+
 % Reference: Ferronato, M., Castelletto, N., & Gambolati, G. (2010). A 
 % fully coupled 3-D mixed finite element model of Biot consolidation. 
 % Journal of Computational Physics, 229(12), 4813-4830.
-% ------------------------------------------------------------------------
 
 % column length
 L = max(MeshU.coords);

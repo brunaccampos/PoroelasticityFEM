@@ -1,13 +1,14 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function [p_an, u_an] = getAnSol_coupledIncomp_Symb(Control, Material, MeshU, ~, BC)
-% ------------------------------------------------------------------------
 % Analytical solution for column consolidation
 % Valid for incompressible solid and fluid materials
-% ------------------------------------------------------------------------
+
 % Reference: Korsawe, J., Starke, G., Wang, W., & Kolditz, O. (2006). 
 % Finite element analysis of poro-elastic consolidation in porous media: 
 % Standard and mixed approaches. Computer Methods in Applied Mechanics and 
 % Engineering, 195(9-12), 1096-1115.
-% ------------------------------------------------------------------------
 
 % column length
 L = max(MeshU.coords);
