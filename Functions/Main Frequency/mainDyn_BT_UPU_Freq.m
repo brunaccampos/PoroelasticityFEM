@@ -1,6 +1,8 @@
-% Biot poroelasticity model
-% Dynamic case - Mode superposition
-% December 2022
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+% ------------------------------------------------------------------------
+% MAIN FUNCTION for Biot theory
+% Model: Dyn_BT_UPU mode superposition
 % ------------------------------------------------------------------------
 
 %% Model name and type

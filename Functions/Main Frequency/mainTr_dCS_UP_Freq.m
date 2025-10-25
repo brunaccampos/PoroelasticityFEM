@@ -1,8 +1,8 @@
-% Biot poroelasticity model
-% Transient case - Mode superposition
-% December 2022
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
 % ------------------------------------------------------------------------
-% May 2023: version with u-p system, substituting porosity equation
+% MAIN FUNCTION for de la Cruz and Spanos theory
+% Model: Tr_dCS_UP mode superposition
 % ------------------------------------------------------------------------
 
 %% Model name and type

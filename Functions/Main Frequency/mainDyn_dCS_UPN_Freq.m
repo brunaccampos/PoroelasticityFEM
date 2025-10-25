@@ -1,6 +1,8 @@
-% de la Cruz and Spanos poroelasticity model
-% Dynamic case - Mode superposition
-% December 2022
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+% ------------------------------------------------------------------------
+% MAIN FUNCTION for de la Cruz and Spanos theory
+% Model: Dyn_dCS_UPN mode superposition
 % ------------------------------------------------------------------------
 
 %% Model name and type
