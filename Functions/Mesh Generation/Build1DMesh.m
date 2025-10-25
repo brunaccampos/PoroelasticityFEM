@@ -1,9 +1,8 @@
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 function Mesh = Build1DMesh(nsd, ne, L, type, field)
-% Build Mesh function
-% Input parameters: ne = number of elements
-%                   L = mesh size
-%                   type = element type: L2, L3
-% Assumption of uniform mesh
+% Build uniform mesh
 
 %% Mesh properties
 Mesh.ne = ne; % number of elements
