@@ -1,33 +1,13 @@
-function [disp_er, stress_er, reaction_er] = PatchTest_check(d, stress, Fext, Mesh, BC, Material)
-%PATCHTEST_CHECK Calculates the error
-%   [disp_er, stress_er, reaction_er] = PatchTest_check(d, stress, Fext)
-%   calculates the error related to displacements, reaction forces, and
-%   stress for using a patch test
-%
-%   ----------------------------------------------------------
-%   Input
-%   ----------------------------------------------------------
-%   d:                  Displacement vectors
-%   stress:             Nodal stress data
-%   Fext:               External forces as the reactions
-%   Mesh:               Mesh data structure
-%
-%   ----------------------------------------------------------
-%   Output
-%   ----------------------------------------------------------
-%   disp_er:             Error related to Displacement vector
-%   stress_er:           Error related to Nodal stress
-%   reaction_er:         Error related to reaction forces
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
 
-% Patch Test
-% ux = (1-nu)*t/E*x
-% uy = (1-nu)*t/E*y
+function [disp_er, stress_er, reaction_er] = PatchTest_check(d, stress, Fext, Mesh, BC, Material)
+%   Calculates the error related to displacements, reaction forces, and
+%   stress for using a patch test
+%   ux = (1-nu)*t/E*x
+%   uy = (1-nu)*t/E*y
 %   applied traction of t in both x and y directions
 %   stress = [t*ones(1,Mesh.nn); t*ones(1,Mesh.nn); zeros(1,Mesh.nn)]
-
-%   ----------------------------------------------------------
-% Adapted from https://github.com/GCMLab
-%   ----------------------------------------------------------
 
 % Calculate exact solutions
 sigma = BC.traction;
@@ -37,7 +17,6 @@ d_exact = zeros(2*Mesh.nn,1);
 d_exact(1:2:end) = (1-Material.M(1).nu)*BC.traction/Material.M(1).E.*x;
 d_exact(2:2:end) = (1-Material.M(1).nu)*BC.traction/Material.M(1).E.*y;
 stress_exact = [sigma*ones(1,Mesh.nn); sigma*ones(1,Mesh.nn); zeros(1,Mesh.nn)];
-% stress_exact = [zeros(1,Mesh.nn); zeros(1,Mesh.nn); zeros(1,Mesh.nn)];
 
 % Calculate the error
 disp_er = norm(d - d_exact);

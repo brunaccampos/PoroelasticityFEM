@@ -1,23 +1,9 @@
-function [m_L2, m_e] = ManufacturedSolution_check(d1, d2, d3, s1, s2, s3, e1, e2, e3, Mesh1, Mesh2, Mesh3, Material, Control, Quad)
-%MANUFACTUREDSOLUTION_CHECK Calculates the convergence rates
-%   [m_L2, m_e] = ManufacturedSolution_check(d1, d2, d3, s1, s2, s3, Mesh1,
-%   Mesh2, Mesh3) calculates the rates of convergence of the L2 error norm
-%   and the energy norm for using a manufactured solution
-%
-%   ----------------------------------------------------------
-%   Input
-%   ----------------------------------------------------------
-%   d1, d2, d3:             Displacement vectors from 3 runs with increasing mesh
-%                           refinement
-%   s1, s2, s3:             Nodal stress data from 3 runs with increasing mesh
-%                           refinement
-%   e1, e2, e3:             Nodal strain data from 3 runs with increasing mesh
-%                           refinement
-%   Mesh1, Mesh2, Mesh3:    Mesh data structure from 3 runs with increasing mesh
-%                           refinement
-%   1 - coarsest mesh, 2 - medium mesh, 3 - finest mesh
+% SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
+% SPDX-License-Identifier: GPL-3.0-or-later
 
-% Manufactured solution
+function [m_L2, m_e] = ManufacturedSolution_check(d1, d2, d3, s1, s2, s3, e1, e2, e3, Mesh1, Mesh2, Mesh3, Material, Control, Quad)
+%   Calculates the rates of convergence of the L2 error norm
+%   and the energy norm for using a manufactured solution
 %   ux = x^5 + x*y^3 - y^6
 %   uy = x^5 + x*y^3 - y^6
 %   exx = 5x^4 + y^3
@@ -26,11 +12,8 @@ function [m_L2, m_e] = ManufacturedSolution_check(d1, d2, d3, s1, s2, s3, e1, e2
 %   sxx = E/(1-v^2) * [   exx + v*eyy ]
 %   syy = E/(1-v^2) * [ v*exx +   eyy ]
 %   sxy = E/(1-v^2) * (1-v)/2 * exy
-% ------------------------------------------------------------------------
-% Adapted from https://github.com/GCMLab (Acknowledgements: Bruce Gee)
-% ------------------------------------------------------------------------
 
-plot_on = 1; % turn plots on/off - debugging tool
+plot_on = 0; % turn plots on/off - debugging tool
 
 % material parameters
 E = Material.M(1).E;
