@@ -44,7 +44,7 @@ DirFolder = 'Test Files';
 VTKFolder = pwd;
 
 % output VTK file
-plot2vtk = 1;
+plot2vtk = 0;
 % export Matlab images
 saveGraphs_on = 0;
 % export Matlab files
