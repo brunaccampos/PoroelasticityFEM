@@ -1,3 +1,21 @@
+% This file is part of PoroelasticityFEM.
+%
+% PoroelasticityFEM is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% PoroelasticityFEM is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>.
+%
+% Copyright (C) 2025 Bruna Campos
+
+% ------------------------------------------------------------------------
 % Porous Media Simulation
 % ------------------------------------------------------------------------
 % Created by Bruna Campos
@@ -21,7 +39,8 @@ curDir = pwd;
 %% Input data
 % Config files folder
 DirFolder = 'Config Files';
-% Config file to run
+
+% Uncomment config file to run
 % -------------------- Consolidation 1D - quasi-steady
 % File = 'Column1D_Steady_Boone';
 % File = 'Column1D_Steady_Ferronato';
@@ -105,12 +124,10 @@ File = 'WaveProp_CoreSample';
 % File = 'WaveProp_MatSame2000x4000';
 % File = 'WavePropP_MatLayer2000x2500';
 % File = 'WaveProp_TestFFT';
-
 % ------------------------------------------------------------------------
 
 % Directory for VTK file
-VTKFolder ='C:\Users\bu_ca\Downloads\PoroelasticityFEM\Results';
-% VTKFolder ='E:\PoroelasticityFEM\Results';
+VTKFolder = pwd;
 
 % output VTK file
 plot2vtk = 1;
@@ -151,7 +168,6 @@ clearvars -except VTKDir ConfigFile...
     plot2vtk progress_on ...
     saveGraphs_on saveMatData_on ...
     saveVideo_on meshfilename plotGraphs_on nelements
-
 clearvars -global
 
 % file name
@@ -168,6 +184,4 @@ end
 start_time = toc;
 run('Functions/Main/main');
 end_time = toc;
-
 fprintf(['\nRun time: ' num2str(end_time - start_time)]);
-% close all
