@@ -230,6 +230,12 @@ if ~isfield(Control, 'plotSyntheticScale')
     Control.plotSyntheticScale = 1;
 end
 
+% frequency domain solvers do not support UPN formulation
+if Control.freqDomain && contains(Control.PMmodel, 'UPN')
+    err_count = err_count+1;
+    err_control = sprintf('%s\t\t\tError #%d\t:\t The UPN formulation cannot be combined with the mode superposition feature. \n', err_control, err_count);
+end
+
 %% Output error/warning
 war_message = sprintf('%s %s %s %s %s', war_message, war_mat, war_BC, war_control);
 err_message = sprintf('%s %s %s %s %s', err_message, err_mat, err_BC, err_control);

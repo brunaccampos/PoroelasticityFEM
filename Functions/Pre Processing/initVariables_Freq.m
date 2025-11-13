@@ -1,7 +1,7 @@
 % SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
 % SPDX-License-Identifier: GPL-3.0-or-later
 
-function [Iteration] = initVariables_Freq(phi_u, phi_p, phi_n, MeshU, MeshP, MeshN, Material, Control, Iteration, Plot, BC, M)
+function [Iteration] = initVariables_Freq(phi_u, phi_p, MeshU, MeshP, MeshN, Material, Control, Iteration, Plot, BC, M)
 % Initialize variables for iteration and plot stages; store initial
 % conditions
 
@@ -18,15 +18,7 @@ if Control.freqDomain
     Iteration.xuFdot_old = (phi_u) \ Iteration.uFdot_old(BC.free_u);
     Iteration.xuF2dot_old = zeros(length(BC.free_u),1);
     Iteration.xpF_old = (phi_p) \ Iteration.pF_old(BC.free_p);
-    Iteration.xpFdot_old = (phi_p) \ Iteration.pFdot_old(BC.free_p);
-    if contains(Control.PMmodel, 'UPN')
-        Iteration.nF_old = zeros(MeshN.nDOF, 1); % porosity variable storage
-        Iteration.nF_old(:) = Material.M(1).eta0;
-        Iteration.nFdot_old = zeros(MeshN.nDOF, 1); % porosity gradient
-        Iteration.xnF_old = (phi_n) \ Iteration.nF_old(BC.free_n);
-        Iteration.xnFdot_old = (phi_n) \ Iteration.nFdot_old(BC.free_n);
-    end
-    
+    Iteration.xpFdot_old = (phi_p) \ Iteration.pFdot_old(BC.free_p);    
     if nargin > 11
         Iteration.xuF_old = (phi_u.') * M(BC.free_u, BC.free_u) * Iteration.uF_old(BC.free_u);
         Iteration.xuFdot_old = (phi_u.') * M(BC.free_u, BC.free_u) * Iteration.uFdot_old(BC.free_u);

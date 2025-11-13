@@ -17,7 +17,7 @@ disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
 [phi_u, omega2_u, phi_p, omega2_p] = EigenDyn_UP(Kuu, Kup, Kpp, Muu, Mpu, MeshU, MeshP, BC, Control);
 
 %% Initialize iteration variables
-[Iteration] = initVariables_Freq(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, Iteration, Plot, BC);
+[Iteration] = initVariables_Freq(phi_u, phi_p, MeshU, MeshP, MeshN, Material, Control, Iteration, Plot, BC);
 
 %% Initial condition file
 if plot2vtk
