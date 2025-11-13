@@ -17,7 +17,7 @@ disp([num2str(toc),': Solving Uncoupled Eigenproblems...']);
 [phi_u, omega2_u, phi_p, omega2_p] = EigenDyn_UP(Kuu, Kup, Kpp, Muu, Mpu, MeshU, MeshP, BC, Control);
 
 %% Initialize iteration variables
-[Iteration, Plot] = initVariables_Freq(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, BC, Muu);
+[Iteration] = initVariables_Freq(phi_u, phi_p, [], MeshU, MeshP, MeshN, Material, Control, Iteration, Plot, BC, Muu);
 
 %% Initial condition file
 if plot2vtk
@@ -64,7 +64,7 @@ for t = 1:length(Plot.time)
     end
 
     % system load vectors
-    [fu,fp,fn] = ComputeLoads(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
+    [fu,fp,fn] = ComputeLoads_UP(BC, MeshU, MeshP, MeshN, Control, QuadU, QuadP);
 
     % linear solver
     [Solution] = SolverDyn_UP(Kuu, Kup, Kpp, Muu, Mpu, S, fu, fp, BC, Control, Iteration);
