@@ -32,7 +32,7 @@ end
 
 %% solid displacement vs time
 nexttile
-plot(Plot.time, Plot.u_time,'b','LineWidth',2);
+plot(Plot.time, Plot.u_time*Material.t,'b','LineWidth',2);
 hold on
 grid on
 xlabel('Time [s]');
@@ -40,12 +40,12 @@ ylabel('u (solid) [m]');
 title(sprintf('Solid displacement at x = %.2f m', MeshU.coords(Control.plotu,1)));
 % frequency domain solution
 if Control.freqDomain
-    plot(Plot.time, Plot.uF,'m--','LineWidth',2);
+    plot(Plot.time, Plot.uF*Material.t,'m--','LineWidth',2);
     legend('Time', 'Frequency');
 end
 % analytical solution
 if Control.plotansol
-    plot(Plot.time, Plot.uan_time,'k:','LineWidth',2);
+    plot(Plot.time, Plot.uan_time*Material.t,'k:','LineWidth',2);
     legend('Numerical', 'Analytical');
 end
 hold off
@@ -55,7 +55,7 @@ end
 
 %% solid velocity vs time
 nexttile
-plot(Plot.time, Plot.udot_time,'r','LineWidth',2);
+plot(Plot.time, Plot.udot_time*Material.t,'r','LineWidth',2);
 hold on
 grid on
 xlabel('Time [s]');
@@ -63,7 +63,7 @@ ylabel('udot (solid) [m/s]');
 title(sprintf('Solid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
 % frequency domain solution
 if Control.freqDomain
-    plot(Plot.time, Plot.uFdot,'g--','LineWidth',2);
+    plot(Plot.time, Plot.uFdot*Material.t,'g--','LineWidth',2);
     legend('Time', 'Frequency');
 end
 hold off
@@ -73,7 +73,7 @@ end
 
 %% solid acceleration vs time
 nexttile
-plot(Plot.time, Plot.u2dot_time,'Color', [0.9290 0.6940 0.1250], 'LineWidth',2);
+plot(Plot.time, Plot.u2dot_time*Material.t,'Color', [0.9290 0.6940 0.1250], 'LineWidth',2);
 hold on
 grid on
 xlabel('Time [s]');
@@ -109,7 +109,7 @@ end
 
 %% solid displacement vs depth
 nexttile
-plot(MeshU.coords, Solution.u,'b','LineWidth',2);
+plot(MeshU.coords, Solution.u*Material.t,'b','LineWidth',2);
 hold on
 grid on
 xlabel('Column depth [m]');
@@ -117,12 +117,12 @@ ylabel('u (solid) [m]');
 title(sprintf('Solid displacement at t = %.1d s', Control.tend));
 % frequency domain solution
 if Control.freqDomain
-    plot(MeshU.coords, SolutionFreq.uF,'m--','LineWidth',2);
+    plot(MeshU.coords, SolutionFreq.uF*Material.t,'m--','LineWidth',2);
     legend('Time', 'Frequency');
 end
 % analytical solution
 if Control.plotansol
-    plot(MeshU.coords, Plot.uan_space,'k:','LineWidth',2);
+    plot(MeshU.coords, Plot.uan_space*Material.t,'k:','LineWidth',2);
     legend('Numerical', 'Analytical');
 end
 hold off
@@ -132,7 +132,7 @@ end
 
 %% solid velocity vs depth
 nexttile
-plot(MeshU.coords, Solution.udot,'r','LineWidth',2);
+plot(MeshU.coords, Solution.udot*Material.t,'r','LineWidth',2);
 hold on
 grid on
 xlabel('Column depth [m]');
@@ -140,7 +140,7 @@ ylabel('udot (solid) [m/s]');
 title(sprintf('Solid velocity at t = %.1d s', Control.tend));
 % frequency domain solution
 if Control.freqDomain
-    plot(MeshU.coords, SolutionFreq.uFdot,'g--','LineWidth',2);
+    plot(MeshU.coords, SolutionFreq.uFdot*Material.t,'g--','LineWidth',2);
     legend('Time', 'Frequency');
 end
 hold off
@@ -150,7 +150,7 @@ end
 
 %% solid acceleration vs depth
 nexttile
-plot(MeshU.coords, Solution.u2dot,'Color', [0.9290 0.6940 0.1250], 'LineWidth',2);
+plot(MeshU.coords, Solution.u2dot*Material.t,'Color', [0.9290 0.6940 0.1250], 'LineWidth',2);
 hold on
 grid on
 xlabel('Column depth [m]');
@@ -229,7 +229,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     if contains(Control.PMmodel, 'UPU')
     %% fluid displacement vs time
     nexttile
-    plot(Plot.time, Plot.uf_time,'m','LineWidth',2);
+    plot(Plot.time, Plot.uf_time*Material.t,'m','LineWidth',2);
     hold on
     grid on
     xlabel('Time [s]');
@@ -237,7 +237,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     title(sprintf('Fluid displacement at x = %.2f m', MeshU.coords(Control.plotu,1)));
     % analytical solution
     if Control.plotansol
-        plot(Plot.time, Plot.ufan_time,'k:','LineWidth',2);
+        plot(Plot.time, Plot.ufan_time*Material.t,'k:','LineWidth',2);
         legend('Numerical', 'Analytical');
     end
     hold off
@@ -248,7 +248,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     
     %% fluid velocity vs time
     nexttile
-    plot(Plot.time, Plot.ufdot_time,'c','LineWidth',2);
+    plot(Plot.time, Plot.ufdot_time*Material.t,'c','LineWidth',2);
     hold on
     grid on
     xlabel('Time [s]');
@@ -256,7 +256,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     title(sprintf('Fluid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
     % analytical solution
     if Control.plotansol && contains(Control.PMmodel, 'UPV')
-        plot(Plot.time, Plot.ufdotan_time,'k:','LineWidth',2);
+        plot(Plot.time, Plot.ufdotan_time*Material.t,'k:','LineWidth',2);
         legend('Numerical', 'Analytical');
     end
     hold off
@@ -266,7 +266,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     
     %% fluid acceleration vs time
     nexttile
-    plot(Plot.time, Plot.uf2dot_time,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
+    plot(Plot.time, Plot.uf2dot_time*Material.t,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
     hold on
     grid on
     xlabel('Time [s]');
@@ -280,7 +280,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     if contains(Control.PMmodel, 'UPU')
     %% fluid displacement vs depth
     nexttile
-    plot(MeshU.coords, Solution.uf,'m','LineWidth',2);
+    plot(MeshU.coords, Solution.uf*Material.t,'m','LineWidth',2);
     hold on
     grid on
     xlabel('Column depth [m]');
@@ -288,7 +288,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     title(sprintf('Fluid displacement at t = %.1d s', Control.tend));
     % analytical solution
     if Control.plotansol
-        plot(MeshU.coords, Plot.ufan_space,'k:','LineWidth',2);
+        plot(MeshU.coords, Plot.ufan_space*Material.t,'k:','LineWidth',2);
         legend('Numerical', 'Analytical');
     end
     hold off
@@ -299,7 +299,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     
     %% fluid velocity vs depth
     nexttile
-    plot(MeshU.coords, Solution.ufdot,'c','LineWidth',2);
+    plot(MeshU.coords, Solution.ufdot*Material.t,'c','LineWidth',2);
     hold on
     grid on
     xlabel('Column depth [m]');
@@ -307,7 +307,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     title(sprintf('Fluid velocity at t = %.1d s', Control.tend));
     % analytical solution
     if Control.plotansol && contains(Control.PMmodel, 'UPV')
-        plot(MeshU.coords, Plot.ufdotan_space,'k:','LineWidth',2);
+        plot(MeshU.coords, Plot.ufdotan_space*Material.t,'k:','LineWidth',2);
         legend('Numerical', 'Analytical');
     end
     hold off
@@ -317,7 +317,7 @@ if contains(Control.PMmodel, 'UPU') || contains(Control.PMmodel, 'UPV')
     
     %% fluid acceleration vs depth
     nexttile
-    plot(MeshU.coords, Solution.uf2dot,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
+    plot(MeshU.coords, Solution.uf2dot*Material.t,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
     hold on
     grid on
     xlabel('Column depth [m]');
@@ -335,7 +335,7 @@ if contains(Control.PMmodel, 'UPW')
     tiledlayout(2,3);   
     %% relative fluid velocity vs time
     nexttile
-    plot(Plot.time, Plot.w_time,'c','LineWidth',2);
+    plot(Plot.time, Plot.w_time*Material.t,'c','LineWidth',2);
     hold on
     grid on
     xlabel('Time [s]');
@@ -343,7 +343,7 @@ if contains(Control.PMmodel, 'UPW')
     title(sprintf('Relative fluid velocity at x = %.2f m', MeshU.coords(Control.plotu,1)));
     % analytical solution
     if Control.plotansol 
-        plot(Plot.time, Plot.wan_time,'k:','LineWidth',2);
+        plot(Plot.time, Plot.wan_time*Material.t,'k:','LineWidth',2);
         legend('Numerical', 'Analytical');
     end
     hold off
@@ -353,7 +353,7 @@ if contains(Control.PMmodel, 'UPW')
     
     %% relative fluid acceleration vs time
     nexttile
-    plot(Plot.time, Plot.wdot_time,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
+    plot(Plot.time, Plot.wdot_time*Material.t,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
     hold on
     grid on
     xlabel('Time [s]');
@@ -366,7 +366,7 @@ if contains(Control.PMmodel, 'UPW')
         
     %% relative fluid velocity vs depth
     nexttile
-    plot(MeshU.coords, Solution.w,'c','LineWidth',2);
+    plot(MeshU.coords, Solution.w*Material.t,'c','LineWidth',2);
     hold on
     grid on
     xlabel('Column depth [m]');
@@ -374,7 +374,7 @@ if contains(Control.PMmodel, 'UPW')
     title(sprintf('Relative fluid velocity at t = %.1d s', Control.tend));
     % analytical solution
     if Control.plotansol
-        plot(MeshU.coords, Plot.wan_space,'k:','LineWidth',2);
+        plot(MeshU.coords, Plot.wan_space*Material.t,'k:','LineWidth',2);
         legend('Numerical', 'Analytical');
     end
     hold off
@@ -384,7 +384,7 @@ if contains(Control.PMmodel, 'UPW')
     
     %% relative fluid acceleration vs depth
     nexttile
-    plot(MeshU.coords, Solution.wdot,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
+    plot(MeshU.coords, Solution.wdot*Material.t,'Color', [0.4660 0.6740 0.1880],'LineWidth',2);
     hold on
     grid on
     xlabel('Column depth [m]');

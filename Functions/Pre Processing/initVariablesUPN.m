@@ -11,7 +11,7 @@ Iteration.u_old = BC.initU; % solid displacement
 Iteration.p_old = BC.initP; % pressure
 Iteration.udot_old = BC.initUdot; % solid velocity
 Iteration.n_old = zeros(MeshN.nDOF, 1); % porosity
-Iteration.n_old(:) = Material.eta0;
+Iteration.n_old(:) = Material.M(1).eta0;
 
 % time derivatives
 Iteration.u2dot_old = zeros(MeshU.nDOF, 1); % solid acceleration
@@ -47,7 +47,7 @@ Plot.u_time(1,1) = BC.initU(Control.plotu,1);
 Plot.p_time(1,1) = BC.initP(Control.plotp,1);
 Plot.udot_time(1,1) = BC.initUdot(Control.plotu,1);
 Plot.n_time = zeros(length(Plot.time), 1);
-Plot.n_time(1,1) = Material.eta0;
+Plot.n_time(1,1) = Material.M(1).eta0;
     
 % initial conditions for analytical solution
 if Control.plotansol

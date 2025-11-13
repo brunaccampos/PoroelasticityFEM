@@ -196,7 +196,7 @@ if contains(Control.PMmodel, 'UPN')
     % loop over elements
     for e = 1:ne
         % element material type
-        nMat = Mesh.MatList(e); 
+        nMat = MeshN.MatList(e); 
         % element connectivity
         connN_e = MeshN.conn(e,:);
         % element DOFs
