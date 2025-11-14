@@ -1,7 +1,7 @@
 % SPDX-FileCopyrightText: Copyright (c) 2022-2024 Bruna Campos
 % SPDX-License-Identifier: GPL-3.0-or-later
 
-function [Iteration] = initVariables_Freq(phi_u, phi_p, MeshU, MeshP, MeshN, Material, Control, Iteration, Plot, BC, M)
+function [Iteration] = initVariables_Freq(phi_u, phi_p, MeshU, MeshP, Control, Iteration, Plot, BC, M)
 % Initialize variables for iteration and plot stages; store initial
 % conditions
 
