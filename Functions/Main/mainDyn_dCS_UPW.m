@@ -79,6 +79,9 @@ for t = 1:length(Plot.time)
         end
     end
     
+    % amplification matrix
+    getAmplificationMatrix(Material, MeshU, MeshP, QuadU, QuadP, Control);
+
     % linear solver
     [Solution] = SolverDyn_UPW(Mss, Msf, Kss, Ksp, Mfs, Mff, Kfp, Kff, Cps, Kpf, Cpp, Cfs, fu, fp, ff, BC, Control, Iteration);
 
